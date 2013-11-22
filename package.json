@@ -1,0 +1,42 @@
+{
+  "version": "0.1.0",
+  "name": "h5p",
+  "description": "A helping tool for developing HTML5 Packages.",
+  "keywords": [
+    "development",
+    "developing",
+    "tool",
+    "help",
+    "html5",
+    "package"
+  ],
+  "preferGlobal": true,
+  "homepage": "https://h5p.org",
+  "author": "Amendor AS",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/h5p/cli"
+  },
+  "bugs": {
+    "url": "http://github.com/h5p/cli/issues"
+  },
+  "directories": {
+    "lib": "./lib",
+    "bin": "./bin"
+  },
+  "main": "./lib/h5p.js",
+  "bin": "./bin/h5p-cli.js",
+  "dependencies": {
+    "cli": ">=0.4.5"
+  },
+  "bundleDependencies": [
+  ],
+  "devDependencies": {
+  },
+  "engines": {
+    "node": ">=v0.10"
+  },
+  "scripts": {
+  },
+  "license": "MIT"
+}
