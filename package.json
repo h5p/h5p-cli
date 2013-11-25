@@ -27,7 +27,6 @@
   "main": "./lib/h5p.js",
   "bin": "./bin/h5p-cli.js",
   "dependencies": {
-    "cli": ">=0.4.5"
   },
   "bundleDependencies": [
   ],

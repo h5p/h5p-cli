@@ -3,8 +3,42 @@
 /**
  * Load requirements.
  */
-var cli = require('cli'); // TODO: Use more or just skip.
+var util = require('util');
 var h5p = require('../lib/h5p.js');
+
+var lf = '\u000A';
+var cr = '\u000D';
+var color = {
+  default: '\x1B[0m',
+  emphasize: '\x1B[1m',
+  green: '\x1B[32m',
+  yellow: '\x1B[33m',
+  red: '\x1B[31m'
+};
+
+/**
+ * Simple class for displaying a spinner while we're working.
+ */
+function Spinner(prefix) {
+  var interval;
+  var parts = ['/','-','\\', '|'];
+  var curPos = 0;
+  var maxPos = parts.length;
+
+  this.stop = function (result) {
+    util.print(cr + prefix + result);
+    clearInterval(interval);
+  }
+  
+  interval = setInterval(function () {
+    util.print(cr + prefix + color.emphasize + parts[curPos++] + color.default);
+    if (curPos === maxPos) curPos = 0;
+  }, 100);
+};
+
+// Test spinner
+//var spinner = new Spinner('Testing... ');
+//setTimeout(function () { spinner.stop('DONE' + lf); },2000);
 
 /**
  * Recursive cloning of all libraries in the collection.
@@ -12,49 +46,49 @@ var h5p = require('../lib/h5p.js');
  */
 function clone() {
   var name = h5p.clone(function (error) {
-    var status;
+    var result;
     if (error === -1) {
-      status = '\x1B[33mSKIPPED\x1B[0m\n';
+      result = color.yellow + 'SKIPPED' + color.default + lf;
     }
     else if (error) {
-      status = '\x1B[31mFAILED\x1B[0m: ' + error;
+      result = color.red + 'FAILED' + color.default + ': ' + error;
     }
     else {
-      status = '\x1B[32mOK\x1B[0m\n';
+      result = color.green + 'OK' + color.default + lf;
     }
 
-    cli.spinner(msg + status, true);
+    spinner.stop(result);
     clone();
   });
   if (!name) return; // Nothing to clone.
-  var msg = 'Cloning into \'' + name + '\'... ';
-  cli.spinner(msg);
+  var msg = 'Cloning into \'' + color.emphasize + name + color.default + '\'... ';
+  var spinner = new Spinner(msg);
 }
 
-/**
- * Command routing
- */
-cli.main(function (args, options) {
-  var that = this;
-  var command = args.shift();
-  if (!command) return this.error('No command specified.');
-  
-  switch (command) {
-    case 'get':
-      var library = args.shift();
-      if (!library) return this.error('No library specified.');
-      
-      var msg = 'Loading dependencies for \'' + library + '\'... ';
-      cli.spinner(msg);
-      h5p.get(library, function (error) {
-        cli.spinner(msg + 'done\n', true);
-        if (error) return that.error(error);
-        clone();
-      });
-      
+
+process.argv.shift(); // node
+process.argv.shift(); // script
+
+// Command routing
+var command = process.argv.shift();
+switch (command) {
+  case 'get':
+    var library = process.argv.shift();
+    if (!library) {
+      util.print('No library specified.' + lf);
       break;
-      
-    default:
-      return this.error('Unknown command.');
-  }
-});
+    }
+    
+    var spinner = new Spinner('Loading dependencies for \'' + color.emphasize + library + color.default + '\'... ');
+    h5p.get(library, function (error) {
+      var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
+      spinner.stop(result + lf);
+      clone();
+    });
+    
+    break;
+    
+  default:
+    util.print('Unknown command.' + lf);
+    break;  
+}
