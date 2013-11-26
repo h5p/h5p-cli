@@ -88,6 +88,37 @@ switch (command) {
     
     break;
     
+  case 'status':
+    h5p.status(function (error, repos) {
+      for (var i = 0; i < repos.length; i++) {
+        var repo = repos[i];
+        
+        if (!repo.error && repo.changes.length === 0) {
+          continue;
+        }
+        
+        util.print(color.emphasize + repo.name + color.default);
+        if (repo.branch) {
+          util.print(' (' + repo.branch + ')');
+        }
+        util.print(lf);
+        
+        if (repo.error) {
+          util.print(error + lf);
+        }
+        else {
+          util.print(repo.changes.join(lf) + lf);
+        }
+      }
+    });
+    break;
+    
+  case undefined:
+    util.print('Available commands:' + lf);
+    util.print('  ' + color.emphasize + 'get' + color.default + ' <library>' + lf);
+    util.print('  ' + color.emphasize + 'status' + color.default + lf);
+    break;
+    
   default:
     util.print('Unknown command.' + lf);
     break;  
