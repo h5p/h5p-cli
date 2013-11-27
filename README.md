@@ -2,6 +2,14 @@
 
 A helping tool for developing HTML5 Packages.
 
+Note that this tool is still in alpha!
+
+## Install
+
+`sudo npm install -g h5p`
+
+Make sure ssh-agent is running and that `ssh -T git@github.com` works.
+
 ## License
 
 (The MIT License)
