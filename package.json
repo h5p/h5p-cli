@@ -11,11 +11,11 @@
     "package"
   ],
   "preferGlobal": true,
-  "homepage": "https://h5p.org",
+  "homepage": "http://h5p.org",
   "author": "Amendor AS",
   "repository": {
     "type": "git",
-    "url": "https://github.com/h5p/cli"
+    "url": "http://github.com/h5p/cli"
   },
   "bugs": {
     "url": "http://github.com/h5p/cli/issues"
@@ -26,16 +26,8 @@
   },
   "main": "./lib/h5p.js",
   "bin": "./bin/h5p-cli.js",
-  "dependencies": {
-  },
-  "bundleDependencies": [
-  ],
-  "devDependencies": {
-  },
   "engines": {
     "node": ">=v0.10"
-  },
-  "scripts": {
   },
   "license": "MIT"
 }

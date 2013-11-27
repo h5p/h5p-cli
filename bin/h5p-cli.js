@@ -36,10 +36,6 @@ function Spinner(prefix) {
   }, 100);
 };
 
-// Test spinner
-//var spinner = new Spinner('Testing... ');
-//setTimeout(function () { spinner.stop('DONE' + lf); },2000);
-
 /**
  * Recursive cloning of all libraries in the collection.
  * Will print out status messages along the way.
@@ -65,6 +61,121 @@ function clone() {
   var spinner = new Spinner(msg);
 }
 
+/**
+ * Recursive pulling for all repos in collection.
+ */
+function pull() {
+  var repo = h5p.pull(function (error) {
+    var result;
+    if (error) {
+      result = color.red + 'FAILED' + color.default + ': ' + error;
+    }
+    else {
+      result = color.green + 'OK' + color.default + lf;
+    }
+
+    spinner.stop(result);
+    pull();
+  });
+  if (!repo) return; // Nothing to clone.
+  var msg = 'Pulling \'' + color.emphasize + repo + color.default + '\'... ';
+  var spinner = new Spinner(msg);
+}
+
+/**
+ * Recursive pushing for all repos in collection.
+ */
+function push() {
+  var repo = h5p.push(function (error, result) {
+    var result;
+    if (error === -1) {
+      result = color.yellow + 'SKIPPED' + color.default + lf;
+    }
+    else if (error) {
+      result = color.red + 'FAILED' + color.default + ': ' + error;
+    }
+    else {
+      result = color.green + 'OK' + color.default + ' ' + result + lf;
+    }
+
+    spinner.stop(result);
+    push();
+  });
+  if (!repo) return; // Nothing to clone.
+  var msg = 'Pushing \'' + color.emphasize + repo + color.default + '\'... ';
+  var spinner = new Spinner(msg);
+}
+
+/**
+ * Print status messages for the given repos.
+ */
+function status(error, repos) {
+  if (error) return util.print(error + lf);
+  
+  var first = true;
+  for (var i = 0; i < repos.length; i++) {
+    var repo = repos[i];
+    
+    // Skip no outputs
+    if (!repo.error && !repo.changes) continue;
+    
+    if (first) { 
+      // Extra line feed on the first.
+      util.print(lf);
+      first = false;
+    }
+    
+    util.print(color.emphasize + repo.name + color.default);
+    if (repo.branch) {
+      util.print(' (' + repo.branch + ')');
+    }
+    util.print(lf);
+    
+    if (repo.error) {
+      util.print(error + lf);
+    }
+    else {
+      util.print(repo.changes.join(lf) + lf);
+    }
+    
+    util.print(lf);
+  }
+}
+
+/**
+ * Print results after commiting.
+ */
+function commit(error, results) {
+  if (error) return util.print(error + lf);
+  
+  var first = true;
+  for (var i = 0; i < results.length; i++) {
+    var result = results[i];
+    
+    // Skip no outputs
+    if (!result.error && !result.changes) continue;
+    
+    if (first) {
+      // Extra line feed on the first.
+      util.print(lf);
+      first = false;
+    }
+    
+    util.print(color.emphasize + result.name + color.default);
+    if (result.branch && result.commit) {
+      util.print(' (' + result.branch + ' ' + result.commit + ')');
+    }
+    util.print(lf);
+    
+    if (result.error) {
+      util.print(error + lf);
+    }
+    else {
+      util.print(result.changes.join(lf) + lf);
+    }
+    util.print(lf);
+  }
+}
 
 process.argv.shift(); // node
 process.argv.shift(); // script
@@ -79,7 +190,7 @@ switch (command) {
       break;
     }
     
-    var spinner = new Spinner('Loading dependencies for \'' + color.emphasize + library + color.default + '\'... ');
+    var spinner = new Spinner('Looking up dependencies for \'' + color.emphasize + library + color.default + '\'... ');
     h5p.get(library, function (error) {
       var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
       spinner.stop(result + lf);
@@ -89,37 +200,7 @@ switch (command) {
     break;
     
   case 'status':
-    h5p.status(function (error, repos) {
-      if (error) return util.print(error + lf);
-      
-      var first = true;
-      for (var i = 0; i < repos.length; i++) {
-        var repo = repos[i];
-        
-        // Skip no outputs
-        if (!repo.error && !repo.changes) continue;
-        
-        if (first) { 
-          // Extra line feed on the first.
-          util.print(lf);
-          first = false;
-        }
-        
-        util.print(color.emphasize + repo.name + color.default);
-        if (repo.branch) {
-          util.print(' (' + repo.branch + ')');
-        }
-        util.print(lf);
-        
-        if (repo.error) {
-          util.print(error + lf);
-        }
-        else {
-          util.print(repo.changes.join(lf) + lf);
-        }
-        util.print(lf);
-      }
-    });
+    h5p.status(status);
     break;
     
   case 'commit':
@@ -135,36 +216,20 @@ switch (command) {
       break;
     }
     
-    h5p.commit(msg, function (error, results) {
+    h5p.commit(msg, commit);
+    break;
+    
+  case 'pull':
+    h5p.update(function (error) {
       if (error) return util.print(error + lf);
-      
-      var first = true;
-      for (var i = 0; i < results.length; i++) {
-        var result = results[i];
-        
-        // Skip no outputs
-        if (!result.error && !result.changes) continue;
-        
-        if (first) {
-          // Extra line feed on the first.
-          util.print(lf);
-          first = false;
-        }
-        
-        util.print(color.emphasize + result.name + color.default);
-        if (result.branch && result.commit) {
-          util.print(' (' + result.branch + ' ' + result.commit + ')');
-        }
-        util.print(lf);
-        
-        if (result.error) {
-          util.print(error + lf);
-        }
-        else {
-          util.print(result.changes.join(lf) + lf);
-        }
-        util.print(lf);
-      }
+      pull();
+    });
+    break;
+    
+  case 'push':
+    h5p.update(function (error) {
+      if (error) return util.print(error + lf);
+      push();
     });
     break;
     
@@ -172,6 +237,9 @@ switch (command) {
     util.print('Available commands:' + lf);
     util.print('  ' + color.emphasize + 'get' + color.default + ' <library>' + lf);
     util.print('  ' + color.emphasize + 'status' + color.default + lf);
+    util.print('  ' + color.emphasize + 'commit' + color.default + ' <message>' + lf);
+    util.print('  ' + color.emphasize + 'pull' + color.default + lf);
+    util.print('  ' + color.emphasize + 'push' + color.default + lf);
     break;
     
   default:
