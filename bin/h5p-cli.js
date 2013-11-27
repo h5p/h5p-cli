@@ -90,11 +90,19 @@ switch (command) {
     
   case 'status':
     h5p.status(function (error, repos) {
+      if (error) return util.print(error + lf);
+      
+      var first = true;
       for (var i = 0; i < repos.length; i++) {
         var repo = repos[i];
         
-        if (!repo.error && repo.changes.length === 0) {
-          continue;
+        // Skip no outputs
+        if (!repo.error && !repo.changes) continue;
+        
+        if (first) { 
+          // Extra line feed on the first.
+          util.print(lf);
+          first = false;
         }
         
         util.print(color.emphasize + repo.name + color.default);
@@ -109,6 +117,53 @@ switch (command) {
         else {
           util.print(repo.changes.join(lf) + lf);
         }
+        util.print(lf);
+      }
+    });
+    break;
+    
+  case 'commit':
+    // TODO: Get message from editor?
+    var msg = process.argv.shift();
+    if (!msg) {
+      util.print('No message means no commit.' + lf);
+      break;
+    }
+    
+    if (msg.split(' ', 2).length < 2) {
+      util.print('Commit message to short.' + lf);
+      break;
+    }
+    
+    h5p.commit(msg, function (error, results) {
+      if (error) return util.print(error + lf);
+      
+      var first = true;
+      for (var i = 0; i < results.length; i++) {
+        var result = results[i];
+        
+        // Skip no outputs
+        if (!result.error && !result.changes) continue;
+        
+        if (first) {
+          // Extra line feed on the first.
+          util.print(lf);
+          first = false;
+        }
+        
+        util.print(color.emphasize + result.name + color.default);
+        if (result.branch && result.commit) {
+          util.print(' (' + result.branch + ' ' + result.commit + ')');
+        }
+        util.print(lf);
+        
+        if (result.error) {
+          util.print(error + lf);
+        }
+        else {
+          util.print(result.changes.join(lf) + lf);
+        }
+        util.print(lf);
       }
     });
     break;
