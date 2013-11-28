@@ -233,13 +233,21 @@ switch (command) {
     });
     break;
     
+  case 'diff':
+    h5p.diff(function (error, diff) {
+      if (error) return util.print(color.red + 'ERROR!' + color.default + lf + error);
+      util.print(diff);
+    });
+    break;
+    
   case undefined:
     util.print('Available commands:' + lf);
-    util.print('  ' + color.emphasize + 'get' + color.default + ' <library>' + lf);
-    util.print('  ' + color.emphasize + 'status' + color.default + lf);
-    util.print('  ' + color.emphasize + 'commit' + color.default + ' <message>' + lf);
-    util.print('  ' + color.emphasize + 'pull' + color.default + lf);
-    util.print('  ' + color.emphasize + 'push' + color.default + lf);
+    util.print('  ' + color.emphasize + 'get <library>' + color.default + ' - Find all dependencies and clone them.' + lf);
+    util.print('  ' + color.emphasize + 'status' + color.default + ' - Status for all repos.' + lf);
+    util.print('  ' + color.emphasize + 'commit <message>' + color.default + ' - Commit to all repos with given message.' + lf);
+    util.print('  ' + color.emphasize + 'pull' + color.default + ' - Pull all repos.' + lf);
+    util.print('  ' + color.emphasize + 'push' + color.default + ' - Push all repos.' + lf);
+    util.print('  ' + color.emphasize + 'diff' + color.default + ' - Prints combined diff for alle repos.' + lf);
     break;
     
   default:
