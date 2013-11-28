@@ -1,6 +1,6 @@
 ## H5P Command Line Interface
 
-A helping tool for developing HTML5 Packages.
+A tool that simplifies the development process of HTML5 Packages.
 
 Note that this tool is still in alpha!
 
