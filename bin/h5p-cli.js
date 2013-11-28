@@ -47,7 +47,7 @@ function clone() {
       result = color.yellow + 'SKIPPED' + color.default + lf;
     }
     else if (error) {
-      result = color.red + 'FAILED' + color.default + ': ' + error;
+      result = color.red + 'FAILED' + color.default + lf + error;
     }
     else {
       result = color.green + 'OK' + color.default + lf;
@@ -68,7 +68,7 @@ function pull() {
   var repo = h5p.pull(function (error) {
     var result;
     if (error) {
-      result = color.red + 'FAILED' + color.default + ': ' + error;
+      result = color.red + 'FAILED' + color.default + lf + error;
     }
     else {
       result = color.green + 'OK' + color.default + lf;
@@ -92,7 +92,7 @@ function push() {
       result = color.yellow + 'SKIPPED' + color.default + lf;
     }
     else if (error) {
-      result = color.red + 'FAILED' + color.default + ': ' + error;
+      result = color.red + 'FAILED' + color.default + lf + error;
     }
     else {
       result = color.green + 'OK' + color.default + ' ' + result + lf;
