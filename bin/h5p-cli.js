@@ -183,6 +183,19 @@ process.argv.shift(); // script
 // Command routing
 var command = process.argv.shift();
 switch (command) {
+  case 'list':
+    var spinner = new Spinner('Getting library list... ');
+    h5p.list(function (error, libraries) {
+      var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
+      spinner.stop(result + lf);
+      
+      for (var name in libraries) {
+        util.print('  ' + color.emphasize + name + color.default + lf);  
+      }
+    });
+    
+    break;
+  
   case 'get':
     var library = process.argv.shift();
     if (!library) {
@@ -242,6 +255,7 @@ switch (command) {
     
   case undefined:
     util.print('Available commands:' + lf);
+    util.print('  ' + color.emphasize + 'list' + color.default + ' - List all libraries.' + lf);
     util.print('  ' + color.emphasize + 'get <library>' + color.default + ' - Find all dependencies and clone them.' + lf);
     util.print('  ' + color.emphasize + 'status' + color.default + ' - Status for all repos.' + lf);
     util.print('  ' + color.emphasize + 'commit <message>' + color.default + ' - Commit to all repos with given message.' + lf);
