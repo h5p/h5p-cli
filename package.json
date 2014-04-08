@@ -1,5 +1,5 @@
 {
-  "version": "0.3.4",
+  "version": "0.4.0",
   "name": "h5p",
   "description": "A helping tool for developing HTML5 Packages.",
   "keywords": [
@@ -28,6 +28,9 @@
   "bin": "./bin/h5p-cli.js",
   "engines": {
     "node": ">=v0.10"
+  },
+  "dependencies": {
+    "archiver": "0.8.1"
   },
   "license": "MIT"
 }

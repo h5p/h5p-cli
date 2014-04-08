@@ -253,6 +253,20 @@ switch (command) {
     });
     break;
     
+  case 'pack':
+    if (!process.argv.length) {
+      util.print('You must specify libraries.' + lf);
+      break;
+    }
+  
+    var spinner = new Spinner('Packing ' + color.emphasize + process.argv.length + color.default + ' librar' + (process.argv.length === 1 ? 'y' : 'ies') + '... ');
+    h5p.pack(process.argv, function (error) {
+      var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
+      spinner.stop(result + lf);
+      clone();
+    });
+    break;
+    
   case undefined:
     util.print('Available commands:' + lf);
     util.print('  ' + color.emphasize + 'list' + color.default + ' - List all libraries.' + lf);
@@ -262,6 +276,7 @@ switch (command) {
     util.print('  ' + color.emphasize + 'pull' + color.default + ' - Pull all repos.' + lf);
     util.print('  ' + color.emphasize + 'push' + color.default + ' - Push all repos.' + lf);
     util.print('  ' + color.emphasize + 'diff' + color.default + ' - Prints combined diff for alle repos.' + lf);
+    util.print('  ' + color.emphasize + 'pack <library> [<library2>...]' + color.default + ' - Prints combined diff for alle repos.' + lf);
     break;
     
   default:
