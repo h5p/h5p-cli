@@ -263,7 +263,19 @@ switch (command) {
     h5p.pack(process.argv, function (error) {
       var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
       spinner.stop(result + lf);
-      clone();
+    });
+    break;
+  
+  case 'increase-patch-version':
+    if (!process.argv.length) {
+      util.print('You must specify libraries.' + lf);
+      break;
+    }
+  
+    var spinner = new Spinner('Increasing patch version for ' + color.emphasize + process.argv.length + color.default + ' librar' + (process.argv.length === 1 ? 'y' : 'ies') + '... ');
+    h5p.increasePatchVersion(process.argv, function (error) {
+      var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
+      spinner.stop(result + lf);
     });
     break;
     
@@ -276,7 +288,8 @@ switch (command) {
     util.print('  ' + color.emphasize + 'pull' + color.default + ' - Pull all repos.' + lf);
     util.print('  ' + color.emphasize + 'push' + color.default + ' - Push all repos.' + lf);
     util.print('  ' + color.emphasize + 'diff' + color.default + ' - Prints combined diff for alle repos.' + lf);
-    util.print('  ' + color.emphasize + 'pack <library> [<library2>...]' + color.default + ' - Prints combined diff for alle repos.' + lf);
+    util.print('  ' + color.emphasize + 'pack <library> [<library2>...]' + color.default + ' - Packs given libraries in libraries.h5p. (Use H5P_IGNORE_PATTERN and H5P_IGNORE_MODIFIERS to override file ignore.)' + lf);
+    util.print('  ' + color.emphasize + 'increase-patch-version <library> [<library2>...]' + color.default + ' - Increase libraries patch version.' + lf);
     break;
     
   default:
