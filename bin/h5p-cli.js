@@ -109,7 +109,7 @@ function push() {
 /**
  * Print status messages for the given repos.
  */
-function status(error, repos) {
+function status(error, repos, force) {
   if (error) return util.print(error + lf);
   
   var first = true;
@@ -117,7 +117,7 @@ function status(error, repos) {
     var repo = repos[i];
     
     // Skip no outputs
-    if (!repo.error && !repo.changes) continue;
+    if (!repo.error && !repo.changes && (force === undefined || !force)) continue;
     
     if (first) { 
       // Extra line feed on the first.
@@ -134,7 +134,7 @@ function status(error, repos) {
     if (repo.error) {
       util.print(error + lf);
     }
-    else {
+    else if (repo.changes !== undefined) {
       util.print(repo.changes.join(lf) + lf);
     }
     
@@ -197,14 +197,14 @@ switch (command) {
     break;
   
   case 'get':
-    var library = process.argv.shift();
-    if (!library) {
+    var libraries = process.argv;
+    if (!libraries.length) {
       util.print('No library specified.' + lf);
       break;
     }
     
-    var spinner = new Spinner('Looking up dependencies for \'' + color.emphasize + library + color.default + '\'... ');
-    h5p.get(library, function (error) {
+    var spinner = new Spinner('Looking up dependencies... ');
+    h5p.get(libraries, function (error) {
       var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
       spinner.stop(result + lf);
       clone();
@@ -213,7 +213,9 @@ switch (command) {
     break;
     
   case 'status':
-    h5p.status(status);
+    h5p.status(function (error, repos) {
+      status(error, repos, process.argv.shift() === '-f');
+    });
     break;
     
   case 'commit':
