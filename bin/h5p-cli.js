@@ -28,13 +28,13 @@ function Spinner(prefix) {
   this.stop = function (result) {
     util.print(cr + prefix + result);
     clearInterval(interval);
-  }
-  
+  };
+
   interval = setInterval(function () {
     util.print(cr + prefix + color.emphasize + parts[curPos++] + color.default);
     if (curPos === maxPos) curPos = 0;
   }, 100);
-};
+}
 
 /**
  * Recursive cloning of all libraries in the collection.
@@ -65,13 +65,13 @@ function clone() {
  * Recursive pulling for all repos in collection.
  */
 function pull() {
-  var repo = h5p.pull(function (error) {
-    var result;
+  var repo = h5p.pull(function (error, result) {
+
     if (error) {
       result = color.red + 'FAILED' + color.default + lf + error;
     }
     else {
-      result = color.green + 'OK' + color.default + lf;
+      result = color.green + 'OK' + color.default + (result ? ' ' + result : '') + lf;
     }
 
     spinner.stop(result);
@@ -87,7 +87,7 @@ function pull() {
  */
 function push() {
   var repo = h5p.push(function (error, result) {
-    var result;
+
     if (error === -1) {
       result = color.yellow + 'SKIPPED' + color.default + lf;
     }
@@ -111,33 +111,33 @@ function push() {
  */
 function status(error, repos, force) {
   if (error) return util.print(error + lf);
-  
+
   var first = true;
   for (var i = 0; i < repos.length; i++) {
     var repo = repos[i];
-    
+
     // Skip no outputs
     if (!repo.error && !repo.changes && (force === undefined || !force)) continue;
-    
-    if (first) { 
+
+    if (first) {
       // Extra line feed on the first.
       util.print(lf);
       first = false;
     }
-    
+
     util.print(color.emphasize + repo.name + color.default);
     if (repo.branch) {
       util.print(' (' + repo.branch + ')');
     }
     util.print(lf);
-    
+
     if (repo.error) {
       util.print(error + lf);
     }
     else if (repo.changes !== undefined) {
       util.print(repo.changes.join(lf) + lf);
     }
-    
+
     util.print(lf);
   }
 }
@@ -147,26 +147,26 @@ function status(error, repos, force) {
  */
 function commit(error, results) {
   if (error) return util.print(error + lf);
-  
+
   var first = true;
   for (var i = 0; i < results.length; i++) {
     var result = results[i];
-    
+
     // Skip no outputs
     if (!result.error && !result.changes) continue;
-    
+
     if (first) {
       // Extra line feed on the first.
       util.print(lf);
       first = false;
     }
-    
+
     util.print(color.emphasize + result.name + color.default);
     if (result.branch && result.commit) {
       util.print(' (' + result.branch + ' ' + result.commit + ')');
     }
     util.print(lf);
-    
+
     if (result.error) {
       util.print(error + lf);
     }
@@ -188,36 +188,36 @@ switch (command) {
     h5p.list(function (error, libraries) {
       var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
       spinner.stop(result + lf);
-      
+
       for (var name in libraries) {
-        util.print('  ' + color.emphasize + name + color.default + lf);  
+        util.print('  ' + color.emphasize + name + color.default + lf);
       }
     });
-    
+
     break;
-  
+
   case 'get':
     var libraries = process.argv;
     if (!libraries.length) {
       util.print('No library specified.' + lf);
       break;
     }
-    
+
     var spinner = new Spinner('Looking up dependencies... ');
     h5p.get(libraries, function (error) {
       var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
       spinner.stop(result + lf);
       clone();
     });
-    
+
     break;
-    
+
   case 'status':
     h5p.status(function (error, repos) {
       status(error, repos, process.argv.shift() === '-f');
     });
     break;
-    
+
   case 'commit':
     // TODO: Get message from editor?
     var msg = process.argv.shift();
@@ -225,62 +225,62 @@ switch (command) {
       util.print('No message means no commit.' + lf);
       break;
     }
-    
+
     if (msg.split(' ', 2).length < 2) {
       util.print('Commit message to short.' + lf);
       break;
     }
-    
+
     h5p.commit(msg, commit);
     break;
-    
+
   case 'pull':
     h5p.update(function (error) {
       if (error) return util.print(error + lf);
       pull();
     });
     break;
-    
+
   case 'push':
     h5p.update(function (error) {
       if (error) return util.print(error + lf);
       push();
     });
     break;
-    
+
   case 'diff':
     h5p.diff(function (error, diff) {
       if (error) return util.print(color.red + 'ERROR!' + color.default + lf + error);
       util.print(diff);
     });
     break;
-    
+
   case 'pack':
     if (!process.argv.length) {
       util.print('You must specify libraries.' + lf);
       break;
     }
-  
+
     var spinner = new Spinner('Packing ' + color.emphasize + process.argv.length + color.default + ' librar' + (process.argv.length === 1 ? 'y' : 'ies') + '... ');
     h5p.pack(process.argv, function (error) {
       var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
       spinner.stop(result + lf);
     });
     break;
-  
+
   case 'increase-patch-version':
     if (!process.argv.length) {
       util.print('You must specify libraries.' + lf);
       break;
     }
-  
+
     var spinner = new Spinner('Increasing patch version for ' + color.emphasize + process.argv.length + color.default + ' librar' + (process.argv.length === 1 ? 'y' : 'ies') + '... ');
     h5p.increasePatchVersion(process.argv, function (error) {
       var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
       spinner.stop(result + lf);
     });
     break;
-    
+
   case undefined:
     util.print('Available commands:' + lf);
     util.print('  ' + color.emphasize + 'list' + color.default + ' - List all libraries.' + lf);
@@ -293,8 +293,8 @@ switch (command) {
     util.print('  ' + color.emphasize + 'pack <library> [<library2>...]' + color.default + ' - Packs given libraries in libraries.h5p. (Use H5P_IGNORE_PATTERN and H5P_IGNORE_MODIFIERS to override file ignore.)' + lf);
     util.print('  ' + color.emphasize + 'increase-patch-version <library> [<library2>...]' + color.default + ' - Increase libraries patch version.' + lf);
     break;
-    
+
   default:
     util.print('Unknown command.' + lf);
-    break;  
+    break;
 }
