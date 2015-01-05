@@ -177,6 +177,36 @@ function status(error, repos, force) {
 }
 
 /**
+ * Print result after checkout.
+ */
+function checkout(error, repos) {
+  if (error) return util.print(error + lf);
+
+  var first = true;
+  for (var i = 0; i < repos.length; i++) {
+    var repo = repos[i];
+
+    util.print(color.emphasize + repo.name + color.default);
+
+    if (repo.failed) {
+      util.print(' ' + color.red + 'FAILED' + color.default);
+    }
+    else if (repo.skipped) {
+      util.print(' ' + color.yellow + 'SKIPPED' + color.default);
+    }
+    else {
+      util.print(' ' + color.green + 'OK' + color.default);
+    }
+
+    if (repo.msg) {
+      util.print(' ' + repo.msg);
+    }
+
+    util.print(lf);
+  }
+}
+
+/**
  * Print results after commiting.
  */
 function commit(error, results) {
@@ -282,6 +312,16 @@ switch (command) {
     });
     break;
 
+  case 'checkout':
+    var branch = process.argv.shift();
+    if (!branch) {
+      util.print('No branch today.' + lf);
+      break;
+    }
+
+    h5p.checkout(branch, process.argv, checkout);
+    break;
+
   case 'diff':
     h5p.diff(function (error, diff) {
       if (error) return util.print(color.red + 'ERROR!' + color.default + lf + error);
@@ -323,6 +363,7 @@ switch (command) {
     util.print('  ' + color.emphasize + 'commit <message>' + color.default + ' - Commit to all repos with given message.' + lf);
     util.print('  ' + color.emphasize + 'pull' + color.default + ' - Pull all repos.' + lf);
     util.print('  ' + color.emphasize + 'push' + color.default + ' - Push all repos.' + lf);
+    util.print('  ' + color.emphasize + 'checkout <branch> [<library>...]' + color.default + ' - Change branch.' + lf);
     util.print('  ' + color.emphasize + 'diff' + color.default + ' - Prints combined diff for alle repos.' + lf);
     util.print('  ' + color.emphasize + 'pack <library> [<library2>...]' + color.default + ' - Packs given libraries in libraries.h5p. (Use H5P_IGNORE_PATTERN and H5P_IGNORE_MODIFIERS to override file ignore.)' + lf);
     util.print('  ' + color.emphasize + 'increase-patch-version <library> [<library2>...]' + color.default + ' - Increase libraries patch version.' + lf);
