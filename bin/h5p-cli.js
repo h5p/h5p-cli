@@ -16,24 +16,58 @@ var color = {
   red: '\x1B[31m'
 };
 
+var noCr = (process.platform === 'win32');
+
 /**
  * Simple class for displaying a spinner while we're working.
  */
 function Spinner(prefix) {
   var interval;
-  var parts = ['/','-','\\', '|'];
-  var curPos = 0;
-  var maxPos = parts.length;
 
-  this.stop = function (result) {
-    util.print(cr + prefix + result);
-    clearInterval(interval);
-  };
+  if (noCr) {
+    // Platform does not support carriage return. Use lightweight spinner.
 
-  interval = setInterval(function () {
-    util.print(cr + prefix + color.emphasize + parts[curPos++] + color.default);
-    if (curPos === maxPos) curPos = 0;
-  }, 100);
+    /**
+     * Stop spinning.
+     *
+     * @public
+     * @param {String} result
+     */
+    this.stop = function (result) {
+      clearInterval(interval);
+      util.print(' ' + result);
+    };
+
+    // Start spinner
+    util.print(prefix);
+    interval = setInterval(function () {
+      util.print('.');
+    }, 500);
+  }
+  else {
+    // Create cool spinner using carriage return.
+
+    var parts = ['/','-','\\', '|'];
+    var curPos = 0;
+    var maxPos = parts.length;
+
+    /**
+    * Stop spinning.
+    *
+    * @public
+    * @param {String} result
+    */
+    this.stop = function (result) {
+      clearInterval(interval);
+      util.print(cr + prefix + ' ' + result);
+    };
+
+    // Start spinner
+    interval = setInterval(function () {
+      util.print(cr + prefix + ' ' + color.emphasize + parts[curPos++] + color.default);
+      if (curPos === maxPos) curPos = 0;
+    }, 100);
+  }
 }
 
 /**
@@ -57,7 +91,7 @@ function clone() {
     clone();
   });
   if (!name) return; // Nothing to clone.
-  var msg = 'Cloning into \'' + color.emphasize + name + color.default + '\'... ';
+  var msg = 'Cloning into \'' + color.emphasize + name + color.default + '\'...';
   var spinner = new Spinner(msg);
 }
 
@@ -78,7 +112,7 @@ function pull() {
     pull();
   });
   if (!repo) return; // Nothing to clone.
-  var msg = 'Pulling \'' + color.emphasize + repo + color.default + '\'... ';
+  var msg = 'Pulling \'' + color.emphasize + repo + color.default + '\'...';
   var spinner = new Spinner(msg);
 }
 
@@ -102,7 +136,7 @@ function push() {
     push();
   });
   if (!repo) return; // Nothing to clone.
-  var msg = 'Pushing \'' + color.emphasize + repo + color.default + '\'... ';
+  var msg = 'Pushing \'' + color.emphasize + repo + color.default + '\'...';
   var spinner = new Spinner(msg);
 }
 
@@ -184,7 +218,7 @@ process.argv.shift(); // script
 var command = process.argv.shift();
 switch (command) {
   case 'list':
-    var spinner = new Spinner('Getting library list... ');
+    var spinner = new Spinner('Getting library list...');
     h5p.list(function (error, libraries) {
       var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
       spinner.stop(result + lf);
@@ -203,7 +237,7 @@ switch (command) {
       break;
     }
 
-    var spinner = new Spinner('Looking up dependencies... ');
+    var spinner = new Spinner('Looking up dependencies...');
     h5p.get(libraries, function (error) {
       var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
       spinner.stop(result + lf);
@@ -261,7 +295,7 @@ switch (command) {
       break;
     }
 
-    var spinner = new Spinner('Packing ' + color.emphasize + process.argv.length + color.default + ' librar' + (process.argv.length === 1 ? 'y' : 'ies') + '... ');
+    var spinner = new Spinner('Packing ' + color.emphasize + process.argv.length + color.default + ' librar' + (process.argv.length === 1 ? 'y' : 'ies') + '...');
     h5p.pack(process.argv, function (error) {
       var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
       spinner.stop(result + lf);
@@ -274,7 +308,7 @@ switch (command) {
       break;
     }
 
-    var spinner = new Spinner('Increasing patch version for ' + color.emphasize + process.argv.length + color.default + ' librar' + (process.argv.length === 1 ? 'y' : 'ies') + '... ');
+    var spinner = new Spinner('Increasing patch version for ' + color.emphasize + process.argv.length + color.default + ' librar' + (process.argv.length === 1 ? 'y' : 'ies') + '...');
     h5p.increasePatchVersion(process.argv, function (error) {
       var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
       spinner.stop(result + lf);
