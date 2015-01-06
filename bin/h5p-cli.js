@@ -177,12 +177,11 @@ function status(error, repos, force) {
 }
 
 /**
- * Print result after checkout.
+ * Print result after checkout or merge.
  */
-function checkout(error, repos) {
+function results(error, repos) {
   if (error) return util.print(error + lf);
 
-  var first = true;
   for (var i = 0; i < repos.length; i++) {
     var repo = repos[i];
 
@@ -319,7 +318,7 @@ switch (command) {
       break;
     }
 
-    h5p.checkout(branch, process.argv, checkout);
+    h5p.checkout(branch, process.argv, results);
     break;
 
   case 'diff':
@@ -327,6 +326,16 @@ switch (command) {
       if (error) return util.print(color.red + 'ERROR!' + color.default + lf + error);
       util.print(diff);
     });
+    break;
+
+  case 'merge':
+    var branch = process.argv.shift();
+    if (!branch) {
+      util.print('No branch today.' + lf);
+      break;
+    }
+
+    h5p.merge(branch, process.argv, results);
     break;
 
   case 'pack':
