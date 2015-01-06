@@ -352,16 +352,11 @@ switch (command) {
     break;
 
   case 'increase-patch-version':
-    if (!process.argv.length) {
-      util.print('You must specify libraries.' + lf);
-      break;
-    }
+    h5p.increasePatchVersion(process.argv, results);
+    break;
 
-    var spinner = new Spinner('Increasing patch version for ' + color.emphasize + process.argv.length + color.default + ' librar' + (process.argv.length === 1 ? 'y' : 'ies') + '...');
-    h5p.increasePatchVersion(process.argv, function (error) {
-      var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
-      spinner.stop(result + lf);
-    });
+  case 'tag-version':
+    h5p.tagVersion(process.argv, results);
     break;
 
   case undefined:
@@ -374,8 +369,10 @@ switch (command) {
     util.print('  ' + color.emphasize + 'push' + color.default + ' - Push all repos.' + lf);
     util.print('  ' + color.emphasize + 'checkout <branch> [<library>...]' + color.default + ' - Change branch.' + lf);
     util.print('  ' + color.emphasize + 'diff' + color.default + ' - Prints combined diff for alle repos.' + lf);
+    util.print('  ' + color.emphasize + 'merge <branch> [<library>...]' + color.default + ' - Merge in branch.' + lf);
     util.print('  ' + color.emphasize + 'pack <library> [<library2>...]' + color.default + ' - Packs given libraries in libraries.h5p. (Use H5P_IGNORE_PATTERN and H5P_IGNORE_MODIFIERS to override file ignore.)' + lf);
-    util.print('  ' + color.emphasize + 'increase-patch-version <library> [<library2>...]' + color.default + ' - Increase libraries patch version.' + lf);
+    util.print('  ' + color.emphasize + 'increase-patch-version [<library>...]' + color.default + ' - Increase libraries patch version.' + lf);
+    util.print('  ' + color.emphasize + 'tag-version [<library>...]' + color.default + ' - Create tag with given version.' + lf);
     break;
 
   default:
