@@ -339,16 +339,25 @@ switch (command) {
     break;
 
   case 'pack':
+    var repos = process.argv;
+
+    var file = repos[repos.length - 1];
+    if (file && file.substr(file.length - 4) === '.h5p') {
+      // Remove from repos list
+      repos.splice(repos.length - 1, 1);
+    }
+    else {
+      file = (process.env.H5P_DEFAULT_PACK === undefined ? 'libraries.h5p' : process.env.H5P_DEFAULT_PACK);
+    }
+
     if (!process.argv.length) {
       util.print('You must specify libraries.' + lf);
       break;
     }
 
-    var spinner = new Spinner('Packing ' + color.emphasize + process.argv.length + color.default + ' librar' + (process.argv.length === 1 ? 'y' : 'ies') + '...');
-    h5p.pack(process.argv, function (error) {
-      var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
-      spinner.stop(result + lf);
-    });
+    util.print('Packing ' + color.emphasize + repos.length + color.default + ' librar' + (repos.length === 1 ? 'y' : 'ies') + ' to ' + color.emphasize + file + color.default + '...' + lf);
+
+    h5p.pack(process.argv, file, results);
     break;
 
   case 'increase-patch-version':
