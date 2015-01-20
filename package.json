@@ -1,5 +1,5 @@
 {
-  "version": "0.5.2",
+  "version": "0.6.0",
   "name": "h5p",
   "description": "A helping tool for developing HTML5 Packages.",
   "keywords": [
@@ -12,7 +12,7 @@
   ],
   "preferGlobal": true,
   "homepage": "http://h5p.org",
-  "author": "Amendor AS",
+  "author": "Joubel AS",
   "repository": {
     "type": "git",
     "url": "http://github.com/h5p/cli"
