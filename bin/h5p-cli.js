@@ -338,6 +338,22 @@ switch (command) {
     h5p.merge(branch, process.argv, results);
     break;
 
+  case 'create-language-file':
+    var library = process.argv.shift();
+    var languageCode = process.argv.shift();
+
+    if (!library) {
+      util.print('No library selected.' + lf);
+      break;
+    }
+    if (!languageCode) {
+      util.print('No language selected.' + lf);
+      break;
+    }
+
+    h5p.createLanguageFile(library, languageCode, results);
+    break;
+
   case 'pack':
     var repos = process.argv;
 
@@ -382,6 +398,7 @@ switch (command) {
     util.print('  ' + color.emphasize + 'pack <library> [<library2>...]' + color.default + ' - Packs given libraries in libraries.h5p. (Use H5P_IGNORE_PATTERN and H5P_IGNORE_MODIFIERS to override file ignore.)' + lf);
     util.print('  ' + color.emphasize + 'increase-patch-version [<library>...]' + color.default + ' - Increase libraries patch version.' + lf);
     util.print('  ' + color.emphasize + 'tag-version [<library>...]' + color.default + ' - Create tag with given version.' + lf);
+    util.print('  ' + color.emphasize + 'create-language-file <library> <language-code>' + color.default + ' - Create a language file for a given library and language.' + lf);
     break;
 
   default:
