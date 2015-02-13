@@ -119,8 +119,8 @@ function pull() {
 /**
  * Recursive pushing for all repos in collection.
  */
-function push() {
-  var repo = h5p.push(function (error, result) {
+function push(options) {
+  var repo = h5p.push(options, function (error, result) {
 
     if (error === -1) {
       result = color.yellow + 'SKIPPED' + color.default + lf;
@@ -133,7 +133,7 @@ function push() {
     }
 
     spinner.stop(result);
-    push();
+    push(options);
   });
   if (!repo) return; // Nothing to clone.
   var msg = 'Pushing \'' + color.emphasize + repo + color.default + '\'...';
@@ -240,6 +240,36 @@ function commit(error, results) {
   }
 }
 
+/**
+ * Extracts options from input.
+ *
+ * @private
+ * @param {String[]} inputs
+ * @param {(String|String[]|RegExp|RegExp[])} valids
+ */
+function filterOptions(inputs, valids) {
+  var options = [];
+
+  // Go through input
+  for (var i = 0; i < inputs.length; i++) {
+
+    // Check if input is valid option
+    for (var j = 0; j < valids.length; j++) {
+      if (valids[j] instanceof RegExp && valids[j].test(inputs[i]) ||
+          valids[j] === inputs[i]) {
+        // Keep track of option
+        options.push(inputs[i]);
+
+        // No longer input
+        inputs.splice(i, 1);
+        i--;
+      }
+    }
+  }
+
+  return options;
+}
+
 process.argv.shift(); // node
 process.argv.shift(); // script
 
@@ -298,16 +328,17 @@ switch (command) {
     break;
 
   case 'pull':
-    h5p.update(function (error) {
+    h5p.update(process.argv, function (error) {
       if (error) return util.print(error + lf);
       pull();
     });
     break;
 
   case 'push':
-    h5p.update(function (error) {
+    var options = filterOptions(process.argv, ['--tags']);
+    h5p.update(process.argv, function (error) {
       if (error) return util.print(error + lf);
-      push();
+      push(options);
     });
     break;
 
@@ -355,23 +386,15 @@ switch (command) {
     break;
 
   case 'pack':
-    var repos = process.argv;
-
-    var file = repos[repos.length - 1];
-    if (file && file.substr(file.length - 4) === '.h5p') {
-      // Remove from repos list
-      repos.splice(repos.length - 1, 1);
-    }
-    else {
-      file = (process.env.H5P_DEFAULT_PACK === undefined ? 'libraries.h5p' : process.env.H5P_DEFAULT_PACK);
-    }
+    var options = filterOptions(process.argv, [/\.h5p$/]);
+    var file = (options[0] ? options[0] : (process.env.H5P_DEFAULT_PACK === undefined ? 'libraries.h5p' : process.env.H5P_DEFAULT_PACK));
 
     if (!process.argv.length) {
       util.print('You must specify libraries.' + lf);
       break;
     }
 
-    util.print('Packing ' + color.emphasize + repos.length + color.default + ' librar' + (repos.length === 1 ? 'y' : 'ies') + ' to ' + color.emphasize + file + color.default + '...' + lf);
+    util.print('Packing ' + color.emphasize + process.argv.length + color.default + ' librar' + (process.argv.length === 1 ? 'y' : 'ies') + ' to ' + color.emphasize + file + color.default + '...' + lf);
 
     h5p.pack(process.argv, file, results);
     break;
@@ -390,8 +413,8 @@ switch (command) {
     util.print('  ' + color.emphasize + 'get <library>' + color.default + ' - Find all dependencies and clone them.' + lf);
     util.print('  ' + color.emphasize + 'status' + color.default + ' - Status for all repos.' + lf);
     util.print('  ' + color.emphasize + 'commit <message>' + color.default + ' - Commit to all repos with given message.' + lf);
-    util.print('  ' + color.emphasize + 'pull' + color.default + ' - Pull all repos.' + lf);
-    util.print('  ' + color.emphasize + 'push' + color.default + ' - Push all repos.' + lf);
+    util.print('  ' + color.emphasize + 'pull [<library>...]' + color.default + ' - Pull the given or all repos.' + lf);
+    util.print('  ' + color.emphasize + 'push [<library>...] [--tags]' + color.default + ' - Push the given or all repos.' + lf);
     util.print('  ' + color.emphasize + 'checkout <branch> [<library>...]' + color.default + ' - Change branch.' + lf);
     util.print('  ' + color.emphasize + 'diff' + color.default + ' - Prints combined diff for alle repos.' + lf);
     util.print('  ' + color.emphasize + 'merge <branch> [<library>...]' + color.default + ' - Merge in branch.' + lf);
