@@ -270,6 +270,34 @@ function filterOptions(inputs, valids) {
   return options;
 }
 
+/**
+ * Creates a progress callback for async tasks.
+ *
+ * @private
+ * @param {String} action
+ * @returns {Function}
+ */
+function progress(action) {
+  var spinner;
+  return function (status, nextRepo) {
+    if (status) {
+      if (status.failed) {
+        spinner.stop(color.red + 'FAILED' + color.default + lf + status.msg);
+      }
+      else if (status.skipped) {
+        spinner.stop(color.yellow + 'SKIPPED' + color.default + lf);
+      }
+      else {
+        spinner.stop(color.green + 'OK' + color.default + (status.msg === undefined ? '' : ' ' + status.msg) + lf);
+      }
+    }
+
+    if (nextRepo) {
+      spinner = new Spinner(action + ' \'' + color.emphasize + nextRepo + color.default + '\'...');
+    }
+  };
+}
+
 process.argv.shift(); // node
 process.argv.shift(); // script
 
@@ -352,6 +380,26 @@ switch (command) {
     h5p.checkout(branch, process.argv, results);
     break;
 
+  case 'new-branch':
+    var branch = process.argv.shift();
+    if (!branch || branch.substr(0, 4) === 'h5p-') {
+      util.print('That is a strange name for a branch..' + lf);
+      break;
+    }
+
+    h5p.newBranch(branch, process.argv, progress('Branching'));
+    break;
+
+  case 'rm-branch':
+    var branch = process.argv.shift();
+    if (!branch || branch.substr(0, 4) === 'h5p-' || branch === 'master') {
+      util.print('I would think twice about doing that!' + lf);
+      break;
+    }
+
+    h5p.rmBranch(branch, process.argv, progress('De-branching'));
+    break;
+
   case 'diff':
     h5p.diff(function (error, diff) {
       if (error) return util.print(color.red + 'ERROR!' + color.default + lf + error);
@@ -416,6 +464,8 @@ switch (command) {
     util.print('  ' + color.emphasize + 'pull [<library>...]' + color.default + ' - Pull the given or all repos.' + lf);
     util.print('  ' + color.emphasize + 'push [<library>...] [--tags]' + color.default + ' - Push the given or all repos.' + lf);
     util.print('  ' + color.emphasize + 'checkout <branch> [<library>...]' + color.default + ' - Change branch.' + lf);
+    util.print('  ' + color.emphasize + 'new-branch <branch> [<library>...]' + color.default + ' - Create a new branch both local and remote.' + lf);
+    util.print('  ' + color.emphasize + 'rm-branch <branch> [<library>...]' + color.default + ' - Remove branch.' + lf);
     util.print('  ' + color.emphasize + 'diff' + color.default + ' - Prints combined diff for alle repos.' + lf);
     util.print('  ' + color.emphasize + 'merge <branch> [<library>...]' + color.default + ' - Merge in branch.' + lf);
     util.print('  ' + color.emphasize + 'pack <library> [<library2>...]' + color.default + ' - Packs given libraries in libraries.h5p. (Use H5P_IGNORE_PATTERN and H5P_IGNORE_MODIFIERS to override file ignore.)' + lf);
