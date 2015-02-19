@@ -485,15 +485,15 @@ var commands = [
     syntax: '<library> [<library2>...] [my.h5p]',
     shortDescription: 'Packs the given libraries',
     description: 'You can change the default output package by setting:' + lf +
-      'H5P_DEFAULT_PACK="~/my-libraries.h5p"' + lf +
+      'export H5P_DEFAULT_PACK="~/my-libraries.h5p"' + lf +
       lf +
       'You can override which files are ignored by default:' + lf +
-      'H5P_IGNORE_PATTERN="^\\.|~$"' + lf +
-      'H5P_IGNORE_MODIFIERS="ig"' + lf +
+      'export H5P_IGNORE_PATTERN="^\\.|~$"' + lf +
+      'export H5P_IGNORE_MODIFIERS="ig"' + lf +
       lf +
       'You can also change which files are allowed in the package by overriding:' + lf +
-      'H5P_ALLOWED_FILE_PATTERN="\\.(json|png|jpg|jpeg|gif|bmp|tif|tiff|svg|eot|ttf|woff|otf|webm|mp4|ogg|mp3|txt|pdf|rtf|doc|docx|xls|xlsx|ppt|pptx|odt|ods|odp|xml|csv|diff|patch|swf|md|textile|js|css)$"' + lf +
-      'H5P_ALLOWED_FILE_MODIFIERS=""' + lf +
+      'export H5P_ALLOWED_FILE_PATTERN="\\.(json|png|jpg|jpeg|gif|bmp|tif|tiff|svg|eot|ttf|woff|otf|webm|mp4|ogg|mp3|txt|pdf|rtf|doc|docx|xls|xlsx|ppt|pptx|odt|ods|odp|xml|csv|diff|patch|swf|md|textile|js|css)$"' + lf +
+      'export H5P_ALLOWED_FILE_MODIFIERS=""' + lf +
       lf +
       'Put these in your ~/.bashrc for permanent settings.',
     handler: function pack() {
