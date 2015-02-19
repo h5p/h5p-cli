@@ -298,183 +298,313 @@ function progress(action) {
   };
 }
 
+// Register command handlers
+var commands = [
+  {
+    name: 'help',
+    syntax: '<command>',
+    shortDescription: 'Displays additional information',
+    description: 'What don\'t you understand about help?',
+    handler: function (command) {
+      if (command) {
+        command = findCommand(command);
+        if (command && command.description) {
+          util.print(command.description + lf);
+        }
+        else {
+          util.print('Sorry, no help available.' + lf);
+        }
+      }
+      else {
+        listCommands();
+      }
+    }
+  },
+  {
+    name: 'list',
+    shortDescription: 'List all H5P libraries',
+    handler: function list() {
+      var spinner = new Spinner('Getting library list...');
+      h5p.list(function (error, libraries) {
+        var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
+        spinner.stop(result + lf);
+
+        for (var name in libraries) {
+          util.print('  ' + color.emphasize + name + color.default + lf);
+        }
+      });
+    }
+  },
+  {
+    name: 'get',
+    syntax: '<library>',
+    shortDescription: 'Clone library and all dependencies',
+    handler: function get() {
+      var libraries = Array.prototype.slice.call(arguments);
+      if (!libraries.length) {
+        util.print('No library specified.' + lf);
+        return;
+      }
+
+      var spinner = new Spinner('Looking up dependencies...');
+      h5p.get(libraries, function (error) {
+        var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
+        spinner.stop(result + lf);
+        clone();
+      });
+    }
+  },
+  {
+    name: 'status',
+    syntax: '[-f]',
+    shortDescription: 'Show the status for all your libraries',
+    description: 'The -f handle can be used to display which branch each library is on.',
+    handler: function status() {
+      h5p.status(function (error, repos) {
+        status(error, repos, arguments[0] === '-f');
+      });
+    }
+  },
+  {
+    name: 'commit',
+    syntax: '<message>',
+    shortDescription: 'Commit to all repos with given message',
+    handler: function commit(msg) {
+      // TODO: Get commit message from text editor?
+      if (!msg) {
+        util.print('No message means no commit.' + lf);
+        return;
+      }
+
+      if (msg.split(' ', 2).length < 2) {
+        util.print('Commit message to short.' + lf);
+        return;
+      }
+
+      h5p.commit(msg, commit);
+    }
+  },
+  {
+    name: 'pull',
+    syntax: '[<library>...]',
+    shortDescription: 'Pull the given or all repos',
+    handler: function pull() {
+      h5p.update(Array.prototype.slice.call(arguments), function (error) {
+        if (error) return util.print(error + lf);
+        pull();
+      });
+    }
+  },
+  {
+    name: 'push',
+    syntax: '[<library>...] [--tags]',
+    shortDescription: 'Push the given or all repos',
+    handler: function get() {
+      var libraries = Array.prototype.slice.call(arguments);
+      var options = filterOptions(libraries, ['--tags']);
+      h5p.update(libraries, function (error) {
+        if (error) return util.print(error + lf);
+        push(options);
+      });
+    }
+  },
+  {
+    name: 'checkout',
+    syntax: '<branch> [<library>...]',
+    shortDescription: 'Change branch',
+    handler: function checkout() {
+      var libraries = Array.prototype.slice.call(arguments);
+      var branch = libraries.shift();
+      if (!branch) {
+        util.print('No branch today.' + lf);
+        return;
+      }
+
+      h5p.checkout(branch, libraries, results);
+    }
+  },
+  {
+    name: 'new-branch',
+    syntax: '<branch> [<library>...]',
+    shortDescription: 'Creates a new branch(local and remote)',
+    description: 'The remote is origin.',
+    handler: function newBranch() {
+      var libraries = Array.prototype.slice.call(arguments);
+      var branch = libraries.shift();
+      if (!branch || branch.substr(0, 4) === 'h5p-') {
+        util.print('That is a strange name for a branch..' + lf);
+        return;
+      }
+
+      h5p.newBranch(branch, libraries, progress('Branching'));
+    }
+  },
+  {
+    name: 'rm-branch',
+    syntax: '<branch> [<library>...]',
+    shortDescription: 'Removes branch(local and remote)',
+    description: 'The remote is origin.',
+    handler: function rmBranch() {
+      var libraries = Array.prototype.slice.call(arguments);
+      var branch = libraries.shift();
+      if (!branch || branch.substr(0, 4) === 'h5p-' || branch === 'master') {
+        util.print('I would think twice about doing that!' + lf);
+        return;
+      }
+
+      h5p.rmBranch(branch, libraries, progress('De-branching'));
+    }
+  },
+  {
+    name: 'diff',
+    shortDescription: 'Prints combined diff for alle repos',
+    handler: function diff() {
+      h5p.diff(function (error, diff) {
+        if (error) return util.print(color.red + 'ERROR!' + color.default + lf + error);
+        util.print(diff);
+      });
+    }
+  },
+  {
+    name: 'merge',
+    syntax: '<branch> [<library>...]',
+    shortDescription: 'Merge in branch',
+    handler: function merge() {
+      var libraries = Array.prototype.slice.call(arguments);
+      var branch = libraries.shift();
+      if (!branch) {
+        util.print('No branch today.' + lf);
+        return;
+      }
+
+      h5p.merge(branch, libraries, results);
+    }
+  },
+  {
+    name: 'pack',
+    syntax: '<library> [<library2>...] [my.h5p]',
+    shortDescription: 'Packs the given libraries',
+    description: 'You can change the default output package by setting:' + lf +
+      'H5P_DEFAULT_PACK="~/my-libraries.h5p"' + lf +
+      lf +
+      'You can override which files are ignored by default:' + lf +
+      'H5P_IGNORE_PATTERN="^\\.|~$"' + lf +
+      'H5P_IGNORE_MODIFIERS="ig"' + lf +
+      lf +
+      'You can also change which files are allowed in the package by overriding:' + lf +
+      'H5P_ALLOWED_FILE_PATTERN="\\.(json|png|jpg|jpeg|gif|bmp|tif|tiff|svg|eot|ttf|woff|otf|webm|mp4|ogg|mp3|txt|pdf|rtf|doc|docx|xls|xlsx|ppt|pptx|odt|ods|odp|xml|csv|diff|patch|swf|md|textile|js|css)$"' + lf +
+      'H5P_ALLOWED_FILE_MODIFIERS=""' + lf +
+      lf +
+      'Put these in your ~/.bashrc for permanent settings.',
+    handler: function pack() {
+      var libraries = Array.prototype.slice.call(arguments);
+      var options = filterOptions(libraries, [/\.h5p$/]);
+      var file = (options[0] ? options[0] : (process.env.H5P_DEFAULT_PACK === undefined ? 'libraries.h5p' : process.env.H5P_DEFAULT_PACK));
+
+      if (!libraries.length) {
+        util.print('You must specify libraries.' + lf);
+      }
+
+      util.print('Packing ' + color.emphasize + libraries.length + color.default + ' librar' + (libraries.length === 1 ? 'y' : 'ies') + ' to ' + color.emphasize + file + color.default + '...' + lf);
+
+      h5p.pack(libraries, file, results);
+    }
+  },
+  {
+    name: 'increase-patch-version',
+    syntax: '[<library>...]',
+    shortDescription: 'Increases the patch version',
+    handler: function increasePatchVersion() {
+      var libraries = Array.prototype.slice.call(arguments);
+      h5p.increasePatchVersion(libraries, results);
+    }
+  },
+  {
+    name: 'tag-version',
+    syntax: '[<library>...]',
+    shortDescription: 'Create tag from current version number',
+    handler: function tagVersion() {
+      var libraries = Array.prototype.slice.call(arguments);
+      h5p.tagVersion(libraries, results);
+    }
+  },
+  {
+    name: 'create-language-file',
+    syntax: '<library> <language-code>',
+    shortDescription: 'Creates language file',
+    handler: function createLanguageFile(library, languageCode) {
+      if (!library) {
+        util.print('No library selected.' + lf);
+        return;
+      }
+      if (!languageCode) {
+        util.print('No language selected.' + lf);
+        return;
+      }
+
+      h5p.createLanguageFile(library, languageCode, results);
+    }
+  }
+];
+
+/**
+ * Print all commands with a short description.
+ *
+ * @private
+ */
+function listCommands() {
+  util.print('Available commands:' + lf);
+  for (var i = 0; i < commands.length; i++) {
+    var co = commands[i];
+
+    if (co.name) {
+      util.print('  ' + color.emphasize + co.name);
+      if (co.syntax) {
+        util.print(' ' + co.syntax);
+      }
+      util.print(color.default);
+      if (co.shortDescription) {
+        util.print('  ' + co.shortDescription);
+      }
+      util.print(lf);
+    }
+  }
+}
+
+/**
+ * Look for command registered with given name.
+ *
+ * @private
+ * @param {string} name
+ * @returns {object}
+ */
+function findCommand(name) {
+  for (var i = 0; i < commands.length; i++) {
+    if (commands[i].name === name) {
+      return commands[i];
+    }
+  }
+}
+
+// Shift off unused
 process.argv.shift(); // node
 process.argv.shift(); // script
 
-// Command routing
+// Get command
 var command = process.argv.shift();
-switch (command) {
-  case 'list':
-    var spinner = new Spinner('Getting library list...');
-    h5p.list(function (error, libraries) {
-      var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
-      spinner.stop(result + lf);
 
-      for (var name in libraries) {
-        util.print('  ' + color.emphasize + name + color.default + lf);
-      }
-    });
-
-    break;
-
-  case 'get':
-    var libraries = process.argv;
-    if (!libraries.length) {
-      util.print('No library specified.' + lf);
-      break;
-    }
-
-    var spinner = new Spinner('Looking up dependencies...');
-    h5p.get(libraries, function (error) {
-      var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
-      spinner.stop(result + lf);
-      clone();
-    });
-
-    break;
-
-  case 'status':
-    h5p.status(function (error, repos) {
-      status(error, repos, process.argv.shift() === '-f');
-    });
-    break;
-
-  case 'commit':
-    // TODO: Get message from editor?
-    var msg = process.argv.shift();
-    if (!msg) {
-      util.print('No message means no commit.' + lf);
-      break;
-    }
-
-    if (msg.split(' ', 2).length < 2) {
-      util.print('Commit message to short.' + lf);
-      break;
-    }
-
-    h5p.commit(msg, commit);
-    break;
-
-  case 'pull':
-    h5p.update(process.argv, function (error) {
-      if (error) return util.print(error + lf);
-      pull();
-    });
-    break;
-
-  case 'push':
-    var options = filterOptions(process.argv, ['--tags']);
-    h5p.update(process.argv, function (error) {
-      if (error) return util.print(error + lf);
-      push(options);
-    });
-    break;
-
-  case 'checkout':
-    var branch = process.argv.shift();
-    if (!branch) {
-      util.print('No branch today.' + lf);
-      break;
-    }
-
-    h5p.checkout(branch, process.argv, results);
-    break;
-
-  case 'new-branch':
-    var branch = process.argv.shift();
-    if (!branch || branch.substr(0, 4) === 'h5p-') {
-      util.print('That is a strange name for a branch..' + lf);
-      break;
-    }
-
-    h5p.newBranch(branch, process.argv, progress('Branching'));
-    break;
-
-  case 'rm-branch':
-    var branch = process.argv.shift();
-    if (!branch || branch.substr(0, 4) === 'h5p-' || branch === 'master') {
-      util.print('I would think twice about doing that!' + lf);
-      break;
-    }
-
-    h5p.rmBranch(branch, process.argv, progress('De-branching'));
-    break;
-
-  case 'diff':
-    h5p.diff(function (error, diff) {
-      if (error) return util.print(color.red + 'ERROR!' + color.default + lf + error);
-      util.print(diff);
-    });
-    break;
-
-  case 'merge':
-    var branch = process.argv.shift();
-    if (!branch) {
-      util.print('No branch today.' + lf);
-      break;
-    }
-
-    h5p.merge(branch, process.argv, results);
-    break;
-
-  case 'create-language-file':
-    var library = process.argv.shift();
-    var languageCode = process.argv.shift();
-
-    if (!library) {
-      util.print('No library selected.' + lf);
-      break;
-    }
-    if (!languageCode) {
-      util.print('No language selected.' + lf);
-      break;
-    }
-
-    h5p.createLanguageFile(library, languageCode, results);
-    break;
-
-  case 'pack':
-    var options = filterOptions(process.argv, [/\.h5p$/]);
-    var file = (options[0] ? options[0] : (process.env.H5P_DEFAULT_PACK === undefined ? 'libraries.h5p' : process.env.H5P_DEFAULT_PACK));
-
-    if (!process.argv.length) {
-      util.print('You must specify libraries.' + lf);
-      break;
-    }
-
-    util.print('Packing ' + color.emphasize + process.argv.length + color.default + ' librar' + (process.argv.length === 1 ? 'y' : 'ies') + ' to ' + color.emphasize + file + color.default + '...' + lf);
-
-    h5p.pack(process.argv, file, results);
-    break;
-
-  case 'increase-patch-version':
-    h5p.increasePatchVersion(process.argv, results);
-    break;
-
-  case 'tag-version':
-    h5p.tagVersion(process.argv, results);
-    break;
-
-  case undefined:
-    util.print('Available commands:' + lf);
-    util.print('  ' + color.emphasize + 'list' + color.default + ' - List all libraries.' + lf);
-    util.print('  ' + color.emphasize + 'get <library>' + color.default + ' - Find all dependencies and clone them.' + lf);
-    util.print('  ' + color.emphasize + 'status' + color.default + ' - Status for all repos.' + lf);
-    util.print('  ' + color.emphasize + 'commit <message>' + color.default + ' - Commit to all repos with given message.' + lf);
-    util.print('  ' + color.emphasize + 'pull [<library>...]' + color.default + ' - Pull the given or all repos.' + lf);
-    util.print('  ' + color.emphasize + 'push [<library>...] [--tags]' + color.default + ' - Push the given or all repos.' + lf);
-    util.print('  ' + color.emphasize + 'checkout <branch> [<library>...]' + color.default + ' - Change branch.' + lf);
-    util.print('  ' + color.emphasize + 'new-branch <branch> [<library>...]' + color.default + ' - Create a new branch both local and remote.' + lf);
-    util.print('  ' + color.emphasize + 'rm-branch <branch> [<library>...]' + color.default + ' - Remove branch.' + lf);
-    util.print('  ' + color.emphasize + 'diff' + color.default + ' - Prints combined diff for alle repos.' + lf);
-    util.print('  ' + color.emphasize + 'merge <branch> [<library>...]' + color.default + ' - Merge in branch.' + lf);
-    util.print('  ' + color.emphasize + 'pack <library> [<library2>...]' + color.default + ' - Packs given libraries in libraries.h5p. (Use H5P_IGNORE_PATTERN and H5P_IGNORE_MODIFIERS to override file ignore.)' + lf);
-    util.print('  ' + color.emphasize + 'increase-patch-version [<library>...]' + color.default + ' - Increase libraries patch version.' + lf);
-    util.print('  ' + color.emphasize + 'tag-version [<library>...]' + color.default + ' - Create tag with given version.' + lf);
-    util.print('  ' + color.emphasize + 'create-language-file <library> <language-code>' + color.default + ' - Create a language file for a given library and language.' + lf);
-    break;
-
-  default:
-    util.print('Unknown command.' + lf);
-    break;
+// List commands
+if (command === undefined) {
+  listCommands();
+  return;
 }
+
+// Find command and call handler
+var foundCommand = findCommand(command);
+if (foundCommand) {
+  foundCommand.handler.apply(this, process.argv);
+  return;
+}
+
+// Unkown
+util.print('Unknown command.' + lf);
