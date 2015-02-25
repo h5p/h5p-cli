@@ -323,7 +323,7 @@ var commands = [
   {
     name: 'list',
     shortDescription: 'List all H5P libraries',
-    handler: function list() {
+    handler: function () {
       var spinner = new Spinner('Getting library list...');
       h5p.list(function (error, libraries) {
         var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
@@ -339,7 +339,7 @@ var commands = [
     name: 'get',
     syntax: '<library>',
     shortDescription: 'Clone library and all dependencies',
-    handler: function get() {
+    handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       if (!libraries.length) {
         util.print('No library specified.' + lf);
@@ -359,7 +359,7 @@ var commands = [
     syntax: '[-f]',
     shortDescription: 'Show the status for all your libraries',
     description: 'The -f handle can be used to display which branch each library is on.',
-    handler: function status() {
+    handler: function () {
       h5p.status(function (error, repos) {
         status(error, repos, arguments[0] === '-f');
       });
@@ -369,7 +369,7 @@ var commands = [
     name: 'commit',
     syntax: '<message>',
     shortDescription: 'Commit to all repos with given message',
-    handler: function commit(msg) {
+    handler: function (msg) {
       // TODO: Get commit message from text editor?
       if (!msg) {
         util.print('No message means no commit.' + lf);
@@ -388,7 +388,7 @@ var commands = [
     name: 'pull',
     syntax: '[<library>...]',
     shortDescription: 'Pull the given or all repos',
-    handler: function pull() {
+    handler: function () {
       h5p.update(Array.prototype.slice.call(arguments), function (error) {
         if (error) return util.print(error + lf);
         pull();
@@ -399,7 +399,7 @@ var commands = [
     name: 'push',
     syntax: '[<library>...] [--tags]',
     shortDescription: 'Push the given or all repos',
-    handler: function get() {
+    handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       var options = filterOptions(libraries, ['--tags']);
       h5p.update(libraries, function (error) {
@@ -412,7 +412,7 @@ var commands = [
     name: 'checkout',
     syntax: '<branch> [<library>...]',
     shortDescription: 'Change branch',
-    handler: function checkout() {
+    handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       var branch = libraries.shift();
       if (!branch) {
@@ -428,7 +428,7 @@ var commands = [
     syntax: '<branch> [<library>...]',
     shortDescription: 'Creates a new branch(local and remote)',
     description: 'The remote is origin.',
-    handler: function newBranch() {
+    handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       var branch = libraries.shift();
       if (!branch || branch.substr(0, 4) === 'h5p-') {
@@ -444,7 +444,7 @@ var commands = [
     syntax: '<branch> [<library>...]',
     shortDescription: 'Removes branch(local and remote)',
     description: 'The remote is origin.',
-    handler: function rmBranch() {
+    handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       var branch = libraries.shift();
       if (!branch || branch.substr(0, 4) === 'h5p-' || branch === 'master') {
@@ -458,7 +458,7 @@ var commands = [
   {
     name: 'diff',
     shortDescription: 'Prints combined diff for alle repos',
-    handler: function diff() {
+    handler: function () {
       h5p.diff(function (error, diff) {
         if (error) return util.print(color.red + 'ERROR!' + color.default + lf + error);
         util.print(diff);
@@ -469,7 +469,7 @@ var commands = [
     name: 'merge',
     syntax: '<branch> [<library>...]',
     shortDescription: 'Merge in branch',
-    handler: function merge() {
+    handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       var branch = libraries.shift();
       if (!branch) {
@@ -496,7 +496,7 @@ var commands = [
       'export H5P_ALLOWED_FILE_MODIFIERS=""' + lf +
       lf +
       'Put these in your ~/.bashrc for permanent settings.',
-    handler: function pack() {
+    handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       var options = filterOptions(libraries, [/\.h5p$/]);
       var file = (options[0] ? options[0] : (process.env.H5P_DEFAULT_PACK === undefined ? 'libraries.h5p' : process.env.H5P_DEFAULT_PACK));
@@ -514,7 +514,7 @@ var commands = [
     name: 'increase-patch-version',
     syntax: '[<library>...]',
     shortDescription: 'Increases the patch version',
-    handler: function increasePatchVersion() {
+    handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       h5p.increasePatchVersion(libraries, results);
     }
@@ -523,7 +523,7 @@ var commands = [
     name: 'tag-version',
     syntax: '[<library>...]',
     shortDescription: 'Create tag from current version number',
-    handler: function tagVersion() {
+    handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       h5p.tagVersion(libraries, results);
     }
@@ -532,7 +532,7 @@ var commands = [
     name: 'create-language-file',
     syntax: '<library> <language-code>',
     shortDescription: 'Creates language file',
-    handler: function createLanguageFile(library, languageCode) {
+    handler: function (library, languageCode) {
       if (!library) {
         util.print('No library selected.' + lf);
         return;
