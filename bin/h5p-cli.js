@@ -544,6 +544,19 @@ var commands = [
 
       h5p.createLanguageFile(library, languageCode, results);
     }
+  },
+  {
+    name: 'import-language-files',
+    syntax: '<from-dir>',
+    shortDescription: 'Get files from dir',
+    handler: function (dir) {
+      if (!dir) {
+        util.print('No dir selected.' + lf);
+        return;
+      }
+
+      h5p.importLanguageFiles(dir, results);
+    }
   }
 ];
 
