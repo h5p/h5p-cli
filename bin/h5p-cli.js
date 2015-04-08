@@ -360,8 +360,9 @@ var commands = [
     shortDescription: 'Show the status for all your libraries',
     description: 'The -f handle can be used to display which branch each library is on.',
     handler: function () {
+      var force = (arguments[0] === '-f');
       h5p.status(function (error, repos) {
-        status(error, repos, arguments[0] === '-f');
+        status(error, repos, force);
       });
     }
   },
