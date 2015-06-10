@@ -513,11 +513,16 @@ var commands = [
   },
   {
     name: 'increase-patch-version',
-    syntax: '[<library>...]',
+    syntax: '[-f] [<library>...]',
     shortDescription: 'Increases the patch version',
+    description: 'The -f handle can be used to force an increase in the patch version even though there are no new changes.',
     handler: function () {
-      var libraries = Array.prototype.slice.call(arguments);
-      h5p.increasePatchVersion(libraries, results);
+      var force, libraries = Array.prototype.slice.call(arguments);
+      if (libraries[0] === '-f') {
+        force = true;
+        libraries.splice(0, 1);
+      }
+      h5p.increasePatchVersion(force, libraries, results);
     }
   },
   {
