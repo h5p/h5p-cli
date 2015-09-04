@@ -3,7 +3,6 @@
 /**
  * Load requirements.
  */
-var util = require('util');
 var h5p = require('../lib/h5p.js');
 
 var lf = '\u000A';
@@ -35,13 +34,13 @@ function Spinner(prefix) {
      */
     this.stop = function (result) {
       clearInterval(interval);
-      util.print(' ' + result);
+      process.stdout.write(' ' + result);
     };
 
     // Start spinner
-    util.print(prefix);
+    process.stdout.write(prefix);
     interval = setInterval(function () {
-      util.print('.');
+      process.stdout.write('.');
     }, 500);
   }
   else {
@@ -59,12 +58,12 @@ function Spinner(prefix) {
     */
     this.stop = function (result) {
       clearInterval(interval);
-      util.print(cr + prefix + ' ' + result);
+      process.stdout.write(cr + prefix + ' ' + result);
     };
 
     // Start spinner
     interval = setInterval(function () {
-      util.print(cr + prefix + ' ' + color.emphasize + parts[curPos++] + color.default);
+      process.stdout.write(cr + prefix + ' ' + color.emphasize + parts[curPos++] + color.default);
       if (curPos === maxPos) curPos = 0;
     }, 100);
   }
@@ -144,7 +143,7 @@ function push(options) {
  * Print status messages for the given repos.
  */
 function status(error, repos, force) {
-  if (error) return util.print(error + lf);
+  if (error) return process.stdout.write(error + lf);
 
   var first = true;
   for (var i = 0; i < repos.length; i++) {
@@ -155,24 +154,24 @@ function status(error, repos, force) {
 
     if (first) {
       // Extra line feed on the first.
-      util.print(lf);
+      process.stdout.write(lf);
       first = false;
     }
 
-    util.print(color.emphasize + repo.name + color.default);
+    process.stdout.write(color.emphasize + repo.name + color.default);
     if (repo.branch) {
-      util.print(' (' + repo.branch + ')');
+      process.stdout.write(' (' + repo.branch + ')');
     }
-    util.print(lf);
+    process.stdout.write(lf);
 
     if (repo.error) {
-      util.print(error + lf);
+      process.stdout.write(error + lf);
     }
     else if (repo.changes !== undefined) {
-      util.print(repo.changes.join(lf) + lf);
+      process.stdout.write(repo.changes.join(lf) + lf);
     }
 
-    util.print(lf);
+    process.stdout.write(lf);
   }
 }
 
@@ -180,28 +179,28 @@ function status(error, repos, force) {
  * Print result after checkout or merge.
  */
 function results(error, repos) {
-  if (error) return util.print(error + lf);
+  if (error) return process.stdout.write(error + lf);
 
   for (var i = 0; i < repos.length; i++) {
     var repo = repos[i];
 
-    util.print(color.emphasize + repo.name + color.default);
+    process.stdout.write(color.emphasize + repo.name + color.default);
 
     if (repo.failed) {
-      util.print(' ' + color.red + 'FAILED' + color.default);
+      process.stdout.write(' ' + color.red + 'FAILED' + color.default);
     }
     else if (repo.skipped) {
-      util.print(' ' + color.yellow + 'SKIPPED' + color.default);
+      process.stdout.write(' ' + color.yellow + 'SKIPPED' + color.default);
     }
     else {
-      util.print(' ' + color.green + 'OK' + color.default);
+      process.stdout.write(' ' + color.green + 'OK' + color.default);
     }
 
     if (repo.msg) {
-      util.print(' ' + repo.msg);
+      process.stdout.write(' ' + repo.msg);
     }
 
-    util.print(lf);
+    process.stdout.write(lf);
   }
 }
 
@@ -209,7 +208,7 @@ function results(error, repos) {
  * Print results after commiting.
  */
 function commit(error, results) {
-  if (error) return util.print(error + lf);
+  if (error) return process.stdout.write(error + lf);
 
   var first = true;
   for (var i = 0; i < results.length; i++) {
@@ -220,23 +219,23 @@ function commit(error, results) {
 
     if (first) {
       // Extra line feed on the first.
-      util.print(lf);
+      process.stdout.write(lf);
       first = false;
     }
 
-    util.print(color.emphasize + result.name + color.default);
+    process.stdout.write(color.emphasize + result.name + color.default);
     if (result.branch && result.commit) {
-      util.print(' (' + result.branch + ' ' + result.commit + ')');
+      process.stdout.write(' (' + result.branch + ' ' + result.commit + ')');
     }
-    util.print(lf);
+    process.stdout.write(lf);
 
     if (result.error) {
-      util.print(error + lf);
+      process.stdout.write(error + lf);
     }
     else {
-      util.print(result.changes.join(lf) + lf);
+      process.stdout.write(result.changes.join(lf) + lf);
     }
-    util.print(lf);
+    process.stdout.write(lf);
   }
 }
 
@@ -309,10 +308,10 @@ var commands = [
       if (command) {
         command = findCommand(command);
         if (command && command.description) {
-          util.print(command.description + lf);
+          process.stdout.write(command.description + lf);
         }
         else {
-          util.print('Sorry, no help available.' + lf);
+          process.stdout.write('Sorry, no help available.' + lf);
         }
       }
       else {
@@ -330,7 +329,7 @@ var commands = [
         spinner.stop(result + lf);
 
         for (var name in libraries) {
-          util.print('  ' + color.emphasize + name + color.default + lf);
+          process.stdout.write('  ' + color.emphasize + name + color.default + lf);
         }
       });
     }
@@ -342,7 +341,7 @@ var commands = [
     handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       if (!libraries.length) {
-        util.print('No library specified.' + lf);
+        process.stdout.write('No library specified.' + lf);
         return;
       }
 
@@ -373,12 +372,12 @@ var commands = [
     handler: function (msg) {
       // TODO: Get commit message from text editor?
       if (!msg) {
-        util.print('No message means no commit.' + lf);
+        process.stdout.write('No message means no commit.' + lf);
         return;
       }
 
       if (msg.split(' ', 2).length < 2) {
-        util.print('Commit message to short.' + lf);
+        process.stdout.write('Commit message to short.' + lf);
         return;
       }
 
@@ -391,7 +390,7 @@ var commands = [
     shortDescription: 'Pull the given or all repos',
     handler: function () {
       h5p.update(Array.prototype.slice.call(arguments), function (error) {
-        if (error) return util.print(error + lf);
+        if (error) return process.stdout.write(error + lf);
         pull();
       });
     }
@@ -404,7 +403,7 @@ var commands = [
       var libraries = Array.prototype.slice.call(arguments);
       var options = filterOptions(libraries, ['--tags']);
       h5p.update(libraries, function (error) {
-        if (error) return util.print(error + lf);
+        if (error) return process.stdout.write(error + lf);
         push(options);
       });
     }
@@ -417,7 +416,7 @@ var commands = [
       var libraries = Array.prototype.slice.call(arguments);
       var branch = libraries.shift();
       if (!branch) {
-        util.print('No branch today.' + lf);
+        process.stdout.write('No branch today.' + lf);
         return;
       }
 
@@ -433,7 +432,7 @@ var commands = [
       var libraries = Array.prototype.slice.call(arguments);
       var branch = libraries.shift();
       if (!branch || branch.substr(0, 4) === 'h5p-') {
-        util.print('That is a strange name for a branch..' + lf);
+        process.stdout.write('That is a strange name for a branch..' + lf);
         return;
       }
 
@@ -449,7 +448,7 @@ var commands = [
       var libraries = Array.prototype.slice.call(arguments);
       var branch = libraries.shift();
       if (!branch || branch.substr(0, 4) === 'h5p-' || branch === 'master') {
-        util.print('I would think twice about doing that!' + lf);
+        process.stdout.write('I would think twice about doing that!' + lf);
         return;
       }
 
@@ -461,8 +460,8 @@ var commands = [
     shortDescription: 'Prints combined diff for alle repos',
     handler: function () {
       h5p.diff(function (error, diff) {
-        if (error) return util.print(color.red + 'ERROR!' + color.default + lf + error);
-        util.print(diff);
+        if (error) return process.stdout.write(color.red + 'ERROR!' + color.default + lf + error);
+        process.stdout.write(diff);
       });
     }
   },
@@ -474,7 +473,7 @@ var commands = [
       var libraries = Array.prototype.slice.call(arguments);
       var branch = libraries.shift();
       if (!branch) {
-        util.print('No branch today.' + lf);
+        process.stdout.write('No branch today.' + lf);
         return;
       }
 
@@ -503,10 +502,10 @@ var commands = [
       var file = (options[0] ? options[0] : (process.env.H5P_DEFAULT_PACK === undefined ? 'libraries.h5p' : process.env.H5P_DEFAULT_PACK));
 
       if (!libraries.length) {
-        util.print('You must specify libraries.' + lf);
+        process.stdout.write('You must specify libraries.' + lf);
       }
 
-      util.print('Packing ' + color.emphasize + libraries.length + color.default + ' librar' + (libraries.length === 1 ? 'y' : 'ies') + ' to ' + color.emphasize + file + color.default + '...' + lf);
+      process.stdout.write('Packing ' + color.emphasize + libraries.length + color.default + ' librar' + (libraries.length === 1 ? 'y' : 'ies') + ' to ' + color.emphasize + file + color.default + '...' + lf);
 
       h5p.pack(libraries, file, results);
     }
@@ -540,11 +539,11 @@ var commands = [
     shortDescription: 'Creates language file',
     handler: function (library, languageCode) {
       if (!library) {
-        util.print('No library selected.' + lf);
+        process.stdout.write('No library selected.' + lf);
         return;
       }
       if (!languageCode) {
-        util.print('No language selected.' + lf);
+        process.stdout.write('No language selected.' + lf);
         return;
       }
 
@@ -557,7 +556,7 @@ var commands = [
     shortDescription: 'Get files from dir',
     handler: function (dir) {
       if (!dir) {
-        util.print('No dir selected.' + lf);
+        process.stdout.write('No dir selected.' + lf);
         return;
       }
 
@@ -572,20 +571,20 @@ var commands = [
  * @private
  */
 function listCommands() {
-  util.print('Available commands:' + lf);
+  process.stdout.write('Available commands:' + lf);
   for (var i = 0; i < commands.length; i++) {
     var co = commands[i];
 
     if (co.name) {
-      util.print('  ' + color.emphasize + co.name);
+      process.stdout.write('  ' + color.emphasize + co.name);
       if (co.syntax) {
-        util.print(' ' + co.syntax);
+        process.stdout.write(' ' + co.syntax);
       }
-      util.print(color.default);
+      process.stdout.write(color.default);
       if (co.shortDescription) {
-        util.print('  ' + co.shortDescription);
+        process.stdout.write('  ' + co.shortDescription);
       }
-      util.print(lf);
+      process.stdout.write(lf);
     }
   }
 }
@@ -626,4 +625,4 @@ if (foundCommand) {
 }
 
 // Unkown
-util.print('Unknown command.' + lf);
+process.stdout.write('Unknown command.' + lf);
