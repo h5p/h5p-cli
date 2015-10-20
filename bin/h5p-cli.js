@@ -562,6 +562,26 @@ var commands = [
 
       h5p.importLanguageFiles(dir, results);
     }
+  },
+  {
+    name: 'add-original-texts',
+    syntax: '<language-code> <library> [<library>...]',
+    shortDescription: 'Update translations',
+    handler: function () {
+      var libraries = Array.prototype.slice.call(arguments);
+      var languageCode = libraries.splice(0, 1)[0];
+
+      if (!languageCode) {
+        process.stdout.write('No language specified.' + lf);
+        return;
+      }
+      if (!libraries.length) {
+        process.stdout.write('No library specified.' + lf);
+        return;
+      }
+
+      h5p.addOriginalTexts(languageCode, libraries, results);
+    }
   }
 ];
 
