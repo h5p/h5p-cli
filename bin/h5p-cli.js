@@ -246,7 +246,7 @@ function commit(error, results) {
  * @param {String[]} inputs
  * @param {(String|String[]|RegExp|RegExp[])} valids
  */
-function filterOptions(inputs, valids) {
+function filterOptions(inputs, valids) {
   var options = [];
 
   // Go through input
