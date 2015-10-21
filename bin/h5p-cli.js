@@ -607,6 +607,42 @@ var commands = [
 
       h5p.copyTranslation(from, to, libraries, results);
     }
+  },
+  {
+    name: 'pack-translation',
+    syntax: '<language-code> <library> [<library>...]',
+    shortDescription: 'Export translations',
+    handler: function () {
+      var libraries = Array.prototype.slice.call(arguments);
+      var languageCode = libraries.splice(0, 1)[0];
+
+      if (!languageCode) {
+        process.stdout.write('No language specified.' + lf);
+        return;
+      }
+      if (!libraries.length) {
+        process.stdout.write('No library specified.' + lf);
+        return;
+      }
+
+      var options = filterOptions(libraries, [/\.zip$/]);
+      var file = (options[0] ? options[0] : 'translations.zip');
+
+      h5p.packTranslation(languageCode, libraries, file, function (error,results) {
+        if (error) {
+          process.stderr.write(error + lf);
+        }
+        else {
+          var num = 0;
+          for (var i = 0; i < results.length; i++) {
+            if (results[i]) {
+              num += 1;
+            }
+          }
+          process.stdout.write('Successfully packed ' + num + ' translations into ' + file + lf);
+        }
+      });
+    }
   }
 ];
 
