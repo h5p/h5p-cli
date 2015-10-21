@@ -582,6 +582,31 @@ var commands = [
 
       h5p.addOriginalTexts(languageCode, libraries, results);
     }
+  },
+  {
+    name: 'copy-translation',
+    syntax: '<language-code> <language-code> <library> [<library>...]',
+    shortDescription: 'Use one to create another',
+    handler: function () {
+      var libraries = Array.prototype.slice.call(arguments);
+      var from = libraries.splice(0, 1)[0];
+      var to = libraries.splice(0, 1)[0];
+
+      if (!from) {
+        process.stdout.write('No language source specified.' + lf);
+        return;
+      }
+      if (!to) {
+        process.stdout.write('No language target specified.' + lf);
+        return;
+      }
+      if (!libraries.length) {
+        process.stdout.write('No library specified.' + lf);
+        return;
+      }
+
+      h5p.copyTranslation(from, to, libraries, results);
+    }
   }
 ];
 
