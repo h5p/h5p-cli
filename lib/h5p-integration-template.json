@@ -1,0 +1,58 @@
+{
+  "baseUrl": "http://localhost:8080",
+  "postUserStatistics": false,
+  "ajaxPath": "/h5p-ajax/",
+  "ajax": {
+    "contentUserData": "/h5p-ajax/content-user-data/:contentId/:dataType/:subContentId"
+  },
+  "saveFreq": false,
+  "l10n": {
+    "H5P": {
+      "fullscreen": "Fullscreen",
+      "disableFullscreen": "Disable fullscreen",
+      "download": "Download",
+      "copyrights": "Rights of use",
+      "embed": "Embed",
+      "size": "Size",
+      "showAdvanced": "Show advanced",
+      "hideAdvanced": "Hide advanced",
+      "advancedHelp": "Include this script on your website if you want dynamic sizing of the embedded content:",
+      "copyrightInformation": "Rights of use",
+      "close": "Close",
+      "title": "Title",
+      "author": "Author",
+      "year": "Year",
+      "source": "Source",
+      "license": "License",
+      "thumbnail": "Thumbnail",
+      "noCopyrights": "No copyright information available for this content.",
+      "downloadDescription": "Download this content as a H5P file.",
+      "copyrightsDescription": "View copyright information for this content.",
+      "embedDescription": "View the embed code for this content.",
+      "h5pDescription": "Visit H5P.org to check out more cool content.",
+      "contentChanged": "This content has changed since you last used it.",
+      "startingOver": "You'll be starting over.",
+      "by": "by",
+      "showMore": "Show more",
+      "showLess": "Show less",
+      "subLevel": "Sublevel"
+    }
+  },
+  "user": {
+    "name": "developer",
+    "mail": "some.developer@some.company.com"
+  },
+  "core": {
+    "scripts": [
+      "/assets/h5p-core/library/js/jquery.js?nw7byb",
+      "/assets/h5p-core/library/js/h5p.js?nw7byb",
+      "/assets/h5p-core/library/js/h5p-event-dispatcher.js?nw7byb",
+      "/assets/h5p-core/library/js/h5p-x-api-event.js?nw7byb",
+      "/assets/h5p-core/library/js/h5p-x-api.js?nw7byb",
+      "/assets/h5p-core/library/js/h5p-content-type.js?nw7byb"
+    ],
+    "styles": [
+      "/assets/h5p-core/library/styles/h5p.css?nw7byb"
+    ]
+  }
+}

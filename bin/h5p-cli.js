@@ -3,7 +3,13 @@
 /**
  * Load requirements.
  */
+
+var open = require('open');
+var prompt = require('prompt');
+
 var h5p = require('../lib/h5p.js');
+var H5PServer = require('../lib/h5p-server.js');
+var H5PCreator = require('../lib/h5p-creator.js');
 
 var lf = '\u000A';
 var cr = '\u000D';
@@ -559,8 +565,64 @@ var commands = [
         process.stdout.write('No dir selected.' + lf);
         return;
       }
-
       h5p.importLanguageFiles(dir, results);
+    }
+  },
+  {
+    name: 'server',
+    syntax: '<config-file>',
+    shortDescription: 'Start a local development server',
+    handler: function (configFile) {
+      var h5pServer = new H5PServer(configFile);
+      h5pServer.start();
+    }
+  },
+  {
+    name: 'create',
+    syntax: '',
+    shortDescription: 'Create a boilerplate H5P',
+    handler: function () {
+      var schema = {
+        properties: {
+          machineName: {
+            description: 'machineName',
+            message: 'machineName must include a dot, e.g: H5P.MyFantasticNewContent',
+            required: true
+          },
+          author: {
+            required: true
+          },
+          title: {
+            required: true
+          },
+          description: {
+            required: true
+          }
+        }
+      };
+
+      // Let's get some info
+      prompt.start();
+      prompt.get(schema, function (err, result) {
+        //
+        // Log the results.
+        //
+        if (err) {
+          return console.error("Sorry - don't have the input I need");
+        }
+
+        var h5pCreator = new H5PCreator(result);
+        h5pCreator.create(function () {
+          // Let's start the server!
+          var h5pServer = new H5PServer();
+          console.log('About to start server!');
+          h5pServer.start(function (url) {
+            // Lets' open the browser:
+            console.log('Opening your browser');
+            open(url);
+          });
+        });
+      });
     }
   }
 ];

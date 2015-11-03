@@ -1,0 +1,132 @@
+html,
+body,
+.h5p-dev-h5p {
+  /*width: 100%;*/
+  margin: 0;
+  font-size: 14px;
+}
+* {
+  font-family: courier, arial;
+}
+.h5p-dev-header {
+  background: #000;
+  color: #fff;
+  font-size: 1.5em;
+  padding: 1.5em;
+  text-align: center;
+  position: relative;
+}
+.h5p-dev-header:before {
+  background: url(/assets/h5p.png) no-repeat;
+  content: " ";
+  width: 66px;
+  height: 30px;
+  display: inline-block;
+  background-position: center;
+  background-size: contain;
+  position: absolute;
+  left: 1em;
+  top: 1.3em;
+}
+.machine-name-and-version {
+  padding: .2em .5em;
+  background: #333;
+  border-radius: 0.2em;
+}
+.author {
+  margin-left: .5em;
+  font-size: 0.7em;
+  color: #aaa;
+  position: relative;
+  top: -.1em;
+}
+.h5p-cli-version {
+  position: absolute;
+  right: 0.5em;
+  font-size: 0.5em;
+  bottom: 0.5em;
+  color: #bbb;
+}
+.h5p-dev-menu {
+  float: left;
+  width: 20%;
+  height: 100%;
+  background: #eee;
+  box-sizing: border-box;
+  padding: 0 0.5em;
+}
+.h5p-dev-menu-group {
+  margin-top: .5em;
+}
+.h5p-dev-menu-group .header {
+  background: #ccc;
+  padding: 0.5em;
+  color: #444;
+  position: relative;
+}
+.h5p-dev-menu-group .content {
+  padding: 0.5em;
+  min-height: 50px;
+  border: 2px solid #ccc;
+  background-color: #E4F1C3;
+}
+.h5p-dev-library-meta .content {
+  font-size: 0.6em;
+  color: #333;
+  overflow: auto;
+}
+.h5p-dev-events .event {
+  border: 1px solid #ccc;
+  padding: 0.2em 0.5em;
+  margin-bottom: 0.3em;
+  color: #444;
+}
+.h5p-dev-events .event-counter {
+  padding: .2em .5em;
+  background-color: #9EBF6D;
+  border-radius: 2px;
+  color: white;
+  font-weight: bold;
+  position: absolute;
+  right: 0.5em;
+  top: 0.35em;
+}
+.h5p-dev-h5p {
+  float: left;
+  padding: 0.5em;
+  width: 80%;
+  height: 100%;
+  box-sizing: border-box;
+}
+.h5p-dev-content-button {
+  display: block;
+  width: 100%;
+  padding: .5em;
+  margin-bottom: .5em;
+  cursor: pointer;
+  border: 2px solid #bbb;
+  position: relative;
+}
+.h5p-dev-content-button.current {
+  background: #BAD696;
+}
+.h5p-dev-content-button.current:before,
+.h5p-dev-content-button:hover:before {
+  content: "[";
+  position: absolute;
+  left: 0.2em;
+  font-weight: bold;
+  color: #555;
+}
+.h5p-dev-content-button.current:after,
+.h5p-dev-content-button:hover:after {
+  content: "]";
+  position: absolute;
+  right: 0.2em;
+  font-weight: bold;
+  color: #555;
+}
+.h5p-dev-content-button:hover:before,
+.h5p-dev-content-button:hover:after {
+  color: #bbb;
+}
