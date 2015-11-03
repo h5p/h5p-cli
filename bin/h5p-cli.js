@@ -564,9 +564,10 @@ var commands = [
     }
   },
   {
-    name: 'add-original-texts',
+    name: 'add-english-texts',
     syntax: '<language-code> <library> [<library>...]',
     shortDescription: 'Update translations',
+    description: 'Add the english text strings to the given translation with the given language code. This will make translating easier.',
     handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       var languageCode = libraries.splice(0, 1)[0];
