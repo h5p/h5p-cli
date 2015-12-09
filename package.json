@@ -8,7 +8,9 @@
     "tool",
     "help",
     "html5",
-    "package"
+    "package",
+    "quiz",
+    "interactive"
   ],
   "preferGlobal": true,
   "homepage": "http://h5p.org",
@@ -30,7 +32,13 @@
     "node": ">=v0.10"
   },
   "dependencies": {
-    "archiver": "0.8.1"
+    "archiver": ">=0.8.1",
+    "httpdispatcher": ">=0.4.0",
+    "express": ">=4.13.3",
+    "node.extend": ">=1.1.5",
+    "request": ">=2.65.0",
+    "tar-fs": ">=1.8.1",
+    "body-parser": ">=1.14.1"
   },
   "license": "MIT"
 }
