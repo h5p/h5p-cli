@@ -576,7 +576,7 @@ var commands = [
       var h5pServer = new H5PServer(configFile);
       h5pServer.start();
     }
-  },
+  }/*,
   {
     name: 'create',
     syntax: '',
@@ -604,9 +604,6 @@ var commands = [
       // Let's get some info
       prompt.start();
       prompt.get(schema, function (err, result) {
-        //
-        // Log the results.
-        //
         if (err) {
           return console.error("Sorry - don't have the input I need");
         }
@@ -624,7 +621,7 @@ var commands = [
         });
       });
     }
-  }
+  }*/
 ];
 
 /**

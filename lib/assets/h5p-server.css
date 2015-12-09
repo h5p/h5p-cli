@@ -6,32 +6,93 @@ body,
   font-size: 14px;
 }
 * {
-  font-family: courier, arial;
+  font-family: arial;
+}
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('./fonts/fontawesome-webfont.eot?v=4.5.0');
+  src: url('./fonts/fontawesome-webfont.eot?#iefix&v=4.5.0') format('embedded-opentype'), url('./fonts/fontawesome-webfont.woff2?v=4.5.0') format('woff2'), url('./fonts/fontawesome-webfont.woff?v=4.5.0') format('woff'), url('./fonts/fontawesome-webfont.ttf?v=4.5.0') format('truetype'), url('./fonts/fontawesome-webfont.svg?v=4.5.0#fontawesomeregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+.h5p-dev-editor-wrapper {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+  background: #E4F1C3;
+}
+.h5p-dev-editor-wrapper > * {
+  padding: 1em;
+}
+.h5p-dev-edit {
+  margin-bottom: 0.5em;
+  padding: 0.3em 1em;
 }
 .h5p-dev-header {
-  background: #000;
+  background: #666;
+  box-sizing: border-box;
   color: #fff;
   font-size: 1.5em;
-  padding: 1.5em;
+  padding: 0.7rem;
   text-align: center;
-  position: relative;
+  position: absolute;
+  margin-left: 20%;
+  display: inline-block;
+  width: 80%;
+  left: 0;
+  top: 0;
+  transition: all 0.5s;
+}
+
+.menu-hidden.no-transition > * {
+  -webkit-transition: none;
+  transition: none;
+}
+
+.menu-hidden .h5p-dev-header {
+  margin-left: 0;
+  width: 100%;
 }
 .h5p-dev-header:before {
   background: url(/assets/h5p.png) no-repeat;
   content: " ";
-  width: 66px;
-  height: 30px;
+  width: 3rem;
+  height: 3rem;
   display: inline-block;
   background-position: center;
   background-size: contain;
   position: absolute;
-  left: 1em;
-  top: 1.3em;
+  right: .7rem;
+  top: 0.1rem;
 }
-.machine-name-and-version {
-  padding: .2em .5em;
-  background: #333;
-  border-radius: 0.2em;
+.menu-toggler {
+  width: 3.1rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  line-height: 2;
+  background: #444;
+  color: #888;
+  height: 3.1rem;
+  right: -3.1rem;
+  cursor: pointer;
+}
+.menu-toggler:hover {
+  background-color: #888;
+}
+.menu-toggler:after {
+  font-family: "FontAwesome";
+  content: '\f0c9';
+  color: #fff;
+  font-size: 2.2rem;
+  display: inline-block;
+  position: absolute;
+  top: -.5rem;
+  left: .5rem;
 }
 .author {
   margin-left: .5em;
@@ -42,61 +103,92 @@ body,
 }
 .h5p-cli-version {
   position: absolute;
-  right: 0.5em;
+  right: 1.5em;
   font-size: 0.5em;
   bottom: 0.5em;
   color: #bbb;
+  display: none;
 }
 .h5p-dev-menu {
-  float: left;
+  position: relative;
+  display: inline-block;
   width: 20%;
   height: 100%;
-  background: #eee;
+  background: #222;
   box-sizing: border-box;
-  padding: 0 0.5em;
+  color: #fff;
+  -webkit-transition: -webkit-transform 0.5s;
+  transition: transform 0.5s;
 }
+.menu-hidden .h5p-dev-menu {
+  transform: translateX(-100%);
+  -webkit-transform: translateX(-100%);
+}
+.h5p-dev-menu-header {
+  padding: 1rem 0;
+  text-align: center;
+  height: 2.6rem;
+  box-sizing: border-box;
+}
+
 .h5p-dev-menu-group {
   margin-top: .5em;
 }
 .h5p-dev-menu-group .header {
-  background: #ccc;
   padding: 0.5em;
-  color: #444;
   position: relative;
+  background: #444;
+}
+.h5p-dev-menu-group .header:before {
+  font-family: 'FontAwesome';
+  padding-right: 0.5rem;
 }
 .h5p-dev-menu-group .content {
   padding: 0.5em;
   min-height: 50px;
-  border: 2px solid #ccc;
-  background-color: #E4F1C3;
 }
 .h5p-dev-library-meta .content {
-  font-size: 0.6em;
-  color: #333;
+  font-size: 0.8rem;
   overflow: auto;
 }
+.h5p-dev-contents .header:before {
+  content: "\f15c";
+}
+.h5p-dev-events .header:before {
+  content: "\f012";
+}
+.h5p-dev-library-meta .header:before {
+  content: "\f05a";
+}
 .h5p-dev-events .event {
-  border: 1px solid #ccc;
   padding: 0.2em 0.5em;
   margin-bottom: 0.3em;
-  color: #444;
+  font-size: 80%;
 }
 .h5p-dev-events .event-counter {
   padding: .2em .5em;
-  background-color: #9EBF6D;
+  background-color: #888;
   border-radius: 2px;
-  color: white;
   font-weight: bold;
   position: absolute;
   right: 0.5em;
   top: 0.35em;
 }
 .h5p-dev-h5p {
-  float: left;
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 3rem;
   padding: 0.5em;
   width: 80%;
-  height: 100%;
+  margin-left: 20%;
   box-sizing: border-box;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+}
+.menu-hidden .h5p-dev-h5p {
+  margin-left: 0;
+  width: 100%;
 }
 .h5p-dev-content-button {
   display: block;
@@ -108,7 +200,7 @@ body,
   position: relative;
 }
 .h5p-dev-content-button.current {
-  background: #BAD696;
+  background: #888;
 }
 .h5p-dev-content-button.current:before,
 .h5p-dev-content-button:hover:before {
@@ -129,4 +221,17 @@ body,
 .h5p-dev-content-button:hover:before,
 .h5p-dev-content-button:hover:after {
   color: #bbb;
+}
+::-webkit-scrollbar
+{
+  width: 8px;  /* for vertical scrollbars */
+  height: 8px; /* for horizontal scrollbars */
+}
+::-webkit-scrollbar-track
+{
+  background: rgba(50, 50, 50, 0.5);
+}
+::-webkit-scrollbar-thumb
+{
+  background: rgba(0, 0, 0, 1);
 }
