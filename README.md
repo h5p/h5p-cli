@@ -1,8 +1,8 @@
 ## H5P Command Line Interface
 
-A tool that simplifies the development process of (H5Ps)[https://h5p.org] (HTML5 Packages).
+A tool that simplifies the development process of [H5P](https://h5p.org) (HTML5 Packages).
 
-The H5P development documentation is found on (h5p.org/developers)[https://h5p.org/developers]
+The H5P development documentation is found on [h5p.org/developers](https://h5p.org/developers)
 
 Note that this tool is still in alpha!
 
