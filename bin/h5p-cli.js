@@ -252,7 +252,7 @@ function commit(error, results) {
  * @param {String[]} inputs
  * @param {(String|String[]|RegExp|RegExp[])} valids
  */
-function filterOptions(inputs, valids) {
+function filterOptions(inputs, valids) {
   var options = [];
 
   // Go through input
@@ -576,8 +576,8 @@ var commands = [
       var h5pServer = new H5PServer(configFile);
       h5pServer.start();
     }
-  }/*,
-  {
+  },
+  /*{
     name: 'create',
     syntax: '',
     shortDescription: 'Create a boilerplate H5P',
@@ -622,6 +622,88 @@ var commands = [
       });
     }
   }*/
+  {
+    name: 'add-english-texts',
+    syntax: '<language-code> <library> [<library>...]',
+    shortDescription: 'Update translations',
+    description: 'Add the english text strings to the given translation with the given language code. This will make translating easier.',
+    handler: function () {
+      var libraries = Array.prototype.slice.call(arguments);
+      var languageCode = libraries.splice(0, 1)[0];
+
+      if (!languageCode) {
+        process.stdout.write('No language specified.' + lf);
+        return;
+      }
+      if (!libraries.length) {
+        process.stdout.write('No library specified.' + lf);
+        return;
+      }
+
+      h5p.addOriginalTexts(languageCode, libraries, results);
+    }
+  },
+  {
+    name: 'copy-translation',
+    syntax: '<language-code> <language-code> <library> [<library>...]',
+    shortDescription: 'Use one to create another',
+    handler: function () {
+      var libraries = Array.prototype.slice.call(arguments);
+      var from = libraries.splice(0, 1)[0];
+      var to = libraries.splice(0, 1)[0];
+
+      if (!from) {
+        process.stdout.write('No language source specified.' + lf);
+        return;
+      }
+      if (!to) {
+        process.stdout.write('No language target specified.' + lf);
+        return;
+      }
+      if (!libraries.length) {
+        process.stdout.write('No library specified.' + lf);
+        return;
+      }
+
+      h5p.copyTranslation(from, to, libraries, results);
+    }
+  },
+  {
+    name: 'pack-translation',
+    syntax: '<language-code> <library> [<library>...]',
+    shortDescription: 'Export translations',
+    handler: function () {
+      var libraries = Array.prototype.slice.call(arguments);
+      var languageCode = libraries.splice(0, 1)[0];
+
+      if (!languageCode) {
+        process.stdout.write('No language specified.' + lf);
+        return;
+      }
+      if (!libraries.length) {
+        process.stdout.write('No library specified.' + lf);
+        return;
+      }
+
+      var options = filterOptions(libraries, [/\.zip$/]);
+      var file = (options[0] ? options[0] : 'translations.zip');
+
+      h5p.packTranslation(languageCode, libraries, file, function (error,results) {
+        if (error) {
+          process.stderr.write(error + lf);
+        }
+        else {
+          var num = 0;
+          for (var i = 0; i < results.length; i++) {
+            if (results[i]) {
+              num += 1;
+            }
+          }
+          process.stdout.write('Successfully packed ' + num + ' translations into ' + file + lf);
+        }
+      });
+    }
+  }
 ];
 
 /**
