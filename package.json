@@ -36,8 +36,6 @@
     "node.extend": ">=1.1.5",
     "request": ">=2.65.0",
     "tar-fs": ">=1.8.1",
-    "prompt": ">=0.2.14",
-    "open": ">=0.0.5",
     "body-parser": ">=1.14.1"
   },
   "license": "MIT"

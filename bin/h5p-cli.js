@@ -4,8 +4,8 @@
  * Load requirements.
  */
 
-var open = require('open');
-var prompt = require('prompt');
+//var open = require('open');
+//var prompt = require('prompt');
 
 var h5p = require('../lib/h5p.js');
 var H5PServer = require('../lib/h5p-server.js');
