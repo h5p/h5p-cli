@@ -8,7 +8,9 @@
     "tool",
     "help",
     "html5",
-    "package"
+    "package",
+    "quiz",
+    "interactive"
   ],
   "preferGlobal": true,
   "homepage": "http://h5p.org",
