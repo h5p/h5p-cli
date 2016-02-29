@@ -12,6 +12,9 @@
     "quiz",
     "interactive"
   ],
+  "scripts": {
+    "jshint": "jshint bin/*.js lib/*.js"
+  },
   "preferGlobal": true,
   "homepage": "http://h5p.org",
   "author": "Joubel AS",
@@ -40,5 +43,8 @@
     "tar-fs": ">=1.8.1",
     "body-parser": ">=1.14.1"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "jshint": "^2.9.1-rc1"
+  }
 }
