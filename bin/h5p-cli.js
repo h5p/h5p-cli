@@ -703,6 +703,18 @@ var commands = [
         }
       });
     }
+  },
+  {
+    name: 'recursive-minor-bump',
+    syntax: '<library>',
+    shortDescription: 'Bump minor version recursively',
+    description: 'Increase minor version of library,' + lf +
+      'then recursively increase minor version of all libraries' + lf +
+      'that has dependency to the provided library.',
+    handler: function () {
+      var libraries = Array.prototype.slice.call(arguments);
+      h5p.recursiveMinorBump(libraries, results);
+    }
   }
 ];
 
