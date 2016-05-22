@@ -530,12 +530,7 @@ var commands = [
           process.stdout.write('Adding ' + color.emphasize + dependencies + color.default + ' dependenc' + (dependencies === 1 ? 'y' : 'ies') + ' to ' + color.emphasize + file + color.default + '...' + lf);
 
           // Pack libraries and dependencies, then print results
-          // TODO: Avoid having to pass messages all the way back here
-          h5p.packPromise(totalRepos, file).then((packedRepos) => {
-            results(null, packedRepos);
-          }, (err) => {
-            results(err);
-          });
+          h5p.packPromise(totalRepos, file);
         });
       }
       else {
