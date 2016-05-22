@@ -488,9 +488,12 @@ var commands = [
   },
   {
     name: 'pack',
-    syntax: '<library> [<library2>...] [my.h5p]',
+    syntax: '[-r] <library> [<library2>...] [my.h5p]',
     shortDescription: 'Packs the given libraries',
-    description: 'You can change the default output package by setting:' + lf +
+    description:
+      'Use -r for recursive packaging, will pack all dependencies as well' + lf +
+      lf +
+      'You can change the default output package by setting:' + lf +
       'export H5P_DEFAULT_PACK="~/my-libraries.h5p"' + lf +
       lf +
       'You can override which files are ignored by default:' + lf +
@@ -503,7 +506,12 @@ var commands = [
       lf +
       'Put these in your ~/.bashrc for permanent settings.',
     handler: function () {
+      var recursive = false;
       var libraries = Array.prototype.slice.call(arguments);
+      if (libraries[0] === '-r') {
+        recursive = true;
+        libraries.splice(0, 1);
+      }
       var options = filterOptions(libraries, [/\.h5p$/]);
       var file = (options[0] ? options[0] : (process.env.H5P_DEFAULT_PACK === undefined ? 'libraries.h5p' : process.env.H5P_DEFAULT_PACK));
 
@@ -513,7 +521,28 @@ var commands = [
 
       process.stdout.write('Packing ' + color.emphasize + libraries.length + color.default + ' librar' + (libraries.length === 1 ? 'y' : 'ies') + ' to ' + color.emphasize + file + color.default + '...' + lf);
 
-      h5p.pack(libraries, file, results);
+
+      if (recursive) {
+        // TODO: Flatten promises
+        h5p.getDependencies(libraries).then((totalRepos) => {
+          // Print found dependencies
+          const dependencies = totalRepos.length - libraries.length;
+          process.stdout.write('Adding ' + color.emphasize + dependencies + color.default + ' dependenc' + (dependencies === 1 ? 'y' : 'ies') + ' to ' + color.emphasize + file + color.default + '...' + lf);
+
+          // Pack libraries and dependencies, then print results
+          // TODO: Avoid having to pass messages all the way back here
+          h5p.packPromise(totalRepos, file).then((packedRepos) => {
+            results(null, packedRepos);
+          }, (err) => {
+            results(err);
+          });
+        });
+      }
+      else {
+        // TODO: Refactor to always use packPromise
+        h5p.pack(libraries, file, results);
+      }
+
     }
   },
   {
