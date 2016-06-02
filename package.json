@@ -1,5 +1,5 @@
 {
-  "version": "0.8.0",
+  "version": "0.8.1",
   "name": "h5p",
   "description": "A helping tool for developing HTML5 Packages.",
   "keywords": [
@@ -36,12 +36,14 @@
   },
   "dependencies": {
     "archiver": ">=0.8.1",
-    "httpdispatcher": ">=0.4.0",
+    "body-parser": ">=1.14.1",
     "express": ">=4.13.3",
+    "httpdispatcher": ">=0.4.0",
+    "jasmine": "^2.4.1",
+    "jasmine-node": "^1.14.5",
     "node.extend": ">=1.1.5",
     "request": ">=2.65.0",
-    "tar-fs": ">=1.8.1",
-    "body-parser": ">=1.14.1"
+    "tar-fs": ">=1.8.1"
   },
   "license": "MIT",
   "devDependencies": {

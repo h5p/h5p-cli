@@ -11,6 +11,9 @@ var h5p = require('../lib/h5p.js');
 var H5PServer = require('../lib/h5p-server.js');
 var H5PCreator = require('../lib/h5p-creator.js');
 
+/* Commands */
+const pack = require('../lib/commands/pack');
+
 var lf = '\u000A';
 var cr = '\u000D';
 var color = {
@@ -505,40 +508,7 @@ var commands = [
       'export H5P_ALLOWED_FILE_MODIFIERS=""' + lf +
       lf +
       'Put these in your ~/.bashrc for permanent settings.',
-    handler: function () {
-      var recursive = false;
-      var libraries = Array.prototype.slice.call(arguments);
-      if (libraries[0] === '-r') {
-        recursive = true;
-        libraries.splice(0, 1);
-      }
-      var options = filterOptions(libraries, [/\.h5p$/]);
-      var file = (options[0] ? options[0] : (process.env.H5P_DEFAULT_PACK === undefined ? 'libraries.h5p' : process.env.H5P_DEFAULT_PACK));
-
-      if (!libraries.length) {
-        process.stdout.write('You must specify libraries.' + lf);
-      }
-
-      process.stdout.write('Packing ' + color.emphasize + libraries.length + color.default + ' librar' + (libraries.length === 1 ? 'y' : 'ies') + ' to ' + color.emphasize + file + color.default + '...' + lf);
-
-
-      if (recursive) {
-        // TODO: Flatten promises
-        h5p.getDependencies(libraries).then((totalRepos) => {
-          // Print found dependencies
-          const dependencies = totalRepos.length - libraries.length;
-          process.stdout.write('Adding ' + color.emphasize + dependencies + color.default + ' dependenc' + (dependencies === 1 ? 'y' : 'ies') + ' to ' + color.emphasize + file + color.default + '...' + lf);
-
-          // Pack libraries and dependencies, then print results
-          h5p.packPromise(totalRepos, file);
-        });
-      }
-      else {
-        // TODO: Refactor to always use packPromise
-        h5p.pack(libraries, file, results);
-      }
-
-    }
+    handler: pack
   },
   {
     name: 'increase-patch-version',
@@ -741,6 +711,10 @@ var commands = [
     }
   }
 ];
+
+function handlePack() {
+
+}
 
 /**
  * Print all commands with a short description.
