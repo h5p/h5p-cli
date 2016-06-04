@@ -709,12 +709,18 @@ var commands = [
       var libraries = Array.prototype.slice.call(arguments);
       h5p.recursiveMinorBump(libraries, results);
     }
+  },
+  {
+    name: 'check-versions',
+    syntax: '[<library>...] [my.h5p]',
+    shortDescription: 'Compare version of libraries with h5p file',
+    description: 'Compare version of library or multiple libraries with' + lf +
+    'a given H5P file. This let you easily determine which libraries has' + lf +
+    'changed since a given H5P file. Will use libraries.h5p if no H5P file' + lf +
+    'is specified, or specified file is not found.',
+    handler: h5p.checkVersions
   }
 ];
-
-function handlePack() {
-
-}
 
 /**
  * Print all commands with a short description.
