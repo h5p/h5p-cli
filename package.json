@@ -13,6 +13,7 @@
     "interactive"
   ],
   "scripts": {
+    "test": "jasmine",
     "jshint": "jshint bin/*.js lib/*.js"
   },
   "preferGlobal": true,
@@ -39,14 +40,13 @@
     "body-parser": ">=1.14.1",
     "express": ">=4.13.3",
     "httpdispatcher": ">=0.4.0",
-    "jasmine": "^2.4.1",
-    "jasmine-node": "^1.14.5",
     "node.extend": ">=1.1.5",
     "request": ">=2.65.0",
     "tar-fs": ">=1.8.1"
   },
   "license": "MIT",
   "devDependencies": {
+    "jasmine": "^2.4.1",
     "jshint": "^2.9.1-rc1"
   }
 }
