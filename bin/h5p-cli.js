@@ -712,10 +712,6 @@ var commands = [
   }
 ];
 
-function handlePack() {
-
-}
-
 /**
  * Print all commands with a short description.
  *
