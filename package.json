@@ -39,6 +39,7 @@
     "archiver": ">=0.8.1",
     "body-parser": ">=1.14.1",
     "express": ">=4.13.3",
+    "gitignore-parser": "0.0.2",
     "httpdispatcher": ">=0.4.0",
     "node.extend": ">=1.1.5",
     "request": ">=2.65.0",
