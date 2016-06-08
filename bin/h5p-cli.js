@@ -13,6 +13,7 @@ var H5PCreator = require('../lib/h5p-creator.js');
 
 /* Commands */
 const pack = require('../lib/commands/pack');
+const statusCmd = require('../lib/commands/status');
 
 var lf = '\u000A';
 var cr = '\u000D';
@@ -146,42 +147,6 @@ function push(options) {
   if (!repo) return; // Nothing to clone.
   var msg = 'Pushing \'' + color.emphasize + repo + color.default + '\'...';
   var spinner = new Spinner(msg);
-}
-
-/**
- * Print status messages for the given repos.
- */
-function status(error, repos, force) {
-  if (error) return process.stdout.write(error + lf);
-
-  var first = true;
-  for (var i = 0; i < repos.length; i++) {
-    var repo = repos[i];
-
-    // Skip no outputs
-    if (!repo.error && !repo.changes && (force === undefined || !force)) continue;
-
-    if (first) {
-      // Extra line feed on the first.
-      process.stdout.write(lf);
-      first = false;
-    }
-
-    process.stdout.write(color.emphasize + repo.name + color.default);
-    if (repo.branch) {
-      process.stdout.write(' (' + repo.branch + ')');
-    }
-    process.stdout.write(lf);
-
-    if (repo.error) {
-      process.stdout.write(error + lf);
-    }
-    else if (repo.changes !== undefined) {
-      process.stdout.write(repo.changes.join(lf) + lf);
-    }
-
-    process.stdout.write(lf);
-  }
 }
 
 /**
@@ -364,15 +329,10 @@ var commands = [
   },
   {
     name: 'status',
-    syntax: '[-f]',
-    shortDescription: 'Show the status for all your libraries',
+    syntax: '[-f] [<library>...]',
+    shortDescription: 'Show the status for the given or all libraries',
     description: 'The -f handle can be used to display which branch each library is on.',
-    handler: function () {
-      var force = (arguments[0] === '-f');
-      h5p.status(function (error, repos) {
-        status(error, repos, force);
-      });
-    }
+    handler: statusCmd
   },
   {
     name: 'commit',
