@@ -1,5 +1,23 @@
 const Input = require('../../lib/utility/input');
 describe('Input', () => {
+  describe('with no arguments', () => {
+    beforeEach(() => {
+      this.input = new Input();
+    });
+
+    it('should be defined', () => {
+      expect(this.input).toBeDefined();
+    });
+
+    it('should return false when asking for flag', () => {
+      expect(this.input.hasFlag('-f')).toBeFalsy();
+    });
+
+    it('should return an empty array for libraries', () => {
+      expect(this.input.getLibraries()).toEqual([]);
+    })
+  });
+
   describe('file name', () => {
     it('should return the h5p output name from array', () => {
       const inputList = ['test.h5p'];
