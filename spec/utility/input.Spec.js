@@ -24,7 +24,7 @@ describe('Input', () => {
       const input = new Input(inputList);
       expect(input.getFileName()).toEqual('test.h5p');
     });
-
+    
     it('should find file name inside array', () => {
       const inputList = ['hello', 'test', 'filename.h5p', 'h5p-test'];
       const input = new Input(inputList);
