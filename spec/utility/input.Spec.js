@@ -24,7 +24,7 @@ describe('Input', () => {
       const input = new Input(inputList);
       expect(input.getFileName()).toEqual('test.h5p');
     });
-    
+
     it('should find file name inside array', () => {
       const inputList = ['hello', 'test', 'filename.h5p', 'h5p-test'];
       const input = new Input(inputList);
@@ -70,7 +70,7 @@ describe('Input', () => {
 
   describe('libraries', () => {
     beforeEach(() => {
-      const inputList = ['h5p-course-presentation', 'test.h5p', '-r', 'h5p-interactive-video', 'custom-lib'];
+      const inputList = ['h5p-course-presentation', 'test.h5p', '-r', 'h5p-interactive-video', 'custom-lib/'];
       const input = new Input(inputList);
       this.libraries = input.getLibraries();
     });
@@ -94,5 +94,9 @@ describe('Input', () => {
     it('should not find flags', () => {
       expect(this.libraries).not.toContain('-r');
     });
-  })
+
+    it('should strip dashes from library names', () => {
+      expect(this.libraries).toContain('custom-lib');
+    });
+  });
 });
