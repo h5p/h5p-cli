@@ -15,6 +15,7 @@ var H5PCreator = require('../lib/h5p-creator.js');
 const pack = require('../lib/commands/pack');
 const statusCmd = require('../lib/commands/status');
 const pull = require('../lib/commands/pull');
+const init = require('../lib/commands/init');
 
 var lf = '\u000A';
 var cr = '\u000D';
@@ -253,6 +254,14 @@ function progress(action) {
 
 // Register command handlers
 var commands = [
+  {
+    name: 'init',
+    syntax: '<library>',
+    shortDescription: 'Initialize a new h5p library',
+    description: `Create a new H5P library with a standard structure
+    and the necessary files, in order to get started quickly.`,
+    handler: init
+  },
   {
     name: 'help',
     syntax: '<command>',
