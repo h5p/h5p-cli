@@ -14,6 +14,7 @@ var H5PCreator = require('../lib/h5p-creator.js');
 /* Commands */
 const pack = require('../lib/commands/pack');
 const statusCmd = require('../lib/commands/status');
+const pull = require('../lib/commands/pull');
 
 var lf = '\u000A';
 var cr = '\u000D';
@@ -101,27 +102,6 @@ function clone() {
   });
   if (!name) return; // Nothing to clone.
   var msg = 'Cloning into \'' + color.emphasize + name + color.default + '\'...';
-  var spinner = new Spinner(msg);
-}
-
-/**
- * Recursive pulling for all repos in collection.
- */
-function pull() {
-  var repo = h5p.pull(function (error, result) {
-
-    if (error) {
-      result = color.red + 'FAILED' + color.default + lf + error;
-    }
-    else {
-      result = color.green + 'OK' + color.default + (result ? ' ' + result : '') + lf;
-    }
-
-    spinner.stop(result);
-    pull();
-  });
-  if (!repo) return; // Nothing to clone.
-  var msg = 'Pulling \'' + color.emphasize + repo + color.default + '\'...';
   var spinner = new Spinner(msg);
 }
 
@@ -357,12 +337,7 @@ var commands = [
     name: 'pull',
     syntax: '[<library>...]',
     shortDescription: 'Pull the given or all repos',
-    handler: function () {
-      h5p.update(Array.prototype.slice.call(arguments), function (error) {
-        if (error) return process.stdout.write(error + lf);
-        pull();
-      });
-    }
+    handler: pull
   },
   {
     name: 'push',
