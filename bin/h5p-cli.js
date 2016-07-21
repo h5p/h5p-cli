@@ -584,7 +584,7 @@ var commands = [
     handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       var versions = 1;
-      if (libraries[0] && libraries[0].match(/^-\d+$/ig)) {
+      if (libraries[0] && libraries[0].match(/^-?\d+$/ig)) {
         versions = Math.abs(libraries.splice(0, 1));
       }
       h5p.changesSince(versions, libraries, handleChanges);
@@ -598,7 +598,7 @@ var commands = [
     handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       var versions = 1;
-      if (libraries[0] && libraries[0].match(/^-\d+$/ig)) {
+      if (libraries[0] && libraries[0].match(/^-?\d+$/ig)) {
         versions = Math.abs(libraries.splice(0, 1));
       }
       h5p.commitsSince(versions, libraries, handleChanges);
