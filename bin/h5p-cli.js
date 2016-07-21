@@ -582,7 +582,8 @@ var commands = [
     shortDescription: 'Show changed files since last version',
     description: 'Number of versions defaults to -1 (last version). Showing only specific libraries is optional.',
     handler: function () {
-      var versions, libraries = Array.prototype.slice.call(arguments);
+      var libraries = Array.prototype.slice.call(arguments);
+      var versions = 1;
       if (libraries[0] && libraries[0].match(/^-\d+$/ig)) {
         versions = Math.abs(libraries.splice(0, 1));
       }
@@ -595,7 +596,8 @@ var commands = [
     shortDescription: 'Show commits since last version',
     description: 'Number of versions defaults to -1 (last version). Showing only specific libraries is optional.',
     handler: function () {
-      var versions, libraries = Array.prototype.slice.call(arguments);
+      var libraries = Array.prototype.slice.call(arguments);
+      var versions = 1;
       if (libraries[0] && libraries[0].match(/^-\d+$/ig)) {
         versions = Math.abs(libraries.splice(0, 1));
       }
