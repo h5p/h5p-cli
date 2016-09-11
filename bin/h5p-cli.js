@@ -167,11 +167,12 @@ function handleChanges(error, changes) {
    *
    * @private
    * @param {string} libName
-   * @param {string} detailsColor Prop for color object
-   * @param {string} details
+   * @param {string} [detailsColor] Prop for color object
+   * @param {string} [details]
    */
   function printLibChanges(libName, detailsColor, details) {
-    process.stdout.write(color.emphasize + libName + color.default + ' ' + color[detailsColor] + details + color.default + lf);
+    var detailsOutput = details && detailsColor ? color[detailsColor] + details + color.default : '';
+    process.stdout.write(color.emphasize + libName + color.default + ' ' + detailsOutput + lf);
   }
 
   // Print all libraries with changes
@@ -182,6 +183,15 @@ function handleChanges(error, changes) {
       // Repo name + skipped msg
       printLibChanges(lib.name, 'yellow', lib.msg);
     }
+    else if (lib.failed && lib.msg && lib.msg.error) {
+      printLibChanges(lib.name);
+
+      if (lib.msg.output) {
+        process.stdout.write(lib.msg.output + lf);
+      }
+
+      process.stdout.write(color['red'] + lib.msg.error + color.default + lf);
+    }
     else if (lib.failed) {
       // Repo name + error
       printLibChanges(lib.name, 'red', lib.msg);
@@ -189,6 +199,13 @@ function handleChanges(error, changes) {
     else if (lib.msg && lib.msg.version && lib.msg.changes) {
       // Repo name + details
       printLibChanges(lib.name, 'green', lib.msg.version);
+
+      // Changes
+      process.stdout.write(lib.msg.changes + lf);
+    }
+    else if (lib.msg && lib.msg.changes) {
+      // Repo name + details
+      printLibChanges(lib.name);
 
       // Changes
       process.stdout.write(lib.msg.changes + lf);
@@ -529,6 +546,24 @@ var commands = [
     }
   },
   {
+    name: 'changes-since-release',
+    syntax: '[<library>...]',
+    shortDescription: 'Show changed files since last release',
+    handler: function () {
+      var libraries = Array.prototype.slice.call(arguments);
+      h5p.changesSinceRelease(libraries, handleChanges);
+    }
+  },
+  {
+    name: 'compare-tags-with-release',
+    syntax: '[<library>...]',
+    shortDescription: 'Compare tag of release and master branch',
+    handler: function () {
+      var libraries = Array.prototype.slice.call(arguments);
+      h5p.compareTagsRelease(libraries, handleChanges);
+    }
+  },
+  {
     name: 'commits-since',
     syntax: '[<num-versions>] [<library>...]',
     shortDescription: 'Show commits since last version',
@@ -717,6 +752,16 @@ var commands = [
     handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       h5p.recursiveMinorBump(libraries, results);
+    }
+  },
+  {
+    name: 'list-deps',
+    syntax: '<library>',
+    shortDescription: 'Dependencies to library',
+    description: 'List all libraries that has a dependency to given library.',
+    handler: function () {
+      var libraries = Array.prototype.slice.call(arguments);
+      h5p.recursiveMinorBump(libraries, results, true);
     }
   }
 ];
