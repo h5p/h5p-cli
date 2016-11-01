@@ -532,6 +532,17 @@ var commands = [
     }
   },
   {
+    name: 'tag',
+    syntax: '<tag-name> [<library>...]',
+    shortDescription: 'Create a tag',
+    handler: function () {
+      var inputs = Array.prototype.slice.call(arguments);
+      var tagName = inputs.splice(0,1);
+      var libraries = inputs;
+      h5p.tag(tagName, libraries, results);
+    }
+  },
+  {
     name: 'changes-since',
     syntax: '[<num-versions>] [<library>...]',
     shortDescription: 'Show changed files since last version',
