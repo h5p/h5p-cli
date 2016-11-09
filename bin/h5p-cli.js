@@ -16,6 +16,9 @@ const pack = require('../lib/commands/pack');
 const statusCmd = require('../lib/commands/status');
 const pull = require('../lib/commands/pull');
 const init = require('../lib/commands/init');
+const checkTranslations = require ('../lib/commands/check-translations');
+const diffTranslations = require('../lib/commands/diff-translations');
+const buildLibraries = require('../lib/commands/build-libraries');
 
 var lf = '\u000A';
 var cr = '\u000D';
@@ -673,12 +676,21 @@ var commands = [
   }*/
   {
     name: 'add-english-texts',
-    syntax: '<language-code> <library> [<library>...]',
+    syntax: '[-P] <language-code> <library> [<library>...]',
     shortDescription: 'Update translations',
-    description: 'Add the english text strings to the given translation with the given language code. This will make translating easier.',
+    description: 'Add the english text strings to the given translation with the given language code. Use -P flag to populate with english texts instead of TODOs.',
     handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
-      var languageCode = libraries.splice(0, 1)[0];
+      var populateFlag = libraries.splice(0, 1)[0];
+      var languageCode;
+      var hasPopulateFlag = populateFlag === '-P';
+
+      if (hasPopulateFlag) {
+        languageCode = libraries.splice(0, 1)[0];
+      }
+      else {
+        languageCode = populateFlag;
+      }
 
       if (!languageCode) {
         process.stdout.write('No language specified.' + lf);
@@ -689,7 +701,7 @@ var commands = [
         return;
       }
 
-      h5p.addOriginalTexts(languageCode, libraries, results);
+      h5p.addOriginalTexts(languageCode, libraries, results, hasPopulateFlag);
     }
   },
   {
@@ -774,6 +786,29 @@ var commands = [
       var libraries = Array.prototype.slice.call(arguments);
       h5p.recursiveMinorBump(libraries, results, true);
     }
+  },
+  {
+    name: 'check-translations',
+    syntax: '[<language>] [<library>]',
+    shortDescription: 'Check that translations matches nb language',
+    description: 'Checks that all languages and libraries provided have been correctly translated',
+    handler: checkTranslations
+  },
+  {
+    name: 'diff-translations',
+    syntax: '<language> <library>',
+    shortDescription: 'Diffs the given translation with the nb translation',
+    description: 'Useful for figuring out what is different between the nb translations and the given translation',
+    handler: diffTranslations
+  },
+  {
+    name: 'build',
+    syntax: '<library> [<library>...]',
+    shortDescription: 'Installs dependencies, builds libraries and runs tests',
+    description: 'This is particularly useful for libraries that has a build' +
+    ' step, to make sure that librares has their dependencies, is built properly' +
+    ' and tested, so they are properly prepared for production',
+    handler: buildLibraries
   }
 ];
 

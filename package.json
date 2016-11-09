@@ -43,7 +43,8 @@
     "httpdispatcher": ">=0.4.0",
     "node.extend": ">=1.1.5",
     "request": ">=2.65.0",
-    "tar-fs": ">=1.8.1"
+    "tar-fs": ">=1.8.1",
+    "cross-spawn": "^5.0.1"
   },
   "license": "MIT",
   "devDependencies": {
