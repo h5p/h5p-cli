@@ -17,7 +17,6 @@ const statusCmd = require('../lib/commands/status');
 const pull = require('../lib/commands/pull');
 const init = require('../lib/commands/init');
 const checkTranslations = require ('../lib/commands/check-translations');
-const diffTranslations = require('../lib/commands/diff-translations');
 const buildLibraries = require('../lib/commands/build-libraries');
 
 var lf = '\u000A';
@@ -789,17 +788,11 @@ var commands = [
   },
   {
     name: 'check-translations',
-    syntax: '[<language>] [<library>]',
+    syntax: '[-diff] [<language>] [<library>]',
     shortDescription: 'Check that translations matches nb language',
-    description: 'Checks that all languages and libraries provided have been correctly translated',
+    description: 'Checks that all languages and libraries provided have been correctly' +
+    ' translated. When diff flag is supplied shows the differences between the translations',
     handler: checkTranslations
-  },
-  {
-    name: 'diff-translations',
-    syntax: '<language> <library>',
-    shortDescription: 'Diffs the given translation with the nb translation',
-    description: 'Useful for figuring out what is different between the nb translations and the given translation',
-    handler: diffTranslations
   },
   {
     name: 'build',
