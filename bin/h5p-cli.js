@@ -467,7 +467,7 @@ var commands = [
   },
   {
     name: 'diff',
-    shortDescription: 'Prints combined diff for alle repos',
+    shortDescription: 'Prints combined diff for all repos',
     handler: function () {
       h5p.diff(function (error, diff) {
         if (error) return process.stdout.write(color.red + 'ERROR!' + color.default + lf + error);
