@@ -18,6 +18,7 @@ const pull = require('../lib/commands/pull');
 const init = require('../lib/commands/init');
 const checkTranslations = require ('../lib/commands/check-translations');
 const buildLibraries = require('../lib/commands/build-libraries');
+const checkVersions = require('../lib/commands/check-versions');
 
 var lf = '\u000A';
 var cr = '\u000D';
@@ -805,13 +806,13 @@ var commands = [
   },
   {
     name: 'check-versions',
-    syntax: '[<library>...] [my.h5p]',
+    syntax: '[my.h5p]',
     shortDescription: 'Compare version of libraries with h5p file',
     description: 'Compare version of library or multiple libraries with' + lf +
     'a given H5P file. This let you easily determine which libraries has' + lf +
     'changed since a given H5P file. Will use libraries.h5p if no H5P file' + lf +
     'is specified, or specified file is not found.',
-    handler: h5p.checkVersions
+    handler: checkVersions
   }
 ];
 
