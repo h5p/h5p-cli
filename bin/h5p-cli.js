@@ -634,6 +634,23 @@ var commands = [
     }
   },
   {
+    name: 'check-language-file',
+    syntax: '<library> <language-code>',
+    shortDescription: 'Check if a language file is well formed',
+    handler: function (library, languageCode) {
+    if (!library) {
+        process.stdout.write('No library selected.' + lf);
+        return;
+      }
+
+      if (!languageCode) {
+        process.stdout.write('No language code selected.' + lf);
+        return;
+      }
+      h5p.checkLanguageFile(library, languageCode, results);
+    }
+  },
+  {
     name: 'server',
     syntax: '<config-file>',
     shortDescription: 'Start a local development server',
