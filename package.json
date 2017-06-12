@@ -1,5 +1,5 @@
 {
-  "version": "0.8.0",
+  "version": "0.8.1",
   "name": "h5p",
   "description": "A helping tool for developing HTML5 Packages.",
   "keywords": [
@@ -13,6 +13,7 @@
     "interactive"
   ],
   "scripts": {
+    "test": "jasmine",
     "jshint": "jshint bin/*.js lib/*.js"
   },
   "preferGlobal": true,
@@ -36,15 +37,19 @@
   },
   "dependencies": {
     "archiver": ">=0.8.1",
-    "httpdispatcher": ">=0.4.0",
+    "body-parser": ">=1.14.1",
     "express": ">=4.13.3",
+    "gitignore-parser": "0.0.2",
+    "httpdispatcher": ">=0.4.0",
     "node.extend": ">=1.1.5",
     "request": ">=2.65.0",
     "tar-fs": ">=1.8.1",
-    "body-parser": ">=1.14.1"
+    "cross-spawn": "^5.0.1",
+    "adm-zip": "^0.4.7"
   },
   "license": "MIT",
   "devDependencies": {
+    "jasmine": "^2.4.1",
     "jshint": "^2.9.1-rc1"
   }
 }

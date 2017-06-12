@@ -11,6 +11,15 @@ var h5p = require('../lib/h5p.js');
 var H5PServer = require('../lib/h5p-server.js');
 var H5PCreator = require('../lib/h5p-creator.js');
 
+/* Commands */
+const pack = require('../lib/commands/pack');
+const statusCmd = require('../lib/commands/status');
+const pull = require('../lib/commands/pull');
+const init = require('../lib/commands/init');
+const checkTranslations = require ('../lib/commands/check-translations');
+const buildLibraries = require('../lib/commands/build-libraries');
+const checkVersions = require('../lib/commands/check-versions');
+
 var lf = '\u000A';
 var cr = '\u000D';
 var color = {
@@ -101,27 +110,6 @@ function clone() {
 }
 
 /**
- * Recursive pulling for all repos in collection.
- */
-function pull() {
-  var repo = h5p.pull(function (error, result) {
-
-    if (error) {
-      result = color.red + 'FAILED' + color.default + lf + error;
-    }
-    else {
-      result = color.green + 'OK' + color.default + (result ? ' ' + result : '') + lf;
-    }
-
-    spinner.stop(result);
-    pull();
-  });
-  if (!repo) return; // Nothing to clone.
-  var msg = 'Pulling \'' + color.emphasize + repo + color.default + '\'...';
-  var spinner = new Spinner(msg);
-}
-
-/**
  * Recursive pushing for all repos in collection.
  */
 function push(options) {
@@ -143,42 +131,6 @@ function push(options) {
   if (!repo) return; // Nothing to clone.
   var msg = 'Pushing \'' + color.emphasize + repo + color.default + '\'...';
   var spinner = new Spinner(msg);
-}
-
-/**
- * Print status messages for the given repos.
- */
-function status(error, repos, force) {
-  if (error) return process.stdout.write(error + lf);
-
-  var first = true;
-  for (var i = 0; i < repos.length; i++) {
-    var repo = repos[i];
-
-    // Skip no outputs
-    if (!repo.error && !repo.changes && (force === undefined || !force)) continue;
-
-    if (first) {
-      // Extra line feed on the first.
-      process.stdout.write(lf);
-      first = false;
-    }
-
-    process.stdout.write(color.emphasize + repo.name + color.default);
-    if (repo.branch) {
-      process.stdout.write(' (' + repo.branch + ')');
-    }
-    process.stdout.write(lf);
-
-    if (repo.error) {
-      process.stdout.write(error + lf);
-    }
-    else if (repo.changes !== undefined) {
-      process.stdout.write(repo.changes.join(lf) + lf);
-    }
-
-    process.stdout.write(lf);
-  }
 }
 
 /**
@@ -218,11 +170,12 @@ function handleChanges(error, changes) {
    *
    * @private
    * @param {string} libName
-   * @param {string} detailsColor Prop for color object
-   * @param {string} details
+   * @param {string} [detailsColor] Prop for color object
+   * @param {string} [details]
    */
   function printLibChanges(libName, detailsColor, details) {
-    process.stdout.write(color.emphasize + libName + color.default + ' ' + color[detailsColor] + details + color.default + lf);
+    var detailsOutput = details && detailsColor ? color[detailsColor] + details + color.default : '';
+    process.stdout.write(color.emphasize + libName + color.default + ' ' + detailsOutput + lf);
   }
 
   // Print all libraries with changes
@@ -233,6 +186,15 @@ function handleChanges(error, changes) {
       // Repo name + skipped msg
       printLibChanges(lib.name, 'yellow', lib.msg);
     }
+    else if (lib.failed && lib.msg && lib.msg.error) {
+      printLibChanges(lib.name);
+
+      if (lib.msg.output) {
+        process.stdout.write(lib.msg.output + lf);
+      }
+
+      process.stdout.write(color['red'] + lib.msg.error + color.default + lf);
+    }
     else if (lib.failed) {
       // Repo name + error
       printLibChanges(lib.name, 'red', lib.msg);
@@ -240,6 +202,13 @@ function handleChanges(error, changes) {
     else if (lib.msg && lib.msg.version && lib.msg.changes) {
       // Repo name + details
       printLibChanges(lib.name, 'green', lib.msg.version);
+
+      // Changes
+      process.stdout.write(lib.msg.changes + lf);
+    }
+    else if (lib.msg && lib.msg.changes) {
+      // Repo name + details
+      printLibChanges(lib.name);
 
       // Changes
       process.stdout.write(lib.msg.changes + lf);
@@ -343,6 +312,14 @@ function progress(action) {
 // Register command handlers
 var commands = [
   {
+    name: 'init',
+    syntax: '<library>',
+    shortDescription: 'Initialize a new h5p library',
+    description: `Create a new H5P library with a standard structure
+    and the necessary files, in order to get started quickly.`,
+    handler: init
+  },
+  {
     name: 'help',
     syntax: '<command>',
     shortDescription: 'Displays additional information',
@@ -398,15 +375,10 @@ var commands = [
   },
   {
     name: 'status',
-    syntax: '[-f]',
-    shortDescription: 'Show the status for all your libraries',
+    syntax: '[-f] [<library>...]',
+    shortDescription: 'Show the status for the given or all libraries',
     description: 'The -f handle can be used to display which branch each library is on.',
-    handler: function () {
-      var force = (arguments[0] === '-f');
-      h5p.status(function (error, repos) {
-        status(error, repos, force);
-      });
-    }
+    handler: statusCmd
   },
   {
     name: 'commit',
@@ -431,12 +403,7 @@ var commands = [
     name: 'pull',
     syntax: '[<library>...]',
     shortDescription: 'Pull the given or all repos',
-    handler: function () {
-      h5p.update(Array.prototype.slice.call(arguments), function (error) {
-        if (error) return process.stdout.write(error + lf);
-        pull();
-      });
-    }
+    handler: pull
   },
   {
     name: 'push',
@@ -500,7 +467,7 @@ var commands = [
   },
   {
     name: 'diff',
-    shortDescription: 'Prints combined diff for alle repos',
+    shortDescription: 'Prints combined diff for all repos',
     handler: function () {
       h5p.diff(function (error, diff) {
         if (error) return process.stdout.write(color.red + 'ERROR!' + color.default + lf + error);
@@ -525,9 +492,12 @@ var commands = [
   },
   {
     name: 'pack',
-    syntax: '<library> [<library2>...] [my.h5p]',
+    syntax: '[-r] <library> [<library2>...] [my.h5p]',
     shortDescription: 'Packs the given libraries',
-    description: 'You can change the default output package by setting:' + lf +
+    description:
+      'Use -r for recursive packaging, will pack all dependencies as well' + lf +
+      lf +
+      'You can change the default output package by setting:' + lf +
       'export H5P_DEFAULT_PACK="~/my-libraries.h5p"' + lf +
       lf +
       'You can override which files are ignored by default:' + lf +
@@ -539,19 +509,7 @@ var commands = [
       'export H5P_ALLOWED_FILE_MODIFIERS=""' + lf +
       lf +
       'Put these in your ~/.bashrc for permanent settings.',
-    handler: function () {
-      var libraries = Array.prototype.slice.call(arguments);
-      var options = filterOptions(libraries, [/\.h5p$/]);
-      var file = (options[0] ? options[0] : (process.env.H5P_DEFAULT_PACK === undefined ? 'libraries.h5p' : process.env.H5P_DEFAULT_PACK));
-
-      if (!libraries.length) {
-        process.stdout.write('You must specify libraries.' + lf);
-      }
-
-      process.stdout.write('Packing ' + color.emphasize + libraries.length + color.default + ' librar' + (libraries.length === 1 ? 'y' : 'ies') + ' to ' + color.emphasize + file + color.default + '...' + lf);
-
-      h5p.pack(libraries, file, results);
-    }
+    handler: pack
   },
   {
     name: 'increase-patch-version',
@@ -577,6 +535,17 @@ var commands = [
     }
   },
   {
+    name: 'tag',
+    syntax: '<tag-name> [<library>...]',
+    shortDescription: 'Create a tag',
+    handler: function () {
+      var inputs = Array.prototype.slice.call(arguments);
+      var tagName = inputs.splice(0,1);
+      var libraries = inputs;
+      h5p.tag(tagName, libraries, results);
+    }
+  },
+  {
     name: 'changes-since',
     syntax: '[<num-versions>] [<library>...]',
     shortDescription: 'Show changed files since last version',
@@ -588,6 +557,24 @@ var commands = [
         versions = Math.abs(libraries.splice(0, 1));
       }
       h5p.changesSince(versions, libraries, handleChanges);
+    }
+  },
+  {
+    name: 'changes-since-release',
+    syntax: '[<library>...]',
+    shortDescription: 'Show changed files since last release',
+    handler: function () {
+      var libraries = Array.prototype.slice.call(arguments);
+      h5p.changesSinceRelease(libraries, handleChanges);
+    }
+  },
+  {
+    name: 'compare-tags-with-release',
+    syntax: '[<library>...]',
+    shortDescription: 'Compare tag of release and master branch',
+    handler: function () {
+      var libraries = Array.prototype.slice.call(arguments);
+      h5p.compareTagsRelease(libraries, handleChanges);
     }
   },
   {
@@ -689,12 +676,21 @@ var commands = [
   }*/
   {
     name: 'add-english-texts',
-    syntax: '<language-code> <library> [<library>...]',
+    syntax: '[-P] <language-code> <library> [<library>...]',
     shortDescription: 'Update translations',
-    description: 'Add the english text strings to the given translation with the given language code. This will make translating easier.',
+    description: 'Add the english text strings to the given translation with the given language code. Use -P flag to populate with english texts instead of TODOs.',
     handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
-      var languageCode = libraries.splice(0, 1)[0];
+      var populateFlag = libraries.splice(0, 1)[0];
+      var languageCode;
+      var hasPopulateFlag = populateFlag === '-P';
+
+      if (hasPopulateFlag) {
+        languageCode = libraries.splice(0, 1)[0];
+      }
+      else {
+        languageCode = populateFlag;
+      }
 
       if (!languageCode) {
         process.stdout.write('No language specified.' + lf);
@@ -705,7 +701,7 @@ var commands = [
         return;
       }
 
-      h5p.addOriginalTexts(languageCode, libraries, results);
+      h5p.addOriginalTexts(languageCode, libraries, results, hasPopulateFlag);
     }
   },
   {
@@ -780,6 +776,43 @@ var commands = [
       var libraries = Array.prototype.slice.call(arguments);
       h5p.recursiveMinorBump(libraries, results);
     }
+  },
+  {
+    name: 'list-deps',
+    syntax: '<library>',
+    shortDescription: 'Dependencies to library',
+    description: 'List all libraries that has a dependency to given library.',
+    handler: function () {
+      var libraries = Array.prototype.slice.call(arguments);
+      h5p.recursiveMinorBump(libraries, results, true);
+    }
+  },
+  {
+    name: 'check-translations',
+    syntax: '[-diff] [<language>] [<library>]',
+    shortDescription: 'Check that translations matches nb language',
+    description: 'Checks that all languages and libraries provided have been correctly' +
+    ' translated. When diff flag is supplied shows the differences between the translations',
+    handler: checkTranslations
+  },
+  {
+    name: 'build',
+    syntax: '<library> [<library>...]',
+    shortDescription: 'Installs dependencies, builds libraries and runs tests',
+    description: 'This is particularly useful for libraries that has a build' +
+    ' step, to make sure that librares has their dependencies, is built properly' +
+    ' and tested, so they are properly prepared for production',
+    handler: buildLibraries
+  },
+  {
+    name: 'check-versions',
+    syntax: '[my.h5p]',
+    shortDescription: 'Compare version of libraries with h5p file',
+    description: 'Compare version of library or multiple libraries with' + lf +
+    'a given H5P file. This let you easily determine which libraries has' + lf +
+    'changed since a given H5P file. Will use libraries.h5p if no H5P file' + lf +
+    'is specified, or specified file is not found.',
+    handler: checkVersions
   }
 ];
 
