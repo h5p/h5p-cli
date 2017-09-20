@@ -193,7 +193,7 @@ function handleChanges(error, changes) {
         process.stdout.write(lib.msg.output + lf);
       }
 
-      process.stdout.write(color['red'] + lib.msg.error + color.default + lf);
+      process.stdout.write(color.red + lib.msg.error + color.default + lf);
     }
     else if (lib.failed) {
       // Repo name + error
@@ -813,6 +813,22 @@ var commands = [
     'changed since a given H5P file. Will use libraries.h5p if no H5P file' + lf +
     'is specified, or specified file is not found.',
     handler: checkVersions
+  },
+  {
+    name: 'update-translations',
+    syntax: '<library> [<library>...]',
+    shortDescription: 'Update all translations',
+    description: 'Will scan the language folder and update each file according to semantics.json. Set the special field property "state" to one of: new, updated, removed',
+    handler: function () {
+      var libraries = Array.prototype.slice.call(arguments);
+
+      if (!libraries.length) {
+        process.stdout.write('No library specified.' + lf);
+        return;
+      }
+
+      h5p.updateTranslations(libraries, results);
+    }
   }
 ];
 
