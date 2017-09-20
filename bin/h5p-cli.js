@@ -797,11 +797,11 @@ var commands = [
   },
   {
     name: 'build',
-    syntax: '<library> [<library>...]',
+    syntax: '[-t] <library> [<library>...]',
     shortDescription: 'Installs dependencies, builds libraries and runs tests',
     description: 'This is particularly useful for libraries that has a build' +
     ' step, to make sure that librares has their dependencies, is built properly' +
-    ' and tested, so they are properly prepared for production',
+    '. Tests can be run with the -t flag.',
     handler: buildLibraries
   },
   {
