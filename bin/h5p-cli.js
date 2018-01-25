@@ -19,6 +19,7 @@ const init = require('../lib/commands/init');
 const checkTranslations = require ('../lib/commands/check-translations');
 const buildLibraries = require('../lib/commands/build-libraries');
 const checkVersions = require('../lib/commands/check-versions');
+const validate = require('../lib/commands/validate');
 
 var lf = '\u000A';
 var cr = '\u000D';
@@ -829,6 +830,13 @@ var commands = [
 
       h5p.updateTranslations(libraries, results);
     }
+  },
+  {
+    name: 'validate',
+    syntax: '<library> [<library>]',
+    shortDescription: 'Validate H5P libraries',
+    description: 'Validate H5P is according to the specification',
+    handler: validate
   }
 ];
 

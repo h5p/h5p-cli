@@ -16,6 +16,14 @@
     "test": "jasmine",
     "jshint": "jshint bin/*.js lib/*.js"
   },
+  "eslintConfig": {
+    "env": {
+      "node": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 6
+    }
+  },
   "preferGlobal": true,
   "homepage": "http://h5p.org",
   "author": "Joubel AS",
@@ -36,16 +44,17 @@
     "node": ">=v0.10"
   },
   "dependencies": {
+    "adm-zip": "^0.4.7",
     "archiver": ">=0.8.1",
     "body-parser": ">=1.14.1",
+    "cross-spawn": "^5.0.1",
+    "eval": "^0.1.2",
     "express": ">=4.13.3",
     "gitignore-parser": "0.0.2",
     "httpdispatcher": ">=0.4.0",
     "node.extend": ">=1.1.5",
     "request": ">=2.65.0",
-    "tar-fs": ">=1.8.1",
-    "cross-spawn": "^5.0.1",
-    "adm-zip": "^0.4.7"
+    "tar-fs": ">=1.8.1"
   },
   "license": "MIT",
   "devDependencies": {
