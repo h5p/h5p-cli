@@ -48,7 +48,6 @@
     "archiver": ">=0.8.1",
     "body-parser": ">=1.14.1",
     "cross-spawn": "^5.0.1",
-    "eval": "^0.1.2",
     "express": ">=4.13.3",
     "gitignore-parser": "0.0.2",
     "httpdispatcher": ">=0.4.0",
