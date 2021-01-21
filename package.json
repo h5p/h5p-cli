@@ -53,11 +53,12 @@
     "httpdispatcher": ">=0.4.0",
     "node.extend": ">=1.1.5",
     "request": ">=2.65.0",
+    "sanitize-html": "^2.3.0",
     "tar-fs": ">=1.8.1"
   },
   "license": "MIT",
   "devDependencies": {
     "jasmine": "^2.4.1",
-    "jshint": "^2.9.1-rc1"
+    "jshint": "^2.12.0"
   }
 }
