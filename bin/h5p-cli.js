@@ -20,6 +20,7 @@ const checkTranslations = require ('../lib/commands/check-translations');
 const buildLibraries = require('../lib/commands/build-libraries');
 const checkVersions = require('../lib/commands/check-versions');
 const validate = require('../lib/commands/validate');
+const Input = require('../lib/utility/input');
 
 var lf = '\u000A';
 var cr = '\u000D';
@@ -89,8 +90,8 @@ function Spinner(prefix) {
  * Recursive cloning of all libraries in the collection.
  * Will print out status messages along the way.
  */
-function clone() {
-  var name = h5p.clone(function (error) {
+function clone(fetchWithHttps) {
+  var name = h5p.clone(fetchWithHttps, function (error) {
     var result;
     if (error === -1) {
       result = color.yellow + 'SKIPPED' + color.default + lf;
@@ -103,7 +104,7 @@ function clone() {
     }
 
     spinner.stop(result);
-    clone();
+    clone(fetchWithHttps);
   });
   if (!name) return; // Nothing to clone.
   var msg = 'Cloning into \'' + color.emphasize + name + color.default + '\'...';
@@ -357,10 +358,17 @@ var commands = [
   },
   {
     name: 'get',
-    syntax: '<library>',
+    syntax: '[--https] <library>',
     shortDescription: 'Clone library and all dependencies',
+    description: 'The --https handle indicates that git operations should use https:// urls for git repos instead of ssh urls.',
     handler: function () {
-      var libraries = Array.prototype.slice.call(arguments);
+      var inputs = Array.prototype.slice.call(arguments);
+      const fetchWithHttps = inputs[0] === "--https";
+      var libraries = inputs;
+      if(fetchWithHttps) {
+        libraries = inputs.slice(1);
+      }
+      
       if (!libraries.length) {
         process.stdout.write('No library specified.' + lf);
         return;
@@ -370,7 +378,7 @@ var commands = [
       h5p.get(libraries, function (error) {
         var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
         spinner.stop(result + lf);
-        clone();
+        clone(fetchWithHttps);
       });
     }
   },
