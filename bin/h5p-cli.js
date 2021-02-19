@@ -90,8 +90,8 @@ function Spinner(prefix) {
  * Recursive cloning of all libraries in the collection.
  * Will print out status messages along the way.
  */
-function clone(ciMode) {
-  var name = h5p.clone(ciMode, function (error) {
+function clone(fetchWithHttps) {
+  var name = h5p.clone(fetchWithHttps, function (error) {
     var result;
     if (error === -1) {
       result = color.yellow + 'SKIPPED' + color.default + lf;
@@ -104,7 +104,7 @@ function clone(ciMode) {
     }
 
     spinner.stop(result);
-    clone(ciMode);
+    clone(fetchWithHttps);
   });
   if (!name) return; // Nothing to clone.
   var msg = 'Cloning into \'' + color.emphasize + name + color.default + '\'...';
@@ -358,14 +358,14 @@ var commands = [
   },
   {
     name: 'get',
-    syntax: '[--ci] <library>',
+    syntax: '[--https] <library>',
     shortDescription: 'Clone library and all dependencies',
-    description: 'The --ci handle indicates that this operation is performed inside ci and should use https:// urls for git repos.',
+    description: 'The --https handle indicates that git operations should use https:// urls for git repos instead of ssh urls.',
     handler: function () {
       var inputs = Array.prototype.slice.call(arguments);
-      const ciMode = inputs[0] === "--ci";
+      const fetchWithHttps = inputs[0] === "--https";
       var libraries = inputs;
-      if(ciMode) {
+      if(fetchWithHttps) {
         libraries = inputs.slice(1);
       }
       
@@ -378,7 +378,7 @@ var commands = [
       h5p.get(libraries, function (error) {
         var result = (error ? (color.red + 'ERROR: ' + color.default + error) : (color.green + 'DONE' + color.default));
         spinner.stop(result + lf);
-        clone(ciMode);
+        clone(fetchWithHttps);
       });
     }
   },
