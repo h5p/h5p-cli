@@ -797,6 +797,13 @@ var commands = [
     }
   },
   {
+    name: 'find-inconsistencies',
+    shortDescription: 'Find version inconsistencies across libraries',
+    handler: function () {
+      h5p.findDependencyInconsistencies();
+    }
+  },
+  {
     name: 'check-translations',
     syntax: '[-diff] [<language>] [<library>]',
     shortDescription: 'Check that translations matches nb language',
