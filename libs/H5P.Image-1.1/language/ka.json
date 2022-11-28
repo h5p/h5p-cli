@@ -1,0 +1,23 @@
+{
+  "semantics": [
+    {
+      "label": "გამოსახულება"
+    },
+    {
+      "label": "Decorative only",
+      "description": "Enable this option if the image is purely decorative and does not add any information to the content on the page. It will be ignored by screen readers and not given any alternative text."
+    },
+    {
+      "label": "ალტერნატიული ტექსტი",
+      "description": "აუცილებელი. თუ ბრაუზერი გამოსახულებას არ ჩატვირთავს, ეს ტექსტი მის ნაცვლად გამოჩნდება. ასევე გამოიყენება \"ტექსტის გამხმოვანებლის მიერ\"."
+    },
+    {
+      "label": "ტექსტი კურსორის მიტანისას",
+      "description": "სურვილისამებრ. ეს ტექსტი გამოჩნდება მაშინ, როდესაც მომხმარებელი კურსორს მიიტანს გამოსახულებასთან."
+    },
+    {
+      "label": "გამოსახულების შიგთავსის დასახელება",
+      "default": "გამოსახულება"
+    }
+  ]
+}

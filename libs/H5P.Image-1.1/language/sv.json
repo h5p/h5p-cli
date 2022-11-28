@@ -1,0 +1,23 @@
+{
+  "semantics": [
+    {
+      "label": "Bild"
+    },
+    {
+      "label": "Decorative only",
+      "description": "Enable this option if the image is purely decorative and does not add any information to the content on the page. It will be ignored by screen readers and not given any alternative text."
+    },
+    {
+      "label": "Alternativ text",
+      "description": "Obligatorisk. Om bilden inte kan laddas i användarens webbläsare så kommer denna text visas istället. Används också av \"skärmläsare\"."
+    },
+    {
+      "label": "Text vid hovring",
+      "description": "Valfri. Denna text visas om användaren placerar sin markör (hovrar) över bilden."
+    },
+    {
+      "label": "Namn på bildinnehåll",
+      "default": "Bild"
+    }
+  ]
+}
