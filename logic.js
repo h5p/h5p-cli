@@ -3,17 +3,17 @@ const gitClone = require('git-clone/promise');
 const config = require('./config.js');
 module.exports = {
   listLibraries: () => {
-    return superAgent.get('https://h5p.org/registry.json')
+    return superAgent.get('https://raw.githubusercontent.com/h5p/h5p-registry/main/libraries.json')
       .then((result) => {
-        const list = JSON.parse(result.text).libraries;
+        const list = JSON.parse(result.text);
         const output = {
           regular: {},
           reversed: {}
         }
         for (let item in list) {
-          list[item].repoName = item;
-          output.reversed[list[item].machineName] = list[item];
-          output.regular[item] = list[item];
+          list[item].repoName = list[item].repo.url.split('/').slice(-1)[0];
+          output.reversed[list[item].id] = list[item];
+          output.regular[list[item].repoName] = list[item];
         }
         return Promise.resolve(output);
       });
@@ -69,7 +69,7 @@ module.exports = {
         const list = await module.exports.computeDependencies(library);
         for (let item in list) {
           console.log(`> installing ${list[item].repoName}`);
-          await gitClone(`https://github.com/h5p/${list[item].repoName}`, `${config.folders.lib}/${list[item].machineName}-${list[item].version.major}.${list[item].version.minor}`);
+          await gitClone(`https://github.com/h5p/${list[item].repoName}`, `${config.folders.lib}/${list[item].id}`);
         }
         resolve();
       }
@@ -77,6 +77,5 @@ module.exports = {
         reject(error);
       }
     });
-    //return gitClone(`https://github.com/h5p/${library}`, config.folders.lib);
   }
 }

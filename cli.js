@@ -1,4 +1,5 @@
 const logic = require('./logic.js');
+const config = require('./config.js');
 const handleError = (error) => {
   console.log('> error');
   console.log(error);
@@ -8,7 +9,7 @@ const cli = {
     console.log('> fetching h5p library list');
     logic.listLibraries()
       .then((result) => {
-        for (let item in result.regular) console.log(reversed ? result.regular[item].machineName : item);
+        for (let item in result.regular) console.log(reversed ? result.regular[item].id : item);
       })
       .catch(handleError);
   },
@@ -21,10 +22,10 @@ const cli = {
       .catch(handleError);
   },
   install: (library) => {
-    console.log('> cloning h5p library and dependencies');
+    console.log(`> cloning h5p library and dependencies into "${config.folders.lib}" folder`);
     logic.downloadWithDependencies(library)
       .then((result) => {
-        console.log('> installation complete');
+        console.log('> all done');
       })
       .catch(handleError);
   }
