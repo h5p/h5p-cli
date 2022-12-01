@@ -4,11 +4,11 @@ const handleError = (error) => {
   console.log(error);
 }
 const cli = {
-  list: () => {
+  list: (reversed) => {
     console.log('> fetching h5p library list');
     logic.listLibraries()
       .then((result) => {
-        for (let item in result) console.log(result[item]);
+        for (let item in result.regular) console.log(reversed ? result.regular[item].machineName : item);
       })
       .catch(handleError);
   },
@@ -24,7 +24,7 @@ const cli = {
     console.log('> cloning h5p library and dependencies');
     logic.downloadWithDependencies(library)
       .then((result) => {
-        console.log(result);
+        console.log('> installation complete');
       })
       .catch(handleError);
   }
