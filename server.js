@@ -6,5 +6,5 @@ app.use(express.json());
 app.listen(config.port, () => {
   console.log(`h5p content type development server running on port ${config.port}`);
 });
-app.get('/api', api.test);
+app.get('/content/:library/:folder', api.content);
 app.use(express.static('./'));

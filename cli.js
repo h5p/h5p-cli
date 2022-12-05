@@ -1,3 +1,4 @@
+const util = require('util');
 const logic = require('./logic.js');
 const config = require('./config.js');
 const handleError = (error) => {
@@ -17,7 +18,7 @@ const cli = {
     console.log('> fetching h5p library dependency list');
     logic.computeDependencies(library)
       .then((result) => {
-        console.log(result);
+        console.log(util.inspect(result, false, null, true));
       })
       .catch(handleError);
   },

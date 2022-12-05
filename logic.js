@@ -31,6 +31,8 @@ module.exports = {
         else {
           done[dependency] = registry.regular[dependency];
           const list = JSON.parse((await superAgent.get(`https://raw.githubusercontent.com/h5p/${dependency}/master/library.json`)).text);
+          done[dependency].preloadedJs = list.preloadedJs || [];
+          done[dependency].preloadedCss = list.preloadedCss || [];
           if (list.preloadedDependencies)
             for (let item of list.preloadedDependencies) {
               const entry = registry.reversed[item.machineName]?.repoName;
