@@ -42,13 +42,16 @@ module.exports = {
         baseUrl: "${request.protocol}://${request.get('host')}",
         contents: {
           "cid-1": {
-            library: "${cache.deps[request.params.library][request.params.library]?.id} 1.0",
+            library: "${cache.deps[request.params.library][request.params.library]?.id} 1.16.4",
             jsonContent: ${JSON.stringify(jsonContent)},
             mainId: "1",
-            contentUserData: [],
+            contentUserData: [{state: false}],
+            disable: 6,
+            resizeCode: "",
             title: "${request.params.folder}",
             scripts: ${JSON.stringify(preloadedJs)},
-            styles: ${JSON.stringify(preloadedCss)}
+            styles: ${JSON.stringify(preloadedCss)},
+            url: "${request.protocol}://${request.get('host')}"
           }
         },
         core: {
@@ -57,7 +60,7 @@ module.exports = {
         },
         postUserStatistics: false,
         saveFreq: false,
-        url: "${request.protocol}://${request.get('host')}/content/${request.params.folder}",
+        url: "${request.protocol}://${request.get('host')}/content/${request.params.library}/${request.params.folder}",
         user: { name: "developer", mail: "some.developer@some.company.com" }
       };
     </script>
