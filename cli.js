@@ -14,9 +14,9 @@ const cli = {
       })
       .catch(handleError);
   },
-  deps: (library) => {
+  deps: (library, noEditor) => {
     console.log('> fetching h5p library dependency list');
-    logic.computeDependencies(library)
+    logic.computeDependencies(library, noEditor)
       .then((result) => {
         console.log(util.inspect(result, false, null, true));
       })

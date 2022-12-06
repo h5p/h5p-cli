@@ -9,16 +9,16 @@ module.exports = {
   content: async (request, response, next) => {
     try {
       if (!cache?.deps[request.params.library]) {
-        cache.deps[request.params.library] = await logic.computeDependencies(request.params.library);
+        cache.deps = await logic.computeDependencies(request.params.library, true);
       }
       const jsonContent = fs.readFileSync(`./content/${request.params.library}/${request.params.folder}/content.json`, {encoding: 'utf8', flag: 'r'});
       let preloadedJs = [];
       let preloadedCss = [];
-      for (let item in cache.deps[request.params.library]) {
-        for (let jsItem of cache.deps[request.params.library][item].preloadedJs)
-          preloadedJs.push(`../../${lib}/${cache.deps[request.params.library][item].id}/${jsItem.path}`);
-        for (let cssItem of cache.deps[request.params.library][item].preloadedCss)
-          preloadedCss.push(`../../${lib}/${cache.deps[request.params.library][item].id}/${cssItem.path}`);
+      for (let item in cache.deps) {
+        for (let jsItem of cache.deps[item].preloadedJs)
+          preloadedJs.push(`../../${lib}/${cache.deps[item].id}/${jsItem.path}`);
+        for (let cssItem of cache.deps[item].preloadedCss)
+          preloadedCss.push(`../../${lib}/${cache.deps[item].id}/${cssItem.path}`);
       }
       response.set('Content-Type', 'text/html');
       response.end(
@@ -40,18 +40,19 @@ module.exports = {
         ajax: { contentUserData: "/h5p-ajax/content-user-data/:contentId/:dataType/:subContentId" },
         ajaxPath: "/h5p-ajax/",
         baseUrl: "${request.protocol}://${request.get('host')}",
+        url: "${request.protocol}://${request.get('host')}/content/${request.params.library}/${request.params.folder}",
         contents: {
           "cid-1": {
-            library: "${cache.deps[request.params.library][request.params.library]?.id} 1.16.4",
+            library: "${cache.deps[request.params.library]?.id} 1.16.4",
             jsonContent: ${JSON.stringify(jsonContent)},
+            url: "${request.protocol}://${request.get('host')}",
             mainId: "1",
             contentUserData: [{state: false}],
             disable: 6,
             resizeCode: "",
             title: "${request.params.folder}",
             scripts: ${JSON.stringify(preloadedJs)},
-            styles: ${JSON.stringify(preloadedCss)},
-            url: "${request.protocol}://${request.get('host')}"
+            styles: ${JSON.stringify(preloadedCss)}
           }
         },
         core: {
@@ -60,8 +61,10 @@ module.exports = {
         },
         postUserStatistics: false,
         saveFreq: false,
-        url: "${request.protocol}://${request.get('host')}/content/${request.params.library}/${request.params.folder}",
-        user: { name: "developer", mail: "some.developer@some.company.com" }
+        user: { name: "developer", mail: "some.developer@some.company.com" },
+        "l10n": {
+          "H5P":{"fullscreen":"Fullscreen","disableFullscreen":"Disable fullscreen","download":"Download","copyrights":"Rights of use","embed":"Embed","size":"Size","showAdvanced":"Show advanced","hideAdvanced":"Hide advanced","advancedHelp":"Include this script on your website if you want dynamic sizing of the embedded content:","copyrightInformation":"Rights of use","close":"Close","title":"Title","author":"Author","year":"Year","source":"Source","license":"License","thumbnail":"Thumbnail","noCopyrights":"No copyright information available for this content.","downloadDescription":"Download this content as a H5P file.","copyrightsDescription":"View copyright information for this content.","embedDescription":"View the embed code for this content.","h5pDescription":"Visit H5P.org to check out more cool content.","contentChanged":"This content has changed since you last used it.","startingOver":"You'll be starting over.","by":"by","showMore":"Show more","showLess":"Show less","subLevel":"Sublevel"}
+        }
       };
     </script>
   </head>

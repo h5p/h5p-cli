@@ -18,7 +18,7 @@ module.exports = {
         return Promise.resolve(output);
       });
   },
-  computeDependencies: (library) => {
+  computeDependencies: (library, noEditor) => {
     return new Promise(async (resolve, reject) => {
       if (!library) return reject('invalid_library');
       let registry = {};
@@ -42,7 +42,7 @@ module.exports = {
               }
               if (!done[entry]) toDo[entry] = 1;
             }
-          if (list.editorDependencies)
+          if (!noEditor && list.editorDependencies)
             for (let item of list.editorDependencies) {
               const entry = registry.reversed[item.machineName]?.repoName;
               if (!entry) {
