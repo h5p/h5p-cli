@@ -11,7 +11,7 @@ module.exports = {
       if (!cache?.deps[request.params.library]) {
         cache.deps = await logic.computeDependencies(request.params.library, true);
       }
-      const jsonContent = fs.readFileSync(`./content/${request.params.library}/${request.params.folder}/content.json`, {encoding: 'utf8', flag: 'r'});
+      const jsonContent = fs.readFileSync(`./content/${request.params.folder}/content.json`, {encoding: 'utf8', flag: 'r'});
       let preloadedJs = [];
       let preloadedCss = [];
       for (let item in cache.deps) {
@@ -27,26 +27,18 @@ module.exports = {
   <head>
     <title>h5p-dev</title>
     <meta charset="utf-8">
-    <script type="text/javascript" src="/assets/h5p-core/library/js/jquery.js"></script>
-    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p.js"></script>
-    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p-event-dispatcher.js"></script>
-    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p-x-api-event.js"></script>
-    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p-x-api.js"></script>
-    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p-content-type.js"></script>
-    <script type="text/javascript" src="/assets/h5p-core/editor/scripts/h5peditor-editor.js"></script>
-    <script type="text/javascript" src="/assets/h5p-core/editor/language/en.js"></script>
     <script type="text/javascript">
       H5PIntegration = {
         ajax: { contentUserData: "/h5p-ajax/content-user-data/:contentId/:dataType/:subContentId" },
         ajaxPath: "/h5p-ajax/",
-        baseUrl: "${request.protocol}://${request.get('host')}",
-        url: "${request.protocol}://${request.get('host')}/content/${request.params.library}/${request.params.folder}",
+        baseUrl: "/",
+        url: "${request.protocol}://${request.get('host')}",
         contents: {
-          "cid-1": {
+          "cid-${request.params.folder}": {
             library: "${cache.deps[request.params.library]?.id} 1.16.4",
             jsonContent: ${JSON.stringify(jsonContent)},
             url: "${request.protocol}://${request.get('host')}",
-            mainId: "1",
+            mainId: "${request.params.folder}",
             contentUserData: [{state: false}],
             disable: 6,
             resizeCode: "",
@@ -67,9 +59,17 @@ module.exports = {
         }
       };
     </script>
+    <script type="text/javascript" src="/assets/h5p-core/library/js/jquery.js"></script>
+    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p.js"></script>
+    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p-event-dispatcher.js"></script>
+    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p-x-api-event.js"></script>
+    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p-x-api.js"></script>
+    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p-content-type.js"></script>
+    <script type="text/javascript" src="/assets/h5p-core/editor/scripts/h5peditor-editor.js"></script>
+    <script type="text/javascript" src="/assets/h5p-core/editor/language/en.js"></script>
   </head>
   <body>
-    <iframe id="h5p-iframe-1" class="h5p-iframe" data-content-id="1" style="width: 100%;" src="about:blank" frameBorder="0" scrolling="no"></iframe>
+    <iframe id="h5p-iframe-${request.params.folder}" class="h5p-iframe" data-content-id="${request.params.folder}" style="width: 100%;" src="about:blank" frameBorder="0" scrolling="no"></iframe>
   </body>
 </html>`);
     }
