@@ -11,7 +11,7 @@ module.exports = {
       if (!cache?.deps[request.params.library]) {
         cache.deps = await logic.computeDependencies(request.params.library, true);
       }
-      const jsonContent = fs.readFileSync(`./content/${request.params.folder}/content.json`, {encoding: 'utf8', flag: 'r'});
+      const jsonContent = fs.readFileSync(`./content/${request.params.folder}/content.json`, 'utf8');
       let preloadedJs = [];
       let preloadedCss = [];
       for (let item in cache.deps) {

@@ -3,7 +3,7 @@ const gitClone = require('git-clone/promise');
 const config = require('./config.js');
 module.exports = {
   listLibraries: () => {
-    return superAgent.get('https://raw.githubusercontent.com/h5p/h5p-registry/main/libraries.json')
+    return superAgent.get(config.registryUrl)
       .then((result) => {
         const list = JSON.parse(result.text);
         const output = {
