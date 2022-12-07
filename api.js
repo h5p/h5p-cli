@@ -73,7 +73,11 @@ module.exports = {
             "/assets/js/h5p-tooltip.js",
             "/assets/js/request-queue.js","/assets/js/h5p.js",
           ],
-          styles: ["/assets/styles/h5p.css"]
+          styles: [
+            "/assets/styles/h5p.css",
+            "/assets/styles/h5p-confirmation-dialog.css",
+            "/assets/styles/h5p-tooltip.css"
+          ]
         },
         postUserStatistics: false,
         saveFreq: false,
