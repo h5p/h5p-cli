@@ -1,6 +1,7 @@
 const fs = require('fs');
 const logic = require('./logic.js');
 const config = require('./config.js');
+const l10n = require('./assets/l10n.json');
 const lib = config.folders.lib;
 let cache = {
   deps: {}
@@ -33,40 +34,64 @@ module.exports = {
         ajaxPath: "/h5p-ajax/",
         baseUrl: "/",
         url: "${request.protocol}://${request.get('host')}",
+        siteUrl: "${request.protocol}://${request.get('host')}",
         contents: {
           "cid-${request.params.folder}": {
             library: "${cache.deps[request.params.library]?.id} 1.16.4",
             jsonContent: ${JSON.stringify(jsonContent)},
             url: "${request.protocol}://${request.get('host')}",
             mainId: "${request.params.folder}",
+            displayOptions: {
+              "anonymous": 1,
+              "confusion": 1,
+              "copy": true,
+              "copyright": false,
+              "embed": 0,
+              "export": true,
+              "frame": true,
+              "icon": true
+            },
             contentUserData: [{state: false}],
             disable: 6,
             resizeCode: "",
             title: "${request.params.folder}",
-            scripts: ${JSON.stringify(preloadedJs)},
-            styles: ${JSON.stringify(preloadedCss)}
+            styles: ${JSON.stringify(preloadedCss)},
+            scripts: ${JSON.stringify(preloadedJs)}
           }
         },
         core: {
-          scripts: ["/assets/h5p-core/library/js/jquery.js?nw7byb", "/assets/h5p-core/library/js/h5p.js?nw7byb", "/assets/h5p-core/library/js/h5p-event-dispatcher.js?nw7byb", "/assets/h5p-core/library/js/h5p-x-api-event.js?nw7byb", "/assets/h5p-core/library/js/h5p-x-api.js?nw7byb", "/assets/h5p-core/library/js/h5p-content-type.js?nw7byb"],
-          styles: ["/assets/h5p-core/library/styles/h5p.css?nw7byb"]
+          scripts: [
+            "/assets/js/jquery.js",
+            
+            "/assets/js/h5p-event-dispatcher.js",
+            "/assets/js/h5p-x-api-event.js",
+            "/assets/js/h5p-x-api.js",
+            "/assets/js/h5p-content-type.js",
+            "/assets/js/h5p-confirmation-dialog.js",
+            "/assets/js/h5p-action-bar.js",
+            "/assets/js/h5p-display-options.js",
+            "/assets/js/h5p-tooltip.js",
+            "/assets/js/request-queue.js","/assets/js/h5p.js",
+          ],
+          styles: ["/assets/styles/h5p.css"]
         },
         postUserStatistics: false,
         saveFreq: false,
-        user: { name: "developer", mail: "some.developer@some.company.com" },
-        "l10n": {
-          "H5P":{"fullscreen":"Fullscreen","disableFullscreen":"Disable fullscreen","download":"Download","copyrights":"Rights of use","embed":"Embed","size":"Size","showAdvanced":"Show advanced","hideAdvanced":"Hide advanced","advancedHelp":"Include this script on your website if you want dynamic sizing of the embedded content:","copyrightInformation":"Rights of use","close":"Close","title":"Title","author":"Author","year":"Year","source":"Source","license":"License","thumbnail":"Thumbnail","noCopyrights":"No copyright information available for this content.","downloadDescription":"Download this content as a H5P file.","copyrightsDescription":"View copyright information for this content.","embedDescription":"View the embed code for this content.","h5pDescription":"Visit H5P.org to check out more cool content.","contentChanged":"This content has changed since you last used it.","startingOver":"You'll be starting over.","by":"by","showMore":"Show more","showLess":"Show less","subLevel":"Sublevel"}
-        }
+        user: { name: "developer", mail: "some.developer@some.company.com" }
       };
+      H5PIntegration.l10n = ${JSON.stringify(l10n)};
     </script>
-    <script type="text/javascript" src="/assets/h5p-core/library/js/jquery.js"></script>
-    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p.js"></script>
-    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p-event-dispatcher.js"></script>
-    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p-x-api-event.js"></script>
-    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p-x-api.js"></script>
-    <script type="text/javascript" src="/assets/h5p-core/library/js/h5p-content-type.js"></script>
-    <script type="text/javascript" src="/assets/h5p-core/editor/scripts/h5peditor-editor.js"></script>
-    <script type="text/javascript" src="/assets/h5p-core/editor/language/en.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.js"></script>
+    
+    <script type="text/javascript" src="/assets/js/h5p-event-dispatcher.js"></script>
+    <script type="text/javascript" src="/assets/js/h5p-x-api-event.js"></script>
+    <script type="text/javascript" src="/assets/js/h5p-x-api.js"></script>
+    <script type="text/javascript" src="/assets/js/h5p-content-type.js"></script>
+    <script type="text/javascript" src="/assets/js/h5p-confirmation-dialog.js"></script>
+    <script type="text/javascript" src="/assets/js/h5p-action-bar.js"></script>
+    <script type="text/javascript" src="/assets/js/h5p-display-options.js"></script>
+    <script type="text/javascript" src="/assets/js/h5p-tooltip.js"></script>
+    <script type="text/javascript" src="/assets/js/request-queue.js"></script><script type="text/javascript" src="/assets/js/h5p.js"></script>
   </head>
   <body>
     <iframe id="h5p-iframe-${request.params.folder}" class="h5p-iframe" data-content-id="${request.params.folder}" style="width: 100%;" src="about:blank" frameBorder="0" scrolling="no"></iframe>

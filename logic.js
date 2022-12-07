@@ -58,6 +58,9 @@ module.exports = {
         while (Object.keys(toDo).length) {
           for (let item in toDo) await fetch(item);
         }
+        const main = done[library];
+        delete done[library];
+        done[library] = main;
         resolve(done);
       }
       catch (error) {
