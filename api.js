@@ -9,17 +9,17 @@ let cache = {
 module.exports = {
   content: async (request, response, next) => {
     try {
-      if (!cache?.deps[request.params.library]) {
-        cache.deps = await logic.computeDependencies(request.params.library, true);
-      }
-      const jsonContent = fs.readFileSync(`./content/${request.params.folder}/content.json`, 'utf8');
+      const library = request.params.library;
+      const folder = request.params.folder;
+      if (!cache?.deps[library]) cache.deps[library] = await logic.computeDependencies(library, true);
+      const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
       let preloadedJs = [];
       let preloadedCss = [];
-      for (let item in cache.deps) {
-        for (let jsItem of cache.deps[item].preloadedJs)
-          preloadedJs.push(`../../${lib}/${cache.deps[item].id}/${jsItem.path}`);
-        for (let cssItem of cache.deps[item].preloadedCss)
-          preloadedCss.push(`../../${lib}/${cache.deps[item].id}/${cssItem.path}`);
+      for (let item in cache.deps[library]) {
+        for (let jsItem of cache.deps[library][item].preloadedJs)
+          preloadedJs.push(`../../${lib}/${cache.deps[library][item].id}/${jsItem.path}`);
+        for (let cssItem of cache.deps[library][item].preloadedCss)
+          preloadedCss.push(`../../${lib}/${cache.deps[library][item].id}/${cssItem.path}`);
       }
       response.set('Content-Type', 'text/html');
       response.end(
@@ -36,11 +36,11 @@ module.exports = {
         url: "${request.protocol}://${request.get('host')}",
         siteUrl: "${request.protocol}://${request.get('host')}",
         contents: {
-          "cid-${request.params.folder}": {
-            library: "${cache.deps[request.params.library]?.id} 1.16.4",
+          "cid-${folder}": {
+            library: "${cache.deps[library][library]?.id} 1.16.4",
             jsonContent: ${JSON.stringify(jsonContent)},
             url: "${request.protocol}://${request.get('host')}",
-            mainId: "${request.params.folder}",
+            mainId: "${folder}",
             displayOptions: {
               "anonymous": 1,
               "confusion": 1,
@@ -54,7 +54,7 @@ module.exports = {
             contentUserData: [{state: false}],
             disable: 6,
             resizeCode: "",
-            title: "${request.params.folder}",
+            title: "${folder}",
             styles: ${JSON.stringify(preloadedCss)},
             scripts: ${JSON.stringify(preloadedJs)}
           }
@@ -98,7 +98,7 @@ module.exports = {
     <script type="text/javascript" src="/assets/js/request-queue.js"></script><script type="text/javascript" src="/assets/js/h5p.js"></script>
   </head>
   <body>
-    <iframe id="h5p-iframe-${request.params.folder}" class="h5p-iframe" data-content-id="${request.params.folder}" style="width: 100%;" src="about:blank" frameBorder="0" scrolling="no"></iframe>
+    <iframe id="h5p-iframe-${folder}" class="h5p-iframe" data-content-id="${folder}" style="width: 100%;" src="about:blank" frameBorder="0" scrolling="no"></iframe>
   </body>
 </html>`);
     }

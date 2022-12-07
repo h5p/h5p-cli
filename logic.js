@@ -1,3 +1,4 @@
+const fs = require('fs');
 const superAgent = require('superagent');
 const gitClone = require('git-clone/promise');
 const config = require('./config.js');
@@ -73,8 +74,12 @@ module.exports = {
       try {
         const list = await module.exports.computeDependencies(library);
         for (let item in list) {
-          console.log(`> installing ${list[item].repoName}`);
-          await gitClone(`https://github.com/h5p/${list[item].repoName}`, `${config.folders.lib}/${list[item].id}`);
+          const folder = `${config.folders.lib}/${list[item].id}`;
+          if (fs.existsSync(folder)) console.log(`> skipping ${list[item].repoName}; it already exists.`);
+          else {
+            console.log(`> installing ${list[item].repoName}`);
+            await gitClone(`https://github.com/h5p/${list[item].repoName}`, folder);
+          }
         }
         resolve();
       }
