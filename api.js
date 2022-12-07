@@ -62,7 +62,7 @@ module.exports = {
         core: {
           scripts: [
             "/assets/js/jquery.js",
-            
+            "/assets/js/h5p.js",
             "/assets/js/h5p-event-dispatcher.js",
             "/assets/js/h5p-x-api-event.js",
             "/assets/js/h5p-x-api.js",
@@ -71,7 +71,7 @@ module.exports = {
             "/assets/js/h5p-action-bar.js",
             "/assets/js/h5p-display-options.js",
             "/assets/js/h5p-tooltip.js",
-            "/assets/js/request-queue.js","/assets/js/h5p.js",
+            "/assets/js/request-queue.js",
           ],
           styles: [
             "/assets/styles/h5p.css",
@@ -86,7 +86,7 @@ module.exports = {
       H5PIntegration.l10n = ${JSON.stringify(l10n)};
     </script>
     <script type="text/javascript" src="/assets/js/jquery.js"></script>
-    
+    <script type="text/javascript" src="/assets/js/h5p.js"></script>
     <script type="text/javascript" src="/assets/js/h5p-event-dispatcher.js"></script>
     <script type="text/javascript" src="/assets/js/h5p-x-api-event.js"></script>
     <script type="text/javascript" src="/assets/js/h5p-x-api.js"></script>
@@ -95,7 +95,7 @@ module.exports = {
     <script type="text/javascript" src="/assets/js/h5p-action-bar.js"></script>
     <script type="text/javascript" src="/assets/js/h5p-display-options.js"></script>
     <script type="text/javascript" src="/assets/js/h5p-tooltip.js"></script>
-    <script type="text/javascript" src="/assets/js/request-queue.js"></script><script type="text/javascript" src="/assets/js/h5p.js"></script>
+    <script type="text/javascript" src="/assets/js/request-queue.js"></script>
   </head>
   <body>
     <iframe id="h5p-iframe-${folder}" class="h5p-iframe" data-content-id="${folder}" style="width: 100%;" src="about:blank" frameBorder="0" scrolling="no"></iframe>
