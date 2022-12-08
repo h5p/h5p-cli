@@ -71,7 +71,7 @@ module.exports = {
             "/assets/js/h5p-action-bar.js",
             "/assets/js/h5p-display-options.js",
             "/assets/js/h5p-tooltip.js",
-            "/assets/js/request-queue.js",
+            "/assets/js/request-queue.js"
           ],
           styles: [
             "/assets/styles/h5p.css",
