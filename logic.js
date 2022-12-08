@@ -13,6 +13,11 @@ module.exports = {
         }
         for (let item in list) {
           list[item].repoName = list[item].repo.url.split('/').slice(-1)[0];
+          list[item].org = list[item].repo.url.split('/').slice(3, 4)[0];
+          delete list[item].resume;
+          delete list[item].fullscreen;
+          delete list[item].runnable;
+          delete list[item].xapiVerbs;
           output.reversed[list[item].id] = list[item];
           output.regular[list[item].repoName] = list[item];
         }
@@ -26,12 +31,13 @@ module.exports = {
       const done = {};
       const toDo = {};
       toDo[library] = 1;
-      const fetch = async (dependency) => {
+      const fetch = async (dependency, org) => {
         delete toDo[dependency];
         if (done[dependency]) return;
         else {
           done[dependency] = registry.regular[dependency];
-          const list = JSON.parse((await superAgent.get(`https://raw.githubusercontent.com/h5p/${dependency}/master/library.json`)).text);
+          process.stdout.write('.');
+          const list = JSON.parse((await superAgent.get(`https://raw.githubusercontent.com/${org}/${dependency}/master/library.json`)).text);
           done[dependency].preloadedJs = list.preloadedJs || [];
           done[dependency].preloadedCss = list.preloadedCss || [];
           if (list.preloadedDependencies)
@@ -57,11 +63,12 @@ module.exports = {
       try {
         registry = await module.exports.listLibraries();
         while (Object.keys(toDo).length) {
-          for (let item in toDo) await fetch(item);
+          for (let item in toDo) await fetch(item, registry.regular[item].org);
         }
         const main = done[library];
         delete done[library];
         done[library] = main;
+        process.stdout.write('\n');
         resolve(done);
       }
       catch (error) {
