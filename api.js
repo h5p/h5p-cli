@@ -11,7 +11,10 @@ module.exports = {
     try {
       const library = request.params.library;
       const folder = request.params.folder;
-      if (!cache?.deps[library]) cache.deps[library] = await logic.computeDependencies(library, true);
+      const cacheFile = `${config.folders.cache}/${library}.json`;
+      if (!cache?.deps[library])
+        if (fs.existsSync(cacheFile)) cache.deps[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
+        else cache.deps[library] = await logic.computeDependencies(library, true);
       const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
       let preloadedJs = [];
       let preloadedCss = [];

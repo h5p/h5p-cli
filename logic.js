@@ -24,7 +24,7 @@ module.exports = {
         return Promise.resolve(output);
       });
   },
-  computeDependencies: (library, noEditor) => {
+  computeDependencies: (library, noEditor, saveToCache) => {
     return new Promise(async (resolve, reject) => {
       if (!library) return reject('invalid_library');
       let registry = {};
@@ -61,6 +61,7 @@ module.exports = {
         }
       }
       try {
+        process.stdout.write(`${library} deps `);
         registry = await module.exports.listLibraries();
         while (Object.keys(toDo).length) {
           for (let item in toDo) await fetch(item, registry.regular[item].org);
@@ -69,6 +70,12 @@ module.exports = {
         delete done[library];
         done[library] = main;
         process.stdout.write('\n');
+        if (saveToCache) {
+          const cacheFile = `${config.folders.cache}/${library}.json`;
+          if (!fs.existsSync(config.folders.cache)) fs.mkdirSync(config.folders.cache);
+          fs.writeFileSync(cacheFile, JSON.stringify(done));
+          console.log(`deps saved to ${cacheFile}`);
+        }
         resolve(done);
       }
       catch (error) {

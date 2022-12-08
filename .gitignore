@@ -1,3 +1,4 @@
 node_modules
 lib
+cache
 package-lock.json
