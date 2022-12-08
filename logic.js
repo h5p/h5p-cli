@@ -61,7 +61,6 @@ module.exports = {
         }
       }
       try {
-        process.stdout.write(`> ${library} deps `);
         registry = await module.exports.listLibraries();
         while (Object.keys(toDo).length) {
           for (let item in toDo) await fetch(item, registry.regular[item].org);
