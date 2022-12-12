@@ -15,7 +15,7 @@ const cli = {
       .catch(handleError);
   },
   deps: (library, noEditor, saveToCache) => {
-    process.stdout.write(`> ${library} deps `);
+    console.log(`> ${library} deps `);
     logic.computeDependencies(library, parseInt(noEditor), parseInt(saveToCache))
       .then((result) => {
         console.log(util.inspect(result, false, null, true));

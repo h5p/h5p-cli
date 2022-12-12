@@ -51,16 +51,19 @@ module.exports = {
       let registry = {};
       const done = {};
       const toDo = {};
-      toDo[library] = true;
+      toDo[library] = `${library}/run`;
       const fetch = async (dependency, org) => {
-        delete toDo[dependency];
-        if (done[dependency]) return;
+        if (done[dependency]) {
+          delete toDo[dependency];
+          return;
+        }
         else {
+          process.stdout.write(`>> ${dependency} required by ${toDo[dependency]} ... `);
           done[dependency] = registry.regular[dependency];
-          process.stdout.write('.');
           const list = JSON.parse((await superAgent.get(`https://raw.githubusercontent.com/${org}/${dependency}/master/library.json`)).text);
           done[dependency].preloadedJs = list.preloadedJs || [];
           done[dependency].preloadedCss = list.preloadedCss || [];
+          done[dependency].requiredBy = toDo[dependency];
           if (list.preloadedDependencies)
             for (let item of list.preloadedDependencies) {
               const entry = registry.reversed[item.machineName]?.repoName;
@@ -68,7 +71,7 @@ module.exports = {
                 console.log(`> ${item.machineName} not found in registry`);
                 continue;
               }
-              if (!done[entry]) toDo[entry] = true;
+              if (!done[entry]) toDo[entry] = `${dependency}/run`;
             }
           if (!noEditor && list.editorDependencies)
             for (let item of list.editorDependencies) {
@@ -77,14 +80,16 @@ module.exports = {
                 console.log(`> ${item.machineName} not found in registry`);
                 continue;
               }
-              if (!done[entry]) toDo[entry] = true;
+              if (!done[entry]) toDo[entry] = `${dependency}/edit`;
             }
           const raw = (await superAgent.get(`https://raw.githubusercontent.com/${org}/${dependency}/master/semantics.json`).ok(res => [200, 404].includes(res.status))).text;
           if (raw != '404: Not Found') {
             const semantics = JSON.parse(raw);
             const optionals = parseSemantics(semantics);
-            for (let item in optionals) toDo[registry.reversed[item]?.repoName] = true;
+            for (let item in optionals) toDo[registry.reversed[item]?.repoName] = `${dependency}/semantics`;
           }
+          delete toDo[dependency];
+          console.log('ok');
         }
       }
       try {
