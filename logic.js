@@ -1,6 +1,6 @@
 const fs = require('fs');
 const superAgent = require('superagent');
-const gitClone = require('git-clone/promise');
+const simpleGit = require('simple-git');
 const config = require('./config.js');
 const parseSemantics = (entries) => {
   let toDo = [];
@@ -123,7 +123,7 @@ module.exports = {
           if (fs.existsSync(folder)) console.log(`> skipping ${list[item].repoName}; it already exists.`);
           else {
             console.log(`> installing ${list[item].repoName}`);
-            await gitClone(`https://github.com/h5p/${list[item].repoName}`, folder);
+            await simpleGit().clone(`https://github.com/h5p/${list[item].repoName}`, folder);
           }
         }
         resolve();
