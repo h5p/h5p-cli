@@ -2,6 +2,27 @@ const fs = require('fs');
 const superAgent = require('superagent');
 const gitClone = require('git-clone/promise');
 const config = require('./config.js');
+const parseSemantics = (entries) => {
+  let toDo = [];
+  let list = [];
+  const output = {};
+  const parseList = () => {
+    toDo = [];
+    for (let obj of list)
+      for (let attr in obj) {
+        if (attr == 'fields' && Array.isArray(obj[attr]))
+          for (let item of obj[attr])
+            if (item?.type == 'library' && Array.isArray(item?.options))
+              for (let lib of item.options) output[lib.split(' ')[0]] = true;
+        if (typeof obj[attr] == 'object' && !Array.isArray(obj[attr]))
+          toDo.push(obj[attr]);
+      }
+    list = toDo;
+  }
+  list = entries;
+  while (list.length) parseList();
+  return output;
+}
 module.exports = {
   listLibraries: () => {
     return superAgent.get(config.registryUrl)
@@ -30,7 +51,7 @@ module.exports = {
       let registry = {};
       const done = {};
       const toDo = {};
-      toDo[library] = 1;
+      toDo[library] = true;
       const fetch = async (dependency, org) => {
         delete toDo[dependency];
         if (done[dependency]) return;
@@ -47,7 +68,7 @@ module.exports = {
                 console.log(`> ${item.machineName} not found in registry`);
                 continue;
               }
-              if (!done[entry]) toDo[entry] = 1;
+              if (!done[entry]) toDo[entry] = true;
             }
           if (!noEditor && list.editorDependencies)
             for (let item of list.editorDependencies) {
@@ -56,8 +77,14 @@ module.exports = {
                 console.log(`> ${item.machineName} not found in registry`);
                 continue;
               }
-              if (!done[entry]) toDo[entry] = 1;
+              if (!done[entry]) toDo[entry] = true;
             }
+          const raw = (await superAgent.get(`https://raw.githubusercontent.com/${org}/${dependency}/master/semantics.json`).ok(res => [200, 404].includes(res.status))).text;
+          if (raw != '404: Not Found') {
+            const semantics = JSON.parse(raw);
+            const optionals = parseSemantics(semantics);
+            for (let item in optionals) toDo[registry.reversed[item]?.repoName] = true;
+          }
         }
       }
       try {
