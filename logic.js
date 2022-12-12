@@ -1,3 +1,4 @@
+const { execSync } = require("child_process");
 const fs = require('fs');
 const superAgent = require('superagent');
 const simpleGit = require('simple-git');
@@ -47,6 +48,7 @@ module.exports = {
   },
   computeDependencies: (library, noEditor, saveToCache) => {
     return new Promise(async (resolve, reject) => {
+      console.log(`> ${library} deps `);
       if (!library) return reject('invalid_library');
       let registry = {};
       const done = {};
@@ -89,7 +91,7 @@ module.exports = {
             for (let item in optionals) toDo[registry.reversed[item]?.repoName] = `${dependency}/semantics`;
           }
           delete toDo[dependency];
-          console.log('ok');
+          console.log('done');
         }
       }
       try {
@@ -114,16 +116,25 @@ module.exports = {
       }
     });
   },
-  downloadWithDependencies: (library) => {
+  downloadWithDependencies: (library, useCache) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const list = await module.exports.computeDependencies(library);
+        let list;
+        const cacheFile = `${config.folders.cache}/${library}.json`;
+        if (useCache && fs.existsSync(cacheFile)) list = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
+        else list = await module.exports.computeDependencies(library);
         for (let item in list) {
           const folder = `${config.folders.lib}/${list[item].id}`;
           if (fs.existsSync(folder)) console.log(`> skipping ${list[item].repoName}; it already exists.`);
           else {
             console.log(`> installing ${list[item].repoName}`);
             await simpleGit().clone(`https://github.com/h5p/${list[item].repoName}`, folder);
+            if (fs.existsSync(`${folder}/package.json`)) {
+              console.log('>>> npm install');
+              console.log(await execSync('npm install', {cwd: folder}).toString());
+              console.log('>>> npm run build');
+              console.log(await execSync('npm run build', {cwd: folder}).toString());
+            }
           }
         }
         resolve();

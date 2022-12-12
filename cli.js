@@ -15,16 +15,15 @@ const cli = {
       .catch(handleError);
   },
   deps: (library, noEditor, saveToCache) => {
-    console.log(`> ${library} deps `);
     logic.computeDependencies(library, parseInt(noEditor), parseInt(saveToCache))
       .then((result) => {
         console.log(util.inspect(result, false, null, true));
       })
       .catch(handleError);
   },
-  install: (library) => {
+  install: (library, useCache) => {
     console.log(`> cloning h5p library and dependencies into "${config.folders.lib}" folder`);
-    logic.downloadWithDependencies(library)
+    logic.downloadWithDependencies(library, useCache)
       .then((result) => {
         console.log('> all done');
       })
