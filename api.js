@@ -20,9 +20,9 @@ module.exports = {
       let preloadedCss = [];
       for (let item in cache.deps[library]) {
         for (let jsItem of cache.deps[library][item].preloadedJs)
-          preloadedJs.push(`../../${lib}/${cache.deps[library][item].id}/${jsItem.path}`);
+          preloadedJs.push(`../../../${lib}/${cache.deps[library][item].id}/${jsItem.path}`);
         for (let cssItem of cache.deps[library][item].preloadedCss)
-          preloadedCss.push(`../../${lib}/${cache.deps[library][item].id}/${cssItem.path}`);
+          preloadedCss.push(`../../../${lib}/${cache.deps[library][item].id}/${cssItem.path}`);
       }
       response.set('Content-Type', 'text/html');
       response.end(
@@ -40,7 +40,7 @@ module.exports = {
         siteUrl: "${request.protocol}://${request.get('host')}",
         contents: {
           "cid-${folder}": {
-            library: "${cache.deps[library][library]?.id} 1.16.4",
+            library: "${cache.deps[library][library]?.id} 1.0.0",
             jsonContent: ${JSON.stringify(jsonContent)},
             url: "${request.protocol}://${request.get('host')}",
             mainId: "${folder}",
