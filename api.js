@@ -43,7 +43,7 @@ module.exports = {
         siteUrl: "${request.protocol}://${request.get('host')}",
         contents: {
           "cid-${folder}": {
-            library: "${cache.deps[library][library]?.id} 1.0.0",
+            library: "${cache.deps[library][library].id} ${cache.deps[library][library].version.major}.${cache.deps[library][library].version.minor}",
             jsonContent: ${JSON.stringify(jsonContent)},
             url: "${request.protocol}://${request.get('host')}",
             mainId: "${folder}",

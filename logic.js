@@ -1,7 +1,7 @@
 const { execSync } = require("child_process");
 const fs = require('fs');
 const superAgent = require('superagent');
-const simpleGit = require('simple-git');
+const admZip = require("adm-zip");
 const config = require('./config.js');
 module.exports = {
   listLibraries: () => {
@@ -128,18 +128,23 @@ module.exports = {
         for (let item in list) {
           const folder = `${config.folders.lib}/${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
           if (fs.existsSync(folder)) {
-            console.log(`> skipping ${list[item].repoName}; it already exists.`);
+            console.log(`>> skipping ${list[item].repoName}; it already exists.`);
+            continue;
           }
-          else {
-            console.log(`> installing ${list[item].repoName}`);
-            await simpleGit().clone(`https://github.com/h5p/${list[item].repoName}`, folder);
-            if (fs.existsSync(`${folder}/package.json`)) {
-              console.log('>>> npm install');
-              console.log(await execSync('npm install', {cwd: folder}).toString());
-              console.log('>>> npm run build');
-              console.log(await execSync('npm run build', {cwd: folder}).toString());
-            }
-          }
+          console.log(`>> installing ${list[item].repoName}`);
+          const blob = (await superAgent.get(`https://github.com/${list[item].org}/${list[item].repoName}/archive/refs/heads/master.zip`))._body;
+          const zipFile = `${config.folders.cache}/temp.zip`;
+          fs.writeFileSync(zipFile, blob);
+          new admZip(zipFile).extractAllTo(config.folders.lib);
+          fs.renameSync(`${config.folders.lib}/${list[item].repoName}-master`, folder);
+          const packageFile = `${folder}/package.json`;
+          if (!fs.existsSync(packageFile)) continue;
+          const info = JSON.parse(fs.readFileSync(packageFile));
+          if (!info?.scripts?.build) continue;
+          console.log('>>> npm install');
+          console.log(await execSync('npm install', {cwd: folder}).toString());
+          console.log('>>> npm run build');
+          console.log(await execSync('npm run build', {cwd: folder}).toString());
         }
         resolve();
       }
