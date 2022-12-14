@@ -51,6 +51,10 @@ module.exports = {
         process.stdout.write(`>> ${dep} required by ${toDo[dep]} ... `);
         done[level][dep] = registry.regular[dep];
         const list = JSON.parse((await superAgent.get(`https://raw.githubusercontent.com/${org}/${dep}/master/library.json`)).text);
+        done[level][dep].version = {
+          major: list.majorVersion,
+          minor: list.minorVersion
+        }
         done[level][dep].preloadedJs = list.preloadedJs || [];
         done[level][dep].preloadedCss = list.preloadedCss || [];
         done[level][dep].requiredBy = toDo[dep];
@@ -114,11 +118,18 @@ module.exports = {
       try {
         let list;
         const cacheFile = `${config.folders.cache}/${library}.json`;
-        if (useCache && fs.existsSync(cacheFile)) list = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
-        else list = await module.exports.computeDependencies(library);
+        if (useCache && fs.existsSync(cacheFile)) {
+          console.log(`>> using cache from ${cacheFile}`);
+          list = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
+        }
+        else {
+          list = await module.exports.computeDependencies(library);
+        }
         for (let item in list) {
-          const folder = `${config.folders.lib}/${list[item].id}`;
-          if (fs.existsSync(folder)) console.log(`> skipping ${list[item].repoName}; it already exists.`);
+          const folder = `${config.folders.lib}/${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
+          if (fs.existsSync(folder)) {
+            console.log(`> skipping ${list[item].repoName}; it already exists.`);
+          }
           else {
             console.log(`> installing ${list[item].repoName}`);
             await simpleGit().clone(`https://github.com/h5p/${list[item].repoName}`, folder);

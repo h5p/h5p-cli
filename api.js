@@ -19,10 +19,13 @@ module.exports = {
       let preloadedJs = [];
       let preloadedCss = [];
       for (let item in cache.deps[library]) {
-        for (let jsItem of cache.deps[library][item].preloadedJs)
-          preloadedJs.push(`../../../${lib}/${cache.deps[library][item].id}/${jsItem.path}`);
-        for (let cssItem of cache.deps[library][item].preloadedCss)
-          preloadedCss.push(`../../../${lib}/${cache.deps[library][item].id}/${cssItem.path}`);
+        const entry = cache.deps[library][item]
+        for (let jsItem of entry.preloadedJs) {
+          preloadedJs.push(`../../../${lib}/${entry.id}-${entry.version.major}.${entry.version.minor}/${jsItem.path}`);
+        }
+        for (let cssItem of entry.preloadedCss) {
+          preloadedCss.push(`../../../${lib}/${entry.id}-${entry.version.major}.${entry.version.minor}/${cssItem.path}`);
+        }
       }
       response.set('Content-Type', 'text/html');
       response.end(
