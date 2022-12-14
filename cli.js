@@ -23,7 +23,7 @@ const cli = {
   },
   install: (library, useCache) => {
     console.log(`> cloning h5p library and dependencies into "${config.folders.lib}" folder`);
-    logic.downloadWithDependencies(library, useCache)
+    logic.downloadWithDependencies(library, parseInt(useCache))
       .then((result) => {
         console.log('> all done');
       })

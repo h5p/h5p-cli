@@ -29,69 +29,79 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       console.log(`> ${library} deps `);
       if (!library) return reject('invalid_library');
-      let level = 0;
+      let level = -1;
       let registry = {};
       let done = {};
       const toDo = {};
+      const weights = {};
       toDo[library] = `${library}/run`;
-      const fetch = async (dep, org) => {
-        if (done[level][dep]) {
-          delete toDo[dep];
-          return;
+      const handleDepListEntry = (dep, machineName, type) => {
+        const entry = registry.reversed[machineName]?.repoName;
+        if (!entry) {
+          console.log(`> ${machineName} not found in registry`);
+          return false;
         }
-        else {
-          process.stdout.write(`>> ${dep} required by ${toDo[dep]} ... `);
-          done[level][dep] = registry.regular[dep];
-          const list = JSON.parse((await superAgent.get(`https://raw.githubusercontent.com/${org}/${dep}/master/library.json`)).text);
-          done[level][dep].preloadedJs = list.preloadedJs || [];
-          done[level][dep].preloadedCss = list.preloadedCss || [];
-          done[level][dep].requiredBy = toDo[dep];
-          done[level][dep].level = level;
-          if (list.preloadedDependencies)
-            for (let item of list.preloadedDependencies) {
-              const entry = registry.reversed[item.machineName]?.repoName;
-              if (!entry) {
-                console.log(`> ${item.machineName} not found in registry`);
-                continue;
-              }
-              if (!done[level][entry]) toDo[entry] = `${dep}/run`;
-            }
-          if (!noEditor && list.editorDependencies)
-            for (let item of list.editorDependencies) {
-              const entry = registry.reversed[item.machineName]?.repoName;
-              if (!entry) {
-                console.log(`> ${item.machineName} not found in registry`);
-                continue;
-              }
-              if (!done[level][entry]) toDo[entry] = `${dep}/edit`;
-            }
-          const raw = (await superAgent.get(`https://raw.githubusercontent.com/${org}/${dep}/master/semantics.json`).ok(res => [200, 404].includes(res.status))).text;
-          if (raw != '404: Not Found') {
-            const semantics = JSON.parse(raw);
-            const optionals = parseSemantics(semantics);
-            for (let item in optionals) toDo[registry.reversed[item]?.repoName] = `${dep}/semantics`;
+        if (!done[level][entry] && !toDo[entry]) {
+          toDo[entry] = `${dep}/${type}`;
+        }
+        weights[entry] = weights[entry] ? weights[entry] + 1 : 1;
+        return true;
+      }
+      const compute = async (dep, org) => {
+        process.stdout.write(`>> ${dep} required by ${toDo[dep]} ... `);
+        done[level][dep] = registry.regular[dep];
+        const list = JSON.parse((await superAgent.get(`https://raw.githubusercontent.com/${org}/${dep}/master/library.json`)).text);
+        done[level][dep].preloadedJs = list.preloadedJs || [];
+        done[level][dep].preloadedCss = list.preloadedCss || [];
+        done[level][dep].requiredBy = toDo[dep];
+        done[level][dep].level = level;
+        if (list.preloadedDependencies) {
+          for (let item of list.preloadedDependencies) {
+            if (!handleDepListEntry(dep, item.machineName, 'run')) continue;
           }
-          delete toDo[dep];
-          topLevel = false;
-          console.log('done');
         }
+        if (!noEditor && list.editorDependencies) {
+          for (let item of list.editorDependencies) {
+            if (!handleDepListEntry(dep, item.machineName, 'edit')) continue;
+          }
+        }
+        const raw = (await superAgent.get(`https://raw.githubusercontent.com/${org}/${dep}/master/semantics.json`).ok(res => [200, 404].includes(res.status))).text;
+        if (raw != '404: Not Found') {
+          const semantics = JSON.parse(raw);
+          const optionals = parseSemantics(semantics);
+          for (let item in optionals) {
+            const repoName = registry.reversed[item]?.repoName;
+            toDo[repoName] = `${dep}/semantics`;
+            weights[repoName] = weights[repoName] ? weights[repoName] + 1 : 1;
+          }
+        }
+        delete toDo[dep];
+        console.log('done');
       }
       try {
         registry = await module.exports.listLibraries();
         while (Object.keys(toDo).length) {
-          done[level] = {};
-          for (let item in toDo) await fetch(item, registry.regular[item].org);
           level++;
+          done[level] = {};
+          for (let item in toDo) {
+            await compute(item, registry.regular[item].org);
+          }
         }
-        process.stdout.write('\n');
         let output = {};
-        for (let i = level; i >= 0; i--) output = {...output, ...done[i]}
+        for (let i = level; i >= 0; i--) {
+          const keys = Object.keys(done[i]);
+          keys.sort((a, b) => {
+            return weights[b] - weights[a];
+          });
+          for (let key of keys) output[key] = done[i][key];
+        }
         if (saveToCache) {
           const cacheFile = `${config.folders.cache}/${library}.json`;
           if (!fs.existsSync(config.folders.cache)) fs.mkdirSync(config.folders.cache);
           fs.writeFileSync(cacheFile, JSON.stringify(output));
           console.log(`deps saved to ${cacheFile}`);
         }
+        process.stdout.write('\n');
         resolve(output);
       }
       catch (error) {
@@ -128,27 +138,40 @@ module.exports = {
     });
   }
 }
+/*
+ * finds optional dependencies in semantics.json
+ * entries - semantics.json array
+ */
 const parseSemantics = (entries) => {
   let toDo = [];
   let list = [];
   const output = {};
   const parseList = () => {
     toDo = [];
-    for (let obj of list) {
-      for (let attr in obj) {
+    for (let obj of list) { // go through semantics array entries
+      for (let attr in obj) { // go through entry attributes
         if (attr == 'fields' && Array.isArray(obj[attr])) {
           for (let item of obj[attr]) {
-            if (item?.type == 'library' && Array.isArray(item?.options))
-              for (let lib of item.options) output[lib.split(' ')[0]] = true;
-            else toDo.push(item);
+            if (item?.type == 'library' && Array.isArray(item?.options)) {
+              for (let lib of item.options) {
+                output[lib.split(' ')[0]] = true;
+              }
+            }
+            else {
+              toDo.push(item);
+            }
           }
         }
-        if (typeof obj[attr] == 'object' && !Array.isArray(obj[attr])) toDo.push(obj[attr]);
+        if (typeof obj[attr] == 'object' && !Array.isArray(obj[attr])) {
+          toDo.push(obj[attr]);
+        }
       }
     }
     list = toDo;
   }
   list = entries;
-  while (list.length) parseList();
+  while (list.length) {
+    parseList();
+  }
   return output;
 }
