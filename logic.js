@@ -38,7 +38,7 @@ module.exports = {
       const handleDepListEntry = (dep, machineName, type) => {
         const entry = registry.reversed[machineName]?.repoName;
         if (!entry) {
-          console.log(`> ${machineName} not found in registry`);
+          process.stdout.write(`> ${machineName} not found in registry`);
           return false;
         }
         if (!done[level][entry] && !toDo[entry]) {
