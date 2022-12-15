@@ -48,17 +48,14 @@ module.exports = {
             url: "${request.protocol}://${request.get('host')}",
             mainId: "${folder}",
             displayOptions: {
-              "anonymous": 1,
-              "confusion": 1,
-              "copy": true,
+              "copy": false,
               "copyright": false,
-              "embed": 0,
+              "embed": true,
               "export": true,
               "frame": true,
               "icon": true
             },
-            contentUserData: [{state: false}],
-            disable: 6,
+            contentUserData: [{state: "{}"}],
             resizeCode: "",
             title: "${folder}",
             styles: ${JSON.stringify(preloadedCss)},
@@ -85,8 +82,6 @@ module.exports = {
             "/assets/styles/h5p-tooltip.css"
           ]
         },
-        postUserStatistics: false,
-        saveFreq: false,
         user: { name: "developer", mail: "some.developer@some.company.com" }
       };
       H5PIntegration.l10n = ${JSON.stringify(l10n)};
