@@ -75,8 +75,10 @@ module.exports = {
           const optionals = parseSemantics(semantics);
           for (let item in optionals) {
             const repoName = registry.reversed[item]?.repoName;
-            toDo[repoName] = `${dep}/semantics`;
-            weights[repoName] = weights[repoName] ? weights[repoName] + 1 : 1;
+            if (!done[level][repoName] && !toDo[repoName]) {
+              toDo[repoName] = `${dep}/semantics`;
+              weights[repoName] = weights[repoName] ? weights[repoName] + 1 : 1;
+            }
           }
         }
         delete toDo[dep];
@@ -86,6 +88,7 @@ module.exports = {
         registry = await module.exports.listLibraries();
         while (Object.keys(toDo).length) {
           level++;
+          console.log(`>> on level ${level}`);
           done[level] = {};
           for (let item in toDo) {
             await compute(item, registry.regular[item].org);
