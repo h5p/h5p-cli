@@ -14,8 +14,8 @@ const cli = {
       })
       .catch(handleError);
   },
-  deps: (library, noEditor, saveToCache) => {
-    logic.computeDependencies(library, parseInt(noEditor), parseInt(saveToCache))
+  deps: (library, mode, saveToCache) => {
+    logic.computeDependencies(library, mode, parseInt(saveToCache))
       .then((result) => {
         console.log(util.inspect(result, false, null, true));
       })

@@ -25,23 +25,36 @@ module.exports = {
         return Promise.resolve(output);
       });
   },
-  computeDependencies: (library, noEditor, saveToCache) => {
+  computeDependencies: (library, mode, saveToCache) => {
     return new Promise(async (resolve, reject) => {
       console.log(`> ${library} deps `);
       if (!library) return reject('invalid_library');
       let level = -1;
       let registry = {};
-      let done = {};
       const toDo = {};
+      const cache = {};
+      const done = {};
       const weights = {};
       toDo[library] = `${library}/run`;
+      const getOptionals = async (org, dep) => {
+        if (cache[dep].optionals) {
+          return cache[dep].optionals;
+        }
+        const raw = (await superAgent.get(`https://raw.githubusercontent.com/${org}/${dep}/master/semantics.json`).ok(res => [200, 404].includes(res.status))).text;
+        cache[dep].optionals = {};
+        if (raw != '404: Not Found') {
+          const semantics = JSON.parse(raw);
+          cache[dep].optionals = parseSemantics(semantics);
+        }
+        return cache[dep].optionals;
+      }
       const handleDepListEntry = (dep, machineName, type) => {
         const entry = registry.reversed[machineName]?.repoName;
         if (!entry) {
-          process.stdout.write(`> ${machineName} not found in registry`);
+          process.stdout.write(`${machineName} not found in registry; `);
           return false;
         }
-        if (!done[level][entry] && !toDo[entry]) {
+        if (!toDo[entry]) {
           toDo[entry] = `${dep}/${type}`;
         }
         weights[entry] = weights[entry] ? weights[entry] + 1 : 1;
@@ -50,7 +63,15 @@ module.exports = {
       const compute = async (dep, org) => {
         process.stdout.write(`>> ${dep} required by ${toDo[dep]} ... `);
         done[level][dep] = registry.regular[dep];
-        const list = JSON.parse((await superAgent.get(`https://raw.githubusercontent.com/${org}/${dep}/master/library.json`)).text);
+        let list;
+        if (cache[dep]) {
+          list = cache[dep];
+          process.stdout.write(' (cached) ');
+        }
+        else {
+          list = JSON.parse((await superAgent.get(`https://raw.githubusercontent.com/${org}/${dep}/master/library.json`)).text);
+          cache[dep] = list;
+        }
         done[level][dep].version = {
           major: list.majorVersion,
           minor: list.minorVersion
@@ -59,26 +80,22 @@ module.exports = {
         done[level][dep].preloadedCss = list.preloadedCss || [];
         done[level][dep].requiredBy = toDo[dep];
         done[level][dep].level = level;
-        if (list.preloadedDependencies) {
+        if ((mode != 'edit' || level > 0) && list.preloadedDependencies) {
           for (let item of list.preloadedDependencies) {
             if (!handleDepListEntry(dep, item.machineName, 'run')) continue;
           }
-        }
-        if (!noEditor && list.editorDependencies) {
-          for (let item of list.editorDependencies) {
-            if (!handleDepListEntry(dep, item.machineName, 'edit')) continue;
-          }
-        }
-        const raw = (await superAgent.get(`https://raw.githubusercontent.com/${org}/${dep}/master/semantics.json`).ok(res => [200, 404].includes(res.status))).text;
-        if (raw != '404: Not Found') {
-          const semantics = JSON.parse(raw);
-          const optionals = parseSemantics(semantics);
+          const optionals = await getOptionals(org, dep);
           for (let item in optionals) {
             const repoName = registry.reversed[item]?.repoName;
-            if (!done[level][repoName] && !toDo[repoName]) {
+            if (!toDo[repoName]) {
               toDo[repoName] = `${dep}/semantics`;
               weights[repoName] = weights[repoName] ? weights[repoName] + 1 : 1;
             }
+          }
+        }
+        if (mode == 'edit' && list.editorDependencies) {
+          for (let item of list.editorDependencies) {
+            if (!handleDepListEntry(dep, item.machineName, 'edit')) continue;
           }
         }
         delete toDo[dep];
@@ -95,18 +112,23 @@ module.exports = {
           }
         }
         let output = {};
+console.log(weights);
         for (let i = level; i >= 0; i--) {
+console.log(`... level ${i} sorting`);
           const keys = Object.keys(done[i]);
           keys.sort((a, b) => {
             return weights[b] - weights[a];
           });
-          for (let key of keys) output[key] = done[i][key];
+console.log(keys);
+          for (let key of keys) {
+            output[key] = done[i][key];
+          }
         }
         if (saveToCache) {
-          const cacheFile = `${config.folders.cache}/${library}.json`;
+          const doneFile = `${config.folders.cache}/${library}${mode == 'edit' ? '_edit' : ''}.json`;
           if (!fs.existsSync(config.folders.cache)) fs.mkdirSync(config.folders.cache);
-          fs.writeFileSync(cacheFile, JSON.stringify(output));
-          console.log(`deps saved to ${cacheFile}`);
+          fs.writeFileSync(doneFile, JSON.stringify(output));
+          console.log(`deps saved to ${doneFile}`);
         }
         process.stdout.write('\n');
         resolve(output);
@@ -120,10 +142,10 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       try {
         let list;
-        const cacheFile = `${config.folders.cache}/${library}.json`;
-        if (useCache && fs.existsSync(cacheFile)) {
-          console.log(`>> using cache from ${cacheFile}`);
-          list = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
+        const doneFile = `${config.folders.cache}/${library}.json`;
+        if (useCache && fs.existsSync(doneFile)) {
+          console.log(`>> using done from ${doneFile}`);
+          list = JSON.parse(fs.readFileSync(doneFile, 'utf-8'));
         }
         else {
           list = await module.exports.computeDependencies(library);
