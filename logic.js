@@ -54,9 +54,9 @@ module.exports = {
           process.stdout.write(`${machineName} not found in registry; `);
           return false;
         }
-        const id = `${parent}/${type}`;
-        if (!done[level][entry] && !toDo[entry] && !registry.regular?.[entry]?.requiredBy?.includes(id)) {
-          toDo[entry] = id;
+        const requiredBy = `${parent}/${type}`;
+        if (!done[level][entry] && !toDo[entry] && !registry.regular?.[entry]?.requiredBy?.includes(requiredBy)) {
+          toDo[entry] = requiredBy;
         }
         weights[entry] = weights[entry] ? weights[entry] + 1 : 1;
         return true;
