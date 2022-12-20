@@ -48,14 +48,15 @@ module.exports = {
         }
         return cache[dep].optionals;
       }
-      const handleDepListEntry = (dep, machineName, type) => {
+      const handleDepListEntry = (machineName, parent, type) => {
         const entry = registry.reversed[machineName]?.repoName;
         if (!entry) {
           process.stdout.write(`${machineName} not found in registry; `);
           return false;
         }
-        if (!toDo[entry]) {
-          toDo[entry] = `${dep}/${type}`;
+        const id = `${parent}/${type}`;
+        if (!done[level][entry] && !toDo[entry] && !registry.regular?.[entry]?.requiredBy?.includes(id)) {
+          toDo[entry] = id;
         }
         weights[entry] = weights[entry] ? weights[entry] + 1 : 1;
         return true;
@@ -78,24 +79,23 @@ module.exports = {
         }
         done[level][dep].preloadedJs = list.preloadedJs || [];
         done[level][dep].preloadedCss = list.preloadedCss || [];
-        done[level][dep].requiredBy = toDo[dep];
+        if (!done[level][dep].requiredBy) {
+          done[level][dep].requiredBy = [];
+        }
+        done[level][dep].requiredBy.push(toDo[dep]);
         done[level][dep].level = level;
         if ((mode != 'edit' || level > 0) && list.preloadedDependencies) {
           for (let item of list.preloadedDependencies) {
-            if (!handleDepListEntry(dep, item.machineName, 'run')) continue;
+            if (!handleDepListEntry(item.machineName, dep, 'run')) continue;
           }
           const optionals = await getOptionals(org, dep);
           for (let item in optionals) {
-            const repoName = registry.reversed[item]?.repoName;
-            if (!toDo[repoName]) {
-              toDo[repoName] = `${dep}/semantics`;
-              weights[repoName] = weights[repoName] ? weights[repoName] + 1 : 1;
-            }
+            handleDepListEntry(item, dep, 'semantics');
           }
         }
         if (mode == 'edit' && list.editorDependencies) {
           for (let item of list.editorDependencies) {
-            if (!handleDepListEntry(dep, item.machineName, 'edit')) continue;
+            if (!handleDepListEntry(item.machineName, dep, 'edit')) continue;
           }
         }
         delete toDo[dep];
@@ -112,14 +112,11 @@ module.exports = {
           }
         }
         let output = {};
-console.log(weights);
         for (let i = level; i >= 0; i--) {
-console.log(`... level ${i} sorting`);
           const keys = Object.keys(done[i]);
           keys.sort((a, b) => {
             return weights[b] - weights[a];
           });
-console.log(keys);
           for (let key of keys) {
             output[key] = done[i][key];
           }
