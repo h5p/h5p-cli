@@ -135,25 +135,25 @@ module.exports = {
       }
     });
   },
-  downloadWithDependencies: (library, useCache) => {
+  downloadWithDependencies: (library, mode, useCache) => {
     return new Promise(async (resolve, reject) => {
       try {
         let list;
-        const doneFile = `${config.folders.cache}/${library}.json`;
+        const doneFile = `${config.folders.cache}/${library}${mode == 'edit' ? '_edit' : ''}.json`;
         if (useCache && fs.existsSync(doneFile)) {
-          console.log(`>> using done from ${doneFile}`);
+          console.log(`>> using cache from ${doneFile}`);
           list = JSON.parse(fs.readFileSync(doneFile, 'utf-8'));
         }
         else {
-          list = await module.exports.computeDependencies(library);
+          list = await module.exports.computeDependencies(library, mode);
         }
         for (let item in list) {
           const folder = `${config.folders.lib}/${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
           if (fs.existsSync(folder)) {
-            console.log(`>> skipping ${list[item].repoName}; it already exists.`);
+            console.log(`>> ~ skipping ${list[item].repoName}; it already exists.`);
             continue;
           }
-          console.log(`>> installing ${list[item].repoName}`);
+          console.log(`>> + installing ${list[item].repoName}`);
           const blob = (await superAgent.get(`https://github.com/${list[item].org}/${list[item].repoName}/archive/refs/heads/master.zip`))._body;
           const zipFile = `${config.folders.cache}/temp.zip`;
           fs.writeFileSync(zipFile, blob);
