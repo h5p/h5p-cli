@@ -1,4 +1,5 @@
 const fs = require('fs');
+const he = require('he');
 const logic = require('./logic.js');
 const config = require('./config.js');
 const l10n = require('./assets/l10n.json');
@@ -7,6 +8,35 @@ let cache = {
   deps: {}
 };
 module.exports = {
+  libraries: async (request, response, next) => {
+    try {
+      const baseUrl = `${request.protocol}://${request.get('host')}`;
+      const library = request.params.library;
+      const folder = request.params.folder;
+      const cacheFile = `${config.folders.cache}/${library}_edit.json`;
+      if (!cache?.deps[library])
+        if (fs.existsSync(cacheFile)) cache.deps[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
+        else cache.deps[library] = await logic.computeDependencies(library, 'edit', true);
+      const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
+      let preloadedJs = [];
+      let preloadedCss = [];
+      for (let item in cache.deps[library]) {
+        const entry = cache.deps[library][item]
+        for (let jsItem of entry.preloadedJs) {
+          preloadedJs.push(`"../../../${lib}/${entry.id}-${entry.version.major}.${entry.version.minor}/${jsItem.path}"`);
+        }
+        for (let cssItem of entry.preloadedCss) {
+          preloadedCss.push(`"../../../${lib}/${entry.id}-${entry.version.major}.${entry.version.minor}/${cssItem.path}"`);
+        }
+      }
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify(1));
+    }
+    catch (error) {
+      console.log(error);
+      response.end(error.toString());
+    }
+  },
   editor: async (request, response, next) => {
     try {
       const baseUrl = `${request.protocol}://${request.get('host')}`;
@@ -67,7 +97,7 @@ console.log(folder);
         },
         editor: {
           language: "en",
-          libraryUrl: "${baseUrl}",
+          ajaxPath: "${baseUrl}/ajax/${library}/${folder}",
           assets: {
             css: [
               "/assets/h5p-php-library/styles/h5p.css",
@@ -164,7 +194,7 @@ console.log(folder);
   <body>
     <form method="post" action="" enctype="multipart/form-data" id="h5p-content-form">
       <input type="hidden" name="library" id="h5p-library" value="${cache.deps[library][library].id} ${cache.deps[library][library].version.major}.${cache.deps[library][library].version.minor}">
-      <input type="hidden" name="parameters" id="h5p-parameters" value=${JSON.stringify(jsonContent)}>
+      <input type="hidden" name="parameters" id="h5p-parameters" value=${he.encode(jsonContent)}>
       <input type="radio" name="action" value="upload"/>
       <input type="radio" name="action" value="create" checked="checked"/>
       <div class="h5p-create"><div class="h5p-editor">... loading</div></div>
