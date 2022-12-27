@@ -17,7 +17,6 @@ module.exports = {
           list[item].org = list[item].repo.url.split('/').slice(3, 4)[0];
           delete list[item].resume;
           delete list[item].fullscreen;
-          delete list[item].runnable;
           delete list[item].xapiVerbs;
           output.reversed[list[item].id] = list[item];
           output.regular[list[item].repoName] = list[item];
@@ -41,10 +40,11 @@ module.exports = {
           return cache[dep].optionals;
         }
         const raw = (await superAgent.get(`https://raw.githubusercontent.com/${org}/${dep}/master/semantics.json`).ok(res => [200, 404].includes(res.status))).text;
+        cache[dep].semantics = {};
         cache[dep].optionals = {};
         if (raw != '404: Not Found') {
-          const semantics = JSON.parse(raw);
-          cache[dep].optionals = parseSemantics(semantics);
+          cache[dep].semantics = JSON.parse(raw);
+          cache[dep].optionals = parseSemantics(cache[dep].semantics);
         }
         return cache[dep].optionals;
       }
@@ -73,10 +73,12 @@ module.exports = {
           list = JSON.parse((await superAgent.get(`https://raw.githubusercontent.com/${org}/${dep}/master/library.json`)).text);
           cache[dep] = list;
         }
+        done[level][dep].title = list.title;
         done[level][dep].version = {
           major: list.majorVersion,
           minor: list.minorVersion
         }
+        done[level][dep].runnable = list.runnable;
         done[level][dep].preloadedJs = list.preloadedJs || [];
         done[level][dep].preloadedCss = list.preloadedCss || [];
         if (!done[level][dep].requiredBy) {
@@ -84,11 +86,11 @@ module.exports = {
         }
         done[level][dep].requiredBy.push(toDo[dep]);
         done[level][dep].level = level;
+        const optionals = await getOptionals(org, dep);
         if ((mode != 'edit' || level > 0) && list.preloadedDependencies) {
           for (let item of list.preloadedDependencies) {
             if (!handleDepListEntry(item.machineName, dep, 'run')) continue;
           }
-          const optionals = await getOptionals(org, dep);
           for (let item in optionals) {
             handleDepListEntry(item, dep, 'semantics');
           }
@@ -98,6 +100,7 @@ module.exports = {
             if (!handleDepListEntry(item.machineName, dep, 'edit')) continue;
           }
         }
+        done[level][dep].semantics = list.semantics;
         delete toDo[dep];
         console.log('done');
       }

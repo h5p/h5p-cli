@@ -5,32 +5,72 @@ const config = require('./config.js');
 const l10n = require('./assets/l10n.json');
 const lib = config.folders.lib;
 let cache = {
-  deps: {}
+  run: {},
+  edit: {}
 };
 module.exports = {
-  libraries: async (request, response, next) => {
+  ajaxLibraries: async (request, response, next) => {
     try {
       const baseUrl = `${request.protocol}://${request.get('host')}`;
       const library = request.params.library;
       const folder = request.params.folder;
       const cacheFile = `${config.folders.cache}/${library}_edit.json`;
-      if (!cache?.deps[library])
-        if (fs.existsSync(cacheFile)) cache.deps[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
-        else cache.deps[library] = await logic.computeDependencies(library, 'edit', true);
-      const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
-      let preloadedJs = [];
-      let preloadedCss = [];
-      for (let item in cache.deps[library]) {
-        const entry = cache.deps[library][item]
-        for (let jsItem of entry.preloadedJs) {
-          preloadedJs.push(`"../../../${lib}/${entry.id}-${entry.version.major}.${entry.version.minor}/${jsItem.path}"`);
+      if (!cache?.edit[library]) {
+        if (fs.existsSync(cacheFile)) {
+          cache.edit[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
         }
-        for (let cssItem of entry.preloadedCss) {
-          preloadedCss.push(`"../../../${lib}/${entry.id}-${entry.version.major}.${entry.version.minor}/${cssItem.path}"`);
+        else {
+          cache.edit[library] = await logic.computeDependencies(library, 'edit', true);
         }
       }
+      let output;
+      if (request.query.machineName) {
+        const directories = {};
+        let preloadedJs = [];
+        let preloadedCss = [];
+        for (let item in cache.edit[library]) {
+          if (item == library) {
+            continue;
+          }
+          const entry = cache.edit[library][item];
+          const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
+          for (let jsItem of entry.preloadedJs) {
+            preloadedJs.push(`${baseUrl}/${lib}/${label}/${jsItem.path}`);
+          }
+          for (let cssItem of entry.preloadedCss) {
+            preloadedCss.push(`${baseUrl}/${lib}/${label}/${cssItem.path}`);
+          }
+          directories[label] = label;
+        }
+        output = {
+          name: cache.edit[library][library].id,
+          version: cache.edit[library][library].version,
+          title: cache.edit[library][library].title,
+          upgradesScript: 'http://example.com/upgrade.js',
+          semantics: cache.edit[library][library].semantics,
+          language: null,
+          defaultLanguage: null,
+          languages: ['en'],
+          javascript: preloadedJs,
+          css: preloadedCss,
+          translations: [],
+          directories
+        }
+      }
+      else {
+        output = [{
+          uberName: `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
+          name: cache.edit[library][library].id,
+          majorVersion: cache.edit[library][library].version.major,
+          minorVersion: cache.edit[library][library].version.minor,
+          title: cache.edit[library][library].title,
+          runnable: cache.edit[library][library].runnable,
+          restricted: false,
+          metadataSettings: null
+        }]
+      }
       response.set('Content-Type', 'application/json');
-      response.end(JSON.stringify(1));
+      response.end(JSON.stringify(output));
     }
     catch (error) {
       console.log(error);
@@ -40,24 +80,41 @@ module.exports = {
   editor: async (request, response, next) => {
     try {
       const baseUrl = `${request.protocol}://${request.get('host')}`;
-console.log(baseUrl);
       const library = request.params.library;
       const folder = request.params.folder;
+      const metadataSemantics = fs.readFileSync(`${config.folders.assets}/metadataSemantics.json`, 'utf-8');
+      const copyrightSemantics = fs.readFileSync(`${config.folders.assets}/copyrightSemantics.json`, 'utf-8');
       const cacheFile = `${config.folders.cache}/${library}_edit.json`;
-      if (!cache?.deps[library])
-        if (fs.existsSync(cacheFile)) cache.deps[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
-        else cache.deps[library] = await logic.computeDependencies(library, 'edit', true);
-console.log(folder);
+      if (!cache?.edit[library]) {
+        if (fs.existsSync(cacheFile)) {
+          cache.edit[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
+        }
+        else {
+          cache.edit[library] = await logic.computeDependencies(library, 'edit', true);
+        }
+      }
       const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
       let preloadedJs = [];
       let preloadedCss = [];
-      for (let item in cache.deps[library]) {
-        const entry = cache.deps[library][item]
+      for (let item in cache.edit[library]) {
+        if (item == library) {
+            continue;
+          }
+        const entry = cache.edit[library][item];
+        const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
         for (let jsItem of entry.preloadedJs) {
-          preloadedJs.push(`"../../../${lib}/${entry.id}-${entry.version.major}.${entry.version.minor}/${jsItem.path}"`);
+          preloadedJs.push(`"../../../${lib}/${label}/${jsItem.path}"`);
         }
         for (let cssItem of entry.preloadedCss) {
-          preloadedCss.push(`"../../../${lib}/${entry.id}-${entry.version.major}.${entry.version.minor}/${cssItem.path}"`);
+          preloadedCss.push(`"../../../${lib}/${label}/${cssItem.path}"`);
+        }
+      }
+      const formParams = {
+        params: JSON.parse(jsonContent),
+        metadata: {
+          defaultLanguage: 'en',
+          license: 'U',
+          title: folder
         }
       }
       response.set('Content-Type', 'text/html');
@@ -95,9 +152,23 @@ console.log(folder);
             "/assets/h5p-php-library/styles/h5p-tooltip.css"
           ]
         },
+        libraryConfig: [],
+        libraryDirectories: {
+          "FontAwesome-4.5": "FontAwesome-4.5",
+          "H5PEditor.VerticalTabs-1.3": "H5PEditor.VerticalTabs-1.3"
+        },
+        hubIsEnabled: false,
         editor: {
           language: "en",
-          ajaxPath: "${baseUrl}/ajax/${library}/${folder}",
+          ajaxPath: "${baseUrl}/editor/${library}/${folder}/",
+          copyrightSemantics: ${copyrightSemantics},
+          metadataSemantics: ${metadataSemantics},
+          wysiwygButtons: [],
+          apiVersion: {
+            majorVersion: 1,
+            minorVersion: 25
+          },
+          nodeVersionId: "${folder}",
           assets: {
             css: [
               "/assets/h5p-php-library/styles/h5p.css",
@@ -178,6 +249,7 @@ console.log(folder);
     <script type="text/javascript" src="/assets/h5p-editor-php-library/language/en.js"></script>
     <script type="text/javascript">
       window.addEventListener('load', (event) => {
+        console.log('> page loaded');
         const $ = H5P.jQuery;
         var $form = $('#h5p-content-form');
         var $type = $('input[name="action"]');
@@ -186,18 +258,18 @@ console.log(folder);
         var $editor = $('.h5p-editor');
         var $library = $('input[name="library"]');
         var $params = $('input[name="parameters"]');
+        console.log('> initializing...');
         H5PEditor.init($form, $type, $upload, $create, $editor, $library, $params);
-        console.log('ready :)');
       });
     </script>
   </head>
   <body>
     <form method="post" action="" enctype="multipart/form-data" id="h5p-content-form">
-      <input type="hidden" name="library" id="h5p-library" value="${cache.deps[library][library].id} ${cache.deps[library][library].version.major}.${cache.deps[library][library].version.minor}">
-      <input type="hidden" name="parameters" id="h5p-parameters" value=${he.encode(jsonContent)}>
+      <input type="hidden" name="library" id="h5p-library" value="${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}">
+      <input type="hidden" name="parameters" id="h5p-parameters" value="${he.encode(JSON.stringify(formParams))}">
       <input type="radio" name="action" value="upload"/>
       <input type="radio" name="action" value="create" checked="checked"/>
-      <div class="h5p-create"><div class="h5p-editor">... loading</div></div>
+      <div class="h5p-create"><div class="h5p-editor">...</div></div>
       <input type="submit" value="save">
     </form>
   </body>
@@ -214,19 +286,25 @@ console.log(folder);
       const library = request.params.library;
       const folder = request.params.folder;
       const cacheFile = `${config.folders.cache}/${library}.json`;
-      if (!cache?.deps[library])
-        if (fs.existsSync(cacheFile)) cache.deps[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
-        else cache.deps[library] = await logic.computeDependencies(library, 'run', true);
+      if (!cache?.run[library]) {
+        if (fs.existsSync(cacheFile)) {
+          cache.run[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
+        }
+        else {
+          cache.run[library] = await logic.computeDependencies(library, 'run', true);
+        }
+      }
       const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
       let preloadedJs = [];
       let preloadedCss = [];
-      for (let item in cache.deps[library]) {
-        const entry = cache.deps[library][item]
+      for (let item in cache.run[library]) {
+        const entry = cache.run[library][item];
+        const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
         for (let jsItem of entry.preloadedJs) {
-          preloadedJs.push(`../../../${lib}/${entry.id}-${entry.version.major}.${entry.version.minor}/${jsItem.path}`);
+          preloadedJs.push(`../../../${lib}/${label}/${jsItem.path}`);
         }
         for (let cssItem of entry.preloadedCss) {
-          preloadedCss.push(`../../../${lib}/${entry.id}-${entry.version.major}.${entry.version.minor}/${cssItem.path}`);
+          preloadedCss.push(`../../../${lib}/${label}/${cssItem.path}`);
         }
       }
       response.set('Content-Type', 'text/html');
@@ -245,7 +323,7 @@ console.log(folder);
         siteUrl: "${baseUrl}",
         contents: {
           "cid-${folder}": {
-            library: "${cache.deps[library][library].id} ${cache.deps[library][library].version.major}.${cache.deps[library][library].version.minor}",
+            library: "${cache.run[library][library].id} ${cache.run[library][library].version.major}.${cache.run[library][library].version.minor}",
             jsonContent: ${JSON.stringify(jsonContent)},
             url: "${baseUrl}",
             mainId: "${folder}",
