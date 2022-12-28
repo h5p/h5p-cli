@@ -158,6 +158,7 @@ module.exports = {
           ajaxPath: "${baseUrl}/editor/${library}/${folder}/",
           copyrightSemantics: ${copyrightSemantics},
           metadataSemantics: ${metadataSemantics},
+          libraryUrl: "/assets/h5p-editor-php-library/",
           wysiwygButtons: [],
           apiVersion: {
             majorVersion: 1,
