@@ -4,10 +4,19 @@ const superAgent = require('superagent');
 const admZip = require("adm-zip");
 const config = require('./config.js');
 module.exports = {
-  listLibraries: () => {
-    return superAgent.get(config.registryUrl)
-      .then((result) => {
-        const list = JSON.parse(result.text);
+  getRegistry: (ignoreCache) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const registryFile = `${config.folders.cache}/libraryRegistry.json`;
+        let list;
+        if (!ignoreCache && fs.existsSync(registryFile)) {
+          list = JSON.parse(fs.readFileSync(registryFile, 'utf-8'));
+        }
+        else {
+          const raw = (await superAgent.get(config.registryUrl)).text;
+          list = JSON.parse(raw);
+          fs.writeFileSync(registryFile, raw);
+        }
         const output = {
           regular: {},
           reversed: {}
@@ -21,8 +30,12 @@ module.exports = {
           output.reversed[list[item].id] = list[item];
           output.regular[list[item].repoName] = list[item];
         }
-        return Promise.resolve(output);
-      });
+        resolve(output);
+      }
+      catch (error) {
+        reject(error);
+      }
+    });
   },
   computeDependencies: (library, mode, saveToCache) => {
     return new Promise(async (resolve, reject) => {
@@ -105,7 +118,7 @@ module.exports = {
         console.log('done');
       }
       try {
-        registry = await module.exports.listLibraries();
+        registry = await module.exports.getRegistry();
         while (Object.keys(toDo).length) {
           level++;
           console.log(`>> on level ${level}`);

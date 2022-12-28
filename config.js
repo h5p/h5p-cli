@@ -4,6 +4,7 @@ module.exports = {
   folders: {
     assets: 'assets',
     lib: 'libraries',
-    cache: 'cache'
+    cache: 'cache',
+    uploads: 'uploads'
   }
 }

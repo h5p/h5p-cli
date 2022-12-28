@@ -12,36 +12,27 @@ module.exports = {
   ajaxLibraries: async (request, response, next) => {
     try {
       const baseUrl = `${request.protocol}://${request.get('host')}`;
-      const library = request.params.library;
-      const folder = request.params.folder;
-      const cacheFile = `${config.folders.cache}/${library}_edit.json`;
-      if (!cache?.edit[library]) {
-        if (fs.existsSync(cacheFile)) {
-          cache.edit[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
-        }
-        else {
-          cache.edit[library] = await logic.computeDependencies(library, 'edit', true);
+      const registry = await logic.getRegistry();
+      let libraries = [request.params.library];
+      if (Array.isArray(request.body.libraries)) {
+        libraries = [];
+        for (let item of request.body.libraries) {
+          item = item.split(' ')[0];
+          libraries.push(registry.reversed[item].repoName);
         }
       }
+      if (request.query.machineName) {
+        libraries = [];
+        libraries.push(registry.reversed[request.query.machineName].repoName);
+      }
+      const toDo = [];
+      for (let item of libraries) {
+        toDo.push(computePreloaded(item, baseUrl));
+      }
+      const preloaded = await Promise.all(toDo);
       let output;
       if (request.query.machineName) {
-        const directories = {};
-        let preloadedJs = [];
-        let preloadedCss = [];
-        for (let item in cache.edit[library]) {
-          if (item == library) {
-            continue;
-          }
-          const entry = cache.edit[library][item];
-          const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
-          for (let jsItem of entry.preloadedJs) {
-            preloadedJs.push(`${baseUrl}/${lib}/${label}/${jsItem.path}`);
-          }
-          for (let cssItem of entry.preloadedCss) {
-            preloadedCss.push(`${baseUrl}/${lib}/${label}/${cssItem.path}`);
-          }
-          directories[label] = label;
-        }
+        const library = libraries[0];
         output = {
           name: cache.edit[library][library].id,
           version: cache.edit[library][library].version,
@@ -51,23 +42,27 @@ module.exports = {
           language: null,
           defaultLanguage: null,
           languages: ['en'],
-          javascript: preloadedJs,
-          css: preloadedCss,
+          javascript: preloaded[0].preloadedJs,
+          css: preloaded[0].preloadedCss,
           translations: [],
-          directories
+          directories: preloaded[0].directories
         }
       }
       else {
-        output = [{
-          uberName: `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
-          name: cache.edit[library][library].id,
-          majorVersion: cache.edit[library][library].version.major,
-          minorVersion: cache.edit[library][library].version.minor,
-          title: cache.edit[library][library].title,
-          runnable: cache.edit[library][library].runnable,
-          restricted: false,
-          metadataSettings: null
-        }]
+        output = [];
+        for (let item of preloaded) {
+          const library = item.library;
+          output.push({
+            uberName: `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
+            name: cache.edit[library][library].id,
+            majorVersion: cache.edit[library][library].version.major,
+            minorVersion: cache.edit[library][library].version.minor,
+            title: cache.edit[library][library].title,
+            runnable: cache.edit[library][library].runnable,
+            restricted: false,
+            metadataSettings: null
+          });
+        }
       }
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify(output));
@@ -388,4 +383,40 @@ module.exports = {
       response.end(error.toString());
     }
   }
+}
+const computePreloaded = (library, baseUrl) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const cacheFile = `${config.folders.cache}/${library}_edit.json`;
+      if (!cache?.edit[library]) {
+        if (fs.existsSync(cacheFile)) {
+          cache.edit[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
+        }
+        else {
+          cache.edit[library] = await logic.computeDependencies(library, 'edit', true);
+        }
+      }
+      const directories = {};
+      let preloadedJs = [];
+      let preloadedCss = [];
+      for (let item in cache.edit[library]) {
+        if (item == library) {
+          continue;
+        }
+        const entry = cache.edit[library][item];
+        const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
+        for (let jsItem of entry.preloadedJs) {
+          preloadedJs.push(`${baseUrl}/${lib}/${label}/${jsItem.path}`);
+        }
+        for (let cssItem of entry.preloadedCss) {
+          preloadedCss.push(`${baseUrl}/${lib}/${label}/${cssItem.path}`);
+        }
+        directories[label] = label;
+      }
+      resolve({ library, preloadedJs,  preloadedCss, directories});
+    }
+    catch (error) {
+      reject(error);
+    }
+  });
 }
