@@ -52,13 +52,12 @@ module.exports = {
         if (cache[dep].optionals) {
           return cache[dep].optionals;
         }
-        const raw = (await superAgent.get(`https://raw.githubusercontent.com/${org}/${dep}/master/semantics.json`).ok(res => [200, 404].includes(res.status))).text;
-        cache[dep].semantics = {};
-        cache[dep].optionals = {};
-        if (raw != '404: Not Found') {
-          cache[dep].semantics = JSON.parse(raw);
-          cache[dep].optionals = parseSemantics(cache[dep].semantics);
+        const translations = await fetchFile(`https://raw.githubusercontent.com/${org}/${dep}/master/language/en.json`, true);
+        if (typeof translations == 'object') {
+          cache[dep].translations = translations;
         }
+        cache[dep].semantics = await fetchFile(`https://raw.githubusercontent.com/${org}/${dep}/master/semantics.json`, true);
+        cache[dep].optionals = parseSemantics(cache[dep].semantics);
         return cache[dep].optionals;
       }
       const handleDepListEntry = (machineName, parent, type) => {
@@ -114,6 +113,7 @@ module.exports = {
           }
         }
         done[level][dep].semantics = list.semantics;
+        done[level][dep].translations = list.translations;
         delete toDo[dep];
         console.log('done');
       }
@@ -197,6 +197,9 @@ module.exports = {
  * entries - semantics.json array
  */
 const parseSemantics = (entries) => {
+  if (!Array.isArray(entries)) {
+    return {};
+  }
   let toDo = [];
   let list = [];
   const output = {};
@@ -226,6 +229,16 @@ const parseSemantics = (entries) => {
   list = entries;
   while (list.length) {
     parseList();
+  }
+  return output;
+}
+const fetchFile = async (url, parseJson) => {
+  let output = (await superAgent.get(url).ok(res => [200, 404].includes(res.status))).text;
+  if (output == '404: Not Found') {
+    return '';
+  }
+  if (parseJson) {
+    output = JSON.parse(output);
   }
   return output;
 }

@@ -44,7 +44,7 @@ module.exports = {
           languages: ['en'],
           javascript: preloaded[0].preloadedJs,
           css: preloaded[0].preloadedCss,
-          translations: [],
+          translations: preloaded[0].translations,
           directories: preloaded[0].directories
         }
       }
@@ -398,6 +398,7 @@ const computePreloaded = (library, baseUrl) => {
         }
       }
       const directories = {};
+      const translations = {};
       let preloadedJs = [];
       let preloadedCss = [];
       for (let item in cache.edit[library]) {
@@ -412,9 +413,10 @@ const computePreloaded = (library, baseUrl) => {
         for (let cssItem of entry.preloadedCss) {
           preloadedCss.push(`${baseUrl}/${lib}/${label}/${cssItem.path}`);
         }
+        translations[entry.id] = entry.translations;
         directories[label] = label;
       }
-      resolve({ library, preloadedJs,  preloadedCss, directories});
+      resolve({ library, preloadedJs,  preloadedCss, translations, directories});
     }
     catch (error) {
       reject(error);
