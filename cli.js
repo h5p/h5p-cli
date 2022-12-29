@@ -17,7 +17,9 @@ const cli = {
   deps: (library, mode, saveToCache) => {
     logic.computeDependencies(library, mode, parseInt(saveToCache))
       .then((result) => {
-        console.log(util.inspect(result, false, null, true));
+        for (let item in result) {
+          console.log(item);
+        }
       })
       .catch(handleError);
   },
