@@ -9,8 +9,9 @@ app.use(express.urlencoded({
 }));
 app.get('/content/:library/:folder', api.content);
 app.get('/editor/:library/:folder/libraries', api.ajaxLibraries);
-app.post('/editor/:library/:folder/libraries', api.ajaxLibraries);
 app.get('/editor/:library/:folder', api.editor);
+app.post('/editor/:library/:folder/libraries', api.ajaxLibraries);
+app.post('/editor/:library/:folder/files', multer.single('file'), api.saveFile);
 app.post('/editor/:library/:folder', multer.none(), api.saveContent);
 app.use(express.static('./'));
 app.listen(config.port, () => {

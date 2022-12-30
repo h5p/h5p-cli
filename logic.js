@@ -57,7 +57,7 @@ module.exports = {
           cache[dep].translations = translations;
         }
         cache[dep].semantics = await fetchFile(`https://raw.githubusercontent.com/${org}/${dep}/master/semantics.json`, true);
-        cache[dep].optionals = parseSemantics(cache[dep].semantics);
+        cache[dep].optionals = parseSemanticLibraries(cache[dep].semantics);
         return cache[dep].optionals;
       }
       const handleDepListEntry = (machineName, parent, type) => {
@@ -195,11 +195,7 @@ module.exports = {
     });
   }
 }
-/*
- * finds optional dependencies in semantics.json
- * entries - semantics.json array
- */
-const parseSemantics = (entries) => {
+const parseSemanticLibraries = (entries) => {
   if (!Array.isArray(entries)) {
     return {};
   }

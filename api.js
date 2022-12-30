@@ -9,6 +9,39 @@ let cache = {
   edit: {}
 };
 module.exports = {
+  saveFile: async (request, response, next) => {
+    try {
+      const form = JSON.parse(request.body.field);
+      const targetFolder = `content/${request.params.folder}/${form.type}s`;
+      if (!fs.existsSync(targetFolder)) {
+        fs.mkdirSync(targetFolder);
+      }
+      else { // delete unused file(s)
+        const content = JSON.parse(fs.readFileSync(`content/${request.params.folder}/content.json`));
+        const contentFiles = parseContentFiles(content);
+        const list = [];
+        for (let item in contentFiles) {
+          list.push(item.split('/')[1]);
+        }
+        const files = fs.readdirSync(targetFolder);
+        for (let item of files) {
+          if (!list.includes(item)) {
+            fs.unlinkSync(`${targetFolder}/${item}`);
+          }
+        }
+      }
+      fs.renameSync(`${request.file.path}`, `${targetFolder}/${request.file.filename}`);
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify({
+        mime: request.file.mimetype,
+        path: `images/${request.file.filename}`
+      }));
+    }
+    catch (error) {
+      console.log(error);
+      response.end(error.toString());
+    }
+  },
   saveContent: async (request, response, next) => {
     try {
       const input = JSON.parse(request.body.parameters);
@@ -397,6 +430,35 @@ module.exports = {
       response.end(error.toString());
     }
   }
+}
+const parseContentFiles = (entries) => {
+  let toDo = [];
+  let list = [];
+  const output = {};
+  const valid = ['path', 'mime'];
+  const parseList = () => {
+    toDo = [];
+    for (let obj of list) { // go through semantics array entries
+      for (let attr in obj) { // go through entry attributes
+        if (valid.includes(attr) && typeof attr == 'string') {
+          output[obj.path] = obj;
+          continue;
+        }
+        if (typeof obj[attr] == 'object' && !Array.isArray(obj[attr])) {
+          toDo.push(obj[attr]);
+        }
+        if (Array.isArray(obj[attr])) {
+          toDo = toDo.concat(obj[attr]);
+        }
+      }
+    }
+    list = toDo;
+  }
+  list = entries;
+  while (list.length) {
+    parseList();
+  }
+  return output;
 }
 const computePreloaded = (library, baseUrl) => {
   return new Promise(async (resolve, reject) => {
