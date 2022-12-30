@@ -47,7 +47,7 @@ module.exports = {
       const cache = {};
       const done = {};
       const weights = {};
-      toDo[library] = `${library}/run`;
+      toDo[library] = '';
       const getOptionals = async (org, dep) => {
         if (cache[dep].optionals) {
           return cache[dep].optionals;
@@ -66,14 +66,17 @@ module.exports = {
           process.stdout.write(`${machineName} not found in registry; `);
           return false;
         }
-        const requiredBy = `${parent}/${type}`;
-        if (!done[level][entry] && !toDo[entry] && !registry.regular?.[entry]?.requiredBy?.includes(requiredBy)) {
-          toDo[entry] = requiredBy;
+        if (!done[level][entry] && !toDo[entry]) {
+          toDo[entry] = parent;
         }
         weights[entry] = weights[entry] ? weights[entry] + 1 : 1;
         return true;
       }
       const compute = async (dep, org) => {
+        if (registry.regular[dep].requiredBy && registry.regular[dep].requiredBy.indexOf(toDo[dep]) != -1) {
+          delete toDo[dep];
+          return;
+        }
         process.stdout.write(`>> ${dep} required by ${toDo[dep]} ... `);
         done[level][dep] = registry.regular[dep];
         let list;
@@ -94,9 +97,9 @@ module.exports = {
         done[level][dep].preloadedJs = list.preloadedJs || [];
         done[level][dep].preloadedCss = list.preloadedCss || [];
         if (!done[level][dep].requiredBy) {
-          done[level][dep].requiredBy = [];
+          done[level][dep].requiredBy = registry.regular[toDo[dep]]?.requiredBy || '';
         }
-        done[level][dep].requiredBy.push(toDo[dep]);
+        done[level][dep].requiredBy += toDo[dep] ? `/${toDo[dep]}` : '';
         done[level][dep].level = level;
         const optionals = await getOptionals(org, dep);
         if ((mode != 'edit' || level > 0) && list.preloadedDependencies) {

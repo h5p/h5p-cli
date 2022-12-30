@@ -1,4 +1,5 @@
 node_modules
 libraries
 cache
+uploads
 package-lock.json

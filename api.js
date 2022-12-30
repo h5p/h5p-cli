@@ -9,6 +9,17 @@ let cache = {
   edit: {}
 };
 module.exports = {
+  saveContent: async (request, response, next) => {
+    try {
+      const input = JSON.parse(request.body.parameters);
+      fs.writeFileSync(`content/${request.body.action}/content.json`, JSON.stringify(input.params));
+      response.redirect(`/editor/${request.params.library}/${request.params.folder}`);
+    }
+    catch (error) {
+      console.log(error);
+      response.end(error.toString());
+    }
+  },
   ajaxLibraries: async (request, response, next) => {
     try {
       const baseUrl = `${request.protocol}://${request.get('host')}`;
@@ -159,6 +170,7 @@ module.exports = {
           copyrightSemantics: ${copyrightSemantics},
           metadataSemantics: ${metadataSemantics},
           libraryUrl: "/assets/h5p-editor-php-library/",
+          filesPath: "",
           wysiwygButtons: [],
           apiVersion: {
             majorVersion: 1,
@@ -254,8 +266,9 @@ module.exports = {
         var $editor = $('.h5p-editor');
         var $library = $('input[name="library"]');
         var $params = $('input[name="parameters"]');
+        var $title = $('input[name="action"]');
         console.log('> initializing...');
-        H5PEditor.init($form, $type, $upload, $create, $editor, $library, $params);
+        H5PEditor.init($form, $type, $upload, $create, $editor, $library, $params, null, $title);
       });
     </script>
   </head>

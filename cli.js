@@ -10,7 +10,9 @@ const cli = {
     console.log('> fetching h5p library registry');
     logic.getRegistry(parseInt(ignoreCache))
       .then((result) => {
-        for (let item in result.regular) console.log(reversed ? result.regular[item].id : item);
+        for (let item in result.regular) {
+          console.log(reversed ? result.regular[item].id : item);
+        }
       })
       .catch(handleError);
   },
