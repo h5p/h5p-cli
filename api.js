@@ -18,7 +18,7 @@ module.exports = {
       }
       else { // delete unused file(s)
         const content = JSON.parse(fs.readFileSync(`content/${request.params.folder}/content.json`));
-        const contentFiles = parseContentFiles(content);
+        const contentFiles = parseContentFiles([content]);
         const list = [];
         for (let item in contentFiles) {
           list.push(item.split('/')[1]);
@@ -309,8 +309,7 @@ module.exports = {
     <form method="post" action="" enctype="multipart/form-data" id="h5p-content-form">
       <input type="hidden" name="library" id="h5p-library" value="${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}">
       <input type="hidden" name="parameters" id="h5p-parameters" value="${he.encode(JSON.stringify(formParams))}">
-      <input type="radio" name="action" value="upload"/>
-      <input type="radio" name="action" value="create" checked="checked"/>
+      <input type="radio" name="action" value="create" style="display: none" checked="checked"/>
       <div class="h5p-create"><div class="h5p-editor">...</div></div>
       <input type="submit" value="save">
     </form>
@@ -438,8 +437,8 @@ const parseContentFiles = (entries) => {
   const valid = ['path', 'mime'];
   const parseList = () => {
     toDo = [];
-    for (let obj of list) { // go through semantics array entries
-      for (let attr in obj) { // go through entry attributes
+    for (let obj of list) {
+      for (let attr in obj) {
         if (valid.includes(attr) && typeof attr == 'string') {
           output[obj.path] = obj;
           continue;
