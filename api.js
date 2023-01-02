@@ -1,5 +1,6 @@
 const fs = require('fs');
 const he = require('he');
+const imageSize = require('image-size');
 const logic = require('./logic.js');
 const config = require('./config.js');
 const l10n = require('./assets/l10n.json');
@@ -30,12 +31,21 @@ module.exports = {
           }
         }
       }
-      fs.renameSync(`${request.file.path}`, `${targetFolder}/${request.file.filename}`);
-      response.set('Content-Type', 'application/json');
-      response.end(JSON.stringify({
+      const targetFile = `${targetFolder}/${request.file.filename}`;
+      fs.renameSync(`${request.file.path}`, targetFile);
+      const output = {
         mime: request.file.mimetype,
         path: `images/${request.file.filename}`
-      }));
+      }
+      if (form.type == 'image') {
+        const info = imageSize(targetFile);
+        if (info.width && info.height) {
+          output.width = info.width;
+          output.height = info.height;
+        }
+      }
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify(output));
     }
     catch (error) {
       console.log(error);
