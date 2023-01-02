@@ -60,7 +60,7 @@ module.exports = {
         cache[dep].optionals = parseSemanticLibraries(cache[dep].semantics);
         return cache[dep].optionals;
       }
-      const handleDepListEntry = (machineName, parent, type) => {
+      const handleDepListEntry = (machineName, parent) => {
         const entry = registry.reversed[machineName]?.repoName;
         if (!entry) {
           process.stdout.write(`${machineName} not found in registry; `);
@@ -73,7 +73,12 @@ module.exports = {
         return true;
       }
       const compute = async (dep, org) => {
-        if (registry.regular[dep].requiredBy && registry.regular[dep].requiredBy.indexOf(toDo[dep]) != -1) {
+        const requiredByPath = (registry.regular[toDo[dep]]?.requiredBy[registry.regular[toDo[dep]]?.requiredBy.length - 1] || '') + (toDo[dep] ? `/${toDo[dep]}` : '');
+        if (pathHasDuplicates(requiredByPath)) {
+          delete toDo[dep];
+          return;
+        }
+        if (registry.regular[dep].requiredBy && registry.regular[dep].requiredBy.includes(requiredByPath)) {
           delete toDo[dep];
           return;
         }
@@ -97,22 +102,22 @@ module.exports = {
         done[level][dep].preloadedJs = list.preloadedJs || [];
         done[level][dep].preloadedCss = list.preloadedCss || [];
         if (!done[level][dep].requiredBy) {
-          done[level][dep].requiredBy = registry.regular[toDo[dep]]?.requiredBy || '';
+          done[level][dep].requiredBy = [];
         }
-        done[level][dep].requiredBy += toDo[dep] ? `/${toDo[dep]}` : '';
+        done[level][dep].requiredBy.push(requiredByPath);
         done[level][dep].level = level;
         const optionals = await getOptionals(org, dep);
         if ((mode != 'edit' || level > 0) && list.preloadedDependencies) {
           for (let item of list.preloadedDependencies) {
-            if (!handleDepListEntry(item.machineName, dep, 'run')) continue;
+            if (!handleDepListEntry(item.machineName, dep)) continue;
           }
           for (let item in optionals) {
-            handleDepListEntry(item, dep, 'semantics');
+            handleDepListEntry(item, dep);
           }
         }
         if (mode == 'edit' && list.editorDependencies) {
           for (let item of list.editorDependencies) {
-            if (!handleDepListEntry(item.machineName, dep, 'edit')) continue;
+            if (!handleDepListEntry(item.machineName, dep)) continue;
           }
         }
         done[level][dep].semantics = list.semantics;
@@ -194,6 +199,19 @@ module.exports = {
       }
     });
   }
+}
+const pathHasDuplicates = (path) => {
+  const ledger = {};
+  const list = path.split('/');
+  for (let item of list) {
+    if (ledger[item]) {
+      return true;
+    }
+    else {
+      ledger[item] = true;
+    }
+  }
+  return false;
 }
 const parseSemanticLibraries = (entries) => {
   if (!Array.isArray(entries)) {
