@@ -477,10 +477,10 @@ const computePreloaded = (library, baseUrl) => {
       let preloadedJs = [];
       let preloadedCss = [];
       for (let item in cache.edit[library]) {
-        if (item == library) {
+        const entry = cache.edit[library][item];
+        if (item == library && entry.requiredBy.length == 1) {
           continue;
         }
-        const entry = cache.edit[library][item];
         const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
         for (let jsItem of entry.preloadedJs) {
           preloadedJs.push(`${baseUrl}/${lib}/${label}/${jsItem.path}`);
