@@ -10,6 +10,7 @@ let cache = {
   edit: {}
 };
 module.exports = {
+  // editor file upload
   saveFile: async (request, response, next) => {
     try {
       const form = JSON.parse(request.body.field);
@@ -52,6 +53,7 @@ module.exports = {
       response.end(error.toString());
     }
   },
+  // updates content.json file with data from content type editor form
   saveContent: async (request, response, next) => {
     try {
       const input = JSON.parse(request.body.parameters);
@@ -63,6 +65,7 @@ module.exports = {
       response.end(error.toString());
     }
   },
+  // endpoint that lists library data; used as ajax request by the content type editors;
   ajaxLibraries: async (request, response, next) => {
     try {
       const baseUrl = `${request.protocol}://${request.get('host')}`;
@@ -126,6 +129,7 @@ module.exports = {
       response.end(error.toString());
     }
   },
+  // html page that initializes and renders h5p content type editors
   editor: async (request, response, next) => {
     try {
       const baseUrl = `${request.protocol}://${request.get('host')}`;
@@ -304,8 +308,8 @@ module.exports = {
         const $ = H5P.jQuery;
         var $form = $('#h5p-content-form');
         var $type = $('input[name="action"]');
-        var $upload = $('.h5p-upload').hide();
-        var $create = $('.h5p-create').hide();
+        var $upload = $('.h5p-upload');
+        var $create = $('.h5p-create');
         var $editor = $('.h5p-editor');
         var $library = $('input[name="library"]');
         var $params = $('input[name="parameters"]');
@@ -319,6 +323,7 @@ module.exports = {
     <form method="post" action="" enctype="multipart/form-data" id="h5p-content-form">
       <input type="hidden" name="library" id="h5p-library" value="${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}">
       <input type="hidden" name="parameters" id="h5p-parameters" value="${he.encode(JSON.stringify(formParams))}">
+      <input type="radio" name="action" value="upload" style="display: none"/>
       <input type="radio" name="action" value="create" style="display: none" checked="checked"/>
       <div class="h5p-create"><div class="h5p-editor">...</div></div>
       <input type="submit" value="save">
@@ -331,6 +336,7 @@ module.exports = {
       response.end(error.toString());
     }
   },
+  // html page that initializes and renders h5p content types
   content: async (request, response, next) => {
     try {
       const baseUrl = `${request.protocol}://${request.get('host')}`;
@@ -440,6 +446,7 @@ module.exports = {
     }
   }
 }
+// parses content.json objects for entries of file type
 const parseContentFiles = (entries) => {
   let toDo = [];
   let list = [];
@@ -469,41 +476,41 @@ const parseContentFiles = (entries) => {
   }
   return output;
 }
-const computePreloaded = (library, baseUrl) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const cacheFile = `${config.folders.cache}/${library}_edit.json`;
-      if (!cache?.edit[library]) {
-        if (fs.existsSync(cacheFile)) {
-          cache.edit[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
-        }
-        else {
-          cache.edit[library] = await logic.computeDependencies(library, 'edit', true);
-        }
+/* generates lists os JavaScript & CSS files to load
+as well as translations and directories entries for use in content types */
+const computePreloaded = async (library, baseUrl) => {
+  try {
+    const cacheFile = `${config.folders.cache}/${library}_edit.json`;
+    if (!cache?.edit[library]) {
+      if (fs.existsSync(cacheFile)) {
+        cache.edit[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
       }
-      const directories = {};
-      const translations = {};
-      let preloadedJs = [];
-      let preloadedCss = [];
-      for (let item in cache.edit[library]) {
-        const entry = cache.edit[library][item];
-        if (item == library && entry.requiredBy.length == 1) {
-          continue;
-        }
-        const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
-        for (let jsItem of entry.preloadedJs) {
-          preloadedJs.push(`${baseUrl}/${lib}/${label}/${jsItem.path}`);
-        }
-        for (let cssItem of entry.preloadedCss) {
-          preloadedCss.push(`${baseUrl}/${lib}/${label}/${cssItem.path}`);
-        }
-        translations[entry.id] = entry.translations;
-        directories[label] = label;
+      else {
+        cache.edit[library] = await logic.computeDependencies(library, 'edit', true);
       }
-      resolve({ library, preloadedJs,  preloadedCss, translations, directories});
     }
-    catch (error) {
-      reject(error);
+    const directories = {};
+    const translations = {};
+    let preloadedJs = [];
+    let preloadedCss = [];
+    for (let item in cache.edit[library]) {
+      const entry = cache.edit[library][item];
+      if (item == library && entry.requiredBy.length == 1) {
+        continue;
+      }
+      const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
+      for (let jsItem of entry.preloadedJs) {
+        preloadedJs.push(`${baseUrl}/${lib}/${label}/${jsItem.path}`);
+      }
+      for (let cssItem of entry.preloadedCss) {
+        preloadedCss.push(`${baseUrl}/${lib}/${label}/${cssItem.path}`);
+      }
+      translations[entry.id] = entry.translations;
+      directories[label] = label;
     }
-  });
+    return { library, preloadedJs,  preloadedCss, translations, directories};
+  }
+  catch (error) {
+    throw error;
+  }
 }

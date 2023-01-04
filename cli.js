@@ -1,38 +1,47 @@
 const util = require('util');
 const logic = require('./logic.js');
 const config = require('./config.js');
-const handleError = (error) => {
-  console.log('> error');
-  console.log(error);
-}
 const cli = {
-  list: (reversed, ignoreCache) => {
-    console.log('> fetching h5p library registry');
-    logic.getRegistry(parseInt(ignoreCache))
-      .then((result) => {
-        for (let item in result.regular) {
-          console.log(reversed ? result.regular[item].id : item);
-        }
-      })
-      .catch(handleError);
+  list: async (reversed, ignoreCache) => {
+    try {
+      console.log('> fetching h5p library registry');
+      const result = await logic.getRegistry(parseInt(ignoreCache));
+      for (let item in result.regular) {
+        console.log(reversed ? result.regular[item].id : item);
+      }
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
   },
-  deps: (library, mode, saveToCache) => {
-    logic.computeDependencies(library, mode, parseInt(saveToCache))
-      .then((result) => {
-        for (let item in result) {
-          console.log(item);
-        }
-      })
-      .catch(handleError);
+  deps: async (library, mode, saveToCache) => {
+    try {
+      const result = await logic.computeDependencies(library, mode, parseInt(saveToCache));
+      for (let item in result) {
+        console.log(item);
+      }
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
   },
-  install: (library, mode, useCache) => {
-    console.log(`> cloning h5p library and dependencies into "${config.folders.lib}" folder`);
-    logic.downloadWithDependencies(library, mode, parseInt(useCache))
-      .then((result) => {
-        console.log('> all done');
-      })
-      .catch(handleError);
+  install: async (library, mode, useCache) => {
+    try {
+      console.log(`> cloning h5p library and dependencies into "${config.folders.lib}" folder`);
+      await logic.downloadWithDependencies(library, mode, parseInt(useCache));
+      console.log('> all done');
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
   }
 }
-if (typeof cli[process.argv[2]] =='function') cli[process.argv[2]].apply(null, process.argv.slice(3));
-else console.log(`> "${process.argv[2]}" is not a valid command`);
+if (typeof cli[process.argv[2]] == 'function') {
+  cli[process.argv[2]].apply(null, process.argv.slice(3));
+}
+else {
+  console.log(`> "${process.argv[2]}" is not a valid command`);
+}
