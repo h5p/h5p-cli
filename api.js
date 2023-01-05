@@ -47,8 +47,7 @@ module.exports = {
       const input = JSON.parse(request.body.parameters);
       fs.writeFileSync(`content/${request.body.action}/content.json`, JSON.stringify(input.params));
       // delete unused media files
-      const content = JSON.parse(fs.readFileSync(`content/${request.params.folder}/content.json`));
-      const contentFiles = parseContentFiles([content]);
+      const contentFiles = parseContentFiles([input.params]);
       const list = [];
       for (let item in contentFiles) {
         list.push(item.split('/')[1]);
