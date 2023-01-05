@@ -14,7 +14,7 @@ module.exports = {
     }
     else {
       list = await getFile(config.urls.registry, true);
-      fs.writeFileSync(registryFile, raw);
+      fs.writeFileSync(registryFile, JSON.stringify(list));
     }
     const output = {
       regular: {},
