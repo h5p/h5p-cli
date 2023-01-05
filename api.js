@@ -18,25 +18,13 @@ module.exports = {
       if (!fs.existsSync(targetFolder)) {
         fs.mkdirSync(targetFolder);
       }
-      else { // delete unused file(s)
-        const content = JSON.parse(fs.readFileSync(`content/${request.params.folder}/content.json`));
-        const contentFiles = parseContentFiles([content]);
-        const list = [];
-        for (let item in contentFiles) {
-          list.push(item.split('/')[1]);
-        }
-        const files = fs.readdirSync(targetFolder);
-        for (let item of files) {
-          if (!list.includes(item)) {
-            fs.unlinkSync(`${targetFolder}/${item}`);
-          }
-        }
-      }
-      const targetFile = `${targetFolder}/${request.file.filename}`;
+      const ext = request.file.originalname.split('.')?.[1] || '';
+      const path = `${form.type}s/${request.file.filename}.${ext}`;
+      const targetFile = `${targetFolder}/${request.file.filename}.${ext}`;
       fs.renameSync(`${request.file.path}`, targetFile);
       const output = {
         mime: request.file.mimetype,
-        path: `images/${request.file.filename}`
+        path
       }
       if (form.type == 'image') {
         const info = imageSize(targetFile);
@@ -58,6 +46,26 @@ module.exports = {
     try {
       const input = JSON.parse(request.body.parameters);
       fs.writeFileSync(`content/${request.body.action}/content.json`, JSON.stringify(input.params));
+      // delete unused media files
+      const mediaTypes = ['images', 'audios', 'videos'];
+      const content = JSON.parse(fs.readFileSync(`content/${request.params.folder}/content.json`));
+      const contentFiles = parseContentFiles([content]);
+      const list = [];
+      for (let item in contentFiles) {
+        list.push(item.split('/')[1]);
+      }
+      for (let type of mediaTypes) {
+        const targetFolder = `content/${request.params.folder}/${type}`;
+        if (!fs.existsSync(targetFolder)) {
+          continue;
+        }
+        const files = fs.readdirSync(targetFolder);
+        for (let item of files) {
+          if (!list.includes(item)) {
+            fs.unlinkSync(`${targetFolder}/${item}`);
+          }
+        }
+      }
       response.redirect(`/editor/${request.params.library}/${request.params.folder}`);
     }
     catch (error) {
