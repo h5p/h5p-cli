@@ -47,14 +47,13 @@ module.exports = {
       const input = JSON.parse(request.body.parameters);
       fs.writeFileSync(`content/${request.body.action}/content.json`, JSON.stringify(input.params));
       // delete unused media files
-      const mediaTypes = ['images', 'audios', 'videos'];
       const content = JSON.parse(fs.readFileSync(`content/${request.params.folder}/content.json`));
       const contentFiles = parseContentFiles([content]);
       const list = [];
       for (let item in contentFiles) {
         list.push(item.split('/')[1]);
       }
-      for (let type of mediaTypes) {
+      for (let type of config.mediaTypes) {
         const targetFolder = `content/${request.params.folder}/${type}`;
         if (!fs.existsSync(targetFolder)) {
           continue;
