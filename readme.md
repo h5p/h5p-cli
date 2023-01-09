@@ -8,13 +8,13 @@ Use `run` or `edit` for `<mode>` to generate dependencies for those cases.
 Use `1` for `<saveToCache>` to save the result in the cache folder.  
 4. `node cli.js install <h5p_repo_name> <mode> <useCache>` installs the dependencies in the libraries folder.  
 `<mode>` is the same as above and `<useCache>` can be `1` if you want it to use the cached deps if you generated them beforehand using the `deps` cli command.  
-5. Below is an example for the setup CLI commands needed before running and editing content types in the `h5p-accordion` library.
+5. Below is an example for the setup CLI commands needed before running and editing content types in the `h5p-accordion` library.  
 ```
 node cli.js deps h5p-accordion run 1
 node cli.js deps h5p-accordion edit 1
 node cli.js install h5p-accordion run 1
 node cli.js install h5p-accordion edit 1
-```
+```  
 The first 2 commands compute dependencies for run & edit modes and saves them in the cache folder.  
 The second 2 commands install the dependencies for those modes using the cached dependency lists generated via the first 2 commands.  
 6. `node server.js` starts the dev server.  
