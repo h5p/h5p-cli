@@ -7,6 +7,7 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
+app.get('/split/:library/:folder', api.splitView);
 app.get('/content/:library/:folder', api.content);
 app.get('/editor/:library/:folder/libraries', api.ajaxLibraries);
 app.get('/editor/:library/:folder', api.editor);

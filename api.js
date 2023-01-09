@@ -10,6 +10,34 @@ let cache = {
   edit: {}
 };
 module.exports = {
+  // split view between run & edit modes on the same page
+  splitView: (request, response, next) => {
+    response.set('Content-Type', 'text/html');
+    response.end(`
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>h5p-dev split-view</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/assets/h5p-cli.css">
+    <script type="text/javascript">
+      window.addEventListener('load', (event) => {
+        console.log('> split page loaded');
+        const runner = document.getElementById('h5p-cli-run');
+        const editor = document.getElementById('h5p-cli-edit');
+        editor.addEventListener('load', (event) => {
+          console.log('> reloading runner...');
+          runner.contentDocument.location.reload(true);
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="h5p-cli-run"><iframe id="h5p-cli-run" src="/content/${request.params.library}/${request.params.folder}" frameBorder="0"></iframe></div>
+    <div class="h5p-cli-edit"><iframe id="h5p-cli-edit" src="/editor/${request.params.library}/${request.params.folder}" frameBorder="0"></iframe></div>
+  </body>
+</html>`);
+  },
   // editor file upload
   saveFile: async (request, response, next) => {
     try {
@@ -181,8 +209,9 @@ module.exports = {
 `<!DOCTYPE html>
 <html>
   <head>
-    <title>h5p-dev</title>
+    <title>h5p-dev edit content</title>
     <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/assets/h5p-cli-editor.css">
     <script type="text/javascript">
       H5PIntegration = {
         ajax: { contentUserData: "/h5p-ajax/content-user-data/:contentId/:dataType/:subContentId" },
@@ -310,7 +339,7 @@ module.exports = {
     <script type="text/javascript" src="/assets/h5p-editor-php-library/language/en.js"></script>
     <script type="text/javascript">
       window.addEventListener('load', (event) => {
-        console.log('> page loaded');
+        console.log('> editor page loaded');
         const $ = H5P.jQuery;
         var $form = $('#h5p-content-form');
         var $type = $('input[name="action"]');
@@ -320,7 +349,7 @@ module.exports = {
         var $library = $('input[name="library"]');
         var $params = $('input[name="parameters"]');
         var $title = $('input[name="action"]');
-        console.log('> initializing...');
+        console.log('> editor initializing...');
         H5PEditor.init($form, $type, $upload, $create, $editor, $library, $params, null, $title);
       });
     </script>
@@ -332,7 +361,7 @@ module.exports = {
       <input type="radio" name="action" value="upload" style="display: none"/>
       <input type="radio" name="action" value="create" style="display: none" checked="checked"/>
       <div class="h5p-create"><div class="h5p-editor">...</div></div>
-      <input type="submit" value="save">
+      <input type="submit" value="save" id="h5p-cli-save-button" class="h5p-cli-button">
     </form>
   </body>
 </html>`);
@@ -375,7 +404,7 @@ module.exports = {
 `<!DOCTYPE html>
 <html>
   <head>
-    <title>h5p-dev</title>
+    <title>h5p-dev view content</title>
     <meta charset="utf-8">
     <script type="text/javascript">
       H5PIntegration = {
