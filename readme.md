@@ -2,10 +2,10 @@ An h5p toolkit for running and editing h5p content types.
 CLI commands:
 1. `npm install` to install the project's npm dependencies.
 2. `node cli.js list` lists the current h5p libraries.
-3. `node cli.js deps <h5p_repo_name> <mode> <saveToCache>` computes dependencies for an h5p library.
+3. `node cli.js deps <h5p_repo_name> <mode> <saveToCache>` computes dependencies for an h5p library.  
 Use `run` or `edit` for `<mode>` to generate dependencies for those cases.  
 Use `1` for `<saveToCache>` to save the result in the cache folder.
-4. `node cli.js install <h5p_repo_name> <mode> <useCache>` installs the dependencies in the libraries folder.
+4. `node cli.js install <h5p_repo_name> <mode> <useCache>` installs the dependencies in the libraries folder.  
 `<mode>` is the same as above and `<useCache>` can be `1` if you want it to use the cached deps if you generated them beforehand using the `deps` cli command.
 5. Below is an example for the setup CLI commands needed before running and editing content types in the `h5p-accordion` library.
 ```
