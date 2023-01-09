@@ -15,6 +15,7 @@ node cli.js deps h5p-accordion edit 1
 node cli.js install h5p-accordion run 1
 node cli.js install h5p-accordion edit 1
 ```
+The first 2 commands compute dependencies for run & edit modes and saves them in the cache folder. The second 2 commands install the dependencies for those modes.
 6. `node server.js` starts the dev server.
 7. To view a content type point your browser to  
 `http://localhost:8080/content/<h5p-repo-name>/<folder>`  
