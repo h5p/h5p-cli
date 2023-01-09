@@ -22,5 +22,5 @@ node cli.js install h5p-accordion edit 1
 The `<folder>` parameter points to a folder in the "content" directory which stores the content.json and all media files required to run a content type. You can use the content folder which comes in the zipped .h5p files that you normally get when clicking "reuse" on h5p.com content types.
 8. To edit a content type point your browser to  
 `http://localhost:8080/editor/<h5p-repo-name>/<folder>`
-8. To view and edit a content type on the same page point your browser to  
+9. To view and edit a content type on the same page point your browser to  
 `http://localhost:8080/split/<h5p-repo-name>/<folder>`
