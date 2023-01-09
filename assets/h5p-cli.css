@@ -5,6 +5,7 @@ body {
   grid-template-columns: 50vw 50vw;
   grid-template-rows: 100vh 100vh;
   grid-gap: 0;
+  overflow: hidden;
 }
 .h5p-cli-run iframe {
   width: 100%;

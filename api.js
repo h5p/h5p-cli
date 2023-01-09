@@ -10,11 +10,10 @@ let cache = {
   edit: {}
 };
 module.exports = {
-  // split view between run & edit modes on the same page
+  // renders run & edit modes on the same page
   splitView: (request, response, next) => {
     response.set('Content-Type', 'text/html');
-    response.end(`
-<!DOCTYPE html>
+    response.end(`<!DOCTYPE html>
 <html>
   <head>
     <title>h5p-dev split-view</title>
@@ -361,7 +360,7 @@ module.exports = {
       <input type="radio" name="action" value="upload" style="display: none"/>
       <input type="radio" name="action" value="create" style="display: none" checked="checked"/>
       <div class="h5p-create"><div class="h5p-editor">...</div></div>
-      <input type="submit" value="save" id="h5p-cli-save-button" class="h5p-cli-button">
+      <input type="submit" value="save all changes" id="h5p-cli-save-button" class="h5p-cli-button">
     </form>
   </body>
 </html>`);
