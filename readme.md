@@ -1,4 +1,5 @@
-An h5p toolkit for running and editing h5p content types.
+An h5p toolkit for running and editing h5p content types.  
+Make sure you have NodeJS and npm installed.  
 CLI commands:
 1. `npm install` to install the project's npm dependencies.
 2. `node cli.js list` lists the current h5p libraries.
