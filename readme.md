@@ -17,12 +17,12 @@ node cli.js deps h5p-accordion edit 1
 node cli.js install h5p-accordion run 1
 node cli.js install h5p-accordion edit 1
 ```
-7. `node server.js` starts the dev server.  
-8. To view a content type point your browser to  
+6. `node server.js` starts the dev server.  
+7. To view a content type point your browser to  
 `http://localhost:8080/content/<h5p-repo-name>/<folder>`  
 `<h5p_repo_name>` is the library to be used when rendering the content type.  
 The `<folder>` parameter points to a folder in the "content" directory which stores the content.json and all media files required to run a content type. You can use the content folder which comes in the zipped .h5p files that you normally get when clicking "reuse" on h5p.com content types.  
-9. To edit a content type point your browser to  
+8. To edit a content type point your browser to  
 `http://localhost:8080/editor/<h5p-repo-name>/<folder>`  
-10. To view and edit a content type on the same page point your browser to  
+9. To view and edit a content type on the same page point your browser to  
 `http://localhost:8080/split/<h5p-repo-name>/<folder>`
