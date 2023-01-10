@@ -32,8 +32,8 @@ module.exports = {
     </script>
   </head>
   <body>
-    <div class="h5p-cli-run"><iframe id="h5p-cli-run" src="/content/${request.params.library}/${request.params.folder}" frameBorder="0"></iframe></div>
-    <div class="h5p-cli-edit"><iframe id="h5p-cli-edit" src="/editor/${request.params.library}/${request.params.folder}" frameBorder="0"></iframe></div>
+    <div class="h5p-cli-run"><iframe id="h5p-cli-run" src="/content/${request.params.library}/${request.params.folder}?simple=1" frameBorder="0"></iframe></div>
+    <div class="h5p-cli-edit"><iframe id="h5p-cli-edit" src="/editor/${request.params.library}/${request.params.folder}?simple=1" frameBorder="0"></iframe></div>
   </body>
 </html>`);
   },
@@ -91,7 +91,8 @@ module.exports = {
           }
         }
       }
-      response.redirect(`/editor/${request.params.library}/${request.params.folder}`);
+      const simple = request.query.simple;
+      response.redirect(`/${simple ? 'editor' : 'content'}/${request.params.library}/${request.params.folder}${simple ? '?simple=1' : ''}`);
     }
     catch (error) {
       console.log(error);
@@ -171,6 +172,10 @@ module.exports = {
       const metadataSemantics = fs.readFileSync(`${config.folders.assets}/metadataSemantics.json`, 'utf-8');
       const copyrightSemantics = fs.readFileSync(`${config.folders.assets}/copyrightSemantics.json`, 'utf-8');
       const cacheFile = `${config.folders.cache}/${library}_edit.json`;
+      let links = '';
+      if (!request.query.simple) {
+        links = `<a class="h5p-cli-button" href="/content/${library}/${folder}">cancel</a>`;
+      }
       if (!cache?.edit[library]) {
         if (fs.existsSync(cacheFile)) {
           cache.edit[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
@@ -361,6 +366,7 @@ module.exports = {
       <input type="radio" name="action" value="create" style="display: none" checked="checked"/>
       <div class="h5p-create"><div class="h5p-editor">...</div></div>
       <input type="submit" value="save all changes" id="h5p-cli-save-button" class="h5p-cli-button">
+      ${links}
     </form>
   </body>
 </html>`);
@@ -377,6 +383,10 @@ module.exports = {
       const library = request.params.library;
       const folder = request.params.folder;
       const cacheFile = `${config.folders.cache}/${library}.json`;
+      let links = '';
+      if (!request.query.simple) {
+        links = `<a class="h5p-cli-button" href="/editor/${library}/${folder}">editor</a> <a class="h5p-cli-button" href="/split/${library}/${folder}">split view</a>`;
+      }
       if (!cache?.run[library]) {
         if (fs.existsSync(cacheFile)) {
           cache.run[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
@@ -474,6 +484,7 @@ module.exports = {
     <div class="h5p-cli-iframe-wrapper">
       <iframe id="h5p-iframe-${folder}" class="h5p-iframe" data-content-id="${folder}" src="about:blank" frameBorder="0" scrolling="no"></iframe>
     </div>
+    ${links}
   </body>
 </html>`);
     }

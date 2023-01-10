@@ -1,6 +1,19 @@
+body {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+form {
+  max-width: 1080px;
+  margin: auto;
+}
 .h5p-cli-button {
-  float: right;
   padding: 5px 10px;
   cursor: pointer;
   font-size: 14px;
-} 
+  color: white;
+  background-color: #186df7;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+}
