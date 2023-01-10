@@ -18,7 +18,7 @@ module.exports = {
   <head>
     <title>h5p-dev split-view</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="/assets/h5p-cli.css">
+    <link rel="stylesheet" type="text/css" href="/assets/h5p-cli-split.css">
     <script type="text/javascript">
       window.addEventListener('load', (event) => {
         console.log('> split page loaded');
@@ -405,6 +405,7 @@ module.exports = {
   <head>
     <title>h5p-dev view content</title>
     <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/assets/h5p-cli-content.css">
     <script type="text/javascript">
       H5PIntegration = {
         ajax: { contentUserData: "/h5p-ajax/content-user-data/:contentId/:dataType/:subContentId" },
@@ -470,7 +471,9 @@ module.exports = {
     <script type="text/javascript" src="/assets/h5p-php-library/js/request-queue.js"></script>
   </head>
   <body>
-    <iframe id="h5p-iframe-${folder}" class="h5p-iframe" data-content-id="${folder}" style="width: 100%;" src="about:blank" frameBorder="0" scrolling="no"></iframe>
+    <div class="h5p-cli-iframe-wrapper">
+      <iframe id="h5p-iframe-${folder}" class="h5p-iframe" data-content-id="${folder}" src="about:blank" frameBorder="0" scrolling="no"></iframe>
+    </div>
   </body>
 </html>`);
     }

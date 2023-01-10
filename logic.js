@@ -35,7 +35,7 @@ module.exports = {
   mode - 'run' or 'edit' to compute non-editor or editor dependencies
   saveToCache - if true list is saved to cache folder */
   computeDependencies: async (library, mode, saveToCache) => {
-    console.log(`> ${library} deps `);
+    console.log(`> ${library} deps ${mode}`);
     let level = -1;
     let registry = {};
     const toDo = {};
