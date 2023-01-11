@@ -1,0 +1,35 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 0;
+}
+.holder {
+  font-size: 1.2rem;
+  display: grid;
+  grid-template-rows: 10vh 10vh 60vh 10vh 10vh;
+  grid-template-columns: 10vw 80vw 10vw;
+  grid-template-areas:
+    "x header y"
+    "x menu y"
+    "x content y"
+    "x pagination y"
+    "x footer y";
+  grid-gap: 0;
+  width: 100vw;
+  height: 100vh;
+}
+.header {
+  grid-area: header;
+}
+.footer {
+  grid-area: footer;
+}
+.menu {
+  grid-area: menu;
+}
+.content {
+  grid-area: content;
+}
+.pagination {
+  grid-area: pagination;
+}

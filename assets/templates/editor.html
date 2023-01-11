@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>h5p-dev edit content</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/assets/styles/editor.css">
+    <script type="text/javascript">
+      H5PIntegration = {
+        ajax: { contentUserData: "/h5p-ajax/content-user-data/:contentId/:dataType/:subContentId" },
+        ajaxPath: "/h5p-ajax/",
+        baseUrl: "{baseUrl}",
+        url: "{baseUrl}",
+        siteUrl: "{baseUrl}",
+        core: {
+          scripts: [
+            "/assets/h5p-php-library/js/jquery.js",
+            "/assets/h5p-php-library/js/h5p.js",
+            "/assets/h5p-php-library/js/h5p-event-dispatcher.js",
+            "/assets/h5p-php-library/js/h5p-x-api-event.js",
+            "/assets/h5p-php-library/js/h5p-x-api.js",
+            "/assets/h5p-php-library/js/h5p-content-type.js",
+            "/assets/h5p-php-library/js/h5p-confirmation-dialog.js",
+            "/assets/h5p-php-library/js/h5p-action-bar.js",
+            "/assets/h5p-php-library/js/h5p-display-options.js",
+            "/assets/h5p-php-library/js/h5p-tooltip.js",
+            "/assets/h5p-php-library/js/request-queue.js"
+          ],
+          styles: [
+            "/assets/h5p-php-library/styles/h5p.css",
+            "/assets/h5p-php-library/styles/h5p-confirmation-dialog.css",
+            "/assets/h5p-php-library/styles/h5p-core-button.css",
+            "/assets/h5p-php-library/styles/h5p-tooltip.css"
+          ]
+        },
+        libraryConfig: [],
+        libraryDirectories: {
+          "FontAwesome-4.5": "FontAwesome-4.5",
+          "H5PEditor.VerticalTabs-1.3": "H5PEditor.VerticalTabs-1.3"
+        },
+        hubIsEnabled: false,
+        editor: {
+          language: "en",
+          ajaxPath: "{ajaxPath}",
+          copyrightSemantics: {copyrightSemantics},
+          metadataSemantics: {metadataSemantics},
+          libraryUrl: "/assets/h5p-editor-php-library/",
+          filesPath: "",
+          wysiwygButtons: [],
+          apiVersion: {
+            majorVersion: 1,
+            minorVersion: 25
+          },
+          nodeVersionId: "{folder}",
+          assets: {
+            css: [
+              "/assets/h5p-php-library/styles/h5p.css",
+              "/assets/h5p-php-library/styles/h5p-confirmation-dialog.css",
+              "/assets/h5p-php-library/styles/h5p-core-button.css",
+              "/assets/h5p-php-library/styles/h5p-tooltip.css",
+              "/assets/h5p-editor-php-library/libs/darkroom.css",
+              "/assets/h5p-editor-php-library/styles/css/h5p-hub-client.css",
+              "/assets/h5p-editor-php-library/styles/css/fonts.css",
+              "/assets/h5p-editor-php-library/styles/css/application.css",
+              "/assets/h5p-editor-php-library/styles/css/libs/zebra_datepicker.min.css",
+              {preloadedCss}
+            ],
+            js: [
+              "/assets/h5p-php-library/js/jquery.js",
+              "/assets/h5p-php-library/js/h5p.js",
+              "/assets/h5p-php-library/js/h5p-event-dispatcher.js",
+              "/assets/h5p-php-library/js/h5p-x-api-event.js",
+              "/assets/h5p-php-library/js/h5p-x-api.js",
+              "/assets/h5p-php-library/js/h5p-content-type.js",
+              "/assets/h5p-php-library/js/h5p-confirmation-dialog.js",
+              "/assets/h5p-php-library/js/h5p-action-bar.js",
+              "/assets/h5p-php-library/js/h5p-display-options.js",
+              "/assets/h5p-php-library/js/h5p-tooltip.js",
+              "/assets/h5p-php-library/js/request-queue.js",
+              "/assets/h5p-editor-php-library/scripts/h5p-hub-client.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-semantic-structure.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-library-selector.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-form.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-text.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-html.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-number.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-textarea.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-file-uploader.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-file.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-image.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-image-popup.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-av.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-group.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-boolean.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-list.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-list-editor.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-library.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-library-list-cache.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-select.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-selector-hub.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-selector-legacy.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-dimensions.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-coordinates.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-none.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-metadata.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-metadata-author-widget.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-metadata-changelog-widget.js",
+              "/assets/h5p-editor-php-library/scripts/h5peditor-pre-save.js",
+              "/assets/h5p-editor-php-library/ckeditor/ckeditor.js",
+              {preloadedJs}
+            ]
+          }
+        },
+        user: { name: "developer", mail: "some.developer@some.company.com" }
+      };
+      H5PIntegration.l10n = {l10n};
+    </script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/jquery.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-event-dispatcher.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-x-api-event.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-x-api.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-content-type.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-confirmation-dialog.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-action-bar.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-display-options.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-tooltip.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/request-queue.js"></script>
+    <script type="text/javascript" src="/assets/h5p-editor-php-library/scripts/h5peditor-editor.js"></script>
+    <script type="text/javascript" src="/assets/h5p-editor-php-library/scripts/h5peditor-init.js"></script>
+    <script type="text/javascript" src="/assets/h5p-editor-php-library/language/en.js"></script>
+    <script type="text/javascript">
+      window.addEventListener('load', (event) => {
+        console.log('> editor page loaded');
+        const $ = H5P.jQuery;
+        var $form = $('#h5p-content-form');
+        var $type = $('input[name="action"]');
+        var $upload = $('.h5p-upload');
+        var $create = $('.h5p-create');
+        var $editor = $('.h5p-editor');
+        var $library = $('input[name="library"]');
+        var $params = $('input[name="parameters"]');
+        var $title = $('input[name="action"]');
+        console.log('> editor initializing...');
+        H5PEditor.init($form, $type, $upload, $create, $editor, $library, $params, null, $title);
+      });
+    </script>
+  </head>
+  <body>
+    <form method="post" action="" enctype="multipart/form-data" id="h5p-content-form">
+      <input type="hidden" name="library" id="h5p-library" value="{library}">
+      <input type="hidden" name="parameters" id="h5p-parameters" value="{parameters}">
+      <input type="radio" name="action" value="upload" style="display: none"/>
+      <input type="radio" name="action" value="create" style="display: none" checked="checked"/>
+      <div class="h5p-create"><div class="h5p-editor">...</div></div>
+      <input type="submit" value="save all changes" id="h5p-cli-save-button" class="h5p-cli-button">
+      {links}
+    </form>
+  </body>
+</html>

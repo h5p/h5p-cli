@@ -3,6 +3,13 @@ const fs = require('fs');
 const superAgent = require('superagent');
 const admZip = require("adm-zip");
 const config = require('./config.js');
+// builds content from template and input
+const fromTemplate = (template, input) => {
+  for (let item in input) {
+    template = template.replaceAll(`{${item}}`, input[item]);
+  }
+  return template;
+}
 module.exports = {
   /* retrieves list of h5p librarie
   ignoreCache - if true cache file is overwritten with online data */
@@ -47,11 +54,11 @@ module.exports = {
       if (cache[dep].optionals) {
         return cache[dep].optionals;
       }
-      const translations = await getFile(buildURL(config.urls.library.language, { org, dep }), true);
+      const translations = await getFile(fromTemplate(config.urls.library.language, { org, dep }), true);
       if (typeof translations == 'object') {
         cache[dep].translations = translations;
       }
-      cache[dep].semantics = await getFile(buildURL(config.urls.library.semantics, { org, dep }), true);
+      cache[dep].semantics = await getFile(fromTemplate(config.urls.library.semantics, { org, dep }), true);
       cache[dep].optionals = parseSemanticLibraries(cache[dep].semantics);
       return cache[dep].optionals;
     }
@@ -85,7 +92,7 @@ module.exports = {
         process.stdout.write(' (cached) ');
       }
       else {
-        list = await getFile(buildURL(config.urls.library.info, { org, dep }), true);
+        list = await getFile(fromTemplate(config.urls.library.info, { org, dep }), true);
         cache[dep] = list;
       }
       done[level][dep].title = list.title;
@@ -190,7 +197,8 @@ module.exports = {
       console.log('>>> npm run build');
       console.log(await execSync('npm run build', {cwd: folder}).toString());
     }
-  }
+  },
+  fromTemplate
 }
 // determines if provided path has duplicate entries; entries are separated by '/';
 const pathHasDuplicates = (path) => {
@@ -253,11 +261,4 @@ const getFile = async (url, parseJson) => {
     output = JSON.parse(output);
   }
   return output;
-}
-// adds configurable values to URL template
-const buildURL = (url, input) => {
-  for (let item in input) {
-    url = url.replaceAll(`{${item}}`, input[item]);
-  }
-  return url;
 }

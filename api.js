@@ -10,35 +10,33 @@ let cache = {
   edit: {}
 };
 module.exports = {
+  // renders dashboard
+  dashboard: (request, response, next) => {
+    try {
+      const html = fs.readFileSync('./assets/templates/dashboard.html', 'utf-8');
+      const input = {
+        header: 'cheese'
+      }
+      response.set('Content-Type', 'text/html');
+      response.end(logic.fromTemplate(html, input));
+    }
+    catch (error) {
+      console.log(error);
+      response.end(error.toString());
+    }
+  },
   // renders run & edit modes on the same page
   splitView: (request, response, next) => {
+    const splitView_html = fs.readFileSync('./assets/templates/splitView.html', 'utf-8');
+    const input = {
+      runFrameSRC: `/content/${request.params.library}/${request.params.folder}?simple=1`,
+      editFrameSRC: `/editor/${request.params.library}/${request.params.folder}?simple=1`
+    }
     response.set('Content-Type', 'text/html');
-    response.end(`<!DOCTYPE html>
-<html>
-  <head>
-    <title>h5p-dev split-view</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="/assets/h5p-cli-split.css">
-    <script type="text/javascript">
-      window.addEventListener('load', (event) => {
-        console.log('> split page loaded');
-        const runner = document.getElementById('h5p-cli-run');
-        const editor = document.getElementById('h5p-cli-edit');
-        editor.addEventListener('load', (event) => {
-          console.log('> reloading runner...');
-          runner.contentDocument.location.reload(true);
-        });
-      });
-    </script>
-  </head>
-  <body>
-    <div class="h5p-cli-run"><iframe id="h5p-cli-run" src="/content/${request.params.library}/${request.params.folder}?simple=1" frameBorder="0"></iframe></div>
-    <div class="h5p-cli-edit"><iframe id="h5p-cli-edit" src="/editor/${request.params.library}/${request.params.folder}?simple=1" frameBorder="0"></iframe></div>
-  </body>
-</html>`);
+    response.end(logic.fromTemplate(splitView_html, input));
   },
   // editor file upload
-  saveFile: async (request, response, next) => {
+  saveFile: (request, response, next) => {
     try {
       const form = JSON.parse(request.body.field);
       const targetFolder = `content/${request.params.folder}/${form.type}s`;
@@ -69,7 +67,7 @@ module.exports = {
     }
   },
   // updates content.json file with data from content type editor form
-  saveContent: async (request, response, next) => {
+  saveContent: (request, response, next) => {
     try {
       const input = JSON.parse(request.body.parameters);
       fs.writeFileSync(`content/${request.body.action}/content.json`, JSON.stringify(input.params));
@@ -208,168 +206,22 @@ module.exports = {
           title: folder
         }
       }
+      const html = fs.readFileSync('./assets/templates/editor.html', 'utf-8');
+      const input = {
+        baseUrl,
+        ajaxPath: `${baseUrl}/editor/${library}/${folder}/`,
+        copyrightSemantics,
+        metadataSemantics,
+        folder,
+        preloadedCss: preloadedCss.join(',\n'),
+        preloadedJs: preloadedJs.join(',\n'),
+        l10n: JSON.stringify(l10n),
+        library: `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
+        parameters: he.encode(JSON.stringify(formParams)),
+        links
+      }
       response.set('Content-Type', 'text/html');
-      response.end(
-`<!DOCTYPE html>
-<html>
-  <head>
-    <title>h5p-dev edit content</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="/assets/h5p-cli-editor.css">
-    <script type="text/javascript">
-      H5PIntegration = {
-        ajax: { contentUserData: "/h5p-ajax/content-user-data/:contentId/:dataType/:subContentId" },
-        ajaxPath: "/h5p-ajax/",
-        baseUrl: "${baseUrl}",
-        url: "${baseUrl}",
-        siteUrl: "${baseUrl}",
-        core: {
-          scripts: [
-            "/assets/h5p-php-library/js/jquery.js",
-            "/assets/h5p-php-library/js/h5p.js",
-            "/assets/h5p-php-library/js/h5p-event-dispatcher.js",
-            "/assets/h5p-php-library/js/h5p-x-api-event.js",
-            "/assets/h5p-php-library/js/h5p-x-api.js",
-            "/assets/h5p-php-library/js/h5p-content-type.js",
-            "/assets/h5p-php-library/js/h5p-confirmation-dialog.js",
-            "/assets/h5p-php-library/js/h5p-action-bar.js",
-            "/assets/h5p-php-library/js/h5p-display-options.js",
-            "/assets/h5p-php-library/js/h5p-tooltip.js",
-            "/assets/h5p-php-library/js/request-queue.js"
-          ],
-          styles: [
-            "/assets/h5p-php-library/styles/h5p.css",
-            "/assets/h5p-php-library/styles/h5p-confirmation-dialog.css",
-            "/assets/h5p-php-library/styles/h5p-core-button.css",
-            "/assets/h5p-php-library/styles/h5p-tooltip.css"
-          ]
-        },
-        libraryConfig: [],
-        libraryDirectories: {
-          "FontAwesome-4.5": "FontAwesome-4.5",
-          "H5PEditor.VerticalTabs-1.3": "H5PEditor.VerticalTabs-1.3"
-        },
-        hubIsEnabled: false,
-        editor: {
-          language: "en",
-          ajaxPath: "${baseUrl}/editor/${library}/${folder}/",
-          copyrightSemantics: ${copyrightSemantics},
-          metadataSemantics: ${metadataSemantics},
-          libraryUrl: "/assets/h5p-editor-php-library/",
-          filesPath: "",
-          wysiwygButtons: [],
-          apiVersion: {
-            majorVersion: 1,
-            minorVersion: 25
-          },
-          nodeVersionId: "${folder}",
-          assets: {
-            css: [
-              "/assets/h5p-php-library/styles/h5p.css",
-              "/assets/h5p-php-library/styles/h5p-confirmation-dialog.css",
-              "/assets/h5p-php-library/styles/h5p-core-button.css",
-              "/assets/h5p-php-library/styles/h5p-tooltip.css",
-              "/assets/h5p-editor-php-library/libs/darkroom.css",
-              "/assets/h5p-editor-php-library/styles/css/h5p-hub-client.css",
-              "/assets/h5p-editor-php-library/styles/css/fonts.css",
-              "/assets/h5p-editor-php-library/styles/css/application.css",
-              "/assets/h5p-editor-php-library/styles/css/libs/zebra_datepicker.min.css",
-              ${preloadedCss.join(',\n')}
-            ],
-            js: [
-              "/assets/h5p-php-library/js/jquery.js",
-              "/assets/h5p-php-library/js/h5p.js",
-              "/assets/h5p-php-library/js/h5p-event-dispatcher.js",
-              "/assets/h5p-php-library/js/h5p-x-api-event.js",
-              "/assets/h5p-php-library/js/h5p-x-api.js",
-              "/assets/h5p-php-library/js/h5p-content-type.js",
-              "/assets/h5p-php-library/js/h5p-confirmation-dialog.js",
-              "/assets/h5p-php-library/js/h5p-action-bar.js",
-              "/assets/h5p-php-library/js/h5p-display-options.js",
-              "/assets/h5p-php-library/js/h5p-tooltip.js",
-              "/assets/h5p-php-library/js/request-queue.js",
-              "/assets/h5p-editor-php-library/scripts/h5p-hub-client.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-semantic-structure.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-library-selector.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-form.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-text.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-html.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-number.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-textarea.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-file-uploader.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-file.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-image.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-image-popup.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-av.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-group.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-boolean.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-list.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-list-editor.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-library.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-library-list-cache.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-select.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-selector-hub.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-selector-legacy.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-dimensions.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-coordinates.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-none.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-metadata.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-metadata-author-widget.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-metadata-changelog-widget.js",
-              "/assets/h5p-editor-php-library/scripts/h5peditor-pre-save.js",
-              "/assets/h5p-editor-php-library/ckeditor/ckeditor.js",
-              ${preloadedJs.join(',\n')}
-            ]
-          }
-        },
-        user: { name: "developer", mail: "some.developer@some.company.com" }
-      };
-      H5PIntegration.l10n = ${JSON.stringify(l10n)};
-    </script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/jquery.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-event-dispatcher.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-x-api-event.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-x-api.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-content-type.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-confirmation-dialog.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-action-bar.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-display-options.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-tooltip.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/request-queue.js"></script>
-    <script type="text/javascript" src="/assets/h5p-editor-php-library/scripts/h5peditor-editor.js"></script>
-    <script type="text/javascript" src="/assets/h5p-editor-php-library/scripts/h5peditor-init.js"></script>
-    <script type="text/javascript" src="/assets/h5p-editor-php-library/language/en.js"></script>
-    <script type="text/javascript">
-      window.addEventListener('load', (event) => {
-        console.log('> editor page loaded');
-        const $ = H5P.jQuery;
-        var $form = $('#h5p-content-form');
-        var $type = $('input[name="action"]');
-        var $upload = $('.h5p-upload');
-        var $create = $('.h5p-create');
-        var $editor = $('.h5p-editor');
-        var $library = $('input[name="library"]');
-        var $params = $('input[name="parameters"]');
-        var $title = $('input[name="action"]');
-        console.log('> editor initializing...');
-        H5PEditor.init($form, $type, $upload, $create, $editor, $library, $params, null, $title);
-      });
-    </script>
-  </head>
-  <body>
-    <form method="post" action="" enctype="multipart/form-data" id="h5p-content-form">
-      <input type="hidden" name="library" id="h5p-library" value="${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}">
-      <input type="hidden" name="parameters" id="h5p-parameters" value="${he.encode(JSON.stringify(formParams))}">
-      <input type="radio" name="action" value="upload" style="display: none"/>
-      <input type="radio" name="action" value="create" style="display: none" checked="checked"/>
-      <div class="h5p-create"><div class="h5p-editor">...</div></div>
-      <input type="submit" value="save all changes" id="h5p-cli-save-button" class="h5p-cli-button">
-      ${links}
-    </form>
-  </body>
-</html>`);
+      response.end(logic.fromTemplate(html, input));
     }
     catch (error) {
       console.log(error);
@@ -408,85 +260,19 @@ module.exports = {
           preloadedCss.push(`../../../${lib}/${label}/${cssItem.path}`);
         }
       }
+      const html = fs.readFileSync('./assets/templates/content.html', 'utf-8');
+      const input = {
+        baseUrl,
+        folder,
+        library: `${cache.run[library][library].id} ${cache.run[library][library].version.major}.${cache.run[library][library].version.minor}`,
+        jsonContent: JSON.stringify(jsonContent),
+        preloadedCss: JSON.stringify(preloadedCss),
+        preloadedJs: JSON.stringify(preloadedJs),
+        l10n: JSON.stringify(l10n),
+        links
+      }
       response.set('Content-Type', 'text/html');
-      response.end(
-`<!DOCTYPE html>
-<html>
-  <head>
-    <title>h5p-dev view content</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="/assets/h5p-cli-content.css">
-    <script type="text/javascript">
-      H5PIntegration = {
-        ajax: { contentUserData: "/h5p-ajax/content-user-data/:contentId/:dataType/:subContentId" },
-        ajaxPath: "/h5p-ajax/",
-        baseUrl: "/",
-        url: "${baseUrl}",
-        siteUrl: "${baseUrl}",
-        contents: {
-          "cid-${folder}": {
-            library: "${cache.run[library][library].id} ${cache.run[library][library].version.major}.${cache.run[library][library].version.minor}",
-            jsonContent: ${JSON.stringify(jsonContent)},
-            url: "${baseUrl}",
-            mainId: "${folder}",
-            displayOptions: {
-              "copy": false,
-              "copyright": false,
-              "embed": true,
-              "export": true,
-              "frame": true,
-              "icon": true
-            },
-            contentUserData: [{state: "{}"}],
-            resizeCode: "",
-            title: "${folder}",
-            styles: ${JSON.stringify(preloadedCss)},
-            scripts: ${JSON.stringify(preloadedJs)}
-          }
-        },
-        core: {
-          scripts: [
-            "/assets/h5p-php-library/js/jquery.js",
-            "/assets/h5p-php-library/js/h5p.js",
-            "/assets/h5p-php-library/js/h5p-event-dispatcher.js",
-            "/assets/h5p-php-library/js/h5p-x-api-event.js",
-            "/assets/h5p-php-library/js/h5p-x-api.js",
-            "/assets/h5p-php-library/js/h5p-content-type.js",
-            "/assets/h5p-php-library/js/h5p-confirmation-dialog.js",
-            "/assets/h5p-php-library/js/h5p-action-bar.js",
-            "/assets/h5p-php-library/js/h5p-display-options.js",
-            "/assets/h5p-php-library/js/h5p-tooltip.js",
-            "/assets/h5p-php-library/js/request-queue.js"
-          ],
-          styles: [
-            "/assets/h5p-php-library/styles/h5p.css",
-            "/assets/h5p-php-library/styles/h5p-confirmation-dialog.css",
-            "/assets/h5p-php-library/styles/h5p-tooltip.css"
-          ]
-        },
-        user: { name: "developer", mail: "some.developer@some.company.com" }
-      };
-      H5PIntegration.l10n = ${JSON.stringify(l10n)};
-    </script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/jquery.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-event-dispatcher.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-x-api-event.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-x-api.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-content-type.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-confirmation-dialog.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-action-bar.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-display-options.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-tooltip.js"></script>
-    <script type="text/javascript" src="/assets/h5p-php-library/js/request-queue.js"></script>
-  </head>
-  <body>
-    <div class="h5p-cli-iframe-wrapper">
-      <iframe id="h5p-iframe-${folder}" class="h5p-iframe" data-content-id="${folder}" src="about:blank" frameBorder="0" scrolling="no"></iframe>
-    </div>
-    ${links}
-  </body>
-</html>`);
+      response.end(logic.fromTemplate(html, input));
     }
     catch (error) {
       console.log(error);

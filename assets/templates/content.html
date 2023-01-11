@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>h5p-dev view content</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/assets/styles/content.css">
+    <script type="text/javascript">
+      H5PIntegration = {
+        ajax: { contentUserData: "/h5p-ajax/content-user-data/:contentId/:dataType/:subContentId" },
+        ajaxPath: "/h5p-ajax/",
+        baseUrl: "/",
+        url: "{baseUrl}",
+        siteUrl: "{baseUrl}",
+        contents: {
+          "cid-{folder}": {
+            library: "{library}",
+            jsonContent: {jsonContent},
+            url: "{baseUrl}",
+            mainId: "{folder}",
+            displayOptions: {
+              "copy": false,
+              "copyright": false,
+              "embed": true,
+              "export": true,
+              "frame": true,
+              "icon": true
+            },
+            contentUserData: [{state: "{}"}],
+            resizeCode: "",
+            title: "{folder}",
+            styles: {preloadedCss},
+            scripts: {preloadedJs}
+          }
+        },
+        core: {
+          scripts: [
+            "/assets/h5p-php-library/js/jquery.js",
+            "/assets/h5p-php-library/js/h5p.js",
+            "/assets/h5p-php-library/js/h5p-event-dispatcher.js",
+            "/assets/h5p-php-library/js/h5p-x-api-event.js",
+            "/assets/h5p-php-library/js/h5p-x-api.js",
+            "/assets/h5p-php-library/js/h5p-content-type.js",
+            "/assets/h5p-php-library/js/h5p-confirmation-dialog.js",
+            "/assets/h5p-php-library/js/h5p-action-bar.js",
+            "/assets/h5p-php-library/js/h5p-display-options.js",
+            "/assets/h5p-php-library/js/h5p-tooltip.js",
+            "/assets/h5p-php-library/js/request-queue.js"
+          ],
+          styles: [
+            "/assets/h5p-php-library/styles/h5p.css",
+            "/assets/h5p-php-library/styles/h5p-confirmation-dialog.css",
+            "/assets/h5p-php-library/styles/h5p-tooltip.css"
+          ]
+        },
+        user: { name: "developer", mail: "some.developer@some.company.com" }
+      };
+      H5PIntegration.l10n = {l10n};
+    </script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/jquery.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-event-dispatcher.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-x-api-event.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-x-api.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-content-type.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-confirmation-dialog.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-action-bar.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-display-options.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/h5p-tooltip.js"></script>
+    <script type="text/javascript" src="/assets/h5p-php-library/js/request-queue.js"></script>
+  </head>
+  <body>
+    <div class="h5p-cli-iframe-wrapper">
+      <iframe id="h5p-iframe-{folder}" class="h5p-iframe" data-content-id="{folder}" src="about:blank" frameBorder="0" scrolling="no"></iframe>
+    </div>
+    {links}
+  </body>
+</html> 
