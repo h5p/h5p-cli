@@ -25,6 +25,37 @@ module.exports = {
       response.end(error.toString());
     }
   },
+  // lists content folders
+  projects: (request, response, next) => {
+    try {
+      const limit = parseInt(request.query.limit) || 10;
+      const page = parseInt(request.query.page) || 0;
+      const start = page * limit;
+      const end = start + limit;
+      const output = [];
+      const dirs = fs.readdirSync('content');
+      const list = [];
+      for (let item of dirs) {
+        item = item.split('_');
+        if (item.length == 2) {
+          list.push(item);
+        }
+      }
+      for (let i = start; i < Math.min(end, list.length); i++) {
+        output.push({
+          name: list[i][1],
+          library: list[i][0],
+          folder: `${list[i][0]}_${list[i][0]}`
+        });
+      }
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify(output));
+    }
+    catch (error) {
+      console.log(error);
+      response.end(error.toString());
+    }
+  },
   // renders run & edit modes on the same page
   splitView: (request, response, next) => {
     const splitView_html = fs.readFileSync('./assets/templates/splitView.html', 'utf-8');

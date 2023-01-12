@@ -8,6 +8,7 @@ app.use(express.urlencoded({
   extended: true
 }));
 app.get('/dashboard', api.dashboard);
+app.get('/projects', api.projects);
 app.get('/split/:library/:folder', api.splitView);
 app.get('/content/:library/:folder', api.content);
 app.get('/editor/:library/:folder/libraries', api.ajaxLibraries);
