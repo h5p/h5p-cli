@@ -32,7 +32,10 @@ module.exports = {
       const page = parseInt(request.query.page) || 0;
       const start = page * limit;
       const end = start + limit;
-      const output = [];
+      const output = {
+        list: [],
+        total: 0
+      }
       const dirs = fs.readdirSync('content');
       const list = [];
       for (let item of dirs) {
@@ -41,8 +44,9 @@ module.exports = {
           list.push(item);
         }
       }
+      output.total = list.length;
       for (let i = start; i < Math.min(end, list.length); i++) {
-        output.push({
+        output.list.push({
           name: list[i][1],
           library: list[i][0],
           folder: `${list[i][0]}_${list[i][0]}`
