@@ -3,7 +3,6 @@ function dashboard(options) {
   let pagination;
   let entry;
   let link;
-  let limit;
   this.init = () => {
     window.addEventListener('load', (event) => {
       try {
@@ -12,8 +11,7 @@ function dashboard(options) {
         pagination = document.getElementById(options.ids.pagination);
         entry = content.innerHTML;
         link = pagination.innerHTML;
-        limit = options.limit || 10;
-        this.getPage(0, limit);
+        this.getPage(0, options.limit || 10);
       }
       catch (error) {
         console.log('> error');

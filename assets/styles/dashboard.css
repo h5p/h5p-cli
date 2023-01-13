@@ -39,7 +39,7 @@ body {
   line-height: 4vh;
 }
 .item:hover {
-  border-bottom: 1px solid #186df7;
+  border-bottom: 1px solid #000;
 }
 .item a {
   pointer-events: auto;
@@ -82,6 +82,13 @@ body {
   padding: 1vh;
   border-radius: 0.5vh;
   text-decoration: none;
+}
+.itemTitle .url {
+  padding: 0 1vh 0 1vh;
+}
+.item:hover .itemTitle a {
+  background-color: #fff;
+  color: #186df7;
 }
 .url:hover {
   background-color: #fff;
