@@ -20,6 +20,7 @@ node cli.js install h5p-accordion edit 1
 6. `node server.js` starts the dev server.  
 7. To view the dashboard point your browser to  
 http://localhost:8080/dashboard  
+For the dashboard to detect your projects their folder names need to have the `<library_repo_name>_<project_title>` format.  
 8. To view a content type point your browser to  
 http://localhost:8080/content/h5p-repo-name/folder  
 `h5p-repo-name` is the library to be used when rendering the content type.  
