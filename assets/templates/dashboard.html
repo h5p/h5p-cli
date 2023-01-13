@@ -4,20 +4,37 @@
     <title>h5p-dev view content</title>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="/assets/styles/dashboard.css">
+    <script type="text/javascript" src="/assets/scripts/dashboard.js"></script>
+    <script type="text/javascript">
+      const runner = new dashboard({
+        self: 'runner',
+        host: '{host}',
+        ids: {
+          content: 'content',
+          pagination: 'pagination'
+        }
+      });
+      runner.init();
+    </script>
   </head>
   <body>
     <div class="holder">
-      <div class="menu">menu(wip)</div>
-      <div class="content">
+      <div class="menu">
+        <a href="" id="newContent" class="url">create new content (wip)</a>
+      </div>
+      <div class="content" id="content">
         <div class="item">
           <div class="itemTitle">{name}</div>
           <div class="itemPath">{folder}</div>
           <div class="itemLinks">
-            <a href="editor/{library}/{name}">edit</a>
+            <a href="content/{library}/{folder}" class="url">view</a>
+            <a href="editor/{library}/{folder}" class="url">edit</a>
           </div>
         </div>
       </div>
-      <div class="pagination">pagination</div>
+      <div class="pagination" id="pagination">
+        <div class="button{selected}" onclick="{onclick}">{page}</div>
+      </div>
     </div>
   </body>
 </html>

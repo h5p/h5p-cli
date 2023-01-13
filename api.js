@@ -15,7 +15,7 @@ module.exports = {
     try {
       const html = fs.readFileSync('./assets/templates/dashboard.html', 'utf-8');
       const input = {
-        header: 'cheese'
+        host: `${request.protocol}://${request.get('host')}`
       }
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));
@@ -49,7 +49,7 @@ module.exports = {
         output.list.push({
           name: list[i][1],
           library: list[i][0],
-          folder: `${list[i][0]}_${list[i][0]}`
+          folder: `${list[i][0]}_${list[i][1]}`
         });
       }
       response.set('Content-Type', 'application/json');
@@ -207,7 +207,7 @@ module.exports = {
       const cacheFile = `${config.folders.cache}/${library}_edit.json`;
       let links = '';
       if (!request.query.simple) {
-        links = `<a class="h5p-cli-button" href="/content/${library}/${folder}">cancel</a>`;
+        links = `<a class="h5p-cli-button" href="/content/${library}/${folder}">view</a>`;
       }
       if (!cache?.edit[library]) {
         if (fs.existsSync(cacheFile)) {
