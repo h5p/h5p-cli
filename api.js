@@ -207,7 +207,7 @@ module.exports = {
       const cacheFile = `${config.folders.cache}/${library}_edit.json`;
       let links = '';
       if (!request.query.simple) {
-        links = `<a class="h5p-cli-button" href="/content/${library}/${folder}">view</a>`;
+        links = `<a class="h5p-cli-button" href="/content/${library}/${folder}">view</a> <a class="h5p-cli-button" href="/dashboard">dashboard</a>`;
       }
       if (!cache?.edit[library]) {
         if (fs.existsSync(cacheFile)) {
@@ -272,7 +272,7 @@ module.exports = {
       const cacheFile = `${config.folders.cache}/${library}.json`;
       let links = '';
       if (!request.query.simple) {
-        links = `<a class="h5p-cli-button" href="/editor/${library}/${folder}">editor</a> <a class="h5p-cli-button" href="/split/${library}/${folder}">split view</a>`;
+        links = `<a class="h5p-cli-button" href="/editor/${library}/${folder}">editor</a> <a class="h5p-cli-button" href="/split/${library}/${folder}">split view</a> <a class="h5p-cli-button" href="/dashboard">dashboard</a>`;
       }
       if (!cache?.run[library]) {
         if (fs.existsSync(cacheFile)) {
