@@ -39,7 +39,7 @@ module.exports = {
     return output;
   },
   /* computes list of library dependencies in their correct load order
-  mode - 'run' or 'edit' to compute non-editor or editor dependencies
+  mode - 'view' or 'edit' to compute non-editor or editor dependencies
   saveToCache - if true list is saved to cache folder */
   computeDependencies: async (library, mode, saveToCache) => {
     console.log(`> ${library} deps ${mode}`);
@@ -160,7 +160,7 @@ module.exports = {
     return output;
   },
   /* downloads dependencies to libraries folder and runs relevant npm commands
-  mode - 'run' or 'edit' to download non-editor or editor libraries
+  mode - 'view' or 'edit' to download non-editor or editor libraries
   saveToCache - if true cached dependency list is used */
   downloadWithDependencies: async (library, mode, useCache) => {
     let list;
