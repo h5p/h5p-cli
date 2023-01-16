@@ -25,7 +25,7 @@ body {
   display: grid;
   grid-template-rows: repeat(10, 8vh);
   grid-template-columns: 80vw;
-  grid-gap: 0;
+  grid-gap: 1vh;
 }
 .item {
   pointer-events: none;

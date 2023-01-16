@@ -25,7 +25,7 @@ function dashboard(options) {
     let paginationHTML = '';
     for (let item of result.list) {
       contentHTML += this.fromTemplate(entry, {
-        name: item.name,
+        title: item.title,
         library: item.library,
         folder: item.folder
       });

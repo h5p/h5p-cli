@@ -6,6 +6,7 @@ const config = require('./config.js');
 const l10n = require('./assets/l10n.json');
 const lib = config.folders.lib;
 let cache = {
+  registry: null,
   run: {},
   edit: {}
 };
@@ -26,8 +27,11 @@ module.exports = {
     }
   },
   // lists content folders
-  projects: (request, response, next) => {
+  projects: async (request, response, next) => {
     try {
+      if (!cache.registry) {
+        cache.registry = await logic.getRegistry();
+      }
       const limit = parseInt(request.query.limit) || 10;
       const page = parseInt(request.query.page) || 0;
       const start = page * limit;
@@ -39,18 +43,20 @@ module.exports = {
       const dirs = fs.readdirSync('content');
       const list = [];
       for (let item of dirs) {
-        item = item.split('_');
-        if (item.length == 2) {
-          list.push(item);
+        const infoFile = `content/${item}/h5p.json`;
+        if (!fs.existsSync(infoFile)) {
+          continue;
         }
+        const info = JSON.parse(fs.readFileSync(infoFile, 'utf-8'));
+        list.push({
+          title: info.title,
+          library: cache.registry.reversed?.[info?.mainLibrary]?.repoName,
+          folder: item
+        });
       }
       output.total = list.length;
       for (let i = start; i < Math.min(end, list.length); i++) {
-        output.list.push({
-          name: list[i][1],
-          library: list[i][0],
-          folder: `${list[i][0]}_${list[i][1]}`
-        });
+        output.list.push(list[i]);
       }
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify(output));
