@@ -113,8 +113,8 @@ module.exports = {
       const input = JSON.parse(request.body.parameters);
       fs.writeFileSync(`content/${request.params.folder}/content.json`, JSON.stringify(input.params));
       const infoFile = `content/${request.params.folder}/h5p.json`;
-      const info = JSON.parse(fs.readFileSync(infoFile, 'utf-8'));
-      info.title = request.body.title;
+      let info = JSON.parse(fs.readFileSync(infoFile, 'utf-8'));
+      info = {...info, ...input.metadata};
       fs.writeFileSync(infoFile, JSON.stringify(info));
       const contentFiles = parseContentFiles([input.params]);
       const list = [];
@@ -246,12 +246,9 @@ module.exports = {
       const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`));
       const formParams = {
         params: JSON.parse(jsonContent),
-        metadata: {
-          defaultLanguage: 'en',
-          license: 'U',
-          title: info.title
-        }
+        metadata: info
       }
+      delete formParams.preloadedDependencies;
       const input = {
         title: info.title,
         baseUrl,
