@@ -43,20 +43,19 @@ module.exports = {
       const dirs = fs.readdirSync('content');
       const list = [];
       for (let item of dirs) {
-        const infoFile = `content/${item}/h5p.json`;
-        if (!fs.existsSync(infoFile)) {
+        if (!fs.existsSync(`content/${item}/h5p.json`)) {
           continue;
         }
-        const info = JSON.parse(fs.readFileSync(infoFile, 'utf-8'));
-        list.push({
-          title: info.title,
-          library: cache.registry.reversed?.[info?.mainLibrary]?.repoName,
-          folder: item
-        });
+        list.push(item);
       }
       output.total = list.length;
       for (let i = start; i < Math.min(end, list.length); i++) {
-        output.list.push(list[i]);
+        const info = JSON.parse(fs.readFileSync(`content/${list[i]}/h5p.json`, 'utf-8'));
+        output.list.push({
+          title: info.title,
+          library: cache.registry.reversed?.[info?.mainLibrary]?.repoName,
+          folder: list[i]
+        });
       }
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify(output));
