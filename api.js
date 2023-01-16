@@ -64,14 +64,14 @@ module.exports = {
   splitView: (request, response, next) => {
     const splitView_html = fs.readFileSync('./assets/templates/splitView.html', 'utf-8');
     const input = {
-      runFrameSRC: `/content/${request.params.library}/${request.params.folder}?simple=1`,
-      editFrameSRC: `/editor/${request.params.library}/${request.params.folder}?simple=1`
+      runFrameSRC: `/view/${request.params.library}/${request.params.folder}?simple=1`,
+      editFrameSRC: `/edit/${request.params.library}/${request.params.folder}?simple=1`
     }
     response.set('Content-Type', 'text/html');
     response.end(logic.fromTemplate(splitView_html, input));
   },
   // editor file upload
-  saveFile: (request, response, next) => {
+  uploadFile: (request, response, next) => {
     try {
       const form = JSON.parse(request.body.field);
       const targetFolder = `content/${request.params.folder}/${form.type}s`;
@@ -125,7 +125,7 @@ module.exports = {
         }
       }
       const simple = request.query.simple;
-      response.redirect(`/${simple ? 'editor' : 'content'}/${request.params.library}/${request.params.folder}${simple ? '?simple=1' : ''}`);
+      response.redirect(`/${simple ? 'edit' : 'view'}/${request.params.library}/${request.params.folder}${simple ? '?simple=1' : ''}`);
     }
     catch (error) {
       console.log(error);
@@ -197,7 +197,7 @@ module.exports = {
     }
   },
   // html page that initializes and renders h5p content type editors
-  editor: async (request, response, next) => {
+  edit: async (request, response, next) => {
     try {
       const baseUrl = `${request.protocol}://${request.get('host')}`;
       const library = request.params.library;
@@ -207,7 +207,7 @@ module.exports = {
       const cacheFile = `${config.folders.cache}/${library}_edit.json`;
       let links = '';
       if (!request.query.simple) {
-        links = `<a class="h5p-cli-button" href="/content/${library}/${folder}">view</a> <a class="h5p-cli-button" href="/dashboard">dashboard</a>`;
+        links = `<a class="h5p-cli-button" href="/view/${library}/${folder}">view</a> <a class="h5p-cli-button" href="/dashboard">dashboard</a>`;
       }
       if (!cache?.edit[library]) {
         if (fs.existsSync(cacheFile)) {
@@ -241,17 +241,17 @@ module.exports = {
           title: folder
         }
       }
-      const html = fs.readFileSync('./assets/templates/editor.html', 'utf-8');
+      const html = fs.readFileSync('./assets/templates/edit.html', 'utf-8');
       const input = {
         baseUrl,
-        ajaxPath: `${baseUrl}/editor/${library}/${folder}/`,
+        ajaxPath: `${baseUrl}/edit/${library}/${folder}/`,
         copyrightSemantics,
         metadataSemantics,
         folder,
         preloadedCss: preloadedCss.join(',\n'),
         preloadedJs: preloadedJs.join(',\n'),
         l10n: JSON.stringify(l10n),
-        library: `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
+        machineName: `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
         parameters: he.encode(JSON.stringify(formParams)),
         links
       }
@@ -264,7 +264,7 @@ module.exports = {
     }
   },
   // html page that initializes and renders h5p content types
-  content: async (request, response, next) => {
+  view: async (request, response, next) => {
     try {
       const baseUrl = `${request.protocol}://${request.get('host')}`;
       const library = request.params.library;
@@ -272,7 +272,7 @@ module.exports = {
       const cacheFile = `${config.folders.cache}/${library}.json`;
       let links = '';
       if (!request.query.simple) {
-        links = `<a class="h5p-cli-button" href="/editor/${library}/${folder}">editor</a> <a class="h5p-cli-button" href="/split/${library}/${folder}">split view</a> <a class="h5p-cli-button" href="/dashboard">dashboard</a>`;
+        links = `<a class="h5p-cli-button" href="/edit/${library}/${folder}">edit</a> <a class="h5p-cli-button" href="/split/${library}/${folder}">split view</a> <a class="h5p-cli-button" href="/dashboard">dashboard</a>`;
       }
       if (!cache?.run[library]) {
         if (fs.existsSync(cacheFile)) {
@@ -295,11 +295,11 @@ module.exports = {
           preloadedCss.push(`../../../${lib}/${label}/${cssItem.path}`);
         }
       }
-      const html = fs.readFileSync('./assets/templates/content.html', 'utf-8');
+      const html = fs.readFileSync('./assets/templates/view.html', 'utf-8');
       const input = {
         baseUrl,
         folder,
-        library: `${cache.run[library][library].id} ${cache.run[library][library].version.major}.${cache.run[library][library].version.minor}`,
+        machineName: `${cache.run[library][library].id} ${cache.run[library][library].version.major}.${cache.run[library][library].version.minor}`,
         jsonContent: JSON.stringify(jsonContent),
         preloadedCss: JSON.stringify(preloadedCss),
         preloadedJs: JSON.stringify(preloadedJs),

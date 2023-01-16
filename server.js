@@ -10,12 +10,12 @@ app.use(express.urlencoded({
 app.get('/dashboard', api.dashboard);
 app.get('/projects', api.projects);
 app.get('/split/:library/:folder', api.splitView);
-app.get('/content/:library/:folder', api.content);
-app.get('/editor/:library/:folder/libraries', api.ajaxLibraries);
-app.get('/editor/:library/:folder', api.editor);
-app.post('/editor/:library/:folder/libraries', api.ajaxLibraries);
-app.post('/editor/:library/:folder/files', multer.single('file'), api.saveFile);
-app.post('/editor/:library/:folder', multer.none(), api.saveContent);
+app.get('/view/:library/:folder', api.view);
+app.get('/edit/:library/:folder/libraries', api.ajaxLibraries);
+app.get('/edit/:library/:folder', api.edit);
+app.post('/edit/:library/:folder/libraries', api.ajaxLibraries);
+app.post('/edit/:library/:folder/files', multer.single('file'), api.uploadFile);
+app.post('/edit/:library/:folder', multer.none(), api.saveContent);
 app.use(express.static('./'));
 app.listen(config.port, () => {
   console.log(`h5p content type development server running on port ${config.port}`);
