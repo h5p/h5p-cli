@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>h5p-dev edit content</title>
+    <title>h5p-dev edit content - {title}</title>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="/assets/styles/editor.css">
     <script type="text/javascript">
@@ -140,7 +140,7 @@
         var $editor = $('.h5p-editor');
         var $library = $('input[name="library"]');
         var $params = $('input[name="parameters"]');
-        var $title = $('input[name="action"]');
+        var $title = $('input[name="title"]');
         console.log('> editor initializing...');
         H5PEditor.init($form, $type, $upload, $create, $editor, $library, $params, null, $title);
       });
@@ -148,6 +148,7 @@
   </head>
   <body>
     <form method="post" action="" enctype="multipart/form-data" id="h5p-content-form">
+      <input type="hidden" name="title" id="h5p-title" value="{title}">
       <input type="hidden" name="library" id="h5p-library" value="{machineName}">
       <input type="hidden" name="parameters" id="h5p-parameters" value="{parameters}">
       <input type="radio" name="action" value="upload" style="display: none"/>

@@ -111,14 +111,17 @@ module.exports = {
   saveContent: (request, response, next) => {
     try {
       const input = JSON.parse(request.body.parameters);
-      fs.writeFileSync(`content/${request.body.action}/content.json`, JSON.stringify(input.params));
-      // delete unused media files
+      fs.writeFileSync(`content/${request.params.folder}/content.json`, JSON.stringify(input.params));
+      const infoFile = `content/${request.params.folder}/h5p.json`;
+      const info = JSON.parse(fs.readFileSync(infoFile, 'utf-8'));
+      info.title = request.body.title;
+      fs.writeFileSync(infoFile, JSON.stringify(info));
       const contentFiles = parseContentFiles([input.params]);
       const list = [];
       for (let item in contentFiles) {
         list.push(item.split('/')[1]);
       }
-      for (let type of config.mediaTypes) {
+      for (let type of config.mediaTypes) {// delete unused media files
         const targetFolder = `content/${request.params.folder}/${type}`;
         if (!fs.existsSync(targetFolder)) {
           continue;
@@ -239,16 +242,18 @@ module.exports = {
           preloadedCss.push(`"../../../${lib}/${label}/${cssItem.path}"`);
         }
       }
+      const html = fs.readFileSync('./assets/templates/edit.html', 'utf-8');
+      const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`));
       const formParams = {
         params: JSON.parse(jsonContent),
         metadata: {
           defaultLanguage: 'en',
           license: 'U',
-          title: folder
+          title: info.title
         }
       }
-      const html = fs.readFileSync('./assets/templates/edit.html', 'utf-8');
       const input = {
+        title: info.title,
         baseUrl,
         ajaxPath: `${baseUrl}/edit/${library}/${folder}/`,
         copyrightSemantics,
@@ -302,7 +307,9 @@ module.exports = {
         }
       }
       const html = fs.readFileSync('./assets/templates/view.html', 'utf-8');
+      const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`));
       const input = {
+        title: info.title,
         baseUrl,
         folder,
         machineName: `${cache.run[library][library].id} ${cache.run[library][library].version.major}.${cache.run[library][library].version.minor}`,
