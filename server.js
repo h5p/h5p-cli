@@ -9,6 +9,8 @@ app.use(express.urlencoded({
 }));
 app.get('/dashboard', api.dashboard);
 app.get('/projects', api.projects);
+app.get('/runnable', api.contentTypes);
+app.post('/create/:type/:folder', api.create);
 app.get('/split/:library/:folder', api.splitView);
 app.get('/view/:library/:folder', api.view);
 app.get('/edit/:library/:folder/libraries', api.ajaxLibraries);

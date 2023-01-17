@@ -10,8 +10,20 @@
         self: 'runner',
         host: '{host}',
         ids: {
+          newContentButton: 'newContentButton',
+          newContent: 'newContent',
+          contentTypes: 'contentTypes',
+          folder: 'folder',
+          status: 'status',
           content: 'content',
           pagination: 'pagination'
+        },
+        classes: {
+          hidden: 'hidden'
+        },
+        labels: {
+          close: 'X',
+          newContent: 'new content'
         }
       });
       runner.init();
@@ -20,7 +32,15 @@
   <body>
     <div class="holder">
       <div class="menu">
-        <a href="" id="newContent" class="url">create new content (wip)</a>
+        <div class="button" id="newContentButton" onclick="runner.toggleNewContent()">new content</div>
+        <div id="newContent" class="hidden inline">
+          <select id="contentTypes" class="selector">
+            <option value="{value}">{name}</option>
+          </select>
+          <input type="text" class="input" id="folder">
+          <div class="button" id="createContent" onclick="runner.createContent()">create</div>
+        </div>
+        <div class="inline" id="status"></div>
       </div>
       <div class="content" id="content">
         <div class="item">

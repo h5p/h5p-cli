@@ -92,7 +92,7 @@ module.exports = {
         process.stdout.write(' (cached) ');
       }
       else {
-        list = await getFile(fromTemplate(config.urls.library.info, { org, dep }), true);
+        list = await getFile(fromTemplate(config.urls.library.list, { org, dep }), true);
         cache[dep] = list;
       }
       done[level][dep].title = list.title;
@@ -103,6 +103,7 @@ module.exports = {
       done[level][dep].runnable = list.runnable;
       done[level][dep].preloadedJs = list.preloadedJs || [];
       done[level][dep].preloadedCss = list.preloadedCss || [];
+      done[level][dep].preloadedDependencies = list.preloadedDependencies || [];
       if (!done[level][dep].requiredBy) {
         done[level][dep].requiredBy = [];
       }

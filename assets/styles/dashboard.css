@@ -25,7 +25,6 @@ body {
   display: grid;
   grid-template-rows: repeat(10, 8vh);
   grid-template-columns: 80vw;
-  grid-gap: 1vh;
 }
 .item {
   pointer-events: none;
@@ -65,7 +64,7 @@ body {
   color: #fff;
   background-color: #186df7;
   padding: 1vh;
-  height: 4vh;
+  line-height: 4vh;
   border-radius: 0.5vh;
 }
 .button:hover {
@@ -93,4 +92,23 @@ body {
 .url:hover {
   background-color: #fff;
   color: #186df7;
+}
+.input {
+  background-color: #fff;
+  color: #186df7;
+  font-size: 3vh;
+  border: 1px solid #186df7;
+}
+.selector {
+  color: #fff;
+  background-color: #186df7;
+  padding: 1vh;
+  font-size: 3vh;
+  border: 0;
+}
+.inline {
+  display: inline-block;
+}
+.hidden {
+  display: none;
 }

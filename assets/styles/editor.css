@@ -7,7 +7,7 @@ form {
   max-width: 1080px;
   margin: auto;
 }
-.h5p-cli-button {
+.button {
   padding: 5px 10px;
   cursor: pointer;
   font-size: 14px;
@@ -16,4 +16,8 @@ form {
   border: none;
   border-radius: 5px;
   text-decoration: none;
+}
+.button:hover {
+  background-color: #fff;
+  color: #186df7;
 }

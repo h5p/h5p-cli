@@ -19,7 +19,7 @@ body {
   width: 100%;
   height: 100%;
 }
-.h5p-cli-button {
+.button {
   padding: 5px 10px;
   cursor: pointer;
   font-size: 14px;
@@ -28,4 +28,8 @@ body {
   border: none;
   border-radius: 5px;
   text-decoration: none;
+}
+.button:hover {
+  background-color: #fff;
+  color: #186df7;
 }

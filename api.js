@@ -26,6 +26,72 @@ module.exports = {
       response.end(error.toString());
     }
   },
+  // lists runnable libraries
+  contentTypes: async (request, response, next) => {
+    try {
+      if (!cache.registry) {
+        cache.registry = await logic.getRegistry();
+      }
+      if (!cache.registry.runnable) {
+        cache.registry.runnable = {};
+        for (let item in cache.registry.regular) {
+          if (cache.registry.regular[item].runnable) {
+            cache.registry.runnable[item] = cache.registry.regular[item];
+          }
+        }
+      }
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify(cache.registry.runnable));
+    }
+    catch (error) {
+      console.log(error);
+      response.end(error.toString());
+    }
+  },
+  // create empty content type
+  create: async (request, response, next) => {
+    try {
+      const target = `content/${request.params.folder}`;
+      const libraryFile = `${config.folders.cache}/${request.params.type}.json`;
+      if (!fs.existsSync(libraryFile)) {
+        response.set('Content-Type', 'application/json');
+        response.end(JSON.stringify({
+          result: `${request.params.type} library not cached; please run setup for library.`
+        }));
+        return;
+      }
+      if (fs.existsSync(target)) {
+        response.set('Content-Type', 'application/json');
+        response.end(JSON.stringify({
+          result: `${target} already exists`
+        }));
+        return;
+      }
+      if (!cache.registry) {
+        cache.registry = await logic.getRegistry();
+      }
+      const library = JSON.parse(fs.readFileSync(libraryFile, 'utf-8'));
+      fs.mkdirSync(target);
+      const info = {
+        title: request.params.folder,
+        language: 'en',
+        mainLibrary: cache.registry.regular[request.params.type].id,
+        license: 'U',
+        defaultLanguage: 'en',
+        preloadedDependencies: library?.[request.params.type]?.preloadedDependencies
+      };
+      fs.writeFileSync(`${target}/h5p.json`, JSON.stringify(info));
+      fs.writeFileSync(`${target}/content.json`, JSON.stringify({}));
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify({
+        result: `created in ${target}`
+      }));
+    }
+    catch (error) {
+      console.log(error);
+      response.end(error.toString());
+    }
+  },
   // lists content folders
   projects: async (request, response, next) => {
     try {
@@ -215,7 +281,7 @@ module.exports = {
       const cacheFile = `${config.folders.cache}/${library}_edit.json`;
       let links = '';
       if (!request.query.simple) {
-        links = `<a class="h5p-cli-button" href="/view/${library}/${folder}">view</a> <a class="h5p-cli-button" href="/dashboard">dashboard</a>`;
+        links = `<a class="button" href="/view/${library}/${folder}">view</a> <a class="button" href="/dashboard">dashboard</a>`;
       }
       if (!cache?.edit[library]) {
         if (fs.existsSync(cacheFile)) {
@@ -279,7 +345,7 @@ module.exports = {
       const cacheFile = `${config.folders.cache}/${library}.json`;
       let links = '';
       if (!request.query.simple) {
-        links = `<a class="h5p-cli-button" href="/edit/${library}/${folder}">edit</a> <a class="h5p-cli-button" href="/split/${library}/${folder}">split view</a> <a class="h5p-cli-button" href="/dashboard">dashboard</a>`;
+        links = `<a class="button" href="/edit/${library}/${folder}">edit</a> <a class="button" href="/split/${library}/${folder}">split view</a> <a class="button" href="/dashboard">dashboard</a>`;
       }
       if (!cache?.run[library]) {
         if (fs.existsSync(cacheFile)) {

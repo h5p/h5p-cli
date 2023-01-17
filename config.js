@@ -12,7 +12,7 @@ module.exports = {
     library: {
       language: 'https://raw.githubusercontent.com/{org}/{dep}/master/language/en.json',
       semantics: 'https://raw.githubusercontent.com/{org}/{dep}/master/semantics.json',
-      info: 'https://raw.githubusercontent.com/{org}/{dep}/master/library.json'
+      list: 'https://raw.githubusercontent.com/{org}/{dep}/master/library.json'
     }
   }
 }
