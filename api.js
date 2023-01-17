@@ -56,14 +56,14 @@ module.exports = {
       if (!fs.existsSync(libraryFile)) {
         response.set('Content-Type', 'application/json');
         response.end(JSON.stringify({
-          result: `${request.params.type} library not cached; please run setup for library.`
+          result: `"${request.params.type}" library not cached; please run setup for library.`
         }));
         return;
       }
       if (fs.existsSync(target)) {
         response.set('Content-Type', 'application/json');
         response.end(JSON.stringify({
-          result: `${target} already exists`
+          result: `"${target}" folder already exists`
         }));
         return;
       }
