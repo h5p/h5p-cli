@@ -104,6 +104,7 @@ module.exports = {
       done[level][dep].preloadedJs = list.preloadedJs || [];
       done[level][dep].preloadedCss = list.preloadedCss || [];
       done[level][dep].preloadedDependencies = list.preloadedDependencies || [];
+      done[level][dep].editorDependencies = list.editorDependencies || [];
       if (!done[level][dep].requiredBy) {
         done[level][dep].requiredBy = [];
       }

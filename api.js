@@ -7,7 +7,7 @@ const l10n = require('./assets/l10n.json');
 const lib = config.folders.lib;
 let cache = {
   registry: null,
-  run: {},
+  view: {},
   edit: {}
 };
 module.exports = {
@@ -131,11 +131,11 @@ module.exports = {
       response.end(error.toString());
     }
   },
-  // renders run & edit modes on the same page
+  // renders view & edit modes on the same page
   splitView: (request, response, next) => {
     const splitView_html = fs.readFileSync('./assets/templates/splitView.html', 'utf-8');
     const input = {
-      runFrameSRC: `/view/${request.params.library}/${request.params.folder}?simple=1`,
+      viewFrameSRC: `/view/${request.params.library}/${request.params.folder}?simple=1`,
       editFrameSRC: `/edit/${request.params.library}/${request.params.folder}?simple=1`
     }
     response.set('Content-Type', 'text/html');
@@ -313,7 +313,6 @@ module.exports = {
         params: JSON.parse(jsonContent),
         metadata: info
       }
-      delete formParams.preloadedDependencies;
       const input = {
         title: info.title,
         baseUrl,
@@ -347,19 +346,19 @@ module.exports = {
       if (!request.query.simple) {
         links = `<a class="button" href="/edit/${library}/${folder}">edit</a> <a class="button" href="/split/${library}/${folder}">split view</a> <a class="button" href="/dashboard">dashboard</a>`;
       }
-      if (!cache?.run[library]) {
+      if (!cache?.view[library]) {
         if (fs.existsSync(cacheFile)) {
-          cache.run[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
+          cache.view[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
         }
         else {
-          cache.run[library] = await logic.computeDependencies(library, 'run', true);
+          cache.view[library] = await logic.computeDependencies(library, 'view', true);
         }
       }
       const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
       let preloadedJs = [];
       let preloadedCss = [];
-      for (let item in cache.run[library]) {
-        const entry = cache.run[library][item];
+      for (let item in cache.view[library]) {
+        const entry = cache.view[library][item];
         const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
         for (let jsItem of entry.preloadedJs) {
           preloadedJs.push(`../../../${lib}/${label}/${jsItem.path}`);
@@ -374,7 +373,7 @@ module.exports = {
         title: info.title,
         baseUrl,
         folder,
-        machineName: `${cache.run[library][library].id} ${cache.run[library][library].version.major}.${cache.run[library][library].version.minor}`,
+        machineName: `${cache.view[library][library].id} ${cache.view[library][library].version.major}.${cache.view[library][library].version.minor}`,
         jsonContent: JSON.stringify(jsonContent),
         preloadedCss: JSON.stringify(preloadedCss),
         preloadedJs: JSON.stringify(preloadedJs),
@@ -420,7 +419,7 @@ const parseContentFiles = (entries) => {
   }
   return output;
 }
-/* generates lists os JavaScript & CSS files to load
+/* generates lists of JavaScript & CSS files to load
 as well as translations and directories entries for use in content types */
 const computePreloaded = async (library, baseUrl) => {
   try {
@@ -440,7 +439,15 @@ const computePreloaded = async (library, baseUrl) => {
     for (let item in cache.edit[library]) {
       const entry = cache.edit[library][item];
       if (item == library && entry.requiredBy.length == 1) {
-        continue;
+        let required = false;
+        for (let obj of entry.editorDependencies) {
+          if (obj.machineName == entry.id) {
+            required = true;
+          }
+        }
+        if (!required) {
+          continue;
+        }
       }
       const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
       for (let jsItem of entry.preloadedJs) {
