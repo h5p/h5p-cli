@@ -96,8 +96,8 @@ function dashboard(options) {
   }
   this.remove = async (project) => {
     try {
-      status.innerText = '...';
       if (window.confirm(`Are you sure you want to delete the "content/${project}" project?`)) {
+        status.innerText = '...';
         const output = await (await fetch(`${options.host}/remove/${project}`, {method: 'post'})).json();
         status.innerText = output.result;
         this.getPage();
