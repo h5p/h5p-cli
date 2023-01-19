@@ -20,6 +20,7 @@ body {
   height: 100%;
 }
 .button {
+  display: inline-block;
   padding: 5px 10px;
   cursor: pointer;
   font-size: 14px;

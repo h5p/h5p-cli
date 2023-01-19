@@ -43,6 +43,9 @@ body {
 .item a {
   pointer-events: auto;
 }
+.item .button {
+  pointer-events: auto;
+}
 .itemTitle {
   grid-area: title;
 }

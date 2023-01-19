@@ -8,6 +8,7 @@ form {
   margin: auto;
 }
 .button {
+  display: inline-block;
   padding: 5px 10px;
   cursor: pointer;
   font-size: 14px;

@@ -24,6 +24,9 @@ function dashboard(options) {
       option = contentTypes.innerHTML;
       this.getPage();
       this.getContentTypes();
+      status.addEventListener('click', () => {
+        status.innerText = '';
+      });
     });
   }
   this.getPage = async (page = 0, limit = options.limit) => {
@@ -84,6 +87,21 @@ function dashboard(options) {
       this.toggleNewContent();
       this.getPage();
       status.innerText = output.result;
+    }
+    catch (error) {
+      status.innerText = 'error :(';
+      console.log('> error');
+      console.log(error);
+    }
+  }
+  this.remove = async (project) => {
+    try {
+      status.innerText = '...';
+      if (window.confirm(`Are you sure you want to delete the "content/${project}" project?`)) {
+        const output = await (await fetch(`${options.host}/remove/${project}`, {method: 'post'})).json();
+        status.innerText = output.result;
+        this.getPage();
+      }
     }
     catch (error) {
       status.innerText = 'error :(';

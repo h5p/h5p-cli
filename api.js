@@ -22,8 +22,7 @@ module.exports = {
       response.end(logic.fromTemplate(html, input));
     }
     catch (error) {
-      console.log(error);
-      response.end(error.toString());
+      handleError(error, response);
     }
   },
   // lists runnable libraries
@@ -44,8 +43,7 @@ module.exports = {
       response.end(JSON.stringify(cache.registry.runnable));
     }
     catch (error) {
-      console.log(error);
-      response.end(error.toString());
+      handleError(error, response);
     }
   },
   // create empty content type
@@ -84,12 +82,22 @@ module.exports = {
       fs.writeFileSync(`${target}/content.json`, JSON.stringify({}));
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify({
-        result: `created in ${target}`
+        result: `created in "${target}"`
       }));
     }
     catch (error) {
-      console.log(error);
-      response.end(error.toString());
+      handleError(error, response);
+    }
+  },
+  // deletes a content folder
+  remove: (request, response, next) => {
+    try {
+      fs.rmSync(`content/${request.params.folder}`, { recursive: true, force: true });
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify({result: `removed "content/${request.params.folder}"`}));
+    }
+    catch (error) {
+      handleError(error, response);
     }
   },
   // lists content folders
@@ -127,19 +135,23 @@ module.exports = {
       response.end(JSON.stringify(output));
     }
     catch (error) {
-      console.log(error);
-      response.end(error.toString());
+      handleError(error, response);
     }
   },
   // renders view & edit modes on the same page
   splitView: (request, response, next) => {
-    const splitView_html = fs.readFileSync('./assets/templates/splitView.html', 'utf-8');
-    const input = {
-      viewFrameSRC: `/view/${request.params.library}/${request.params.folder}?simple=1`,
-      editFrameSRC: `/edit/${request.params.library}/${request.params.folder}?simple=1`
+    try {
+      const splitView_html = fs.readFileSync('./assets/templates/splitView.html', 'utf-8');
+      const input = {
+        viewFrameSRC: `/view/${request.params.library}/${request.params.folder}?simple=1`,
+        editFrameSRC: `/edit/${request.params.library}/${request.params.folder}?simple=1`
+      }
+      response.set('Content-Type', 'text/html');
+      response.end(logic.fromTemplate(splitView_html, input));
     }
-    response.set('Content-Type', 'text/html');
-    response.end(logic.fromTemplate(splitView_html, input));
+    catch (error) {
+     handleError(error, response); 
+    }
   },
   // editor file upload
   uploadFile: (request, response, next) => {
@@ -168,8 +180,7 @@ module.exports = {
       response.end(JSON.stringify(output));
     }
     catch (error) {
-      console.log(error);
-      response.end(error.toString());
+      handleError(error, response);
     }
   },
   // updates content.json file with data from content type editor form
@@ -202,8 +213,7 @@ module.exports = {
       response.redirect(`/${simple ? 'edit' : 'view'}/${request.params.library}/${request.params.folder}${simple ? '?simple=1' : ''}`);
     }
     catch (error) {
-      console.log(error);
-      response.end(error.toString());
+      handleError(error, response);
     }
   },
   // endpoint that lists library data; used as ajax request by the content type editors;
@@ -266,8 +276,7 @@ module.exports = {
       response.end(JSON.stringify(output));
     }
     catch (error) {
-      console.log(error);
-      response.end(error.toString());
+      handleError(error, response);
     }
   },
   // html page that initializes and renders h5p content type editors
@@ -281,7 +290,10 @@ module.exports = {
       const cacheFile = `${config.folders.cache}/${library}_edit.json`;
       let links = '';
       if (!request.query.simple) {
-        links = `<a class="button" href="/view/${library}/${folder}">view</a> <a class="button" href="/dashboard">dashboard</a>`;
+        links = `
+<a class="button" href="/view/${library}/${folder}">view</a>
+<a class="button" href="/dashboard">dashboard</a>
+<div class="button" id="deleteButton">delete</div>`;
       }
       if (!cache?.edit[library]) {
         if (fs.existsSync(cacheFile)) {
@@ -331,8 +343,7 @@ module.exports = {
       response.end(logic.fromTemplate(html, input));
     }
     catch (error) {
-      console.log(error);
-      response.end(error.toString());
+      handleError(error, response);
     }
   },
   // html page that initializes and renders h5p content types
@@ -344,7 +355,11 @@ module.exports = {
       const cacheFile = `${config.folders.cache}/${library}.json`;
       let links = '';
       if (!request.query.simple) {
-        links = `<a class="button" href="/edit/${library}/${folder}">edit</a> <a class="button" href="/split/${library}/${folder}">split view</a> <a class="button" href="/dashboard">dashboard</a>`;
+        links = `
+<a class="button" href="/edit/${library}/${folder}">edit</a>
+<a class="button" href="/split/${library}/${folder}">split view</a>
+<a class="button" href="/dashboard">dashboard</a>
+<div class="button" id="deleteButton">delete</div>`;
       }
       if (!cache?.view[library]) {
         if (fs.existsSync(cacheFile)) {
@@ -384,8 +399,7 @@ module.exports = {
       response.end(logic.fromTemplate(html, input));
     }
     catch (error) {
-      console.log(error);
-      response.end(error.toString());
+      handleError(error, response);
     }
   }
 }
@@ -422,46 +436,46 @@ const parseContentFiles = (entries) => {
 /* generates lists of JavaScript & CSS files to load
 as well as translations and directories entries for use in content types */
 const computePreloaded = async (library, baseUrl) => {
-  try {
-    const cacheFile = `${config.folders.cache}/${library}_edit.json`;
-    if (!cache?.edit[library]) {
-      if (fs.existsSync(cacheFile)) {
-        cache.edit[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
-      }
-      else {
-        cache.edit[library] = await logic.computeDependencies(library, 'edit', true);
-      }
+  const cacheFile = `${config.folders.cache}/${library}_edit.json`;
+  if (!cache?.edit[library]) {
+    if (fs.existsSync(cacheFile)) {
+      cache.edit[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
     }
-    const directories = {};
-    const translations = {};
-    let preloadedJs = [];
-    let preloadedCss = [];
-    for (let item in cache.edit[library]) {
-      const entry = cache.edit[library][item];
-      if (item == library && entry.requiredBy.length == 1) {
-        let required = false;
-        for (let obj of entry.editorDependencies) {
-          if (obj.machineName == entry.id) {
-            required = true;
-          }
-        }
-        if (!required) {
-          continue;
+    else {
+      cache.edit[library] = await logic.computeDependencies(library, 'edit', true);
+    }
+  }
+  const directories = {};
+  const translations = {};
+  let preloadedJs = [];
+  let preloadedCss = [];
+  for (let item in cache.edit[library]) {
+    const entry = cache.edit[library][item];
+    if (item == library && entry.requiredBy.length == 1) {
+      let required = false;
+      for (let obj of entry.editorDependencies) {
+        if (obj.machineName == entry.id) {
+          required = true;
         }
       }
-      const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
-      for (let jsItem of entry.preloadedJs) {
-        preloadedJs.push(`${baseUrl}/${lib}/${label}/${jsItem.path}`);
+      if (!required) {
+        continue;
       }
-      for (let cssItem of entry.preloadedCss) {
-        preloadedCss.push(`${baseUrl}/${lib}/${label}/${cssItem.path}`);
-      }
-      translations[entry.id] = entry.translations;
-      directories[label] = label;
     }
-    return { library, preloadedJs,  preloadedCss, translations, directories};
+    const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
+    for (let jsItem of entry.preloadedJs) {
+      preloadedJs.push(`${baseUrl}/${lib}/${label}/${jsItem.path}`);
+    }
+    for (let cssItem of entry.preloadedCss) {
+      preloadedCss.push(`${baseUrl}/${lib}/${label}/${cssItem.path}`);
+    }
+    translations[entry.id] = entry.translations;
+    directories[label] = label;
   }
-  catch (error) {
-    throw error;
-  }
+  return { library, preloadedJs,  preloadedCss, translations, directories};
+}
+const handleError = (error, response) => {
+  console.log(error);
+  response.set('Content-Type', 'application/json');
+  response.end(JSON.stringify({ error }));
 }
