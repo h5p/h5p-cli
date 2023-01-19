@@ -161,6 +161,14 @@ module.exports = {
     process.stdout.write('\n');
     return output;
   },
+  // download & unzip repository
+  download: async (org, repo, target) => {
+    const blob = (await superAgent.get(fromTemplate(config.urls.library.zip, { org, repo })))._body;
+    const zipFile = `${config.folders.cache}/temp.zip`;
+    fs.writeFileSync(zipFile, blob);
+    new admZip(zipFile).extractAllTo(config.folders.lib);
+    fs.renameSync(`${config.folders.lib}/${repo}-master`, target);
+  },
   /* downloads dependencies to libraries folder and runs relevant npm commands
   mode - 'view' or 'edit' to download non-editor or editor libraries
   saveToCache - if true cached dependency list is used */
@@ -181,11 +189,7 @@ module.exports = {
         continue;
       }
       console.log(`>> + installing ${list[item].repoName}`);
-      const blob = (await superAgent.get(`https://github.com/${list[item].org}/${list[item].repoName}/archive/refs/heads/master.zip`))._body;
-      const zipFile = `${config.folders.cache}/temp.zip`;
-      fs.writeFileSync(zipFile, blob);
-      new admZip(zipFile).extractAllTo(config.folders.lib);
-      fs.renameSync(`${config.folders.lib}/${list[item].repoName}-master`, folder);
+      await module.exports.download(list[item].org, list[item].repoName, folder);
       const packageFile = `${folder}/package.json`;
       if (!fs.existsSync(packageFile)) {
         continue;

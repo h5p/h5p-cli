@@ -1,4 +1,4 @@
-const util = require('util');
+const fs = require('fs');
 const logic = require('./logic.js');
 const config = require('./config.js');
 const cli = {
@@ -31,6 +31,24 @@ const cli = {
     try {
       console.log(`> cloning h5p library and dependencies into "${config.folders.lib}" folder`);
       await logic.downloadWithDependencies(library, mode, parseInt(useCache));
+      console.log('> all done');
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
+  },
+  core: async () => {
+    try {
+      for (let item of config.core.libraries) {
+        const folder = `${config.folders.lib}/${item}`;
+        if (fs.existsSync(folder)) {
+          console.log(`>> ~ skipping ${item}; it already exists.`);
+          continue;
+        }
+        console.log(`>> + installing ${item}`);
+        await logic.download('h5p', item, folder);
+      }
       console.log('> all done');
     }
     catch (error) {

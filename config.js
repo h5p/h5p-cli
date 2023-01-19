@@ -12,7 +12,11 @@ module.exports = {
     library: {
       language: 'https://raw.githubusercontent.com/{org}/{dep}/master/language/en.json',
       semantics: 'https://raw.githubusercontent.com/{org}/{dep}/master/semantics.json',
-      list: 'https://raw.githubusercontent.com/{org}/{dep}/master/library.json'
+      list: 'https://raw.githubusercontent.com/{org}/{dep}/master/library.json',
+      zip: 'https://github.com/{org}/{repo}/archive/refs/heads/master.zip'
     }
+  },
+  core: {
+    libraries: ['h5p-editor-php-library', 'h5p-php-library']
   }
 }
