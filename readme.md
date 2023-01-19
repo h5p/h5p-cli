@@ -9,8 +9,8 @@ These are required to view/edit h5p content types.
 Use `view` or `edit` for `<mode>` to generate dependencies for those cases.  
 Use `1` for `<saveToCache>` to save the result in the cache folder.  
 5. `node cli.js install <h5p_repo_name> <mode> <useCache>` installs the dependencies in the libraries folder.  
-`<mode>` is the same as above and `<useCache>` can be `1` if you want it to use the cached deps if you generated them beforehand using the `deps` cli command.  
-6. Below is an example for the setup CLI commands needed before running and editing content types in the `h5p-accordion` library.  
+`<mode>` is the same as above and `<useCache>` can be `1` if you want it to use the cached deps.  
+6. Below is an example for the setup CLI commands needed before viewing and editing content types in the `h5p-accordion` library.  
 The first 2 commands compute dependencies for view & edit modes and saves them in the cache folder.  
 The second 2 commands install the dependencies for those modes using the cached dependency lists generated via the first 2 commands.
 ```
