@@ -3,7 +3,7 @@ module.exports = {
   mediaTypes: ['images', 'audios', 'videos'],
   folders: {
     assets: 'assets',
-    lib: 'libraries',
+    libraries: 'libraries',
     cache: 'cache',
     uploads: 'uploads'
   },

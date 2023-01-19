@@ -4,7 +4,6 @@ const imageSize = require('image-size');
 const logic = require('./logic.js');
 const config = require('./config.js');
 const l10n = require('./assets/l10n.json');
-const lib = config.folders.lib;
 let cache = {
   registry: null,
   view: {},
@@ -313,10 +312,10 @@ module.exports = {
         const entry = cache.edit[library][item];
         const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
         for (let jsItem of entry.preloadedJs) {
-          preloadedJs.push(`"../../../${lib}/${label}/${jsItem.path}"`);
+          preloadedJs.push(`"../../../${config.folders.libraries}/${label}/${jsItem.path}"`);
         }
         for (let cssItem of entry.preloadedCss) {
-          preloadedCss.push(`"../../../${lib}/${label}/${cssItem.path}"`);
+          preloadedCss.push(`"../../../${config.folders.libraries}/${label}/${cssItem.path}"`);
         }
       }
       const html = fs.readFileSync('./assets/templates/edit.html', 'utf-8');
@@ -376,10 +375,10 @@ module.exports = {
         const entry = cache.view[library][item];
         const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
         for (let jsItem of entry.preloadedJs) {
-          preloadedJs.push(`../../../${lib}/${label}/${jsItem.path}`);
+          preloadedJs.push(`../../../${config.folders.libraries}/${label}/${jsItem.path}`);
         }
         for (let cssItem of entry.preloadedCss) {
-          preloadedCss.push(`../../../${lib}/${label}/${cssItem.path}`);
+          preloadedCss.push(`../../../${config.folders.libraries}/${label}/${cssItem.path}`);
         }
       }
       const html = fs.readFileSync('./assets/templates/view.html', 'utf-8');
@@ -464,10 +463,10 @@ const computePreloaded = async (library, baseUrl) => {
     }
     const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
     for (let jsItem of entry.preloadedJs) {
-      preloadedJs.push(`${baseUrl}/${lib}/${label}/${jsItem.path}`);
+      preloadedJs.push(`${baseUrl}/${config.folders.libraries}/${label}/${jsItem.path}`);
     }
     for (let cssItem of entry.preloadedCss) {
-      preloadedCss.push(`${baseUrl}/${lib}/${label}/${cssItem.path}`);
+      preloadedCss.push(`${baseUrl}/${config.folders.libraries}/${label}/${cssItem.path}`);
     }
     translations[entry.id] = entry.translations;
     directories[label] = label;

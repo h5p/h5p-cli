@@ -166,8 +166,8 @@ module.exports = {
     const blob = (await superAgent.get(fromTemplate(config.urls.library.zip, { org, repo })))._body;
     const zipFile = `${config.folders.cache}/temp.zip`;
     fs.writeFileSync(zipFile, blob);
-    new admZip(zipFile).extractAllTo(config.folders.lib);
-    fs.renameSync(`${config.folders.lib}/${repo}-master`, target);
+    new admZip(zipFile).extractAllTo(config.folders.libraries);
+    fs.renameSync(`${config.folders.libraries}/${repo}-master`, target);
   },
   /* downloads dependencies to libraries folder and runs relevant npm commands
   mode - 'view' or 'edit' to download non-editor or editor libraries
@@ -183,7 +183,7 @@ module.exports = {
       list = await module.exports.computeDependencies(library, mode);
     }
     for (let item in list) {
-      const folder = `${config.folders.lib}/${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
+      const folder = `${config.folders.libraries}/${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
       if (fs.existsSync(folder)) {
         console.log(`>> ~ skipping ${list[item].repoName}; it already exists.`);
         continue;

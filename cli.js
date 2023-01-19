@@ -29,7 +29,7 @@ const cli = {
   },
   install: async (library, mode, useCache) => {
     try {
-      console.log(`> cloning h5p library and dependencies into "${config.folders.lib}" folder`);
+      console.log(`> cloning h5p library and dependencies into "${config.folders.libraries}" folder`);
       await logic.downloadWithDependencies(library, mode, parseInt(useCache));
       console.log('> all done');
     }
@@ -41,7 +41,7 @@ const cli = {
   core: async () => {
     try {
       for (let item of config.core.libraries) {
-        const folder = `${config.folders.lib}/${item}`;
+        const folder = `${config.folders.libraries}/${item}`;
         if (fs.existsSync(folder)) {
           console.log(`>> ~ skipping ${item}; it already exists.`);
           continue;
