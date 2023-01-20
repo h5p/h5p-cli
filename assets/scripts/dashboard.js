@@ -84,6 +84,10 @@ function dashboard(options) {
       status.innerText = '...';
       const type = contentTypes.value;
       const output = await (await fetch(`${options.host}/create/${type}/${folder.value}`, {method: 'post'})).json();
+      if (output.result) {
+        window.location.href = `/edit/${type}/${folder.value}`;
+        return;
+      }
       this.toggleNewContent();
       this.getPage();
       status.innerText = output.result;
