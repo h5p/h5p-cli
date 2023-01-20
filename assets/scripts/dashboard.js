@@ -90,7 +90,7 @@ function dashboard(options) {
       }
       this.toggleNewContent();
       this.getPage();
-      status.innerText = output.result;
+      status.innerText = output?.result || output;
     }
     catch (error) {
       status.innerText = 'error :(';
