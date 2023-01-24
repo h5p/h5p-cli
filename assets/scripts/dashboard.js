@@ -1,8 +1,12 @@
 function dashboard(options) {
   let newContentButton;
   let newContent;
+  let importContentButton;
+  let importContent;
   let contentTypes;
-  let folder;
+  let createFolder;
+  let importFolder;
+  let archive;
   let status;
   let content;
   let pagination;
@@ -14,8 +18,12 @@ function dashboard(options) {
       console.log('> page loaded');
       newContentButton = document.getElementById(options.ids.newContentButton);
       newContent = document.getElementById(options.ids.newContent);
+      importContentButton = document.getElementById(options.ids.importContentButton);
+      importContent = document.getElementById(options.ids.importContent);
       contentTypes = document.getElementById(options.ids.contentTypes);
-      folder = document.getElementById(options.ids.folder);
+      createFolder = document.getElementById(options.ids.createFolder);
+      importFolder = document.getElementById(options.ids.importFolder);
+      archive = document.getElementById(options.ids.archive);
       status = document.getElementById(options.ids.status);
       content = document.getElementById(options.ids.content);
       pagination = document.getElementById(options.ids.pagination);
@@ -79,18 +87,34 @@ function dashboard(options) {
       console.log(error);
     }
   }
-  this.createContent = async () => {
+  this.create = async () => {
     try {
       status.innerText = '...';
       const type = contentTypes.value;
-      const output = await (await fetch(`${options.host}/create/${type}/${folder.value}`, {method: 'post'})).json();
+      const output = await (await fetch(`${options.host}/create/${type}/${createFolder.value}`, {method: 'post'})).json();
       if (output.result) {
-        window.location.href = `/edit/${type}/${folder.value}`;
+        window.location.href = `/edit/${type}/${createFolder.value}`;
         return;
       }
       this.toggleNewContent();
       this.getPage();
-      status.innerText = output?.result || output;
+      status.innerText = output?.result || output?.error || output;
+    }
+    catch (error) {
+      status.innerText = 'error :(';
+      console.log('> error');
+      console.log(error);
+    }
+  }
+  this.import = async () => {
+    try {
+      status.innerText = '...';
+      const body = new FormData();
+      body.append('file', archive.files[0]);
+      const output = await (await fetch(`${options.host}/import/${importFolder.value}`, { method: 'post', body })).json();
+      this.toggleImportContent();
+      this.getPage();
+      status.innerText = output?.path || output?.error || output;
     }
     catch (error) {
       status.innerText = 'error :(';
@@ -116,7 +140,14 @@ function dashboard(options) {
   this.toggleNewContent = () => {
     status.innerText = '';
     newContent.classList.toggle(options.classes.hidden);
-    newContentButton.innerText = newContentButton.innerText == options.labels.newContent ? options.labels.close : options.labels.newContent;
+    importContentButton.classList.toggle(options.classes.hidden);
+    newContentButton.innerText = newContentButton.innerText == options.labels.new ? options.labels.close : options.labels.new;
+  }
+  this.toggleImportContent = () => {
+    status.innerText = '';
+    importContent.classList.toggle(options.classes.hidden);
+    newContentButton.classList.toggle(options.classes.hidden);
+    importContentButton.innerText = importContentButton.innerText == options.labels.import ? options.labels.close : options.labels.import;
   }
   this.fromTemplate = (template, input) => {
     for (let item in input) {

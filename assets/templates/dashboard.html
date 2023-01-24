@@ -12,8 +12,12 @@
         ids: {
           newContentButton: 'newContentButton',
           newContent: 'newContent',
+          importContentButton: 'importContentButton',
+          importContent: 'importContent',
           contentTypes: 'contentTypes',
-          folder: 'folder',
+          createFolder: 'createFolder',
+          importFolder: 'importFolder',
+          archive: 'archive',
           status: 'status',
           content: 'content',
           pagination: 'pagination'
@@ -23,7 +27,8 @@
         },
         labels: {
           close: 'X',
-          newContent: 'new content'
+          new: 'new',
+          import: 'import'
         }
       });
       runner.init();
@@ -32,13 +37,19 @@
   <body>
     <div class="holder">
       <div class="menu">
-        <div class="button" id="newContentButton" onclick="runner.toggleNewContent()">new content</div>
+        <div class="button" id="newContentButton" onclick="runner.toggleNewContent()">new</div>
+        <div class="button" id="importContentButton" onclick="runner.toggleImportContent()">import</div>
         <div id="newContent" class="hidden inline">
           <select id="contentTypes" class="selector">
             <option value="{value}">{name}</option>
           </select>
-          <input type="text" class="input" id="folder" placeholder="folder_name">
-          <div class="button" id="createContent" onclick="runner.createContent()">create</div>
+          <input type="text" class="input" id="createFolder" placeholder="folder_name">
+          <div class="button" onclick="runner.create()">create</div>
+        </div>
+        <div id="importContent" class="hidden inline">
+          <input type="text" class="input" id="importFolder" placeholder="folder_name">
+          <input type="file" class="input" id="archive" accept=".h5p">
+          <div class="button" onclick="runner.import()">import</div>
         </div>
         <div class="inline" id="status"></div>
       </div>

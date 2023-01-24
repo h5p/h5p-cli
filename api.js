@@ -45,6 +45,17 @@ module.exports = {
       handleError(error, response);
     }
   },
+  // import zipped archive of content type
+  import: (request, response, next) => {
+    try {
+      const path = logic.import(request.params.folder, request.file.path);
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify({path}));
+    }
+    catch (error) {
+      handleError(error, response);
+    }
+  },
   // download zipped archive of content type
   export: (request, response, next) => {
     try {
@@ -63,14 +74,14 @@ module.exports = {
       if (!fs.existsSync(libraryFile)) {
         response.set('Content-Type', 'application/json');
         response.end(JSON.stringify({
-          result: `"${request.params.type}" library not cached; please run setup for library.`
+          error: `"${request.params.type}" library not cached; please run setup for library.`
         }));
         return;
       }
       if (fs.existsSync(target)) {
         response.set('Content-Type', 'application/json');
         response.end(JSON.stringify({
-          result: `"${target}" folder already exists`
+          error: `"${target}" folder already exists`
         }));
         return;
       }
@@ -79,13 +90,33 @@ module.exports = {
       }
       const library = JSON.parse(fs.readFileSync(libraryFile, 'utf-8'));
       fs.mkdirSync(target);
+      let libs = JSON.parse(fs.readFileSync(`${config.folders.cache}/${request.params.type}.json`, 'utf-8'));
+      const editLibs = JSON.parse(fs.readFileSync(`${config.folders.cache}/${request.params.type}_edit.json`, 'utf-8'));
+      libs = {...libs, ...editLibs};
+      const map = {};
+      const preloadedDependencies = [];
+      for (let item in libs) {
+        for (let predep of libs[item].preloadedDependencies) {
+          if (map[predep.machineName]) {
+            continue;
+          }
+          map[predep.machineName] = true;
+          preloadedDependencies.push(predep);
+        }
+      }
+      preloadedDependencies.push({
+        machineName: libs[request.params.type].id,
+        minorVersion: libs[request.params.type].version.minor,
+        majorVersion: libs[request.params.type].version.major,
+      });
       const info = {
         title: request.params.folder,
         language: 'en',
         mainLibrary: cache.registry.regular[request.params.type].id,
         license: 'U',
         defaultLanguage: 'en',
-        preloadedDependencies: library?.[request.params.type]?.preloadedDependencies
+        embedTypes: ['div'],
+        preloadedDependencies
       };
       fs.writeFileSync(`${target}/h5p.json`, JSON.stringify(info));
       fs.writeFileSync(`${target}/content.json`, JSON.stringify({}));
@@ -200,6 +231,12 @@ module.exports = {
       const infoFile = `content/${request.params.folder}/h5p.json`;
       let info = JSON.parse(fs.readFileSync(infoFile, 'utf-8'));
       info = {...info, ...input.metadata};
+      if (info.authors && !info.authors.length) {
+        delete info.authors;
+      }
+      if (info.changes && !info.changes.length) {
+        delete info.changes;
+      }
       fs.writeFileSync(infoFile, JSON.stringify(info));
       const contentFiles = parseContentFiles([input.params]);
       const list = [];

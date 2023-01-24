@@ -11,6 +11,7 @@ app.get('/dashboard', api.dashboard);
 app.get('/projects', api.projects);
 app.get('/runnable', api.contentTypes);
 app.get('/export/:library/:folder', api.export);
+app.post('/import/:folder', multer.single('file'), api.import);
 app.post('/create/:type/:folder', api.create);
 app.post('/remove/:folder', api.remove);
 app.get('/split/:library/:folder', api.splitView);

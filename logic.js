@@ -11,6 +11,15 @@ const fromTemplate = (template, input) => {
   return template;
 }
 module.exports = {
+  // imports content type from zip archive file in the .h5p format
+  import: (folder, archive) => {
+    const target = `${config.folders.temp}/${folder}`;
+    new admZip(archive).extractAllTo(target);
+    fs.renameSync(`${target}/content`, `content/${folder}`);
+    fs.renameSync(`${target}/h5p.json`, `content/${folder}/h5p.json`);
+    fs.rmSync(target, { recursive: true, force: true });
+    return target;
+  },
   // creates zip archive export file in the .h5p format
   export: (library, folder) => {
     const target = `${config.folders.temp}/${folder}`;
@@ -37,6 +46,7 @@ module.exports = {
     }
     const zipped = `${target}.h5p`;
     zip.writeZip(zipped);
+    fs.rmSync(target, { recursive: true, force: true });
     return zipped;
   },
   /* retrieves list of h5p librarie
@@ -230,6 +240,7 @@ module.exports = {
       console.log(await execSync('npm install', {cwd: folder}).toString());
       console.log('>>> npm run build');
       console.log(await execSync('npm run build', {cwd: folder}).toString());
+      fs.rmSync(`${folder}/node_modules`, { recursive: true, force: true });
     }
   },
   fromTemplate
