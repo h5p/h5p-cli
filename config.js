@@ -5,7 +5,7 @@ module.exports = {
     assets: 'assets',
     libraries: 'libraries',
     cache: 'cache',
-    uploads: 'uploads'
+    temp: 'temp'
   },
   urls: {
     registry: 'https://raw.githubusercontent.com/h5p/h5p-registry/main/libraries.json',

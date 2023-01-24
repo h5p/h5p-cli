@@ -1,6 +1,6 @@
 const express = require('express');
 const config = require('./config.js');
-const multer = require('multer')({ dest: `./${config.folders.uploads}` });
+const multer = require('multer')({ dest: `./${config.folders.temp}` });
 const api = require('./api.js');
 let app = express();
 app.use(express.json());
@@ -10,6 +10,7 @@ app.use(express.urlencoded({
 app.get('/dashboard', api.dashboard);
 app.get('/projects', api.projects);
 app.get('/runnable', api.contentTypes);
+app.get('/export/:library/:folder', api.export);
 app.post('/create/:type/:folder', api.create);
 app.post('/remove/:folder', api.remove);
 app.get('/split/:library/:folder', api.splitView);

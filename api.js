@@ -45,6 +45,16 @@ module.exports = {
       handleError(error, response);
     }
   },
+  // download zipped archive of content type
+  export: (request, response, next) => {
+    try {
+      const file = logic.export(request.params.library, request.params.folder);
+      response.download(file);
+    }
+    catch (error) {
+      handleError(error, response);
+    }
+  },
   // create empty content type
   create: async (request, response, next) => {
     try {
@@ -386,6 +396,7 @@ module.exports = {
       const input = {
         title: info.title,
         baseUrl,
+        library,
         folder,
         machineName: `${cache.view[library][library].id} ${cache.view[library][library].version.major}.${cache.view[library][library].version.minor}`,
         jsonContent: JSON.stringify(jsonContent),
@@ -476,5 +487,5 @@ const computePreloaded = async (library, baseUrl) => {
 const handleError = (error, response) => {
   console.log(error);
   response.set('Content-Type', 'application/json');
-  response.end(JSON.stringify({ error }));
+  response.end(JSON.stringify({ error: error.toString() }));
 }

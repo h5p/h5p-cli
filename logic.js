@@ -11,6 +11,34 @@ const fromTemplate = (template, input) => {
   return template;
 }
 module.exports = {
+  // creates zip archive export file in the .h5p format
+  export: (library, folder) => {
+    const target = `${config.folders.temp}/${folder}`;
+    fs.rmSync(target, { recursive: true, force: true });
+    fs.mkdirSync(target);
+    fs.cpSync(`content/${folder}`, `${target}/content`, { recursive: true });
+    fs.renameSync(`${target}/content/h5p.json`, `${target}/h5p.json`);
+    let libs = JSON.parse(fs.readFileSync(`${config.folders.cache}/${library}.json`, 'utf-8'));
+    const editLibs = JSON.parse(fs.readFileSync(`${config.folders.cache}/${library}_edit.json`, 'utf-8'));
+    libs = {...libs, ...editLibs};
+    for (let item in libs) {
+      const label = `${libs[item].id}-${libs[item].version.major}.${libs[item].version.minor}`;
+      fs.cpSync(`${config.folders.libraries}/${label}`, `${target}/${label}`, { recursive: true });
+    }
+    const files = getFileList(target);
+    const zip = new admZip();
+    for (let item of files) {
+      const file = item;
+      item = item.replace(target, '');
+      let path = item.split('/');
+      path.pop();
+      path = path.join('/');
+      zip.addLocalFile(file, path);
+    }
+    const zipped = `${target}.h5p`;
+    zip.writeZip(zipped);
+    return zipped;
+  },
   /* retrieves list of h5p librarie
   ignoreCache - if true cache file is overwritten with online data */
   getRegistry: async (ignoreCache) => {
@@ -205,6 +233,32 @@ module.exports = {
     }
   },
   fromTemplate
+}
+// generates list of files and their relative paths in a folder tree
+const getFileList = (folder) => {
+  const output = [];
+  let toDo = [folder];
+  let list = [];
+  const compute = () => {
+    for (let item of list) {
+      const dirs = fs.readdirSync(item);
+      for (let entry of dirs) {
+        const file = `${item}/${entry}`;
+        if (fs.lstatSync(file).isDirectory()) {
+          toDo.push(file);
+        }
+        else {
+          output.push(file);
+        }
+      }
+    }
+  }
+  while (toDo.length) {
+    list = toDo;
+    toDo = [];
+    compute();
+  }
+  return output;
 }
 // determines if provided path has duplicate entries; entries are separated by '/';
 const pathHasDuplicates = (path) => {
