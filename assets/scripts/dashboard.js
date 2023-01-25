@@ -114,7 +114,7 @@ function dashboard(options) {
       const output = await (await fetch(`${options.host}/import/${importFolder.value}`, { method: 'post', body })).json();
       this.toggleImportContent();
       this.getPage();
-      status.innerText = output?.path || output?.error || output;
+      status.innerText = output?.path ? `imported into "content/${output.path}"` : 0 || output?.error || output;
     }
     catch (error) {
       status.innerText = 'error :(';

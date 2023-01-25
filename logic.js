@@ -18,7 +18,8 @@ module.exports = {
     fs.renameSync(`${target}/content`, `content/${folder}`);
     fs.renameSync(`${target}/h5p.json`, `content/${folder}/h5p.json`);
     fs.rmSync(target, { recursive: true, force: true });
-    return target;
+    fs.rmSync(archive);
+    return folder;
   },
   // creates zip archive export file in the .h5p format
   export: (library, folder) => {
