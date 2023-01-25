@@ -18,7 +18,8 @@ node cli.js deps h5p-accordion view 1
 node cli.js deps h5p-accordion edit 1
 node cli.js install h5p-accordion view 1
 node cli.js install h5p-accordion edit 1
-```
+```  
+Or simply use `node cli.js setup h5p-accordion` which is the equivalent for all 4 commands above.  
 7. `node server.js` starts the dev server.  
 8. To view the dashboard point your browser to  
 http://localhost:8080/dashboard  

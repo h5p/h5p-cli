@@ -29,7 +29,7 @@ const cli = {
   },
   install: async (library, mode, useCache) => {
     try {
-      console.log(`> cloning h5p library and dependencies into "${config.folders.libraries}" folder`);
+      console.log(`> cloning ${library} library and dependencies into "${config.folders.libraries}" folder`);
       await logic.downloadWithDependencies(library, mode, parseInt(useCache));
       console.log('> all done');
     }
@@ -49,6 +49,27 @@ const cli = {
         console.log(`>> + installing ${item}`);
         await logic.download('h5p', item, folder);
       }
+      console.log('> all done');
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
+  },
+  setup: async (library) => {
+    try {
+      let result = await logic.computeDependencies(library, 'view', 1);
+      for (let item in result) {
+        console.log(item);
+      }
+      result = await logic.computeDependencies(library, 'edit', 1);
+      for (let item in result) {
+        console.log(item);
+      }
+      console.log(`> cloning ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
+      await logic.downloadWithDependencies(library, 'view', 1);
+      console.log(`> cloning ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
+      await logic.downloadWithDependencies(library, 'edit', 1);
       console.log('> all done');
     }
     catch (error) {
