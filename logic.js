@@ -23,13 +23,15 @@ module.exports = {
   },
   // creates zip archive export file in the .h5p format
   export: (library, folder) => {
+    const libsFile = `${config.folders.cache}/${library}.json`;
+    const editLibsFile = `${config.folders.cache}/${library}_edit.json`;
     const target = `${config.folders.temp}/${folder}`;
     fs.rmSync(target, { recursive: true, force: true });
     fs.mkdirSync(target);
     fs.cpSync(`content/${folder}`, `${target}/content`, { recursive: true });
     fs.renameSync(`${target}/content/h5p.json`, `${target}/h5p.json`);
-    let libs = JSON.parse(fs.readFileSync(`${config.folders.cache}/${library}.json`, 'utf-8'));
-    const editLibs = JSON.parse(fs.readFileSync(`${config.folders.cache}/${library}_edit.json`, 'utf-8'));
+    let libs = JSON.parse(fs.readFileSync(libsFile, 'utf-8'));
+    const editLibs = JSON.parse(fs.readFileSync(editLibsFile, 'utf-8'));
     libs = {...libs, ...editLibs};
     for (let item in libs) {
       const label = `${libs[item].id}-${libs[item].version.major}.${libs[item].version.minor}`;
@@ -41,7 +43,10 @@ module.exports = {
       const file = item;
       item = item.replace(target, '');
       let path = item.split('/');
-      path.pop();
+      const name = path.pop();
+      if (config.files.patterns.ignored.test(name) || !config.files.patterns.allowed.test(name)) {
+        continue;
+      }
       path = path.join('/');
       zip.addLocalFile(file, path);
     }

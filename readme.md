@@ -30,4 +30,6 @@ The `folder` parameter points to a folder in the "content" directory which store
 10. To edit a content type point your browser to  
 http://localhost:8080/edit/h5p-repo-name/folder  
 11. To view and edit a content type on the same page point your browser to  
-http://localhost:8080/split/h5p-repo-name/folder
+http://localhost:8080/split/h5p-repo-name/folder  
+12. `node cli.js export <h5p_repo_name> <folder>` will export the `<h5p_repo_name>` library content type from the "content/`<folder>`" folder.  
+Make sure that the library's `view` and `edit` dependencies have been compiled and exist in the cache folder.

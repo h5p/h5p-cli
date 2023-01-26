@@ -7,6 +7,12 @@ module.exports = {
     cache: 'cache',
     temp: 'temp'
   },
+  files: {
+    patterns: {
+      allowed: /\.(json|png|jpg|jpeg|gif|bmp|tif|tiff|svg|eot|ttf|woff|woff2|otf|webm|mp4|ogg|mp3|txt|pdf|rtf|doc|docx|xls|xlsx|ppt|pptx|odt|ods|odp|xml|csv|diff|patch|swf|md|textile|js|css)$/,
+      ignored: /^\.|~$/gi
+    }
+  },
   urls: {
     registry: 'https://raw.githubusercontent.com/h5p/h5p-registry/main/libraries.json',
     library: {
@@ -20,3 +26,6 @@ module.exports = {
     libraries: ['h5p-editor-php-library', 'h5p-php-library']
   }
 }
+// files.patterns.allowed & files.patterns.ignored are used in the export logic to determine which files are allowed/ignored in the .h5p zip archive
+module.exports.files.patterns.allowed = process.env.h5p_cli_allowed_files ? new RegExp(process.env.h5p_cli_allowed_files, process.env.h5p_cli_allowed_modifiers) : module.exports.files.patterns.allowed;
+module.exports.files.patterns.ignored = process.env.h5p_cli_ignored_files ? new RegExp(process.env.h5p_cli_ignored_files, process.env.h5p_cli_ignored_modifiers) : module.exports.files.patterns.ignored;

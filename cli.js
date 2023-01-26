@@ -2,6 +2,16 @@ const fs = require('fs');
 const logic = require('./logic.js');
 const config = require('./config.js');
 const cli = {
+  export: (library, folder) => {
+    try {
+      const file = logic.export(library, folder);
+      console.log(file);
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
+  },
   list: async (reversed, ignoreCache) => {
     try {
       console.log('> fetching h5p library registry');
