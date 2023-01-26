@@ -203,7 +203,7 @@ module.exports = {
   // download & unzip repository
   download: async (org, repo, target) => {
     const blob = (await superAgent.get(fromTemplate(config.urls.library.zip, { org, repo })))._body;
-    const zipFile = `${config.folders.cache}/temp.zip`;
+    const zipFile = `${config.folders.temp}/temp.zip`;
     fs.writeFileSync(zipFile, blob);
     new admZip(zipFile).extractAllTo(config.folders.libraries);
     fs.renameSync(`${config.folders.libraries}/${repo}-master`, target);
