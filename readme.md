@@ -21,8 +21,7 @@ node cli.js install h5p-accordion view 1
 node cli.js install h5p-accordion edit 1
 ```
 7. `node server.js` starts the dev server.  
-8. Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types.  
-To view the dashboard point your browser to  
+8. Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types. To view the dashboard point your browser to  
 http://localhost:8080/dashboard  
 9. `node cli.js export <h5p_repo_name> <folder>` will export the `<h5p_repo_name>` library content type from the "content/`<folder>`" folder.  
 Make sure that the library's `view` and `edit` dependencies have been compiled and exist in the cache folder.
