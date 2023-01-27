@@ -166,7 +166,7 @@ module.exports = {
       for (let i = start; i < Math.min(end, list.length); i++) {
         const info = JSON.parse(fs.readFileSync(`content/${list[i]}/h5p.json`, 'utf-8'));
         output.list.push({
-          title: info.title,
+          title: he.encode(info.title),
           library: cache.registry.reversed?.[info?.mainLibrary]?.repoName,
           folder: list[i]
         });
@@ -331,6 +331,9 @@ module.exports = {
       const baseUrl = `${request.protocol}://${request.get('host')}`;
       const library = request.params.library;
       const folder = request.params.folder;
+      if (!verifySetup(library, response)) {
+        return;
+      }
       const metadataSemantics = fs.readFileSync(`${config.folders.assets}/metadataSemantics.json`, 'utf-8');
       const copyrightSemantics = fs.readFileSync(`${config.folders.assets}/copyrightSemantics.json`, 'utf-8');
       const cacheFile = `${config.folders.cache}/${library}_edit.json`;
@@ -398,6 +401,9 @@ module.exports = {
       const baseUrl = `${request.protocol}://${request.get('host')}`;
       const library = request.params.library;
       const folder = request.params.folder;
+      if (!verifySetup(library, response)) {
+        return;
+      }
       const cacheFile = `${config.folders.cache}/${library}.json`;
       let links = '';
       if (!request.query.simple) {
@@ -525,4 +531,17 @@ const handleError = (error, response) => {
   console.log(error);
   response.set('Content-Type', 'application/json');
   response.end(JSON.stringify({ error: error.toString() }));
+}
+const verifySetup = (library, response) => {
+  const setupStatus = logic.verifySetup(library);
+  if (!setupStatus.ok) {
+    response.set('Content-Type', 'text/html');
+    response.end(`
+"${library}" is not properly setup. Please run "node cli.js setup ${library}" for setup.</br>
+For a detailed setup status report please run "node cli.js verify ${library}".`);
+    return false;
+  }
+  else {
+    return true;
+  }
 }

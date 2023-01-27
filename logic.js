@@ -249,6 +249,34 @@ module.exports = {
       fs.rmSync(`${folder}/node_modules`, { recursive: true, force: true });
     }
   },
+  /* checks if dependency lists are cached and dependencies are installed for a given library;
+  returns a report with boolean statuses; the overall status is reflected under the "ok" attribute;*/
+  verifySetup: (library) => {
+    const viewList = `${config.folders.cache}/${library}.json`;
+    const editList = `${config.folders.cache}/${library}_edit.json`;
+    const output = {
+      lists: {
+        view: fs.existsSync(viewList),
+        edit: fs.existsSync(editList)
+      },
+      libraries: {},
+      ok: true
+    }
+    if (!output.lists.view || !output.lists.edit) {
+      output.ok = false;
+      return output;
+    }
+    let list = JSON.parse(fs.readFileSync(viewList, 'utf-8'));
+    list = {...list, ...JSON.parse(fs.readFileSync(editList, 'utf-8'))};
+    for (let item in list) {
+      const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
+      output.libraries[label] = fs.existsSync(`${config.folders.libraries}/${label}`);
+      if (!output.libraries[label]) {
+        output.ok = false;
+      }
+    }
+    return output;
+  },
   fromTemplate
 }
 // generates list of files and their relative paths in a folder tree

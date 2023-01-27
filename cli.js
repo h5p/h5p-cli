@@ -86,6 +86,16 @@ const cli = {
       console.log('> error');
       console.log(error);
     }
+  },
+  verify: (library) => {
+    try {
+      let result = logic.verifySetup(library);
+      console.log(result);
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
   }
 }
 if (typeof cli[process.argv[2]] == 'function') {
