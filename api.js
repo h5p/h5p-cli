@@ -532,8 +532,8 @@ const handleError = (error, response) => {
   response.set('Content-Type', 'application/json');
   response.end(JSON.stringify({ error: error.toString() }));
 }
-const verifySetup = (library, response) => {
-  const setupStatus = logic.verifySetup(library);
+const verifySetup = async (library, response) => {
+  const setupStatus = await logic.verifySetup(library);
   if (!setupStatus.ok) {
     response.set('Content-Type', 'text/html');
     response.end(`
