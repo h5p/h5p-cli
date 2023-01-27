@@ -13,7 +13,7 @@ Use `1` for `<saveToCache>` to save the result in the cache folder.
 6. Below is an example for the setup CLI commands needed before viewing and editing content types in the `h5p-accordion` library.  
 The first 2 commands compute dependencies for view & edit modes and saves them in the cache folder.  
 The second 2 commands install the dependencies for those modes using the cached dependency lists generated via the first 2 commands.  
-Or simply use `node cli.js setup h5p-accordion` which is the equivalent for all 4 commands.  
+`node cli.js setup h5p-accordion` is the equivalent for all 4 commands.  
 ```
 node cli.js deps h5p-accordion view 1
 node cli.js deps h5p-accordion edit 1
