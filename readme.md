@@ -12,8 +12,8 @@ Use `1` for `<saveToCache>` to save the result in the cache folder.
 `<mode>` is the same as above and `<useCache>` can be `1` if you want it to use the cached deps.  
 6. Below is an example for the setup CLI commands needed before viewing and editing content types in the `h5p-accordion` library.  
 The first 2 commands compute dependencies for view & edit modes and saves them in the cache folder.  
-The second 2 commands install the dependencies for those modes using the cached dependency lists generated via the first 2 commands.  
-`node cli.js setup h5p-accordion` is the equivalent for all 4 commands.  
+The second 2 commands install the dependencies for those modes using the cached dependency lists.  
+Running `node cli.js setup h5p-accordion` is the equivalent for all 4 commands.  
 ```
 node cli.js deps h5p-accordion view 1
 node cli.js deps h5p-accordion edit 1
@@ -21,21 +21,22 @@ node cli.js install h5p-accordion view 1
 node cli.js install h5p-accordion edit 1
 ```
 7. To check the status of the setup for a given library you can run `node cli.js verify <h5p-repo-name>`.  
-This verifies if the dependency lists are cached and if the dependencies are installed for the given library. The result is a report with boolean statuses; the overall status is reflected under the "ok" attribute.  
 Running `node cli.js verify h5p-accordion` should return something like below if the library was properly setup.  
 ```
 {
-  lists: { view: true, edit: true },
-  libraries: {
+  registry: true, // library found in registry
+  lists: { view: true, edit: true }, // dependency lists are cached
+  libraries: { // shows which dependencies are installed
     'FontAwesome-4.5': true,
     'H5P.AdvancedText-1.1': true,
     'H5P.Accordion-1.0': true
   },
-  ok: true
+  ok: true // overall setup status
 }
+
 ```
 8. `node server.js` starts the dev server.  
 9. Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types. To view the dashboard point your browser to  
 http://localhost:8080/dashboard  
 10. `node cli.js export <h5p_repo_name> <folder>` will export the `<h5p_repo_name>` library content type from the "content/`<folder>`" folder.  
-Make sure that the library's `view` and `edit` dependencies have been compiled and exist in the cache folder.
+Make sure that the library's dependency lists are cached and that the dependencies are installed.

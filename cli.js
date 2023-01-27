@@ -87,9 +87,9 @@ const cli = {
       console.log(error);
     }
   },
-  verify: (library) => {
+  verify: async (library) => {
     try {
-      let result = logic.verifySetup(library);
+      let result = await logic.verifySetup(library);
       console.log(result);
     }
     catch (error) {

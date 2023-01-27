@@ -331,7 +331,7 @@ module.exports = {
       const baseUrl = `${request.protocol}://${request.get('host')}`;
       const library = request.params.library;
       const folder = request.params.folder;
-      if (!verifySetup(library, response)) {
+      if (!await verifySetup(library, response)) {
         return;
       }
       const metadataSemantics = fs.readFileSync(`${config.folders.assets}/metadataSemantics.json`, 'utf-8');
@@ -401,7 +401,7 @@ module.exports = {
       const baseUrl = `${request.protocol}://${request.get('host')}`;
       const library = request.params.library;
       const folder = request.params.folder;
-      if (!verifySetup(library, response)) {
+      if (!await verifySetup(library, response)) {
         return;
       }
       const cacheFile = `${config.folders.cache}/${library}.json`;

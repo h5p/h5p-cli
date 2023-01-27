@@ -251,10 +251,12 @@ module.exports = {
   },
   /* checks if dependency lists are cached and dependencies are installed for a given library;
   returns a report with boolean statuses; the overall status is reflected under the "ok" attribute;*/
-  verifySetup: (library) => {
+  verifySetup: async (library) => {
+    const registry = await module.exports.getRegistry();
     const viewList = `${config.folders.cache}/${library}.json`;
     const editList = `${config.folders.cache}/${library}_edit.json`;
     const output = {
+      registry: registry.regular[library] ? true : false,
       lists: {
         view: fs.existsSync(viewList),
         edit: fs.existsSync(editList)
@@ -262,7 +264,7 @@ module.exports = {
       libraries: {},
       ok: true
     }
-    if (!output.lists.view || !output.lists.edit) {
+    if (!output.registry || !output.lists.view || !output.lists.edit) {
       output.ok = false;
       return output;
     }
