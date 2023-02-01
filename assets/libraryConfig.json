@@ -1,0 +1,36 @@
+{
+  "H5P.MathDisplay":{
+    "renderer":{
+      "mathjax":{
+        "src":"{baseUrl}/libraries/{mathDisplayLabel}/dist/mathjax.js",
+        "config":{
+            "extensions":[
+              "tex2jax.js",
+              "[a11y]/accessibility-menu.js"
+            ],
+            "showMathMenu":false,
+            "jax":[
+              "input/TeX",
+              "output/HTML-CSS"
+            ],
+            "tex2jax":{
+              "ignoreClass":"ckeditor"
+            },
+            "messageStyle":"none",
+            "TeX":{
+              "extensions":[
+                "cancel.js",
+                "AMSmath.js",
+                "AMSsymbols.js"
+              ]
+            },
+            "menuSettings":{
+              "collapsible":false,
+              "autocollapse":false,
+              "explorer":false
+            }
+        }
+      }
+    }
+  }
+}

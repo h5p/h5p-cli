@@ -23,7 +23,8 @@ module.exports = {
     }
   },
   core: {
-    libraries: ['h5p-editor-php-library', 'h5p-php-library']
+    libraries: ['h5p-editor-php-library', 'h5p-php-library'],
+    setup: ['h5p-math-display']
   }
 }
 // files.patterns.allowed & files.patterns.ignored are used in the export logic to determine which files are allowed/ignored in the .h5p zip archive

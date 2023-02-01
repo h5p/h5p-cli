@@ -211,6 +211,7 @@ module.exports = {
     const zipFile = `${config.folders.temp}/temp.zip`;
     fs.writeFileSync(zipFile, blob);
     new admZip(zipFile).extractAllTo(config.folders.libraries);
+    fs.rmSync(zipFile);
     fs.renameSync(`${config.folders.libraries}/${repo}-master`, target);
   },
   /* downloads dependencies to libraries folder and runs relevant npm commands

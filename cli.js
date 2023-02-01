@@ -41,7 +41,7 @@ const cli = {
     try {
       console.log(`> cloning ${library} library and dependencies into "${config.folders.libraries}" folder`);
       await logic.downloadWithDependencies(library, mode, parseInt(useCache));
-      console.log('> all done');
+      console.log(`> done installing ${library}`);
     }
     catch (error) {
       console.log('> error');
@@ -59,7 +59,10 @@ const cli = {
         console.log(`>> + installing ${item}`);
         await logic.download('h5p', item, folder);
       }
-      console.log('> all done');
+      for (let item of config.core.setup) {
+        await cli.setup(item);
+      }
+      console.log('> done setting up core libraries');
     }
     catch (error) {
       console.log('> error');
@@ -80,7 +83,7 @@ const cli = {
       await logic.downloadWithDependencies(library, 'view', 1);
       console.log(`> cloning ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
       await logic.downloadWithDependencies(library, 'edit', 1);
-      console.log('> all done');
+      console.log(`> done setting up ${library}`);
     }
     catch (error) {
       console.log('> error');
