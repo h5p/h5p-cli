@@ -368,6 +368,13 @@ module.exports = {
           preloadedCss.push(`"../../../${config.folders.libraries}/${label}/${cssItem.path}"`);
         }
       }
+      const mathDisplay = JSON.parse(fs.readFileSync(`${config.folders.cache}/h5p-math-display.json`, 'utf-8'))['h5p-math-display'];
+      const mathDisplayLabel = `${mathDisplay.id}-${mathDisplay.version.major}.${mathDisplay.version.minor}`;
+      preloadedJs.push(`"../../../${config.folders.libraries}/${mathDisplayLabel}/dist/h5p-math-display.js"`);
+      const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
+        baseUrl,
+        mathDisplayLabel
+      }));
       const html = fs.readFileSync('./assets/templates/edit.html', 'utf-8');
       const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`));
       const formParams = {
@@ -386,6 +393,7 @@ module.exports = {
         l10n: JSON.stringify(l10n),
         machineName: `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
         parameters: he.encode(JSON.stringify(formParams)),
+        libraryConfig: JSON.stringify(libraryConfig),
         links
       }
       response.set('Content-Type', 'text/html');
@@ -437,12 +445,12 @@ module.exports = {
       const mathDisplay = JSON.parse(fs.readFileSync(`${config.folders.cache}/h5p-math-display.json`, 'utf-8'))['h5p-math-display'];
       const mathDisplayLabel = `${mathDisplay.id}-${mathDisplay.version.major}.${mathDisplay.version.minor}`;
       preloadedJs.push(`../../../${config.folders.libraries}/${mathDisplayLabel}/dist/h5p-math-display.js`);
-      const html = fs.readFileSync('./assets/templates/view.html', 'utf-8');
-      const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
       const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
         baseUrl,
         mathDisplayLabel
       }));
+      const html = fs.readFileSync('./assets/templates/view.html', 'utf-8');
+      const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
       const input = {
         title: info.title,
         baseUrl,
