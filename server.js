@@ -16,11 +16,13 @@ app.post('/create/:type/:folder', api.create);
 app.post('/remove/:folder', api.remove);
 app.get('/split/:library/:folder', api.splitView);
 app.get('/view/:library/:folder', api.view);
+app.post('/view/:library/:folder', api.attempts);
 app.get('/edit/:library/:folder/libraries', api.ajaxLibraries);
 app.get('/edit/:library/:folder', api.edit);
 app.post('/edit/:library/:folder/libraries', api.ajaxLibraries);
 app.post('/edit/:library/:folder/files', multer.single('file'), api.uploadFile);
 app.post('/edit/:library/:folder', multer.none(), api.saveContent);
+app.post('/content-user-data/:folder/:type/:id', api.contentUserData);
 app.use(express.static('./'));
 app.listen(config.port, () => {
   console.log(`h5p content type development server running on port ${config.port}`);

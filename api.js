@@ -45,6 +45,44 @@ module.exports = {
       handleError(error, response);
     }
   },
+  // updates contentUserData.json file used for resume functionality
+  contentUserData: (request, response, next) => {
+    try {
+      const dataFile = `content/${request.params.folder}/contentUserData.json`;
+      let userData = [];
+      if (fs.existsSync(dataFile)) {
+        userData = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
+      }
+      userData[request.params.id] = userData[request.params.id] || {};
+      userData[request.params.id][request.params.type] = request.body.data;
+      fs.writeFileSync(dataFile, JSON.stringify(userData));
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify({success: true}));
+    }
+    catch (error) {
+      handleError(error, response);
+    }
+  },
+  // updates attempts.json file
+  attempts: (request, response, next) => {
+    try {
+      const dataFile = `content/${request.body.contentId}/attempts.json`;
+      let userData = { numAttempts: 0 };
+      if (fs.existsSync(dataFile)) {
+        userData = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
+      }
+      userData.numAttempts++;
+      fs.writeFileSync(dataFile, JSON.stringify(userData));
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify({
+        success: true,
+        numAttempts: userData.numAttempts
+      }));
+    }
+    catch (error) {
+      handleError(error, response);
+    }
+  },
   // import zipped archive of content type
   import: (request, response, next) => {
     try {
@@ -70,8 +108,9 @@ module.exports = {
   create: async (request, response, next) => {
     try {
       const target = `content/${request.params.folder}`;
-      const libraryFile = `${config.folders.cache}/${request.params.type}.json`;
-      if (!fs.existsSync(libraryFile)) {
+      const viewDepsFile = `${config.folders.cache}/${request.params.type}.json`;
+      const editDepsFile = `${config.folders.cache}/${request.params.type}_edit.json`;
+      if (!fs.existsSync(viewDepsFile) || !fs.existsSync(editDepsFile)) {
         response.set('Content-Type', 'application/json');
         response.end(JSON.stringify({
           error: `"${request.params.type}" library not cached; please run setup for library.`
@@ -88,10 +127,9 @@ module.exports = {
       if (!cache.registry) {
         cache.registry = await logic.getRegistry();
       }
-      const library = JSON.parse(fs.readFileSync(libraryFile, 'utf-8'));
       fs.mkdirSync(target);
-      let libs = JSON.parse(fs.readFileSync(`${config.folders.cache}/${request.params.type}.json`, 'utf-8'));
-      const editLibs = JSON.parse(fs.readFileSync(`${config.folders.cache}/${request.params.type}_edit.json`, 'utf-8'));
+      let libs = JSON.parse(fs.readFileSync(viewDepsFile, 'utf-8'));
+      const editLibs = JSON.parse(fs.readFileSync(editDepsFile, 'utf-8'));
       libs = {...libs, ...editLibs};
       const map = {};
       const preloadedDependencies = [];
@@ -430,6 +468,17 @@ module.exports = {
         }
       }
       const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
+      const userDataFile = `content/${request.params.folder}/contentUserData.json`;
+      const attemptsFile = `content/${request.params.folder}/attempts.json`;
+      const metadata = fs.readFileSync(`content/${folder}/h5p.json`);
+      let contentUserData = [];
+      if (fs.existsSync(userDataFile)) {
+        contentUserData = JSON.parse(fs.readFileSync(userDataFile, 'utf-8'));
+      }
+      let attempts = { numAttempts: 0 };
+      if (fs.existsSync(attemptsFile)) {
+        attempts = JSON.parse(fs.readFileSync(attemptsFile, 'utf-8'));
+      }
       let preloadedJs = [];
       let preloadedCss = [];
       for (let item in cache.view[library]) {
@@ -462,7 +511,10 @@ module.exports = {
         preloadedJs: JSON.stringify(preloadedJs),
         l10n: JSON.stringify(l10n),
         libraryConfig: JSON.stringify(libraryConfig),
-        links
+        links,
+        metadata,
+        contentUserData: JSON.stringify(contentUserData),
+        numAttempts: attempts.numAttempts
       }
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));

@@ -7,16 +7,19 @@
     <script type="text/javascript" src="/assets/scripts/delete.js"></script>
     <script type="text/javascript">
       H5PIntegration = {
-        ajax: { contentUserData: "/h5p-ajax/content-user-data/:contentId/:dataType/:subContentId" },
-        ajaxPath: "/h5p-ajax/",
+        ajax: {
+          contentUserData: "/content-user-data/:contentId/:dataType/:subContentId",
+          xAPIResult: "/attempts/:contentId",
+          xapi: "/xapi/:contentId/statements"
+        },
         baseUrl: "/",
-        url: "{baseUrl}",
-        siteUrl: "{baseUrl}",
+        context: "direct",
         contents: {
           "cid-{folder}": {
             library: "{machineName}",
+            metadata: {metadata},
             jsonContent: {jsonContent},
-            url: "{baseUrl}",
+            url: "/",
             mainId: "{folder}",
             displayOptions: {
               "copy": true,
@@ -27,13 +30,20 @@
               "icon": true
             },
             exportUrl: "{baseUrl}/export/{library}/{folder}",
-            contentUserData: [{state: "{}"}],
+            contentUserData: {contentUserData},
+            contentUserStatus: {
+              enabled: true,
+              numAttempts: {numAttempts}
+            },
+            isScoringEnabled: false,
+            saveFreq: 30,
             resizeCode: "",
             title: "{folder}",
             styles: {preloadedCss},
             scripts: {preloadedJs}
           }
         },
+        l10n: {l10n},
         core: {
           scripts: [
             "/libraries/h5p-php-library/js/jquery.js",
@@ -55,9 +65,20 @@
           ]
         },
         libraryConfig: {libraryConfig},
-        user: { name: "developer", mail: "some.developer@some.company.com" }
+        csrfToken: "1k8dxCQA3R2OL9yAnGTDVRi3cnlHPppTDjL1YKbi",
+        externalLRS: {
+          enabled: false
+        },
+        isAttemptsBarEnabled: 1,
+        postUserStatistics: true,
+        reportingIsAvailable: true,
+        reportingIsEnabled: true,
+        saveFreq: 30,
+        siteUrl: "{baseUrl}",
+        url: "{baseUrl}",
+        user: { name: "developer", mail: "some.developer@some.company.com" },
+        userStatusAvailable: true
       };
-      H5PIntegration.l10n = {l10n};
     </script>
     <script type="text/javascript" src="/libraries/h5p-php-library/js/jquery.js"></script>
     <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p.js"></script>
