@@ -30,6 +30,8 @@ module.exports = {
     fs.mkdirSync(target);
     fs.cpSync(`content/${folder}`, `${target}/content`, { recursive: true });
     fs.renameSync(`${target}/content/h5p.json`, `${target}/h5p.json`);
+    fs.rmSync(`${target}/content/attempts.json`);
+    fs.rmSync(`${target}/content/contentUserData.json`);
     let libs = JSON.parse(fs.readFileSync(libsFile, 'utf-8'));
     const editLibs = JSON.parse(fs.readFileSync(editLibsFile, 'utf-8'));
     libs = {...libs, ...editLibs};

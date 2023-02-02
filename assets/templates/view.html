@@ -19,7 +19,7 @@
             library: "{machineName}",
             metadata: {metadata},
             jsonContent: {jsonContent},
-            url: "/",
+            url: "{baseUrl}/view/{library}/{folder}",
             mainId: "{folder}",
             displayOptions: {
               "copy": true,
@@ -35,7 +35,7 @@
               enabled: true,
               numAttempts: {numAttempts}
             },
-            isScoringEnabled: false,
+            isScoringEnabled: true,
             saveFreq: 30,
             resizeCode: "",
             title: "{folder}",
