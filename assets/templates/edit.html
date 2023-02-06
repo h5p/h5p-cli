@@ -152,7 +152,7 @@
         var $title = $('input[name="title"]');
         console.log('> editor initializing...');
         H5PEditor.init($form, $type, $upload, $create, $editor, $library, $params, null, $title);
-        params = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams(window.location.search);
         const simple = params.get('simple');
         if (simple) {
           document.getElementById('links').style.display = 'none';

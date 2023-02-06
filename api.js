@@ -62,24 +62,6 @@ module.exports = {
       handleError(error, response);
     }
   },
-  // updates attempts.json file
-  attempts: (request, response, next) => {
-    try {
-      manageSession(request);
-      const dataFile = `content/${request.body.contentId}/sessions/${session}.json`;
-      data = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
-      data.attempts.numAttempts++;
-      fs.writeFileSync(dataFile, JSON.stringify(data));
-      response.set('Content-Type', 'application/json');
-      response.end(JSON.stringify({
-        success: true,
-        numAttempts: data.attempts.numAttempts
-      }));
-    }
-    catch (error) {
-      handleError(error, response);
-    }
-  },
   // import zipped archive of content type
   import: (request, response, next) => {
     try {
@@ -489,8 +471,7 @@ module.exports = {
         l10n: JSON.stringify(l10n),
         libraryConfig: JSON.stringify(libraryConfig),
         metadata,
-        contentUserData: JSON.stringify(userData.resume),
-        numAttempts: userData.attempts.numAttempts
+        contentUserData: JSON.stringify(userData.resume)
       }
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));
@@ -601,9 +582,6 @@ const manageSession = (request, getSessions) => {
     }
     if (!fs.existsSync(sessionFile)) {
       fs.writeFileSync(sessionFile, JSON.stringify({
-        attempts: {
-          numAttempts: 0
-        },
         resume: []
       }));
     }

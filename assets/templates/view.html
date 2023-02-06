@@ -8,9 +8,7 @@
     <script type="text/javascript">
       H5PIntegration = {
         ajax: {
-          contentUserData: "/content-user-data/:contentId/:dataType/:subContentId",
-          xAPIResult: "/attempts/:contentId",
-          xapi: "/xapi/:contentId/statements"
+          contentUserData: "/content-user-data/:contentId/:dataType/:subContentId"
         },
         baseUrl: "/",
         context: "direct",
@@ -31,12 +29,6 @@
             },
             exportUrl: "{baseUrl}/export/{library}/{folder}",
             contentUserData: {contentUserData},
-            contentUserStatus: {
-              enabled: true,
-              numAttempts: {numAttempts}
-            },
-            isScoringEnabled: true,
-            saveFreq: 30,
             resizeCode: "",
             title: "{folder}",
             styles: {preloadedCss},
@@ -65,16 +57,10 @@
           ]
         },
         libraryConfig: {libraryConfig},
-        csrfToken: "1k8dxCQA3R2OL9yAnGTDVRi3cnlHPppTDjL1YKbi",
-        isAttemptsBarEnabled: 1,
-        postUserStatistics: true,
-        reportingIsAvailable: true,
-        reportingIsEnabled: true,
         saveFreq: 30,
         siteUrl: "{baseUrl}",
         url: "{baseUrl}",
-        user: { name: "developer", mail: "some.developer@some.company.com" },
-        userStatusAvailable: true
+        user: { name: "developer", mail: "some.developer@some.company.com" }
       };
       let params;
       const sessionChanged = (event) => {
