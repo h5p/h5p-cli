@@ -34,3 +34,9 @@ body {
   background-color: #fff;
   color: #186df7;
 }
+.session {
+  margin-bottom: 5px;
+}
+.inline {
+  display: inline-block;
+}

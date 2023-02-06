@@ -23,7 +23,7 @@
             mainId: "{folder}",
             displayOptions: {
               "copy": true,
-              "copyright": false,
+              "copyright": true,
               "embed": false,
               "export": true,
               "frame": true,
@@ -66,9 +66,6 @@
         },
         libraryConfig: {libraryConfig},
         csrfToken: "1k8dxCQA3R2OL9yAnGTDVRi3cnlHPppTDjL1YKbi",
-        externalLRS: {
-          enabled: false
-        },
         isAttemptsBarEnabled: 1,
         postUserStatistics: true,
         reportingIsAvailable: true,
@@ -79,6 +76,29 @@
         user: { name: "developer", mail: "some.developer@some.company.com" },
         userStatusAvailable: true
       };
+      let params;
+      const sessionChanged = (event) => {
+        params.set('session', event.target.value);
+        window.location.href = `/view/{library}/{folder}?${params.toString()}`;
+      }
+      window.addEventListener('load', () => {
+        params = new URLSearchParams(window.location.search);
+        const simple = params.get('simple');
+        if (simple) {
+          document.getElementById('links').style.display = 'none';
+        }
+        const session = document.getElementById('session');
+        const sessionSelect = document.getElementById('sessions');
+        const sessions = {sessions};
+        let options = '';
+        for (let item of sessions) {
+          const value = item.split('.')[0];
+          options += `<option value="${value}"${value == session.value ? ' selected="selected"' : ''}>${value}</option>`;
+        }
+        sessionSelect.innerHTML = options;
+        session.addEventListener('change', sessionChanged);
+        sessionSelect.addEventListener('change', sessionChanged);
+      });
     </script>
     <script type="text/javascript" src="/libraries/h5p-php-library/js/jquery.js"></script>
     <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p.js"></script>
@@ -96,6 +116,15 @@
     <div class="h5p-cli-iframe-wrapper">
       <iframe id="h5p-iframe-{folder}" class="h5p-iframe" data-content-id="{folder}" src="about:blank" frameBorder="0" scrolling="no"></iframe>
     </div>
-    {links}
+    <div class="session">
+      session: <input type="text" id="session" value="{session}">
+      <select id="sessions"></select>
+    </div>
+    <div id="links" class="inline">
+      <a class="button" href="/edit/{library}/{folder}">edit</a>
+      <a class="button" href="/split/{library}/{folder}">split view</a>
+      <a class="button" href="/dashboard">dashboard</a>
+      <div class="button" id="deleteButton">delete</div>
+    </div>
   </body>
 </html> 

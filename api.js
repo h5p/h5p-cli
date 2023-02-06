@@ -9,6 +9,7 @@ let cache = {
   view: {},
   edit: {}
 };
+let session = 'main-session';
 module.exports = {
   // renders dashboard
   dashboard: (request, response, next) => {
@@ -48,14 +49,12 @@ module.exports = {
   // updates contentUserData.json file used for resume functionality
   contentUserData: (request, response, next) => {
     try {
-      const dataFile = `content/${request.params.folder}/contentUserData.json`;
-      let userData = [];
-      if (fs.existsSync(dataFile)) {
-        userData = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
-      }
-      userData[request.params.id] = userData[request.params.id] || {};
-      userData[request.params.id][request.params.type] = request.body.data;
-      fs.writeFileSync(dataFile, JSON.stringify(userData));
+      manageSession(request);
+      const dataFile = `content/${request.params.folder}/sessions/${session}.json`;
+      data = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
+      data.resume[request.params.id] = data.resume[request.params.id] || {};
+      data.resume[request.params.id][request.params.type] = request.body.data;
+      fs.writeFileSync(dataFile, JSON.stringify(data));
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify({success: true}));
     }
@@ -66,17 +65,15 @@ module.exports = {
   // updates attempts.json file
   attempts: (request, response, next) => {
     try {
-      const dataFile = `content/${request.body.contentId}/attempts.json`;
-      let userData = { numAttempts: 0 };
-      if (fs.existsSync(dataFile)) {
-        userData = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
-      }
-      userData.numAttempts++;
-      fs.writeFileSync(dataFile, JSON.stringify(userData));
+      manageSession(request);
+      const dataFile = `content/${request.body.contentId}/sessions/${session}.json`;
+      data = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
+      data.attempts.numAttempts++;
+      fs.writeFileSync(dataFile, JSON.stringify(data));
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify({
         success: true,
-        numAttempts: userData.numAttempts
+        numAttempts: data.attempts.numAttempts
       }));
     }
     catch (error) {
@@ -375,13 +372,6 @@ module.exports = {
       const metadataSemantics = fs.readFileSync(`${config.folders.assets}/metadataSemantics.json`, 'utf-8');
       const copyrightSemantics = fs.readFileSync(`${config.folders.assets}/copyrightSemantics.json`, 'utf-8');
       const cacheFile = `${config.folders.cache}/${library}_edit.json`;
-      let links = '';
-      if (!request.query.simple) {
-        links = `
-<a class="button" href="/view/${library}/${folder}">view</a>
-<a class="button" href="/dashboard">dashboard</a>
-<div class="button" id="deleteButton">delete</div>`;
-      }
       if (!cache?.edit[library]) {
         if (fs.existsSync(cacheFile)) {
           cache.edit[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
@@ -425,14 +415,14 @@ module.exports = {
         ajaxPath: `${baseUrl}/edit/${library}/${folder}/`,
         copyrightSemantics,
         metadataSemantics,
+        library,
         folder,
         preloadedCss: preloadedCss.join(',\n'),
         preloadedJs: preloadedJs.join(',\n'),
         l10n: JSON.stringify(l10n),
         machineName: `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
         parameters: he.encode(JSON.stringify(formParams)),
-        libraryConfig: JSON.stringify(libraryConfig),
-        links
+        libraryConfig: JSON.stringify(libraryConfig)
       }
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));
@@ -451,14 +441,6 @@ module.exports = {
         return;
       }
       const cacheFile = `${config.folders.cache}/${library}.json`;
-      let links = '';
-      if (!request.query.simple) {
-        links = `
-<a class="button" href="/edit/${library}/${folder}">edit</a>
-<a class="button" href="/split/${library}/${folder}">split view</a>
-<a class="button" href="/dashboard">dashboard</a>
-<div class="button" id="deleteButton">delete</div>`;
-      }
       if (!cache?.view[library]) {
         if (fs.existsSync(cacheFile)) {
           cache.view[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
@@ -468,17 +450,10 @@ module.exports = {
         }
       }
       const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
-      const userDataFile = `content/${request.params.folder}/contentUserData.json`;
-      const attemptsFile = `content/${request.params.folder}/attempts.json`;
+      const sessions = manageSession(request, true);
+      const dataFile = `content/${request.params.folder}/sessions/${session}.json`;
       const metadata = fs.readFileSync(`content/${folder}/h5p.json`);
-      let contentUserData = [];
-      if (fs.existsSync(userDataFile)) {
-        contentUserData = JSON.parse(fs.readFileSync(userDataFile, 'utf-8'));
-      }
-      let attempts = { numAttempts: 0 };
-      if (fs.existsSync(attemptsFile)) {
-        attempts = JSON.parse(fs.readFileSync(attemptsFile, 'utf-8'));
-      }
+      const userData = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
       let preloadedJs = [];
       let preloadedCss = [];
       for (let item in cache.view[library]) {
@@ -505,16 +480,17 @@ module.exports = {
         baseUrl,
         library,
         folder,
+        session,
+        sessions: JSON.stringify(sessions),
         machineName: `${cache.view[library][library].id} ${cache.view[library][library].version.major}.${cache.view[library][library].version.minor}`,
         jsonContent: JSON.stringify(jsonContent),
         preloadedCss: JSON.stringify(preloadedCss),
         preloadedJs: JSON.stringify(preloadedJs),
         l10n: JSON.stringify(l10n),
         libraryConfig: JSON.stringify(libraryConfig),
-        links,
         metadata,
-        contentUserData: JSON.stringify(contentUserData),
-        numAttempts: attempts.numAttempts
+        contentUserData: JSON.stringify(userData.resume),
+        numAttempts: userData.attempts.numAttempts
       }
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));
@@ -612,4 +588,29 @@ For a detailed setup status report please run "node cli.js verify ${library}".`)
   else {
     return true;
   }
+}
+const manageSession = (request, getSessions) => {
+  if (request.query.session) {
+    session = request.query.session;
+  }
+  if (request.params?.folder) {
+    const sessionFolder = `content/${request.params.folder}/sessions`;
+    const sessionFile = `${sessionFolder}/${session}.json`;
+    if (!fs.existsSync(sessionFolder)) {
+      fs.mkdirSync(sessionFolder);
+    }
+    if (!fs.existsSync(sessionFile)) {
+      fs.writeFileSync(sessionFile, JSON.stringify({
+        attempts: {
+          numAttempts: 0
+        },
+        resume: []
+      }));
+    }
+    if (getSessions) {
+      const files = fs.readdirSync(sessionFolder);
+      return files;
+    }
+  }
+  return [];
 }

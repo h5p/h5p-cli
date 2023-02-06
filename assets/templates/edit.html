@@ -116,6 +116,13 @@
         user: { name: "developer", mail: "some.developer@some.company.com" }
       };
       H5PIntegration.l10n = {l10n};
+      window.addEventListener('load', () => {
+        const params = new URLSearchParams(window.location.search);
+        const simple = params.get('simple');
+        if (simple) {
+          document.getElementById('links').style.display = 'none';
+        }
+      });
     </script>
     <script type="text/javascript" src="/libraries/h5p-php-library/js/jquery.js"></script>
     <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p.js"></script>
@@ -145,6 +152,11 @@
         var $title = $('input[name="title"]');
         console.log('> editor initializing...');
         H5PEditor.init($form, $type, $upload, $create, $editor, $library, $params, null, $title);
+        params = new URLSearchParams(window.location.search);
+        const simple = params.get('simple');
+        if (simple) {
+          document.getElementById('links').style.display = 'none';
+        }
       });
     </script>
   </head>
@@ -157,7 +169,11 @@
       <input type="radio" name="action" value="create" style="display: none" checked="checked"/>
       <div class="h5p-create"><div class="h5p-editor">...</div></div>
       <input type="submit" value="save all changes" class="button">
-      {links}
+      <div id="links" class="inline">
+        <a class="button" href="/view/{library}/{folder}">view</a>
+        <a class="button" href="/dashboard">dashboard</a>
+        <div class="button" id="deleteButton">delete</div>
+      </div>
     </form>
   </body>
 </html>

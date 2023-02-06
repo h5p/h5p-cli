@@ -22,3 +22,6 @@ form {
   background-color: #fff;
   color: #186df7;
 }
+.inline {
+  display: inline-block;
+}
