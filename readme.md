@@ -39,4 +39,6 @@ Running `node cli.js verify h5p-accordion` should return something like below if
 9. Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types. To view the dashboard point your browser to  
 http://localhost:8080/dashboard  
 10. `node cli.js export <h5p_repo_name> <folder>` will export the `<h5p_repo_name>` library content type from the "content/`<folder>`" folder.  
-Make sure that the library's dependency lists are cached and that the dependencies are installed.
+Make sure that the library's dependency lists are cached and that the dependencies are installed.  
+11. When viewing content types you can create and switch between resume sessions. A resume session allows you to resume where you left off in the content types that support it.  
+To create a new session simply rename the current session and click outside the session name textbox.
