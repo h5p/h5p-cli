@@ -8,6 +8,7 @@ module.exports = {
     temp: 'temp'
   },
   files: {
+    watch: true,
     patterns: {
       allowed: /\.(json|png|jpg|jpeg|gif|bmp|tif|tiff|svg|eot|ttf|woff|woff2|otf|webm|mp4|ogg|mp3|txt|pdf|rtf|doc|docx|xls|xlsx|ppt|pptx|odt|ods|odp|xml|csv|diff|patch|swf|md|textile|js|css)$/,
       ignored: /^\.|~$/gi

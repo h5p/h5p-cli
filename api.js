@@ -471,7 +471,8 @@ module.exports = {
         l10n: JSON.stringify(l10n),
         libraryConfig: JSON.stringify(libraryConfig),
         metadata,
-        contentUserData: JSON.stringify(userData.resume)
+        contentUserData: JSON.stringify(userData.resume),
+        watcher: config.files.watch
       }
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));

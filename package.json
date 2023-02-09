@@ -1,11 +1,7 @@
 {
   "name": "h5p-cli",
   "version": "1.0.0",
-  "description": "A simple static file server with some api endpoints for developing & testing H5P content types.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "description": "a tool for developing & testing H5P content types",
   "author": "andrei.busuioc@h5p.group",
   "license": "MIT",
   "dependencies": {
@@ -13,6 +9,7 @@
     "express": "^4.18.2",
     "he": "^1.2.0",
     "image-size": "^1.0.2",
+    "livereload": "^0.9.3",
     "multer": "^1.4.5-lts.1",
     "superagent": "^8.0.4"
   }
