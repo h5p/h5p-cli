@@ -42,4 +42,6 @@ http://localhost:8080/dashboard
 Make sure that the library's dependency lists are cached and that the dependencies are installed.  
 11. When viewing content types you can create and switch between resume sessions. A resume session allows you to resume where you left off in the content types that support it.  
 To create a new session simply rename the current session and click outside the session name textbox.  
-12. To stop auto reloading the view page on library file changes set `files.watch` to `false` in `config.json`.
+12. To stop auto reloading the view page on library file changes set `files.watch` to `false` in `config.json`.  
+13. Run `node cli.js utils help` to get a list of utility commands.  
+Each command can then by run via `node cli.js utils <cmd> [<args>...]`.
