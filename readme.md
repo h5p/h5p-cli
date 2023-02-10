@@ -44,4 +44,4 @@ Make sure that the library's dependency lists are cached and that the dependenci
 To create a new session simply rename the current session and click outside the session name textbox.  
 12. To stop auto reloading the view page on library file changes set `files.watch` to `false` in `config.json`.  
 13. Run `node cli.js utils help` to get a list of utility commands.  
-Each command can then by run via `node cli.js utils <cmd> [<args>...]`.
+Each utility command can then be run via `node cli.js utils <cmd> [<args>...]`.
