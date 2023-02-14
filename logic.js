@@ -360,7 +360,7 @@ const parseSemanticLibraries = (entries) => {
   }
   return output;
 }
-// download file from url and optionally parses it as JSON
+// download file from url and optionally parse it as JSON
 const getFile = async (url, parseJson) => {
   let output = (await superAgent.get(url).ok(res => [200, 404].includes(res.status))).text;
   if (output == '404: Not Found') {
