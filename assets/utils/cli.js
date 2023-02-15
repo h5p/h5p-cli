@@ -101,23 +101,18 @@ function clone(fetchWithHttps) {
  * Recursive pushing for all repos in collection.
  */
 function push(options) {
-  var repo = h5p.push(options, function (error, result) {
-
-    if (error === -1) {
-      result = color.yellow + 'SKIPPED' + color.default + lf;
-    }
-    else if (error) {
-      result = color.red + 'FAILED' + color.default + lf + error;
-    }
-    else {
-      result = color.green + 'OK' + color.default + ' ' + result + lf;
-    }
-
-    spinner.stop(result);
-    push(options);
-  });
-  if (!repo) return; // Nothing to clone.
-  var msg = 'Pushing \'' + color.emphasize + repo + color.default + '\'...';
+  h5p.pushAll(options)
+    .then((result) => {
+      spinner.stop("done\n");
+      for (let i = 0; i < result.length; i++) {
+        console.log(result[i].status);
+        console.log(result[i].reason);
+      }
+    })
+    .catch((error) => {
+      spinner.stop(error.toString());
+    });
+  var msg = 'Pushing \'' + color.emphasize + 'all repos' + color.default + '\'...';
   var spinner = new Spinner(msg);
 }
 
@@ -403,7 +398,7 @@ var commands = [
     handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
       var options = filterOptions(libraries, ['--tags']);
-      h5p.update(libraries, function (error) {
+      h5p.update(libraries, (error) => {
         if (error) return process.stdout.write(error + lf);
         push(options);
       });

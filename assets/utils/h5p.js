@@ -1384,12 +1384,10 @@ h5p.pull = function () {
  */
 h5p.push = function (options, next) {
   // TODO: Use pushRepository and progress
-
   var repo = pullushers.shift();
   if (!repo) {
     return false;
   }
-
   var args = ['push'];
   if (options !== undefined) {
     for (var i = 0; i < options.length; i++) {
@@ -1416,6 +1414,51 @@ h5p.push = function (options, next) {
   });
 
   return repo;
+};
+
+/**
+ * Push all libraries in the collection.
+ */
+h5p.pushAll = function (options) {
+  console.log('pushing ', pullushers);
+  var args = ['push'];
+  if (options !== undefined) {
+    for (var i = 0; i < options.length; i++) {
+      args.push(options[i]);
+    }
+  }
+  const pushRepo = (repo) => {
+    return new Promise((resolve, reject) => {
+      spawnGit(repo, args, function (error, output) {
+        var res = error.substr(0, 2);
+        if (res === 'Ev') {
+          return reject(-1);
+        }
+        if (res === 'To') {
+          output = error.split('\n')[1].replace(/(^\s+|\s+$)/g, '').replace(/\s{2,}/g, ' ');
+          if (output.substr(0, 1) === '!') {
+            return reject(output + '\n');
+          }
+          if (output.substr(0, 2) === '* ') {
+            output = output.substring(2, output.length);
+          }
+          return resolve(output);
+        }
+        if (error) {
+          reject(error);
+        }
+        else {
+          resolve(output);
+        }
+      });
+    });
+  }
+  const toDo = [];
+  for (let repo of pullushers) {
+    toDo.push(pushRepo(repo));
+  }
+  pullushers = [];
+  return Promise.allSettled(toDo);
 };
 
 /**
