@@ -45,3 +45,5 @@ To create a new session simply rename the current session and click outside the 
 12. To stop auto reloading the view page on library file changes set `files.watch` to `false` in `config.json`.  
 13. Run `node cli.js utils help` to get a list of utility commands.  
 Each utility command can then be run via `node cli.js utils <cmd> [<args>...]`.
+14. Git related utility commands require you to add your public ssh key to the ssh agent after starting it.  
+Here are some guides on how to add an ssh key to the ssh agent on [Linux](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent), [Mac](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=mac#adding-your-ssh-key-to-the-ssh-agent), [Windows](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=windows#adding-your-ssh-key-to-the-ssh-agent).  
