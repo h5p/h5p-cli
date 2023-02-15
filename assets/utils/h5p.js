@@ -48,6 +48,37 @@ var ignorePattern = (process.env.H5P_IGNORE_PATTERN !== undefined ? new RegExp(p
 var ignoredRepos = (process.env.H5P_IGNORE_REPOS !== undefined ? process.env.H5P_IGNORE_REPOS.split(',') : []);
 var semiIgnoredRepos = (process.env.H5P_SEMI_IGNORE_REPOS !== undefined ? process.env.H5P_SEMI_IGNORE_REPOS.split(',') : []);
 
+// run callback based functions in parallel; returns cli.results compatible array;
+const runAll = (runner, argsList, callback) => {
+  const handle = (runner, args) => {
+    return new Promise ((resolve, reject) => {
+      runner.apply(null, [...args, ...[(status) => {
+        resolve(status);
+      }]]);
+    });
+  }
+  const toDo = [];
+  for (let args of argsList) {
+    toDo.push(handle(runner, args));
+  }
+  Promise.allSettled(toDo)
+    .then((output) => {
+      const result = [];
+      for (let item of output) {
+        if (item.status == 'fulfilled') {
+          result.push(item.value);
+        }
+        else {
+          result.push(item.reason);
+        }
+      }
+      callback(null, result);
+    })
+    .catch((error) => {
+      callback(error);
+    });
+};
+
 /**
  * Make ssh errors short and understandable.
  */
@@ -1591,6 +1622,14 @@ h5p.merge = function (branch, repos, next) {
   }, next);
 };
 
+h5p.mergeAll = function (branch, repos, next) {
+  const argsList = [];
+  for (let repo of repos) {
+    argsList.push([branch, repo]);
+  }
+  runAll(mergeRepository, argsList, next);
+};
+
 /**
  * Create language file for a given repo
  *
@@ -1952,6 +1991,34 @@ h5p.tag = function (tagName, repos, next) {
   }, next);
 };
 
+h5p.tagAll = function (tagName, repos, next) {
+  const argsList = [];
+  const runner = function (tagName, repo, done) {
+    const status = {
+      name: repo
+    };
+    spawnGit(repo, ['tag', tagName], function (error, output) {
+      if (error !== '') {
+        if (error.indexOf('already exists') !== -1) {
+          status.skipped = true;
+        }
+        else {
+          status.failed = true;
+          status.msg = error;
+        }
+      }
+      else {
+        status.msg = tagName;
+      }
+      done(status);
+    });
+  }
+  for (let repo of repos) {
+    argsList.push([tagName, repo]);
+  }
+  runAll(runner, argsList, next);
+};
+
 /**
  * Will find file changes for the given number of last versions.
  *
@@ -2015,6 +2082,34 @@ h5p.compareTagsRelease = function (repos, next) {
 
   }, next);
 }
+
+h5p.compareTagsReleaseAll = function (repos, next) {
+  const argsList = [];
+  const runner = function (repo, done) {
+    libraryData(repo, function (err, library) {
+      if (err) {
+        return skipped(repo, err, done);
+      }
+      var libraryVersion = library.majorVersion + '.' + library.minorVersion + '.' + library.patchVersion;
+      spawnGit(repo, ['describe', '--abbrev=0', '--tags'], function (error, output) {
+        if (error) {
+          return failed(repo, {error: error, output: output}, done);
+        }
+        var trimmedOutput = output.replace('\n', '').trim();
+        if (libraryVersion !== trimmedOutput) {
+          ok(repo, {changes: 'changed from ' + trimmedOutput + ' to ' + libraryVersion}, done);
+        }
+        else {
+          skipped(repo, libraryVersion + '- no changes', done);
+        }
+      });
+    });
+  }
+  for (let repo of repos) {
+    argsList.push([repo]);
+  }
+  runAll(runner, argsList, next);
+};
 
 /**
  * Will find commits for the given number of last versions.

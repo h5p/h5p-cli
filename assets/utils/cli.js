@@ -469,8 +469,7 @@ var commands = [
         process.stdout.write('No branch today.' + lf);
         return;
       }
-
-      h5p.merge(branch, libraries, results);
+      h5p.mergeAll(branch, libraries, results);
     }
   },
   {
@@ -525,7 +524,7 @@ var commands = [
       var inputs = Array.prototype.slice.call(arguments);
       var tagName = inputs.splice(0,1);
       var libraries = inputs;
-      h5p.tag(tagName, libraries, results);
+      h5p.tagAll(tagName, libraries, results);
     }
   },
   {
@@ -557,7 +556,7 @@ var commands = [
     shortDescription: 'Compare tag of release and master branch',
     handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
-      h5p.compareTagsRelease(libraries, handleChanges);
+      h5p.compareTagsReleaseAll(libraries, handleChanges);
     }
   },
   {
