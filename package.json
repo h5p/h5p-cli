@@ -4,6 +4,9 @@
   "description": "a tool for developing & testing H5P content types",
   "author": "andrei.busuioc@h5p.group",
   "license": "MIT",
+  "bin": {
+    "h5p-cli": "./bin/h5p-cli.js"
+  },
   "dependencies": {
     "adm-zip": "^0.5.9",
     "express": "^4.18.2",
