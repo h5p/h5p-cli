@@ -2128,6 +2128,17 @@ h5p.changesSince = function (versions, repos, next) {
   }, next);
 };
 
+h5p.changesSinceAll = function (versions, repos, next) {
+  getVersionsAll(versions, repos, function (repo, version, initialCommit, done) {
+    spawnGit(repo, ['diff', '--stat', version + '..HEAD'], function (error, output) {
+      if (error) {
+        return failed(repo, error, done);
+      }
+      ok(repo, {version: (initialCommit ? 'Initial Commit' : version), changes: output}, done);
+    });
+  }, next);
+};
+
 /**
  * Finds file changes since release, and lists them, useful for determining patch
  * and minor version changes.

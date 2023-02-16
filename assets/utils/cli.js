@@ -538,7 +538,7 @@ var commands = [
       if (libraries[0] && libraries[0].match(/^-?\d+$/ig)) {
         versions = Math.abs(libraries.splice(0, 1));
       }
-      h5p.changesSince(versions, libraries, handleChanges);
+      h5p.changesSinceAll(versions, libraries, handleChanges);
     }
   },
   {
