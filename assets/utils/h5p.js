@@ -1501,7 +1501,13 @@ h5p.checkout = function (branch, repos, next) {
   }, next);
 };
 
-
+h5p.checkoutAll = function (branch, repos, next) {
+  const argsList = [];
+  for (let repo of repos) {
+    argsList.push([branch, repo]);
+  }
+  runAll(checkoutRepository, argsList, next);
+};
 
 /**
  * Create and push a new branch upstream.

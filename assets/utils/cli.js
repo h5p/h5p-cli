@@ -415,7 +415,7 @@ var commands = [
         process.stdout.write('No branch today.' + lf);
         return;
       }
-      h5p.checkout(branch, libraries, results);
+      h5p.checkoutAll(branch, libraries, results);
     }
   },
   {
