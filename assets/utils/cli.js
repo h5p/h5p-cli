@@ -547,7 +547,7 @@ var commands = [
     shortDescription: 'Show changed files since last release',
     handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
-      h5p.changesSinceRelease(libraries, handleChanges);
+      h5p.changesSinceReleaseAll(libraries, handleChanges);
     }
   },
   {

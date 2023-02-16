@@ -2155,6 +2155,22 @@ h5p.changesSinceRelease = function (repos, next) {
   }, next);
 };
 
+h5p.changesSinceReleaseAll = function (repos, next) {
+  const runner = (repo, done) => {
+    spawnGit(repo, ['diff', '--stat', 'master..release'], function (error, output) {
+      if (error) {
+        return failed(repo, {error: error, output: output}, done);
+      }
+      ok(repo, {changes: output}, done);
+    });
+  }
+  const argsList = [];
+  for (let repo of repos) {
+    argsList.push([repo]);
+  }
+  runAll(runner, argsList, next);
+};
+
 h5p.compareTagsRelease = function (repos, next) {
   processRepos(repos, function (repo, done) {
     libraryData(repo, function (err, library) {
