@@ -570,7 +570,7 @@ var commands = [
       if (libraries[0] && libraries[0].match(/^-?\d+$/ig)) {
         versions = Math.abs(libraries.splice(0, 1));
       }
-      h5p.commitsSince(versions, libraries, handleChanges);
+      h5p.commitsSinceAll(versions, libraries, handleChanges);
     }
   },
   {

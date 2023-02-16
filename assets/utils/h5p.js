@@ -1286,6 +1286,53 @@ function getVersions(versions, repos, process, next) {
   }, next, true);
 }
 
+function getVersionsAll(versions, repos, process, next) {
+  const argsList = [];
+  const runner = function (repo, done) {
+    isHeadDetached(repo, function (error, yes) {
+      if (error) {
+        return failed(repo, error, done);
+      }
+      if (yes) {
+        return skipped(repo, 'detached HEAD', done);
+      }
+      // Find tagged versions
+      spawnGit(repo, ['tag', '-l', '--sort=version:refname'], function (error, output) {
+        if (error) {
+          return failed(repo, error, done);
+        }
+        var toDiff;
+        var tags = output.split('\n');
+        var numValidVersions = 0;
+        // Newest version is at the end
+        for (var i = tags.length - 1; i >= 0; i--) {
+          if (tags[i].match(/(\d+)\.(\d+)\.(\d+)/ig)) {
+            numValidVersions += 1; // Found a valid version
+            // Skip as many versions as specified
+            if (numValidVersions === versions) {
+              toDiff = tags[i];
+              break;
+            }
+          }
+        }
+        if (toDiff) {
+          process(repo, toDiff, false, done);
+        }
+        else {
+          spawnGit(repo, ['rev-list', '--max-parents=0', 'HEAD'], function (error, output) {
+            var firstCommit = output.split('\n')[0];
+            process(repo, firstCommit, true, done);
+          });
+        }
+      });
+    });
+  }
+  for (let repo of repos) {
+    argsList.push([repo]);
+  }
+  runAll(runner, argsList, next);
+};
+
 /**
  * Export our api.
  */
@@ -2167,7 +2214,17 @@ h5p.commitsSince = function (versions, repos, next) {
       if (error) {
         return failed(repo, error, done);
       }
+      ok(repo, {version: (initialCommit ? 'Initial Commit' : version), changes: output}, done);
+    });
+  }, next);
+};
 
+h5p.commitsSinceAll = function (versions, repos, next) {
+  getVersionsAll(versions, repos, function (repo, version, initialCommit, done) {
+    spawnGit(repo, ['log', '--oneline', version + '..HEAD'], function (error, output) {
+      if (error) {
+        return failed(repo, error, done);
+      }
       ok(repo, {version: (initialCommit ? 'Initial Commit' : version), changes: output}, done);
     });
   }, next);
