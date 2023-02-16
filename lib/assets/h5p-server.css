@@ -15,6 +15,9 @@ body,
   font-weight: normal;
   font-style: normal;
 }
+.h5p-dev-d-flex {
+  display: flex !important;
+}
 .h5p-dev-editor-wrapper {
   display: none;
   position: fixed;
@@ -23,9 +26,14 @@ body,
   width: 100%;
   height: auto;
   min-height: 100%;
+  max-height: 100vh;
   background: #E4F1C3;
 }
-.h5p-dev-editor-wrapper > * {
+.h5p-dev-editor-inner-wrapper {
+  overflow-y: auto;
+  width: 100%;
+}
+.h5p-dev-editor-inner-wrapper > * {
   padding: 1em;
 }
 .h5p-dev-edit {
