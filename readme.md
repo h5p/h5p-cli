@@ -1,5 +1,5 @@
 An h5p toolkit for running and editing h5p content types.  
-Make sure you have NodeJS and npm installed.  
+Make sure you have NodeJS and npm installed. NodeJS version 17 is currently recommended due to compatibility issues with the `node-sass` npm package which is required by some h5p libraries.  
 CLI commands & instructions:  
 1. `npm install` to install the project's npm dependencies.  
 2. `node cli.js core` installs the core h5p libraries.  
