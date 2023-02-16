@@ -1964,6 +1964,43 @@ h5p.tagVersion = function (repos, next) {
   }, next);
 };
 
+h5p.tagVersionAll = function (repos, next) {
+  const runner = (repo, done) => {
+    libraryData(repo, function (error, library) {
+      var status = {
+        name: repo
+      };
+      if (error) {
+        status.failed = true;
+        status.msg = error;
+        done(status);
+        return;
+      }
+      var version = library.majorVersion + '.' + library.minorVersion + '.' + library.patchVersion;
+      spawnGit(repo, ['tag', version], function (error, output) {
+        if (error !== '') {
+          if (error.indexOf('already exists') !== -1) {
+            status.skipped = true;
+          }
+          else {
+            status.failed = true;
+            status.msg = error;
+          }
+        }
+        else {
+          status.msg = version;
+        }
+        done(status);
+      });
+    });
+  }
+  const argsList = [];
+  for (let repo of repos) {
+    argsList.push([repo]);
+  }
+  runAll(runner, argsList, next);
+};
+
 /**
  * Add tag
  *

@@ -513,7 +513,7 @@ var commands = [
     shortDescription: 'Create tag from current version number',
     handler: function () {
       var libraries = Array.prototype.slice.call(arguments);
-      h5p.tagVersion(libraries, results);
+      h5p.tagVersionAll(libraries, results);
     }
   },
   {
