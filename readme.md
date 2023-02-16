@@ -3,7 +3,7 @@ Make sure you have NodeJS and npm installed. NodeJS version 17 is currently reco
 CLI commands & instructions:  
 1. `npm install` to install the project's npm dependencies.  
 2. `node cli.js core` installs the core h5p libraries.  
-These are required to view/edit h5p content types.  
+These are required to view and edit h5p content types.  
 3. `node cli.js list` lists the current h5p libraries.  
 4. `node cli.js deps <h5p_repo_name> <mode> <saveToCache>` computes dependencies for an h5p library.  
 Use `view` or `edit` for `<mode>` to generate dependencies for those cases.  
