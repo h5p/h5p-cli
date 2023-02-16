@@ -1661,14 +1661,11 @@ h5p.rmBranch = function (branch, repos, progress) {
 h5p.diff = function (next) {
   findRepositories(function (error, repos) {
     if (error) return next(error);
-
     var diffs = '', done = 0;
     for (var i = 0; i < repos.length; i++) {
       diffRepository(repos[i], function (error, diff) {
         if (error) return next(error);
-
         diffs += diff;
-
         if (done++ === repos.length - 1) next(null, diffs);
       });
     }

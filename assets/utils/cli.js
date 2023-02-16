@@ -371,7 +371,7 @@ var commands = [
   {
     name: 'commit',
     syntax: '<message> [<library>...]',
-    shortDescription: 'Commit to all repos with given message',
+    shortDescription: 'Commit to repos with given message',
     handler: function () {
       // TODO: Get commit message from text editor?
       const args = [...arguments];
