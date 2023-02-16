@@ -1434,6 +1434,18 @@ h5p.commit = function (message, next) {
   });
 };
 
+h5p.commitRepos = function (message, repos, next) {
+  var results = [];
+  for (var i = 0; i < repos.length; i++) {
+    commitRepository(repos[i], message, function (result) {
+      results.push(result);
+      if (results.length === repos.length) {
+        next(null, results);
+      }
+    });
+  }
+};
+
 /**
  * Will prepare a collection of repos for pushing/pulling.
  */

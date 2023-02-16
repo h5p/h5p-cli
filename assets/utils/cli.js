@@ -370,10 +370,12 @@ var commands = [
   },
   {
     name: 'commit',
-    syntax: '<message>',
+    syntax: '<message> [<library>...]',
     shortDescription: 'Commit to all repos with given message',
-    handler: function (msg) {
+    handler: function () {
       // TODO: Get commit message from text editor?
+      const args = [...arguments];
+      const msg = args.shift();
       if (!msg) {
         process.stdout.write('No message means no commit.' + lf);
         return;
@@ -382,7 +384,8 @@ var commands = [
         process.stdout.write('Commit message to short.' + lf);
         return;
       }
-      h5p.commit(msg, commit);
+      var libraries = Array.prototype.slice.call(args);
+      h5p.commitRepos(msg, libraries, commit);
     }
   },
   {
