@@ -99,10 +99,6 @@ module.exports = {
       if (cache[dep].optionals) {
         return cache[dep].optionals;
       }
-      const translations = await getFile(fromTemplate(config.urls.library.language, { org, dep }), true);
-      if (typeof translations == 'object') {
-        cache[dep].translations = translations;
-      }
       cache[dep].semantics = await getFile(fromTemplate(config.urls.library.semantics, { org, dep }), true);
       cache[dep].optionals = parseSemanticLibraries(cache[dep].semantics);
       return cache[dep].optionals;
@@ -170,7 +166,6 @@ module.exports = {
         }
       }
       done[level][dep].semantics = list.semantics;
-      done[level][dep].translations = list.translations;
       delete toDo[dep];
       console.log('done');
     }

@@ -17,6 +17,7 @@ app.post('/remove/:folder', api.remove);
 app.get('/split/:library/:folder', api.splitView);
 app.get('/view/:library/:folder', api.view);
 app.get('/edit/:library/:folder/libraries', api.ajaxLibraries);
+app.post('/edit/:library/:folder/translations', api.ajaxTranslations);
 app.get('/edit/:library/:folder', api.edit);
 app.post('/edit/:library/:folder/libraries', api.ajaxLibraries);
 app.post('/edit/:library/:folder/files', multer.single('file'), api.uploadFile);

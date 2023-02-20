@@ -9,7 +9,10 @@ let cache = {
   view: {},
   edit: {}
 };
-let session = 'main-session';
+let session = {
+  name: 'main-session',
+  language: 'en'
+}
 module.exports = {
   // renders dashboard
   dashboard: (request, response, next) => {
@@ -50,7 +53,7 @@ module.exports = {
   contentUserData: (request, response, next) => {
     try {
       manageSession(request);
-      const dataFile = `content/${request.params.folder}/sessions/${session}.json`;
+      const dataFile = `content/${request.params.folder}/sessions/${session.name}.json`;
       data = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
       data.resume[request.params.id] = data.resume[request.params.id] || {};
       data.resume[request.params.id][request.params.type] = request.body.data;
@@ -279,6 +282,40 @@ module.exports = {
       handleError(error, response);
     }
   },
+  // return translations entries for library and dependencies
+  ajaxTranslations: async (request, response, next) => {
+    try {
+      const library = request.params.library;
+      const cacheFile = `${config.folders.cache}/${library}.json`;
+      if (!cache?.view[library]) {
+        if (fs.existsSync(cacheFile)) {
+          cache.view[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
+        }
+        else {
+          cache.view[library] = await logic.computeDependencies(library, 'view', true);
+        }
+      }
+      if (!cache.registry) {
+        cache.registry = await logic.getRegistry();
+      }
+      const translations = {};
+      for (let item of request.body.libraries) {
+        const entry = cache.view[library][cache.registry.reversed[item.split(' ')[0]].repoName];
+        const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
+        const idx = `${entry.id} ${entry.version.major}.${entry.version.minor}`;
+        const languageFolder = `${config.folders.libraries}/${label}/language`;
+        const langFile = `${languageFolder}/${request.query.language}.json`;
+        if (fs.existsSync(langFile)) {
+          translations[idx] = fs.readFileSync(langFile, 'utf-8');
+        }
+      }
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify({ success: true, data: translations }));
+    }
+    catch (error) {
+      handleError(error, response);
+    }
+  },
   // endpoint that lists library data; used as ajax request by the content type editors;
   ajaxLibraries: async (request, response, next) => {
     try {
@@ -304,15 +341,16 @@ module.exports = {
       let output;
       if (request.query.machineName) {
         const library = libraries[0];
+        const version = cache.edit[library][library].version;
         output = {
           name: cache.edit[library][library].id,
-          version: cache.edit[library][library].version,
+          version,
           title: cache.edit[library][library].title,
           upgradesScript: 'http://example.com/upgrade.js',
           semantics: cache.edit[library][library].semantics,
           language: null,
           defaultLanguage: null,
-          languages: ['en'],
+          languages: preloaded[0].languages,
           javascript: preloaded[0].preloadedJs,
           css: preloaded[0].preloadedCss,
           translations: preloaded[0].translations,
@@ -404,7 +442,8 @@ module.exports = {
         l10n: JSON.stringify(l10n),
         machineName: `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
         parameters: he.encode(JSON.stringify(formParams)),
-        libraryConfig: JSON.stringify(libraryConfig)
+        libraryConfig: JSON.stringify(libraryConfig),
+        language: session.language
       }
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));
@@ -433,7 +472,7 @@ module.exports = {
       }
       const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
       const sessions = manageSession(request, true);
-      const dataFile = `content/${request.params.folder}/sessions/${session}.json`;
+      const dataFile = `content/${request.params.folder}/sessions/${session.name}.json`;
       const metadata = fs.readFileSync(`content/${folder}/h5p.json`);
       const userData = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
       let preloadedJs = [];
@@ -462,7 +501,7 @@ module.exports = {
         baseUrl,
         library,
         folder,
-        session,
+        session: session.name,
         sessions: JSON.stringify(sessions),
         machineName: `${cache.view[library][library].id} ${cache.view[library][library].version.major}.${cache.view[library][library].version.minor}`,
         jsonContent: JSON.stringify(jsonContent),
@@ -470,6 +509,7 @@ module.exports = {
         preloadedJs: JSON.stringify(preloadedJs),
         l10n: JSON.stringify(l10n),
         libraryConfig: JSON.stringify(libraryConfig),
+        language: session.language,
         metadata,
         contentUserData: JSON.stringify(userData.resume),
         watcher: config.files.watch
@@ -526,10 +566,24 @@ const computePreloaded = async (library, baseUrl) => {
   }
   const directories = {};
   const translations = {};
+  const languages = [];
   let preloadedJs = [];
   let preloadedCss = [];
   for (let item in cache.edit[library]) {
     const entry = cache.edit[library][item];
+    const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
+    const languageFolder = `${config.folders.libraries}/${label}/language`;
+    const langFile = `${languageFolder}/${session.language}.json`;
+    if (fs.existsSync(langFile)) {
+      translations[entry.id] = JSON.parse(fs.readFileSync(langFile, 'utf-8'));
+    }
+    if (!languages.length && fs.existsSync(languageFolder)) {
+      const langFiles = fs.readdirSync(languageFolder);
+      for (let item of langFiles) {
+        const id = (item.replace(/^\./, "")).split('.')[0];
+        languages.push(id);
+      }
+    }
     if (item == library && entry.requiredBy.length == 1) {
       let required = false;
       for (let obj of entry.editorDependencies) {
@@ -541,17 +595,15 @@ const computePreloaded = async (library, baseUrl) => {
         continue;
       }
     }
-    const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
     for (let jsItem of entry.preloadedJs) {
       preloadedJs.push(`${baseUrl}/${config.folders.libraries}/${label}/${jsItem.path}`);
     }
     for (let cssItem of entry.preloadedCss) {
       preloadedCss.push(`${baseUrl}/${config.folders.libraries}/${label}/${cssItem.path}`);
     }
-    translations[entry.id] = entry.translations;
     directories[label] = label;
   }
-  return { library, preloadedJs,  preloadedCss, translations, directories};
+  return { library, preloadedJs, preloadedCss, languages, translations, directories };
 }
 const handleError = (error, response) => {
   console.log(error);
@@ -573,11 +625,11 @@ For a detailed setup status report please run "node cli.js verify ${library}".`)
 }
 const manageSession = (request, getSessions) => {
   if (request.query.session) {
-    session = request.query.session;
+    session.name = request.query.session;
   }
   if (request.params?.folder) {
     const sessionFolder = `content/${request.params.folder}/sessions`;
-    const sessionFile = `${sessionFolder}/${session}.json`;
+    const sessionFile = `${sessionFolder}/${session.name}.json`;
     if (!fs.existsSync(sessionFolder)) {
       fs.mkdirSync(sessionFolder);
     }
