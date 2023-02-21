@@ -216,12 +216,6 @@ body {
   background-color: #fff;
   color: #186df7;
 }
-.inline {
-  display: inline-block;
-}
-.hidden {
-  display: none;
-}
 .split-view:before {
   font-family: dev-tool-icons;
   content: "\e902";
@@ -276,7 +270,7 @@ body {
   padding: 1em 0;
   color: #ffffff;
   position: fixed;
-  top: 95px;
+  top: 72px;
   left: 0;
   z-index: 1000;
   width: 100%;
@@ -300,9 +294,7 @@ body {
 #status{
   color: #ffffff;
   background-color: #455A64;
-  display: inline;
   width: 100%;
-  display: block;
   padding: 0.25em;
   box-sizing: border-box;
   padding-left: 0.5em;
@@ -310,7 +302,12 @@ body {
   height: 1.5em;
   font-style: italic;
 }
-
+.inline {
+  display: inline-block;
+}
+.hidden {
+  display: none;
+}
 /******* RESPONSIVE STYLE *************/
 @media only screen and (max-width: 600px) {
   .item {

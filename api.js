@@ -185,10 +185,30 @@ module.exports = {
       output.total = list.length;
       for (let i = start; i < Math.min(end, list.length); i++) {
         const info = JSON.parse(fs.readFileSync(`content/${list[i]}/h5p.json`, 'utf-8'));
+        let entry = cache.registry.reversed?.[info?.mainLibrary];
+        const library = entry.repoName;
+        const cacheFile = `${config.folders.cache}/${library}.json`;
+        if (!cache?.view[library] && fs.existsSync(cacheFile)) {
+          entry = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'))[library];
+        }
+        let icon = '/assets/icon.svg';
+        if (entry.version) {
+          const libraryFolder = `${config.folders.libraries}/${info.mainLibrary}-${entry.version.major}.${entry.version.minor}`;
+          if (fs.existsSync(libraryFolder)) {
+            const files = fs.readdirSync(libraryFolder);
+            for (let item of files) {
+              if (item.split('.')?.[1] == 'svg') {
+                icon = `${libraryFolder}/${item}`;
+                break;
+              }
+            }
+          }
+        }
         output.list.push({
           title: he.encode(info.title),
-          library: cache.registry.reversed?.[info?.mainLibrary]?.repoName,
-          folder: list[i]
+          library,
+          folder: list[i],
+          icon
         });
       }
       response.set('Content-Type', 'application/json');

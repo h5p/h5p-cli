@@ -32,9 +32,6 @@ function dashboard(options) {
       option = contentTypes.innerHTML;
       this.getPage();
       this.getContentTypes();
-      status.addEventListener('click', () => {
-        status.innerText = '';
-      });
     });
   }
   this.getPage = async (page = 0, limit = options.limit) => {
@@ -46,7 +43,8 @@ function dashboard(options) {
         contentHTML += this.fromTemplate(entry, {
           title: item.title,
           library: item.library,
-          folder: item.folder
+          folder: item.folder,
+          icon: item.icon
         });
       }
       const pageCount = Math.ceil(result.total / limit);
@@ -66,8 +64,7 @@ function dashboard(options) {
       content.innerHTML = contentHTML;
     }
     catch (error) {
-      console.log('> error');
-      console.log(error);
+      this.handleError(error);
     }
   }
   this.getContentTypes = async () => {
@@ -83,13 +80,12 @@ function dashboard(options) {
       contentTypes.innerHTML = html;
     }
     catch (error) {
-      console.log('> error');
-      console.log(error);
+      this.handleError(error);
     }
   }
   this.create = async () => {
     try {
-      status.innerText = '...';
+      this.showStatus('...');
       const type = contentTypes.value;
       const output = await (await fetch(`${options.host}/create/${type}/${createFolder.value}`, {method: 'post'})).json();
       if (output.result) {
@@ -98,61 +94,66 @@ function dashboard(options) {
       }
       this.toggleNewContent();
       this.getPage();
-      status.innerText = output?.result || output?.error || output;
+      this.showStatus(output?.result || output?.error || output);
     }
     catch (error) {
-      status.innerText = 'error :(';
-      console.log('> error');
-      console.log(error);
+      this.handleError(error);
     }
   }
   this.import = async () => {
     try {
-      status.innerText = '...';
+      this.showStatus('...');
       const body = new FormData();
       body.append('file', archive.files[0]);
       const output = await (await fetch(`${options.host}/import/${importFolder.value}`, { method: 'post', body })).json();
       this.toggleImportContent();
       this.getPage();
-      status.innerText = output?.path ? `imported into "content/${output.path}"` : 0 || output?.error || output;
+      this.showStatus(output?.path ? `imported into "content/${output.path}"` : 0 || output?.error || output);
     }
     catch (error) {
-      status.innerText = 'error :(';
-      console.log('> error');
-      console.log(error);
+      this.handleError(error);
     }
   }
   this.remove = async (project) => {
     try {
       if (window.confirm(`Are you sure you want to delete the "content/${project}" project?`)) {
-        status.innerText = '...';
+        this.showStatus('...');
         const output = await (await fetch(`${options.host}/remove/${project}`, {method: 'post'})).json();
-        status.innerText = output.result;
+        this.showStatus(output.result);
         this.getPage();
       }
     }
     catch (error) {
-      status.innerText = 'error :(';
-      console.log('> error');
-      console.log(error);
+      this.handleError(error);
     }
   }
+  this.handleError = (error) => {
+    this.showStatus('error :(');
+    console.log('> error');
+    console.log(error);
+  }
   this.toggleNewContent = () => {
-    status.innerText = '';
+    this.hideStatus();
     newContent.classList.toggle(options.classes.hidden);
-    importContentButton.classList.toggle(options.classes.hidden);
-    newContentButton.innerText = newContentButton.innerText == options.labels.new ? options.labels.close : options.labels.new;
+    importContent.classList.add(options.classes.hidden);
   }
   this.toggleImportContent = () => {
-    status.innerText = '';
+    this.hideStatus();
+    newContent.classList.add(options.classes.hidden);
     importContent.classList.toggle(options.classes.hidden);
-    newContentButton.classList.toggle(options.classes.hidden);
-    importContentButton.innerText = importContentButton.innerText == options.labels.import ? options.labels.close : options.labels.import;
   }
   this.fromTemplate = (template, input) => {
     for (let item in input) {
       template = template.replaceAll(`{${item}}`, input[item]);
     }
     return template;
+  }
+  this.showStatus = (msg) => {
+    status.innerText = msg;
+    status.classList.remove(options.classes.hidden);
+  }
+  this.hideStatus = () => {
+    status.innerText = '';
+    status.classList.add(options.classes.hidden);
   }
 }
