@@ -98,6 +98,7 @@ function dashboard(options) {
     }
     catch (error) {
       this.handleError(error);
+      this.toggleNewContent(true);
     }
   }
   this.import = async () => {
@@ -112,6 +113,7 @@ function dashboard(options) {
     }
     catch (error) {
       this.handleError(error);
+      this.toggleImportContent(true);
     }
   }
   this.remove = async (project) => {
@@ -132,13 +134,17 @@ function dashboard(options) {
     console.log('> error');
     console.log(error);
   }
-  this.toggleNewContent = () => {
-    this.hideStatus();
+  this.toggleNewContent = (ignoreStatus) => {
+    if (!ignoreStatus) {
+      this.hideStatus();
+    }
     newContent.classList.toggle(options.classes.hidden);
     importContent.classList.add(options.classes.hidden);
   }
-  this.toggleImportContent = () => {
-    this.hideStatus();
+  this.toggleImportContent = (ignoreStatus) => {
+    if (!ignoreStatus) {
+      this.hideStatus();
+    }
     newContent.classList.add(options.classes.hidden);
     importContent.classList.toggle(options.classes.hidden);
   }
