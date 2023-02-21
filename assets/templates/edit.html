@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>h5p-dev edit content - {title}</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="/assets/styles/editor.css">
-    <script type="text/javascript" src="/assets/scripts/delete.js"></script>
-    <script type="text/javascript">
+<head>
+<title>h5p-dev edit content - {title}</title>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="/assets/styles/reset.css">
+<link rel="stylesheet" type="text/css" href="/assets/styles/style.css">
+<script type="text/javascript" src="/assets/scripts/delete.js"></script>
+<script type="text/javascript">
       H5PIntegration = {
         ajax: { contentUserData: "/h5p-ajax/content-user-data/:contentId/:dataType/:subContentId" },
         ajaxPath: "/h5p-ajax/",
@@ -117,21 +118,21 @@
         }
       });
     </script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/jquery.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-event-dispatcher.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-x-api-event.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-x-api.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-content-type.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-confirmation-dialog.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-action-bar.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-display-options.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-tooltip.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/request-queue.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-editor-php-library/scripts/h5peditor-editor.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-editor-php-library/scripts/h5peditor-init.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-editor-php-library/language/en.js"></script>
-    <script type="text/javascript">
+<script type="text/javascript" src="/libraries/h5p-php-library/js/jquery.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-event-dispatcher.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-x-api-event.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-x-api.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-content-type.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-confirmation-dialog.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-action-bar.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-display-options.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-tooltip.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/request-queue.js"></script>
+<script type="text/javascript" src="/libraries/h5p-editor-php-library/scripts/h5peditor-editor.js"></script>
+<script type="text/javascript" src="/libraries/h5p-editor-php-library/scripts/h5peditor-init.js"></script>
+<script type="text/javascript" src="/libraries/h5p-editor-php-library/language/en.js"></script>
+<script type="text/javascript">
       window.addEventListener('load', (event) => {
         console.log('> editor page loaded');
         const $ = H5P.jQuery;
@@ -152,21 +153,30 @@
         }
       });
     </script>
-  </head>
-  <body>
-    <form method="post" action="" enctype="multipart/form-data" id="h5p-content-form">
-      <input type="hidden" name="title" id="h5p-title" value="{title}">
-      <input type="hidden" name="library" id="h5p-library" value="{machineName}">
-      <input type="hidden" name="parameters" id="h5p-parameters" value="{parameters}">
-      <input type="radio" name="action" value="upload" style="display: none"/>
-      <input type="radio" name="action" value="create" style="display: none" checked="checked"/>
-      <div class="h5p-create"><div class="h5p-editor">...</div></div>
-      <input type="submit" value="save all changes" class="button">
-      <div id="links" class="inline">
-        <a class="button" href="/view/{library}/{folder}">view</a>
-        <a class="button" href="/dashboard">dashboard</a>
-        <div class="button" id="deleteButton">delete</div>
-      </div>
-    </form>
-  </body>
+</head>
+<body>
+<div class="menu-holder">
+  <div class="menu">
+    <div id="links">
+      <div class="col50"> <a class="button dashboard" href="/dashboard"><span class="button-label">dashboard</span></a> </div>
+      <div class="col50 align-right">
+        <div class="button delete" id="deleteButton"><span class="button-label">delete</span></div>
+        <a class="button view" href="/view/{library}/{folder}"><span class="button-label">view</span></a> </div>
+    </div>
+  </div>
+</div>
+<div class="holder">
+  <form method="post" action="" enctype="multipart/form-data" id="h5p-content-form">
+    <input type="hidden" name="title" id="h5p-title" value="{title}">
+    <input type="hidden" name="library" id="h5p-library" value="{machineName}">
+    <input type="hidden" name="parameters" id="h5p-parameters" value="{parameters}">
+    <input type="radio" name="action" value="upload" style="display: none"/>
+    <input type="radio" name="action" value="create" style="display: none" checked="checked"/>
+    <div class="h5p-create">
+      <div class="h5p-editor">...</div>
+    </div>
+    <input type="submit" value="save all changes" class="button save-button">
+  </form>
+</div>
+</body>
 </html>

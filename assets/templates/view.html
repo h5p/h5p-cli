@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>h5p-dev - view content type - {title}</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="/assets/styles/view.css">
-    <script type="text/javascript" src="/assets/scripts/delete.js"></script>
-    <script type="text/javascript">
+<head>
+<title>h5p-dev - view content type - {title}</title>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="/assets/styles/reset.css">
+<link rel="stylesheet" type="text/css" href="/assets/styles/style.css">
+<script type="text/javascript" src="/assets/scripts/delete.js"></script>
+<script type="text/javascript">
       H5PIntegration = {
         ajax: {
           contentUserData: "/content-user-data/:contentId/:dataType/:subContentId"
@@ -85,38 +86,42 @@
         sessionSelect.addEventListener('change', sessionChanged);
       });
     </script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/jquery.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-event-dispatcher.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-x-api-event.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-x-api.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-content-type.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-confirmation-dialog.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-action-bar.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-display-options.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-tooltip.js"></script>
-    <script type="text/javascript" src="/libraries/h5p-php-library/js/request-queue.js"></script>
-    <script>
-      if ({watcher}) {
-        var watcher = document.createElement('script');
-        watcher.setAttribute('src', `http://${location.host.split(':')[0]}:35729/livereload.js?snipver=1`);
-        document.head.appendChild(watcher);
-      }
-    </script>
-  </head>
-  <body>
-    <div class="h5p-cli-iframe-wrapper">
-      <iframe id="h5p-iframe-{folder}" class="h5p-iframe" data-content-id="{folder}" src="about:blank" frameBorder="0" scrolling="no"></iframe>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/jquery.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-event-dispatcher.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-x-api-event.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-x-api.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-content-type.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-confirmation-dialog.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-action-bar.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-display-options.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-tooltip.js"></script>
+<script type="text/javascript" src="/libraries/h5p-php-library/js/request-queue.js"></script>
+</head>
+<body>
+<div class="menu-holder">
+  <div class="menu">
+    <div id="links">
+      <div class="col50"> <a class="button dashboard" href="/dashboard"><span class="button-label">dashboard</span></a> </div>
+      <div class="col50 align-right">
+        <div class="button delete" id="deleteButton"><span class="button-label">delete</span></div>
+        <a class="button split-view" href="/split/{library}/{folder}"><span class="button-label">split view</span></a> <a class="button edit" href="/edit/{library}/{folder}"><span class="button-label">edit</span></a> </div>
     </div>
-    <div class="session">
-      session: <input type="text" id="session" value="{session}">
-      <select id="sessions"></select>
+  </div>
+</div>
+<div class="submenu">
+  <div class="menu">
+    <div class="session"> Create a session:
+      <input type="text" id="session" value="{session}">
+      <select id="sessions">
+      </select>
     </div>
-    <div id="links" class="inline">
-      <a class="button" href="/edit/{library}/{folder}">edit</a>
-      <a class="button" href="/split/{library}/{folder}">split view</a>
-      <a class="button" href="/dashboard">dashboard</a>
-      <div class="button" id="deleteButton">delete</div>
-    </div>
-  </body>
-</html> 
+  </div>
+</div>
+<div class="holder">
+  <div class="h5p-cli-iframe-wrapper">
+    <iframe id="h5p-iframe-{folder}" class="h5p-iframe" data-content-id="{folder}" src="about:blank" frameBorder="0" scrolling="no"></iframe>
+  </div>
+</div>
+</body>
+</html>
