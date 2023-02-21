@@ -175,6 +175,11 @@ body {
 }
 
 /******* TOP MENU *******/
+.sticky {
+  position: sticky;
+  top: 0px;
+  z-index: 2;
+}
 .menu {
   max-width: 1400px;
   margin: 0 auto;
@@ -189,9 +194,6 @@ body {
   margin: 0em auto;
   box-shadow: 0 1px 10px rgb(0 0 0 / 20%);
   padding: 0.85em;
-  position: sticky;
-  top: 0px;
-  z-index: 2;
 }
 .submenu {
   background-color: #303F9F;

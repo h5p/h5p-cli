@@ -31,25 +31,27 @@
 </script>
 </head>
 <body>
-  <div class="hidden" id="status"></div>
-  <div class="menu-holder">
-    <div class="menu">
-      <div class="button new" id="newContentButton" onclick="runner.toggleNewContent()"><span class="button-label">new</span></div>
-      <div class="button import" id="importContentButton" onclick="runner.toggleImportContent()"><span class="button-label">import</span></div>
-      <div id="newContent" class="hidden inline">
-        <div class="center-content">
-          <select id="contentTypes" class="selector">
-            <option value="{value}">{name}</option>
-          </select>
-          <input type="text" class="input" id="createFolder" placeholder="Type Content Title here...">
-          <div class="button" onclick="runner.create()">create</div>
+  <div class="sticky">
+    <div class="hidden" id="status"></div>
+    <div class="menu-holder">
+      <div class="menu">
+        <div class="button new" id="newContentButton" onclick="runner.toggleNewContent()"><span class="button-label">new</span></div>
+        <div class="button import" id="importContentButton" onclick="runner.toggleImportContent()"><span class="button-label">import</span></div>
+        <div id="newContent" class="hidden inline">
+          <div class="center-content">
+            <select id="contentTypes" class="selector">
+              <option value="{value}">{name}</option>
+            </select>
+            <input type="text" class="input" id="createFolder" placeholder="Type Content Title here...">
+            <div class="button" onclick="runner.create()">create</div>
+          </div>
         </div>
-      </div>
-      <div id="importContent" class="hidden inline">
-        <div class="center-content">
-          <input type="text" class="input" id="importFolder" placeholder="Type Content Title here...">
-          <input type="file" class="input" id="archive" accept=".h5p">
-          <div class="button" onclick="runner.import()">import</div>
+        <div id="importContent" class="hidden inline">
+          <div class="center-content">
+            <input type="text" class="input" id="importFolder" placeholder="Type Content Title here...">
+            <input type="file" class="input" id="archive" accept=".h5p">
+            <div class="button" onclick="runner.import()">import</div>
+          </div>
         </div>
       </div>
     </div>
