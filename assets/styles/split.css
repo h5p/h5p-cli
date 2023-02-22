@@ -16,7 +16,6 @@ body {
   color: #040404;
   -webkit-font-smoothing: antialiased;
 }
-
 .h5p-cli-view iframe {
   width: 100%;
   height: 100%;
@@ -36,6 +35,7 @@ body {
   font-size: 1.5em;
   font-weight: bold;
   margin-bottom: 1em;
+  display: inline-block;
 }
 *:before {
   font-weight: normal;
@@ -44,10 +44,13 @@ body {
   line-height: unset;
   margin-right: 0.3em;
 }
-
 .view:before {
   content: "\e901";
 }
 .edit:before {
   content: "\e905";
+}
+.col50 {
+  display: inline-block;
+  float: right;
 }

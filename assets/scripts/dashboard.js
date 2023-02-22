@@ -32,6 +32,11 @@ function dashboard(options) {
       option = contentTypes.innerHTML;
       this.getPage();
       this.getContentTypes();
+      const params = new URLSearchParams(window.location.search);
+      const message = params.get('status');
+      if (message) {
+        this.showStatus(message);
+      }
     });
   }
   this.getPage = async (page = 0, limit = options.limit) => {

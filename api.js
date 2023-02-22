@@ -19,7 +19,8 @@ module.exports = {
     try {
       const html = fs.readFileSync('./assets/templates/dashboard.html', 'utf-8');
       const input = {
-        host: `${request.protocol}://${request.get('host')}`
+        host: `${request.protocol}://${request.get('host')}`,
+        status: request.query.status || ''
       }
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));
@@ -188,7 +189,7 @@ module.exports = {
         let entry = cache.registry.reversed?.[info?.mainLibrary];
         const library = entry.repoName;
         const cacheFile = `${config.folders.cache}/${library}.json`;
-        if (!cache?.view[library] && fs.existsSync(cacheFile)) {
+        if (fs.existsSync(cacheFile)) {
           entry = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'))[library];
         }
         let icon = '/assets/icon.svg';
@@ -633,9 +634,7 @@ const handleError = (error, response) => {
 const verifySetup = async (library, response) => {
   const setupStatus = await logic.verifySetup(library);
   if (!setupStatus.ok) {
-    response.set('Content-Type', 'text/html');
-    response.end(`
-"${library}" is not properly setup. Please run "node cli.js setup ${library}" for setup.</br>
+    response.redirect(`/dashboard?status="${library}" is not properly setup. Please run "node cli.js setup ${library}" for setup.
 For a detailed setup status report please run "node cli.js verify ${library}".`);
     return false;
   }

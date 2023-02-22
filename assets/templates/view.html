@@ -72,6 +72,7 @@
         const simple = params.get('simple');
         if (simple) {
           document.getElementById('links').style.display = 'none';
+          document.getElementById('menu').style.display = 'none';
         }
         const session = document.getElementById('session');
         const sessionSelect = document.getElementById('sessions');
@@ -99,13 +100,15 @@
 <script type="text/javascript" src="/libraries/h5p-php-library/js/request-queue.js"></script>
 </head>
 <body>
-<div class="menu-holder">
+<div class="menu-holder" id="menu">
   <div class="menu">
     <div id="links">
-      <div class="col50"> <a class="button dashboard" href="/dashboard"><span class="button-label">dashboard</span></a> </div>
+      <div class="col50"><a class="button dashboard" href="/dashboard"><span class="button-label">dashboard</span></a></div>
       <div class="col50 align-right">
         <div class="button delete" id="deleteButton"><span class="button-label">delete</span></div>
-        <a class="button split-view" href="/split/{library}/{folder}"><span class="button-label">split view</span></a> <a class="button edit" href="/edit/{library}/{folder}"><span class="button-label">edit</span></a> </div>
+        <a class="button split-view" href="/split/{library}/{folder}"><span class="button-label">split view</span></a>
+        <a class="button edit" href="/edit/{library}/{folder}"><span class="button-label">edit</span></a>
+      </div>
     </div>
   </div>
 </div>

@@ -32,11 +32,15 @@
 </head>
 <body>
   <div class="sticky">
-    <div class="hidden" id="status"></div>
+    <div class="hidden" id="status">{status}</div>
     <div class="menu-holder">
       <div class="menu">
-        <div class="button new" id="newContentButton" onclick="runner.toggleNewContent()"><span class="button-label">new</span></div>
-        <div class="button import" id="importContentButton" onclick="runner.toggleImportContent()"><span class="button-label">import</span></div>
+        <div class="button new" id="newContentButton" onclick="runner.toggleNewContent()">
+          <span class="button-label">new</span>
+        </div>
+        <div class="button import" id="importContentButton" onclick="runner.toggleImportContent()">
+          <span class="button-label">import</span>
+        </div>
         <div id="newContent" class="hidden inline">
           <div class="center-content">
             <select id="contentTypes" class="selector">
@@ -64,10 +68,10 @@
           <div class="itemPath">{library}</div>
         </div>
         <div class="itemLinks">
-          <a class="view transition tooltip" href="view/{library}/{folder}" class="url">
+          <a class="view transition tooltip" href="view/{library}/{folder}">
             <span class="tooltiptext">View</span>
           </a>
-          <a class="edit transition tooltip" href="edit/{library}/{folder}" class="url">
+          <a class="edit transition tooltip" href="edit/{library}/{folder}">
             <span class="tooltiptext">Edit</span>
           </a>
           <div class="button transition delete tooltip" onclick="runner.remove('{folder}')">
