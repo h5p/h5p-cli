@@ -7,86 +7,86 @@
 <link rel="stylesheet" type="text/css" href="/assets/styles/style.css">
 <script type="text/javascript" src="/assets/scripts/delete.js"></script>
 <script type="text/javascript">
-      H5PIntegration = {
-        ajax: {
-          contentUserData: "/content-user-data/:contentId/:dataType/:subContentId"
+  H5PIntegration = {
+    ajax: {
+      contentUserData: "/content-user-data/:contentId/:dataType/:subContentId"
+    },
+    baseUrl: "/",
+    contents: {
+      "cid-{folder}": {
+        library: "{machineName}",
+        metadata: {metadata},
+        jsonContent: {jsonContent},
+        url: "{baseUrl}/view/{library}/{folder}",
+        mainId: "{folder}",
+        displayOptions: {
+          "copy": true,
+          "copyright": true,
+          "embed": false,
+          "export": true,
+          "frame": true,
+          "icon": true
         },
-        baseUrl: "/",
-        contents: {
-          "cid-{folder}": {
-            library: "{machineName}",
-            metadata: {metadata},
-            jsonContent: {jsonContent},
-            url: "{baseUrl}/view/{library}/{folder}",
-            mainId: "{folder}",
-            displayOptions: {
-              "copy": true,
-              "copyright": true,
-              "embed": false,
-              "export": true,
-              "frame": true,
-              "icon": true
-            },
-            exportUrl: "{baseUrl}/export/{library}/{folder}",
-            contentUserData: {contentUserData},
-            resizeCode: "",
-            title: "{title}",
-            styles: {preloadedCss},
-            scripts: {preloadedJs}
-          }
-        },
-        l10n: {l10n},
-        core: {
-          scripts: [
-            "/libraries/h5p-php-library/js/jquery.js",
-            "/libraries/h5p-php-library/js/h5p.js",
-            "/libraries/h5p-php-library/js/h5p-event-dispatcher.js",
-            "/libraries/h5p-php-library/js/h5p-x-api-event.js",
-            "/libraries/h5p-php-library/js/h5p-x-api.js",
-            "/libraries/h5p-php-library/js/h5p-content-type.js",
-            "/libraries/h5p-php-library/js/h5p-confirmation-dialog.js",
-            "/libraries/h5p-php-library/js/h5p-action-bar.js",
-            "/libraries/h5p-php-library/js/h5p-display-options.js",
-            "/libraries/h5p-php-library/js/h5p-tooltip.js",
-            "/libraries/h5p-php-library/js/request-queue.js"
-          ],
-          styles: [
-            "/libraries/h5p-php-library/styles/h5p.css",
-            "/libraries/h5p-php-library/styles/h5p-confirmation-dialog.css",
-            "/libraries/h5p-php-library/styles/h5p-tooltip.css"
-          ]
-        },
-        libraryConfig: {libraryConfig},
-        saveFreq: 30,
-        siteUrl: "{baseUrl}",
-        url: "{baseUrl}",
-        user: { name: "developer", mail: "some.developer@some.company.com" }
-      };
-      let params;
-      const sessionChanged = (event) => {
-        params.set('session', event.target.value);
-        window.location.href = `/view/{library}/{folder}?${params.toString()}`;
+        exportUrl: "{baseUrl}/export/{library}/{folder}",
+        contentUserData: {contentUserData},
+        resizeCode: "",
+        title: "{title}",
+        styles: {preloadedCss},
+        scripts: {preloadedJs}
       }
-      window.addEventListener('load', () => {
-        params = new URLSearchParams(window.location.search);
-        const simple = params.get('simple');
-        if (simple) {
-          document.getElementById('links').style.display = 'none';
-          document.getElementById('menu').style.display = 'none';
-        }
-        const session = document.getElementById('session');
-        const sessionSelect = document.getElementById('sessions');
-        const sessions = {sessions};
-        let options = '';
-        for (let item of sessions) {
-          const value = item.split('.')[0];
-          options += `<option value="${value}"${value == session.value ? ' selected="selected"' : ''}>${value}</option>`;
-        }
-        sessionSelect.innerHTML = options;
-        session.addEventListener('change', sessionChanged);
-        sessionSelect.addEventListener('change', sessionChanged);
-      });
-    </script>
+    },
+    l10n: {l10n},
+    core: {
+      scripts: [
+        "/libraries/h5p-php-library/js/jquery.js",
+        "/libraries/h5p-php-library/js/h5p.js",
+        "/libraries/h5p-php-library/js/h5p-event-dispatcher.js",
+        "/libraries/h5p-php-library/js/h5p-x-api-event.js",
+        "/libraries/h5p-php-library/js/h5p-x-api.js",
+        "/libraries/h5p-php-library/js/h5p-content-type.js",
+        "/libraries/h5p-php-library/js/h5p-confirmation-dialog.js",
+        "/libraries/h5p-php-library/js/h5p-action-bar.js",
+        "/libraries/h5p-php-library/js/h5p-display-options.js",
+        "/libraries/h5p-php-library/js/h5p-tooltip.js",
+        "/libraries/h5p-php-library/js/request-queue.js"
+      ],
+      styles: [
+        "/libraries/h5p-php-library/styles/h5p.css",
+        "/libraries/h5p-php-library/styles/h5p-confirmation-dialog.css",
+        "/libraries/h5p-php-library/styles/h5p-tooltip.css"
+      ]
+    },
+    libraryConfig: {libraryConfig},
+    saveFreq: 30,
+    siteUrl: "{baseUrl}",
+    url: "{baseUrl}",
+    user: { name: "developer", mail: "some.developer@some.company.com" }
+  };
+  let params;
+  const sessionChanged = (event) => {
+    params.set('session', event.target.value);
+    window.location.href = `/view/{library}/{folder}?${params.toString()}`;
+  }
+  window.addEventListener('load', () => {
+    params = new URLSearchParams(window.location.search);
+    const simple = params.get('simple');
+    if (simple) {
+      document.getElementById('links').style.display = 'none';
+      document.getElementById('menu').style.display = 'none';
+    }
+    const session = document.getElementById('session');
+    const sessionSelect = document.getElementById('sessions');
+    const sessions = {sessions};
+    let options = '';
+    for (let item of sessions) {
+      const value = item.split('.')[0];
+      options += `<option value="${value}"${value == session.value ? ' selected="selected"' : ''}>${value}</option>`;
+    }
+    sessionSelect.innerHTML = options;
+    session.addEventListener('change', sessionChanged);
+    sessionSelect.addEventListener('change', sessionChanged);
+  });
+</script>
 <script type="text/javascript" src="/libraries/h5p-php-library/js/jquery.js"></script>
 <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p.js"></script>
 <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p-event-dispatcher.js"></script>
