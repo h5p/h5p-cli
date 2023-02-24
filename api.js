@@ -37,10 +37,25 @@ module.exports = {
       }
       if (!cache.registry.runnable) {
         cache.registry.runnable = {};
+        const list = [];
         for (let item in cache.registry.regular) {
           if (cache.registry.regular[item].runnable) {
-            cache.registry.runnable[item] = cache.registry.regular[item];
+            list.push(item);
           }
+        }
+        list.sort((a, b) => {
+          const first = a.toLowerCase();
+          const second = b.toLowerCase();
+          if (first < second) {
+            return -1;
+          }
+          if (first > second) {
+            return 1;
+          }
+          return 0;
+        });
+        for (let item of list) {
+          cache.registry.runnable[item] = cache.registry.regular[item];
         }
       }
       response.set('Content-Type', 'application/json');
@@ -181,12 +196,27 @@ module.exports = {
         if (!fs.existsSync(`content/${item}/h5p.json`)) {
           continue;
         }
-        list.push(item);
+        const info = JSON.parse(fs.readFileSync(`content/${item}/h5p.json`, 'utf-8'));
+        list.push({
+          id: info.mainLibrary,
+          title: he.encode(info.title),
+          folder: item
+        });
       }
+      list.sort((a, b) => {
+        const first = a.title.toLowerCase();
+        const second = b.title.toLowerCase();
+        if (first < second) {
+          return -1;
+        }
+        if (first > second) {
+          return 1;
+        }
+        return 0;
+      });
       output.total = list.length;
       for (let i = start; i < Math.min(end, list.length); i++) {
-        const info = JSON.parse(fs.readFileSync(`content/${list[i]}/h5p.json`, 'utf-8'));
-        let entry = cache.registry.reversed?.[info?.mainLibrary];
+        let entry = cache.registry.reversed?.[list[i].id];
         const library = entry.repoName;
         const cacheFile = `${config.folders.cache}/${library}.json`;
         if (fs.existsSync(cacheFile)) {
@@ -194,7 +224,7 @@ module.exports = {
         }
         let icon = '/assets/icon.svg';
         if (entry.version) {
-          const libraryFolder = `${config.folders.libraries}/${info.mainLibrary}-${entry.version.major}.${entry.version.minor}`;
+          const libraryFolder = `${config.folders.libraries}/${list[i].id}-${entry.version.major}.${entry.version.minor}`;
           if (fs.existsSync(libraryFolder)) {
             const files = fs.readdirSync(libraryFolder);
             for (let item of files) {
@@ -205,12 +235,9 @@ module.exports = {
             }
           }
         }
-        output.list.push({
-          title: he.encode(info.title),
-          library,
-          folder: list[i],
-          icon
-        });
+        list[i].library = library;
+        list[i].icon = icon;
+        output.list.push(list[i]);
       }
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify(output));
