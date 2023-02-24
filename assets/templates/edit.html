@@ -118,6 +118,10 @@
       document.getElementById('menu').style.display = 'none'
     }
   });
+  const beforeExit = (event) => {
+    event.returnValue = true;
+  }
+  window.addEventListener("beforeunload", beforeExit);
 </script>
 <script type="text/javascript" src="/libraries/h5p-php-library/js/jquery.js"></script>
 <script type="text/javascript" src="/libraries/h5p-php-library/js/h5p.js"></script>
@@ -147,6 +151,9 @@
     var $title = $('input[name="title"]');
     console.log('> editor initializing...');
     H5PEditor.init($form, $type, $upload, $create, $editor, $library, $params, null, $title);
+    document.getElementById('saveButton').addEventListener('click', (event) => {
+      window.removeEventListener("beforeunload", beforeExit);
+    });
     const params = new URLSearchParams(window.location.search);
     const simple = params.get('simple');
     if (simple) {
@@ -176,7 +183,7 @@
     <div class="h5p-create">
       <div class="h5p-editor">...</div>
     </div>
-    <input type="submit" value="save all changes" class="button save-button">
+    <input type="submit" id="saveButton" value="save all changes" class="button save-button">
   </form>
 </div>
 </body>
