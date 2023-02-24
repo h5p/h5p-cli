@@ -135,7 +135,7 @@ function dashboard(options) {
     }
   }
   this.handleError = (error) => {
-    this.showStatus('error :(');
+    this.showStatus(error.toString());
     console.log('> error');
     console.log(error);
   }

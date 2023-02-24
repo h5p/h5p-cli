@@ -65,7 +65,7 @@ module.exports = {
       handleError(error, response);
     }
   },
-  // updates contentUserData.json file used for resume functionality
+  // updates session file used for resume functionality
   contentUserData: (request, response, next) => {
     try {
       manageSession(request);
@@ -491,7 +491,8 @@ module.exports = {
         machineName: `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
         parameters: he.encode(JSON.stringify(formParams)),
         libraryConfig: JSON.stringify(libraryConfig),
-        language: session.language
+        language: session.language,
+        simple: request.query.simple ? 'hidden' : ''
       }
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));
@@ -560,7 +561,8 @@ module.exports = {
         language: session.language,
         metadata,
         contentUserData: JSON.stringify(userData.resume),
-        watcher: config.files.watch
+        watcher: config.files.watch,
+        simple: request.query.simple ? 'hidden' : ''
       }
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));

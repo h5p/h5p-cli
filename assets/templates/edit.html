@@ -110,14 +110,6 @@
     user: { name: "developer", mail: "some.developer@some.company.com" }
   };
   H5PIntegration.l10n = {l10n};
-  window.addEventListener('load', () => {
-    const params = new URLSearchParams(window.location.search);
-    const simple = params.get('simple');
-    if (simple) {
-      document.getElementById('links').style.display = 'none';
-      document.getElementById('menu').style.display = 'none'
-    }
-  });
   const beforeExit = (event) => {
     event.returnValue = true;
   }
@@ -154,19 +146,16 @@
     document.getElementById('saveButton').addEventListener('click', (event) => {
       window.removeEventListener("beforeunload", beforeExit);
     });
-    const params = new URLSearchParams(window.location.search);
-    const simple = params.get('simple');
-    if (simple) {
-      document.getElementById('links').style.display = 'none';
-    }
   });
 </script>
 </head>
 <body>
-<div class="menu-holder" id="menu">
+<div class="menu-holder {simple}" id="menu">
   <div class="menu">
     <div id="links">
-      <div class="col50"> <a class="button dashboard" href="/dashboard"><span class="button-label">dashboard</span></a> </div>
+      <div class="col50">
+        <a class="button dashboard" href="/dashboard"><span class="button-label">dashboard</span></a>
+      </div>
       <div class="col50 align-right">
         <div class="button delete" id="deleteButton"><span class="button-label">delete</span></div>
         <a class="button view" href="/view/{library}/{folder}"><span class="button-label">view</span></a> </div>

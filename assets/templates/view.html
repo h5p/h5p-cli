@@ -68,12 +68,6 @@
     window.location.href = `/view/{library}/{folder}?${params.toString()}`;
   }
   window.addEventListener('load', () => {
-    params = new URLSearchParams(window.location.search);
-    const simple = params.get('simple');
-    if (simple) {
-      document.getElementById('links').style.display = 'none';
-      document.getElementById('menu').style.display = 'none';
-    }
     const session = document.getElementById('session');
     const sessionSelect = document.getElementById('sessions');
     const sessions = {sessions};
@@ -100,7 +94,7 @@
 <script type="text/javascript" src="/libraries/h5p-php-library/js/request-queue.js"></script>
 </head>
 <body>
-<div class="menu-holder" id="menu">
+<div class="menu-holder {simple}" id="menu">
   <div class="menu">
     <div id="links">
       <div class="col50"><a class="button dashboard" href="/dashboard"><span class="button-label">dashboard</span></a></div>
