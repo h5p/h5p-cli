@@ -32,10 +32,8 @@ function dashboard(options) {
       option = contentTypes.innerHTML;
       this.getPage();
       this.getContentTypes();
-      const params = new URLSearchParams(window.location.search);
-      const message = params.get('status');
-      if (message) {
-        this.showStatus(message);
+      if (status.innerText) {
+        this.showStatus();
       }
     });
   }
@@ -166,7 +164,7 @@ function dashboard(options) {
     return template;
   }
   this.showStatus = (msg) => {
-    status.innerText = msg;
+    status.innerText = msg || status.innerText;
     status.classList.remove(options.classes.hidden);
   }
   this.hideStatus = () => {

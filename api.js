@@ -11,7 +11,8 @@ let cache = {
 };
 let session = {
   name: 'main-session',
-  language: 'en'
+  language: 'en',
+  status: ''
 }
 module.exports = {
   // renders dashboard
@@ -20,10 +21,11 @@ module.exports = {
       const html = fs.readFileSync('./assets/templates/dashboard.html', 'utf-8');
       const input = {
         host: `${request.protocol}://${request.get('host')}`,
-        status: request.query.status || ''
+        status: session.status
       }
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));
+      session.status = '';
     }
     catch (error) {
       handleError(error, response);
@@ -111,7 +113,7 @@ module.exports = {
       if (!fs.existsSync(viewDepsFile) || !fs.existsSync(editDepsFile)) {
         response.set('Content-Type', 'application/json');
         response.end(JSON.stringify({
-          error: `"${request.params.type}" library not cached; please run setup for library.`
+          error: `"${request.params.type}" library not cached; please run "node cli.js setup ${request.params.type}".`
         }));
         return;
       }
@@ -663,8 +665,9 @@ const handleError = (error, response) => {
 const verifySetup = async (library, response) => {
   const setupStatus = await logic.verifySetup(library);
   if (!setupStatus.ok) {
-    response.redirect(`/dashboard?status="${library}" is not properly setup. Please run "node cli.js setup ${library}" for setup.
-For a detailed setup status report please run "node cli.js verify ${library}".`);
+    session.status = `"${library}" is not properly setup. Please run "node cli.js setup ${library}" for setup.
+For a detailed setup status report please run "node cli.js verify ${library}".`;
+    response.redirect(`/dashboard`);
     return false;
   }
   else {
