@@ -90,6 +90,9 @@ function dashboard(options) {
   }
   this.create = async () => {
     try {
+      if (!createFolder.value) {
+        throw new Error("enter title");
+      }
       this.showStatus('...');
       const type = contentTypes.value;
       const output = await (await fetch(`${options.host}/create/${type}/${createFolder.value}`, {method: 'post'})).json();
@@ -108,6 +111,9 @@ function dashboard(options) {
   }
   this.import = async () => {
     try {
+      if (!importFolder.value) {
+        throw new Error("enter title");
+      }
       this.showStatus('...');
       const body = new FormData();
       body.append('file', archive.files[0]);
