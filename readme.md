@@ -41,8 +41,9 @@ http://localhost:8080/dashboard
 10. `node cli.js export <h5p_repo_name> <folder>` will export the `<h5p_repo_name>` library content type from the "content/`<folder>`" folder.  
 Make sure that the library's dependency lists are cached and that the dependencies are installed.  
 Once finished, the export command outputs the location of the resulting file.  
-11. When viewing content types you can create and switch between resume sessions. A resume session allows you to resume where you left off in the content types that support it.  
-To create a new session simply rename the current session and click outside the session name textbox.  
+11. When viewing content types you can create and switch between resume sessions. A resume session allows you to save the state of the content type that supports it so that it will be the same on reload.  
+You can create a new session by clicking on the "new session" button and entering a new name for it.  
+To switch between existing sessions simply choose the one you want from the dropdown.  
 12. To stop auto reloading the view page on library file changes set `files.watch` to `false` in `config.json`.  
 13. Run `node cli.js utils help` to get a list of utility commands.  
 Each utility command can then be run via `node cli.js utils <cmd> [<args>...]`.  
