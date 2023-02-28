@@ -62,23 +62,34 @@
     url: "{baseUrl}",
     user: { name: "developer", mail: "some.developer@some.company.com" }
   };
-  let params;
-  const sessionChanged = (event) => {
-    params.set('session', event.target.value);
-    window.location.href = `/view/{library}/{folder}?${params.toString()}`;
-  }
   window.addEventListener('load', () => {
-    const session = document.getElementById('session');
+    const sessionName = document.getElementById('sessionName');
     const sessionSelect = document.getElementById('sessions');
+    const newSessionButton = document.getElementById('newSessionButton');
+    const saveSessionButton = document.getElementById('saveSessionButton');
+    const session = '{session}';
     const sessions = {sessions};
+    let params = new URLSearchParams(window.location.search);
+    const sessionChanged = (event) => {
+      params.set('session', event.target.value);
+      window.location.href = `/view/{library}/{folder}?${params.toString()}`;
+    }
+    const newSessionEvent = () => {
+      newSession.classList.toggle('hidden');
+    }
+    const saveSessionEvent = () => {
+      params.set('session', sessionName.value);
+      window.location.href = `/view/{library}/{folder}?${params.toString()}`;
+    }
     let options = '';
     for (let item of sessions) {
       const value = item.split('.')[0];
-      options += `<option value="${value}"${value == session.value ? ' selected="selected"' : ''}>${value}</option>`;
+      options += `<option value="${value}"${value == session ? ' selected="selected"' : ''}>${value}</option>`;
     }
     sessionSelect.innerHTML = options;
-    session.addEventListener('change', sessionChanged);
     sessionSelect.addEventListener('change', sessionChanged);
+    newSessionButton.addEventListener('click', newSessionEvent);
+    saveSessionButton.addEventListener('click', saveSessionEvent);
   });
 </script>
 <script type="text/javascript" src="/libraries/h5p-php-library/js/jquery.js"></script>
@@ -97,7 +108,9 @@
 <div class="menu-holder {simple}" id="menu">
   <div class="menu">
     <div id="links">
-      <div class="col50"><a class="button dashboard" href="/dashboard"><span class="button-label">dashboard</span></a></div>
+      <div class="col50">
+        <a class="button dashboard" href="/dashboard"><span class="button-label">dashboard</span></a>
+      </div>
       <div class="col50 align-right">
         <div class="button delete" id="deleteButton"><span class="button-label">delete</span></div>
         <a class="button split-view" href="/split/{library}/{folder}"><span class="button-label">split view</span></a>
@@ -108,10 +121,13 @@
 </div>
 <div class="submenu">
   <div class="menu">
-    <div class="session"> Create a session:
-      <input type="text" id="session" value="{session}">
-      <select id="sessions">
-      </select>
+    <div class="session">
+      <select id="sessions"></select>
+      <div class="button" id="newSessionButton"><span class="button-label">new session</span></div>
+      <div class="inline hidden" id="newSession">
+        <input type="text" id="sessionName" placeholder="session name">
+        <div class="button" id="saveSessionButton"><span class="button-label">create session</span></div>
+      </div>
     </div>
   </div>
 </div>
