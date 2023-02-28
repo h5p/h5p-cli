@@ -218,7 +218,7 @@ module.exports = {
         const info = JSON.parse(fs.readFileSync(`content/${item}/h5p.json`, 'utf-8'));
         list.push({
           id: info.mainLibrary,
-          title: he.encode(info.title),
+          title: info.title,
           folder: item
         });
       }
