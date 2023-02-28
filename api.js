@@ -70,9 +70,14 @@ module.exports = {
   // updates session file used for resume functionality
   setUserData: (request, response, next) => {
     try {
-      manageSession(request);
+      manageSession(request.params.folder, request.query?.session);
+      if (session.name == 'null') {
+        response.set('Content-Type', 'application/json');
+        response.end(JSON.stringify({success: true}));
+        return;
+      }
       const dataFile = `content/${request.params.folder}/sessions/${session.name}.json`;
-      data = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
+      const data = getSession(request.params.folder);
       data.resume[request.params.id] = data.resume[request.params.id] || {};
       data.resume[request.params.id][request.params.type] = request.body.data;
       fs.writeFileSync(dataFile, JSON.stringify(data));
@@ -86,9 +91,8 @@ module.exports = {
   // retrieves session data for resume functionality
   getUserData: (request, response, next) => {
     try {
-      manageSession(request);
-      const dataFile = `content/${request.params.folder}/sessions/${session.name}.json`;
-      data = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
+      manageSession(request.params.folder, request.query?.session);
+      const data = getSession(request.params.folder);
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify(data?.[0] || {}));
     }
@@ -535,10 +539,9 @@ module.exports = {
         }
       }
       const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
-      const sessions = manageSession(request, true);
-      const dataFile = `content/${request.params.folder}/sessions/${session.name}.json`;
+      const sessions = manageSession(request.params.folder, request.query?.session, true);
+      const userData = getSession(request.params.folder);
       const metadata = fs.readFileSync(`content/${folder}/h5p.json`);
-      const userData = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
       let preloadedJs = [];
       let preloadedCss = [];
       for (let item in cache.view[library]) {
@@ -687,25 +690,31 @@ For a detailed setup status report please run "node cli.js verify ${library}".`;
     return true;
   }
 }
-const manageSession = (request, getSessions) => {
-  if (request.query.session) {
-    session.name = request.query.session;
+const manageSession = (folder, name, getSessions) => {
+  if (name) {
+    session.name = name;
   }
-  if (request.params?.folder) {
-    const sessionFolder = `content/${request.params.folder}/sessions`;
-    const sessionFile = `${sessionFolder}/${session.name}.json`;
-    if (!fs.existsSync(sessionFolder)) {
-      fs.mkdirSync(sessionFolder);
-    }
-    if (!fs.existsSync(sessionFile)) {
-      fs.writeFileSync(sessionFile, JSON.stringify({
-        resume: []
-      }));
-    }
-    if (getSessions) {
-      const files = fs.readdirSync(sessionFolder);
-      return files;
-    }
+  const sessionFolder = `content/${folder}/sessions`;
+  const sessionFile = `${sessionFolder}/${session.name}.json`;
+  if (!fs.existsSync(sessionFolder)) {
+    fs.mkdirSync(sessionFolder);
+  }
+  if (session.name != 'null' && !fs.existsSync(sessionFile)) {
+    fs.writeFileSync(sessionFile, JSON.stringify({
+      resume: []
+    }));
+  }
+  if (getSessions) {
+    const files = fs.readdirSync(sessionFolder);
+    return files;
   }
   return [];
+}
+const getSession = (folder) => {
+  const dataFile = `content/${folder}/sessions/${session.name}.json`;
+  let userData = {};
+  if (fs.existsSync(dataFile)) {
+    userData = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
+  }
+  return userData;
 }

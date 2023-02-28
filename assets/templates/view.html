@@ -81,7 +81,7 @@
       params.set('session', sessionName.value);
       window.location.href = `/view/{library}/{folder}?${params.toString()}`;
     }
-    let options = '';
+    let options = '<option value="null">null</option>';
     for (let item of sessions) {
       const value = item.split('.')[0];
       options += `<option value="${value}"${value == session ? ' selected="selected"' : ''}>${value}</option>`;
