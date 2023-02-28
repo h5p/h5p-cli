@@ -68,7 +68,7 @@ module.exports = {
     }
   },
   // updates session file used for resume functionality
-  contentUserData: (request, response, next) => {
+  setUserData: (request, response, next) => {
     try {
       manageSession(request);
       const dataFile = `content/${request.params.folder}/sessions/${session.name}.json`;
@@ -78,6 +78,19 @@ module.exports = {
       fs.writeFileSync(dataFile, JSON.stringify(data));
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify({success: true}));
+    }
+    catch (error) {
+      handleError(error, response);
+    }
+  },
+  // retrieves session data for resume functionality
+  getUserData: (request, response, next) => {
+    try {
+      manageSession(request);
+      const dataFile = `content/${request.params.folder}/sessions/${session.name}.json`;
+      data = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify(data?.[0] || {}));
     }
     catch (error) {
       handleError(error, response);
