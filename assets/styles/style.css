@@ -49,9 +49,6 @@ body {
   color: #0b0b0b;
   display: inline-block;
 }
-.item:last-child{
-  border-color: #ffffff;
-}
 
 /******* BUTTONS *******/
 .button, .itemLinks a, .save-button {
