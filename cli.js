@@ -57,7 +57,7 @@ const cli = {
   install: async (library, mode, useCache) => {
     try {
       console.log(`> downloading ${library} library and dependencies into "${config.folders.libraries}" folder`);
-      await logic.downloadWithDependencies(library, mode, parseInt(useCache));
+      await logic.getWithDependencies('download', library, mode, parseInt(useCache));
       console.log(`> done installing ${library}`);
     }
     catch (error) {
@@ -69,7 +69,7 @@ const cli = {
   clone: async (library, mode, useCache) => {
     try {
       console.log(`> cloning ${library} library and dependencies into "${config.folders.libraries}" folder`);
-      await logic.cloneWithDependencies(library, mode, parseInt(useCache));
+      await logic.getWithDependencies('clone', library, mode, parseInt(useCache));
       console.log(`> done installing ${library}`);
     }
     catch (error) {
@@ -100,9 +100,9 @@ const cli = {
     }
   },
   // computes & installs dependencies for h5p library
-  setup: async (library, version, install) => {
+  setup: async (library, version, download) => {
     try {
-      const action = install ? 'install' : 'clone';
+      const action = parseInt(download) ? 'download' : 'clone';
       let result = await logic.computeDependencies(library, 'view', 1, version);
       for (let item in result) {
         console.log(item);
@@ -112,9 +112,9 @@ const cli = {
         console.log(item);
       }
       console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
-      await logic[`${action}WithDependencies`](library, 'view', 1);
+      await logic.getWithDependencies(action, library, 'view', 1);
       console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
-      await logic[`${action}WithDependencies`](library, 'edit', 1);
+      await logic.getWithDependencies(action, library, 'edit', 1);
       console.log(`> done setting up ${library}`);
     }
     catch (error) {

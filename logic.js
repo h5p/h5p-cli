@@ -271,47 +271,10 @@ module.exports = {
   clone: async (org, repo, version, folder) => {
     return await execSync(`git clone ${fromTemplate(config.urls.library.clone, {org, repo, version})} ${folder}`, {cwd: config.folders.libraries}).toString();
   },
-  /* downloads dependencies to libraries folder and runs relevant npm commands
+  /* clones/downloads dependencies to libraries folder using git and runs relevant npm commands
   mode - 'view' or 'edit' to download non-editor or editor libraries
   saveToCache - if true cached dependency list is used */
-  downloadWithDependencies: async (library, mode, useCache) => {
-    let list;
-    const doneFile = `${config.folders.cache}/${library}${mode == 'edit' ? '_edit' : ''}.json`;
-    if (useCache && fs.existsSync(doneFile)) {
-      console.log(`>> using cache from ${doneFile}`);
-      list = JSON.parse(fs.readFileSync(doneFile, 'utf-8'));
-    }
-    else {
-      list = await module.exports.computeDependencies(library, mode);
-    }
-    for (let item in list) {
-      const version = `${list[item].version.major}.${list[item].version.minor}.${list[item].version.patch}`;
-      const folder = `${config.folders.libraries}/${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
-      if (fs.existsSync(folder)) {
-        console.log(`>> ~ skipping ${list[item].repoName}; it already exists.`);
-        continue;
-      }
-      console.log(`>> + installing ${list[item].repoName}`);
-      await module.exports.download(list[item].org, list[item].repoName, version, folder);
-      const packageFile = `${folder}/package.json`;
-      if (!fs.existsSync(packageFile)) {
-        continue;
-      }
-      const info = JSON.parse(fs.readFileSync(packageFile));
-      if (!info?.scripts?.build) {
-        continue;
-      }
-      console.log('>>> npm install');
-      console.log(await execSync('npm install', {cwd: folder}).toString());
-      console.log('>>> npm run build');
-      console.log(await execSync('npm run build', {cwd: folder}).toString());
-      fs.rmSync(`${folder}/node_modules`, { recursive: true, force: true });
-    }
-  },
-  /* clones dependencies to libraries folder using git and runs relevant npm commands
-  mode - 'view' or 'edit' to download non-editor or editor libraries
-  saveToCache - if true cached dependency list is used */
-  cloneWithDependencies: async (library, mode, useCache) => {
+  getWithDependencies: async (action, library, mode, useCache) => {
     let list;
     const doneFile = `${config.folders.cache}/${library}${mode == 'edit' ? '_edit' : ''}.json`;
     if (useCache && fs.existsSync(doneFile)) {
@@ -330,7 +293,12 @@ module.exports = {
         continue;
       }
       console.log(`>> + installing ${list[item].repoName}`);
-      console.log(await module.exports.clone(list[item].org, list[item].repoName, version, label));
+      if (action == 'download') {
+        await module.exports.download(list[item].org, list[item].repoName, version, folder);
+      }
+      else {
+        console.log(await module.exports.clone(list[item].org, list[item].repoName, version, label));
+      }
       const packageFile = `${folder}/package.json`;
       if (!fs.existsSync(packageFile)) {
         continue;
