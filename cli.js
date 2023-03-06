@@ -28,10 +28,22 @@ const cli = {
       console.log(error);
     }
   },
-  // computes dependencies for h5p library
-  deps: async (library, mode, saveToCache) => {
+  // list tags for library
+  tags: async (org, library) => {
     try {
-      const result = await logic.computeDependencies(library, mode, parseInt(saveToCache));
+      console.log('> fetching h5p library tags');
+      const result = await logic.tags(org, library);
+      console.log(result);
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
+  },
+  // computes dependencies for h5p library
+  deps: async (library, mode, saveToCache, version) => {
+    try {
+      const result = await logic.computeDependencies(library, mode, parseInt(saveToCache), version);
       for (let item in result) {
         console.log(item);
       }
@@ -44,8 +56,20 @@ const cli = {
   // installs dependencies for h5p library
   install: async (library, mode, useCache) => {
     try {
-      console.log(`> cloning ${library} library and dependencies into "${config.folders.libraries}" folder`);
+      console.log(`> downloading ${library} library and dependencies into "${config.folders.libraries}" folder`);
       await logic.downloadWithDependencies(library, mode, parseInt(useCache));
+      console.log(`> done installing ${library}`);
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
+  },
+  // clones dependencies for h5p library
+  clone: async (library, mode, useCache) => {
+    try {
+      console.log(`> cloning ${library} library and dependencies into "${config.folders.libraries}" folder`);
+      await logic.cloneWithDependencies(library, mode, parseInt(useCache));
       console.log(`> done installing ${library}`);
     }
     catch (error) {
@@ -56,14 +80,14 @@ const cli = {
   // installs core h5p libraries
   core: async () => {
     try {
-      for (let item of config.core.libraries) {
+      for (let item of config.core.clone) {
         const folder = `${config.folders.libraries}/${item}`;
         if (fs.existsSync(folder)) {
           console.log(`>> ~ skipping ${item}; it already exists.`);
           continue;
         }
         console.log(`>> + installing ${item}`);
-        await logic.download('h5p', item, folder);
+        await logic.clone('h5p', item, 'master', item);
       }
       for (let item of config.core.setup) {
         await cli.setup(item);
@@ -76,20 +100,21 @@ const cli = {
     }
   },
   // computes & installs dependencies for h5p library
-  setup: async (library) => {
+  setup: async (library, version, install) => {
     try {
-      let result = await logic.computeDependencies(library, 'view', 1);
+      const action = install ? 'install' : 'clone';
+      let result = await logic.computeDependencies(library, 'view', 1, version);
       for (let item in result) {
         console.log(item);
       }
-      result = await logic.computeDependencies(library, 'edit', 1);
+      result = await logic.computeDependencies(library, 'edit', 1, version);
       for (let item in result) {
         console.log(item);
       }
-      console.log(`> cloning ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
-      await logic.downloadWithDependencies(library, 'view', 1);
-      console.log(`> cloning ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
-      await logic.downloadWithDependencies(library, 'edit', 1);
+      console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
+      await logic[`${action}WithDependencies`](library, 'view', 1);
+      console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
+      await logic[`${action}WithDependencies`](library, 'edit', 1);
       console.log(`> done setting up ${library}`);
     }
     catch (error) {

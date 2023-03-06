@@ -17,14 +17,15 @@ module.exports = {
   urls: {
     registry: 'https://raw.githubusercontent.com/h5p/h5p-registry/main/libraries.json',
     library: {
-      language: 'https://raw.githubusercontent.com/{org}/{dep}/master/language/en.json',
-      semantics: 'https://raw.githubusercontent.com/{org}/{dep}/master/semantics.json',
-      list: 'https://raw.githubusercontent.com/{org}/{dep}/master/library.json',
-      zip: 'https://github.com/{org}/{repo}/archive/refs/heads/master.zip'
+      language: 'https://raw.githubusercontent.com/{org}/{dep}/{version}/language/en.json',
+      semantics: 'https://raw.githubusercontent.com/{org}/{dep}/{version}/semantics.json',
+      list: 'https://raw.githubusercontent.com/{org}/{dep}/{version}/library.json',
+      clone: `https://github.com/{org}/{repo}.git`,
+      zip: 'https://github.com/{org}/{repo}/archive/refs/heads/{version}.zip'
     }
   },
   core: {
-    libraries: ['h5p-editor-php-library', 'h5p-php-library'],
+    clone: ['h5p-editor-php-library', 'h5p-php-library'],
     setup: ['h5p-math-display']
   }
 }
