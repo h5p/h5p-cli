@@ -243,6 +243,7 @@ module.exports = {
     if (!fs.existsSync(folder)) {
       await module.exports.clone(org, repo, 'master', label);
     }
+    console.log(await execSync('git pull origin', {cwd: folder}).toString().split('\n'));
     const tags = await execSync('git tag', {cwd: folder}).toString().split('\n');
     const output = [];
     for (let item of tags) {
