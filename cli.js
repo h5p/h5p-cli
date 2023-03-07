@@ -20,7 +20,7 @@ const cli = {
       console.log('> fetching h5p library registry');
       const result = await logic.getRegistry(parseInt(ignoreCache));
       for (let item in result.regular) {
-        console.log(parseInt(reversed) ? result.regular[item].id : item);
+        console.log(`${parseInt(reversed) ? result.regular[item].id : item} (${result.regular[item].org})`);
       }
     }
     catch (error) {

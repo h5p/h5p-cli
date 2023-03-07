@@ -472,20 +472,20 @@ module.exports = {
       let preloadedCss = [];
       for (let item in cache.edit[library]) {
         if (item == library) {
-            continue;
-          }
+          continue;
+        }
         const entry = cache.edit[library][item];
         const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
         for (let jsItem of entry.preloadedJs) {
-          preloadedJs.push(`"../../../${config.folders.libraries}/${label}/${jsItem.path}"`);
+          preloadedJs.push(`"/${config.folders.libraries}/${label}/${jsItem.path}"`);
         }
         for (let cssItem of entry.preloadedCss) {
-          preloadedCss.push(`"../../../${config.folders.libraries}/${label}/${cssItem.path}"`);
+          preloadedCss.push(`"/${config.folders.libraries}/${label}/${cssItem.path}"`);
         }
       }
       const mathDisplay = JSON.parse(fs.readFileSync(`${config.folders.cache}/h5p-math-display.json`, 'utf-8'))['h5p-math-display'];
       const mathDisplayLabel = `${mathDisplay.id}-${mathDisplay.version.major}.${mathDisplay.version.minor}`;
-      preloadedJs.push(`"../../../${config.folders.libraries}/${mathDisplayLabel}/dist/h5p-math-display.js"`);
+      preloadedJs.push(`"/${config.folders.libraries}/${mathDisplayLabel}/dist/h5p-math-display.js"`);
       const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
         baseUrl,
         mathDisplayLabel
@@ -550,15 +550,15 @@ module.exports = {
         const entry = cache.view[library][item];
         const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
         for (let jsItem of entry.preloadedJs) {
-          preloadedJs.push(`../../../${config.folders.libraries}/${label}/${jsItem.path}`);
+          preloadedJs.push(`/${config.folders.libraries}/${label}/${jsItem.path}`);
         }
         for (let cssItem of entry.preloadedCss) {
-          preloadedCss.push(`../../../${config.folders.libraries}/${label}/${cssItem.path}`);
+          preloadedCss.push(`/${config.folders.libraries}/${label}/${cssItem.path}`);
         }
       }
       const mathDisplay = JSON.parse(fs.readFileSync(`${config.folders.cache}/h5p-math-display.json`, 'utf-8'))['h5p-math-display'];
       const mathDisplayLabel = `${mathDisplay.id}-${mathDisplay.version.major}.${mathDisplay.version.minor}`;
-      preloadedJs.push(`../../../${config.folders.libraries}/${mathDisplayLabel}/dist/h5p-math-display.js`);
+      preloadedJs.push(`/${config.folders.libraries}/${mathDisplayLabel}/dist/h5p-math-display.js`);
       const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
         baseUrl,
         mathDisplayLabel
