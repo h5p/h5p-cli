@@ -41,9 +41,9 @@ const cli = {
     }
   },
   // computes dependencies for h5p library
-  deps: async (library, mode, saveToCache, version) => {
+  deps: async (library, mode, saveToCache, version, folder) => {
     try {
-      const result = await logic.computeDependencies(library, mode, parseInt(saveToCache), version);
+      const result = await logic.computeDependencies(library, mode, parseInt(saveToCache), version, folder);
       for (let item in result) {
         console.log(item);
       }
@@ -65,7 +65,7 @@ const cli = {
       console.log(error);
     }
   },
-  // clones dependencies for h5p library
+  // clones dependencies for h5p library based on cache entries
   clone: async (library, mode, useCache) => {
     try {
       console.log(`> cloning ${library} library and dependencies into "${config.folders.libraries}" folder`);
@@ -103,6 +103,7 @@ const cli = {
   setup: async (library, version, download) => {
     try {
       const action = parseInt(download) ? 'download' : 'clone';
+      const latest = version ? false : true;
       let result = await logic.computeDependencies(library, 'view', 1, version);
       for (let item in result) {
         console.log(item);
@@ -112,10 +113,40 @@ const cli = {
         console.log(item);
       }
       console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
-      await logic.getWithDependencies(action, library, 'view', 1);
+      await logic.getWithDependencies(action, library, 'view', 1, latest);
       console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
-      await logic.getWithDependencies(action, library, 'edit', 1);
+      await logic.getWithDependencies(action, library, 'edit', 1, latest);
       console.log(`> done setting up ${library}`);
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
+  },
+  // generates local library registry entry
+  register: async (file) => {
+    try {
+      let registry = await logic.getRegistry();
+      const entry = JSON.parse(fs.readFileSync(file, 'utf-8'));
+      registry.reversed = {...registry.reversed, ...entry};
+      fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
+  },
+  // generates cache file for library based on local files; does not use git repos
+  use: async (library, folder) => {
+    try {
+      let result = await logic.computeDependencies(library, 'view', 1, null, folder);
+      for (let item in result) {
+        console.log(item);
+      }
+      result = await logic.computeDependencies(library, 'edit', 1, null, folder);
+      for (let item in result) {
+        console.log(item);
+      }
     }
     catch (error) {
       console.log('> error');

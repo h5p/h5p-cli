@@ -1,5 +1,6 @@
 const { execSync } = require("child_process");
 const fs = require('fs');
+const URL = require('url').URL;
 const superAgent = require('superagent');
 const admZip = require("adm-zip");
 const config = require('./config.js');
@@ -59,14 +60,13 @@ module.exports = {
   /* retrieves list of h5p librarie
   ignoreCache - if true cache file is overwritten with online data */
   getRegistry: async (ignoreCache) => {
-    const registryFile = `${config.folders.cache}/libraryRegistry.json`;
+    const registryFile = `${config.folders.cache}/${config.registry}`;
     let list;
     if (!ignoreCache && fs.existsSync(registryFile)) {
       list = JSON.parse(fs.readFileSync(registryFile, 'utf-8'));
     }
     else {
       list = await getFile(config.urls.registry, true);
-      fs.writeFileSync(registryFile, JSON.stringify(list));
     }
     const output = {
       regular: {},
@@ -81,12 +81,17 @@ module.exports = {
       output.reversed[list[item].id] = list[item];
       output.regular[list[item].repoName] = list[item];
     }
+    if (ignoreCache) {
+      fs.writeFileSync(registryFile, JSON.stringify(list));
+    }
     return output;
   },
   /* computes list of library dependencies in their correct load order
   mode - 'view' or 'edit' to compute non-editor or editor dependencies
-  saveToCache - if true list is saved to cache folder */
-  computeDependencies: async (library, mode, saveToCache, version) => {
+  saveToCache - if true list is saved to cache folder
+  version - optional version to compute; defaults to 'master'
+  folder - optional local library folder to use instead of git repo */
+  computeDependencies: async (library, mode, saveToCache, version, folder) => {
     console.log(`> ${library} deps ${mode}`);
     version = version || 'master';
     let level = -1;
@@ -97,13 +102,15 @@ module.exports = {
     const weights = {};
     toDo[library] = {
       parent: '',
-      version
+      version,
+      folder
     };
-    const getOptionals = async (org, dep, version) => {
+    const getOptionals = async (org, dep, version, dir) => {
       if (cache[dep].optionals) {
         return cache[dep].optionals;
       }
-      cache[dep].semantics = await getFile(fromTemplate(config.urls.library.semantics, { org, dep, version }), true);
+      const source = dir ? `${config.folders.libraries}/${dir}/semantics.json` : fromTemplate(config.urls.library.semantics, { org, dep, version });
+      cache[dep].semantics = await getFile(source, true);
       cache[dep].optionals = parseSemanticLibraries(cache[dep].semantics);
       return cache[dep].optionals;
     }
@@ -124,7 +131,7 @@ module.exports = {
       }
       return patch > -1 ? `${version}.${patch}` : version;
     }
-    const handleDepListEntry = async (machineName, parent, ver) => {
+    const handleDepListEntry = async (machineName, parent, ver, dir) => {
       const lib = registry.reversed[machineName];
       const entry = lib?.repoName;
       if (!entry) {
@@ -133,7 +140,7 @@ module.exports = {
       }
       const version = ver == 'master' ? ver : await latestPatch(lib.org, entry, ver);
       if (!done[level][entry] && !toDo[entry]?.parent) {
-        toDo[entry] = { parent, version };
+        toDo[entry] = { parent, version, folder: dir };
       }
       weights[entry] = weights[entry] ? weights[entry] + 1 : 1;
       return true;
@@ -158,13 +165,13 @@ module.exports = {
         process.stdout.write(' (cached) ');
       }
       else {
-        list = await getFile(fromTemplate(config.urls.library.list, { org, dep, version }), true);
+        const source = toDo[dep].folder ? `${config.folders.libraries}/${toDo[dep].folder}/library.json` : fromTemplate(config.urls.library.list, { org, dep, version });
+        list = await getFile(source, true);
         cache[dep] = list;
       }
       if (!list.title) {
-        console.log(`tag ${version} not found`);
-        throw 'tag_not_found';
-        return;
+        console.log(`missing library info for ${toDo[dep].folder || dep}`);
+        throw 'library_info_not_found';
       }
       done[level][dep].title = list.title;
       done[level][dep].version = {
@@ -183,20 +190,24 @@ module.exports = {
       done[level][dep].requiredBy.push(requiredByPath);
       done[level][dep].level = level;
       let ver = `${done[level][dep].version.major}.${done[level][dep].version.minor}.${done[level][dep].version.patch}`;
-      const optionals = await getOptionals(org, dep, ver);
+      const optionals = await getOptionals(org, dep, ver, toDo[dep].folder);
       if ((mode != 'edit' || level > 0) && list.preloadedDependencies) {
         for (let item of list.preloadedDependencies) {
           ver = version == 'master' ? version : `${item.majorVersion}.${item.minorVersion}`;
-          await handleDepListEntry(item.machineName, dep, ver);
+          const dir = folder ? `${item.machineName}-${item.majorVersion}.${item.minorVersion}` : null;
+          await handleDepListEntry(item.machineName, dep, ver, dir);
         }
         for (let item in optionals) {
-          await handleDepListEntry(item, dep, version == 'master' ? version : optionals[item].version);
+          ver = version == 'master' ? version : optionals[item].version;
+          const dir = folder ? `${item}-${optionals[item].version}` : null;
+          await handleDepListEntry(item, dep, ver, dir);
         }
       }
       if (mode == 'edit' && list.editorDependencies) {
         for (let item of list.editorDependencies) {
           ver = version == 'master' ? version : `${item.majorVersion}.${item.minorVersion}`;
-          await handleDepListEntry(item.machineName, dep, ver);
+          const dir = folder ? `${item.machineName}-${item.majorVersion}.${item.minorVersion}` : null;
+          await handleDepListEntry(item.machineName, dep, ver, dir);
         }
       }
       done[level][dep].semantics = list.semantics;
@@ -204,9 +215,8 @@ module.exports = {
       console.log('done');
     }
     registry = await module.exports.getRegistry();
-    if (!registry.regular[library]) {
+    if (!folder && !registry.regular[library]) {
       throw 'library_not_found';
-      return;
     }
     while (Object.keys(toDo).length) {
       level++;
@@ -235,7 +245,7 @@ module.exports = {
     process.stdout.write('\n');
     return output;
   },
-  // list tags for library
+  // list tags for library using git
   tags: async (org, repo) => {
     const library = await getFile(fromTemplate(config.urls.library.list, { org, dep: repo, version: 'master' }), true);
     const label = `${library.machineName}-${library.majorVersion}.${library.minorVersion}`;
@@ -243,7 +253,7 @@ module.exports = {
     if (!fs.existsSync(folder)) {
       await module.exports.clone(org, repo, 'master', label);
     }
-    console.log(await execSync('git pull origin', {cwd: folder}).toString().split('\n'));
+    console.log(await execSync('git pull origin', {cwd: folder}).toString());
     const tags = await execSync('git tag', {cwd: folder}).toString().split('\n');
     const output = [];
     for (let item of tags) {
@@ -269,13 +279,13 @@ module.exports = {
     fs.renameSync(`${config.folders.libraries}/${repo}-master`, target);
   },
   // clone repository using git
-  clone: async (org, repo, version, folder) => {
-    return await execSync(`git clone ${fromTemplate(config.urls.library.clone, {org, repo, version})} ${folder}`, {cwd: config.folders.libraries}).toString();
+  clone: async (org, repo, version, target) => {
+    return await execSync(`git clone ${fromTemplate(config.urls.library.clone, {org, repo})} ${target} --branch ${version}`, {cwd: config.folders.libraries}).toString();
   },
   /* clones/downloads dependencies to libraries folder using git and runs relevant npm commands
   mode - 'view' or 'edit' to download non-editor or editor libraries
   saveToCache - if true cached dependency list is used */
-  getWithDependencies: async (action, library, mode, useCache) => {
+  getWithDependencies: async (action, library, mode, useCache, latest) => {
     let list;
     const doneFile = `${config.folders.cache}/${library}${mode == 'edit' ? '_edit' : ''}.json`;
     if (useCache && fs.existsSync(doneFile)) {
@@ -287,7 +297,7 @@ module.exports = {
     }
     for (let item in list) {
       const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
-      const version = `${list[item].version.major}.${list[item].version.minor}.${list[item].version.patch}`;
+      const version = latest ? 'master' : `${list[item].version.major}.${list[item].version.minor}.${list[item].version.patch}`;
       const folder = `${config.folders.libraries}/${label}`;
       if (fs.existsSync(folder)) {
         console.log(`>> ~ skipping ${list[item].repoName}; it already exists.`);
@@ -428,9 +438,25 @@ const parseSemanticLibraries = (entries) => {
   }
   return output;
 }
-// download file from url and optionally parse it as JSON
-const getFile = async (url, parseJson) => {
-  let output = (await superAgent.get(url).set('User-Agent', 'h5p-cli').ok(res => [200, 404].includes(res.status))).text;
+// get file from source and optionally parse it as JSON
+const getFile = async (source, parseJson) => {
+  let local = false;
+  try {
+    new URL(source);
+  }
+  catch {
+    local = true;
+  }
+  let output;
+  if (local) {
+    if (!fs.existsSync(source)) {
+      return '';
+    }
+    output = fs.readFileSync(source, 'utf-8');
+  }
+  else {
+    output = (await superAgent.get(source).set('User-Agent', 'h5p-cli').ok(res => [200, 404].includes(res.status))).text;
+  }
   if (output == '404: Not Found') {
     return '';
   }
