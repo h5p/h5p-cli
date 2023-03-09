@@ -409,11 +409,12 @@ module.exports = {
       if (request.query.machineName) {
         const library = libraries[0];
         const version = cache.edit[library][library].version;
+        const label = `${cache.edit[library][library].id}-${version.major}.${version.minor}`;
         output = {
           name: cache.edit[library][library].id,
           version,
           title: cache.edit[library][library].title,
-          upgradesScript: 'http://example.com/upgrade.js',
+          upgradesScript: `${baseUrl}/${config.folders.libraries}/${label}/upgrades.js`,
           semantics: cache.edit[library][library].semantics,
           language: null,
           defaultLanguage: null,
@@ -644,6 +645,7 @@ const computePreloaded = async (library, baseUrl) => {
   for (let item in cache.edit[library]) {
     const entry = cache.edit[library][item];
     const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
+    const fullLabel = `${label}.${entry.version.patch}`;
     const languageFolder = `${config.folders.libraries}/${label}/language`;
     const langFile = `${languageFolder}/${session.language}.json`;
     if (fs.existsSync(langFile)) {
@@ -673,7 +675,7 @@ const computePreloaded = async (library, baseUrl) => {
     for (let cssItem of entry.preloadedCss) {
       preloadedCss.push(`${baseUrl}/${config.folders.libraries}/${label}/${cssItem.path}`);
     }
-    directories[label] = label;
+    directories[label] = fullLabel;
   }
   return { library, preloadedJs, preloadedCss, languages, translations, directories };
 }

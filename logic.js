@@ -189,7 +189,7 @@ module.exports = {
       }
       done[level][dep].requiredBy.push(requiredByPath);
       done[level][dep].level = level;
-      let ver = `${done[level][dep].version.major}.${done[level][dep].version.minor}.${done[level][dep].version.patch}`;
+      let ver = version == 'master' ? version : `${done[level][dep].version.major}.${done[level][dep].version.minor}.${done[level][dep].version.patch}`;
       const optionals = await getOptionals(org, dep, ver, toDo[dep].folder);
       if ((mode != 'edit' || level > 0) && list.preloadedDependencies) {
         for (let item of list.preloadedDependencies) {

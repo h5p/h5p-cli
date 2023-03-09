@@ -123,7 +123,7 @@ const cli = {
       console.log(error);
     }
   },
-  // generates local library registry entry
+  // updates local library registry entry
   register: async (file) => {
     try {
       let registry = await logic.getRegistry();
