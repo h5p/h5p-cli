@@ -253,8 +253,8 @@ module.exports = {
     if (!fs.existsSync(folder)) {
       await module.exports.clone(org, repo, 'master', label);
     }
-    console.log(await execSync('git pull origin', {cwd: folder}).toString());
-    const tags = await execSync('git tag', {cwd: folder}).toString().split('\n');
+    console.log(execSync('git pull origin', {cwd: folder}).toString());
+    const tags = execSync('git tag', {cwd: folder}).toString().split('\n');
     const output = [];
     for (let item of tags) {
       if (!item) {
@@ -280,7 +280,7 @@ module.exports = {
   },
   // clone repository using git
   clone: async (org, repo, version, target) => {
-    return await execSync(`git clone ${fromTemplate(config.urls.library.clone, {org, repo})} ${target} --branch ${version}`, {cwd: config.folders.libraries}).toString();
+    return execSync(`git clone ${fromTemplate(config.urls.library.clone, {org, repo})} ${target} --branch ${version}`, {cwd: config.folders.libraries}).toString();
   },
   /* clones/downloads dependencies to libraries folder using git and runs relevant npm commands
   mode - 'view' or 'edit' to download non-editor or editor libraries
@@ -319,9 +319,9 @@ module.exports = {
         continue;
       }
       console.log('>>> npm install');
-      console.log(await execSync('npm install', {cwd: folder}).toString());
+      console.log(execSync('npm install', {cwd: folder}).toString());
       console.log('>>> npm run build');
-      console.log(await execSync('npm run build', {cwd: folder}).toString());
+      console.log(execSync('npm run build', {cwd: folder}).toString());
       fs.rmSync(`${folder}/node_modules`, { recursive: true, force: true });
     }
   },
@@ -354,6 +354,88 @@ module.exports = {
       }
     }
     return output;
+  },
+  generateInfo: (folder, library) => {
+    const target = `content/${folder}`;
+    const lib = JSON.parse(fs.readFileSync(`${config.folders.cache}/${library}.json`, 'utf-8'))[library];
+    const viewDepsFile = `${config.folders.cache}/${library}.json`;
+    const editDepsFile = `${config.folders.cache}/${library}_edit.json`;
+    let libs = JSON.parse(fs.readFileSync(viewDepsFile, 'utf-8'));
+    const editLibs = JSON.parse(fs.readFileSync(editDepsFile, 'utf-8'));
+    libs = {...libs, ...editLibs};
+    const map = {};
+    const preloadedDependencies = [];
+    for (let item in libs) {
+      for (let predep of libs[item].preloadedDependencies) {
+        if (map[predep.machineName]) {
+          continue;
+        }
+        map[predep.machineName] = true;
+        preloadedDependencies.push(predep);
+      }
+    }
+    preloadedDependencies.push({
+      machineName: libs[library].id,
+      minorVersion: libs[library].version.minor,
+      majorVersion: libs[library].version.major,
+    });
+    const info = {
+      title: folder,
+      language: 'en',
+      mainLibrary: lib.id,
+      license: 'U',
+      defaultLanguage: 'en',
+      embedTypes: ['div'],
+      preloadedDependencies
+    };
+    fs.writeFileSync(`${target}/h5p.json`, JSON.stringify(info));
+  },
+  // upgrades content via current main library upgrades.js scripts
+  upgrade: (folder, library) => {
+    const lib = JSON.parse(fs.readFileSync(`${config.folders.cache}/${library}.json`, 'utf-8'))[library];
+    const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
+    let mainLib = {};
+    for (let item of info.preloadedDependencies) {
+      if (item.machineName == lib.id) {
+        mainLib = item;
+        break;
+      }
+    }
+    if (lib.version.major <= mainLib.majorVersion && lib.version.minor <= mainLib.minorVersion) {
+      return;
+    }
+    const upgradesFile = `${config.folders.libraries}/${lib.id}-${lib.version.major}.${lib.version.minor}/upgrades.js`;
+    if (!fs.existsSync(upgradesFile)) {
+      return;
+    }
+    const contentFile = `content/${folder}/content.json`;
+    let content = fs.readFileSync(contentFile, 'utf-8');
+    const backupContent = content;
+    content = JSON.parse(content);
+    eval(fs.readFileSync(upgradesFile, 'utf-8'));
+    let upgraded = false;
+    for (let major in H5PUpgrades[lib.id]) {
+      if (mainLib.majorVersion > major) {
+        continue;
+      }
+      for (let minor in H5PUpgrades[lib.id][major]) {
+        if (mainLib.minorVersion >= minor) {
+          continue;
+        }
+        upgraded = true;
+        console.log(`>>> running content upgrade script for version ${major}.${minor}`);
+        H5PUpgrades[lib.id][major][minor](content, (error, result) => {
+          content = result;
+        });
+      }
+    }
+    if (!upgraded) {
+      return;
+    }
+    fs.writeFileSync(`content/${folder}/old_content.json`, backupContent);
+    fs.writeFileSync(`content/${folder}/old_h5p.json`, JSON.stringify(info));
+    fs.writeFileSync(contentFile, JSON.stringify(content));
+    module.exports.generateInfo(folder, library);
   },
   fromTemplate
 }

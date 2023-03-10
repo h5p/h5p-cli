@@ -105,12 +105,12 @@
 <script type="text/javascript" src="/libraries/h5p-php-library/js/request-queue.js"></script>
 </head>
 <body>
+<div id="status">running {id} {version}; content created for {id} {contentVersion}</div>
 <div class="menu-holder {simple}" id="menu">
   <div class="menu">
     <div id="links">
       <div class="col50">
         <a class="button dashboard" href="/dashboard"><span class="button-label">dashboard</span></a>
-        <span class="button-label">{id} {version}</span>
       </div>
       <div class="col50 align-right">
         <div class="button delete" id="deleteButton"><span class="button-label">delete</span></div>
@@ -123,7 +123,7 @@
 <div class="submenu">
   <div class="menu">
     <div>
-      current session:
+      user state session:
       <select id="sessions"></select>
       <div class="button" id="newSessionButton"><span class="button-label">new session</span></div>
       <div class="session inline hidden" id="newSession">

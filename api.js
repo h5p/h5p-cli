@@ -145,35 +145,7 @@ module.exports = {
         cache.registry = await logic.getRegistry();
       }
       fs.mkdirSync(target);
-      let libs = JSON.parse(fs.readFileSync(viewDepsFile, 'utf-8'));
-      const editLibs = JSON.parse(fs.readFileSync(editDepsFile, 'utf-8'));
-      libs = {...libs, ...editLibs};
-      const map = {};
-      const preloadedDependencies = [];
-      for (let item in libs) {
-        for (let predep of libs[item].preloadedDependencies) {
-          if (map[predep.machineName]) {
-            continue;
-          }
-          map[predep.machineName] = true;
-          preloadedDependencies.push(predep);
-        }
-      }
-      preloadedDependencies.push({
-        machineName: libs[request.params.type].id,
-        minorVersion: libs[request.params.type].version.minor,
-        majorVersion: libs[request.params.type].version.major,
-      });
-      const info = {
-        title: request.params.folder,
-        language: 'en',
-        mainLibrary: cache.registry.regular[request.params.type].id,
-        license: 'U',
-        defaultLanguage: 'en',
-        embedTypes: ['div'],
-        preloadedDependencies
-      };
-      fs.writeFileSync(`${target}/h5p.json`, JSON.stringify(info));
+      logic.generateInfo(request.params.folder, request.params.type);
       fs.writeFileSync(`${target}/content.json`, JSON.stringify({}));
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify({
@@ -532,6 +504,7 @@ module.exports = {
       if (!await verifySetup(library, response)) {
         return;
       }
+      logic.upgrade(folder, library);
       const cacheFile = `${config.folders.cache}/${library}.json`;
       if (!cache?.view[library]) {
         if (fs.existsSync(cacheFile)) {
@@ -566,6 +539,15 @@ module.exports = {
       }));
       const html = fs.readFileSync('./assets/templates/view.html', 'utf-8');
       const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
+      const id = cache.view[library][library].id;
+      let mainLibrary = {};
+      for (let item of info.preloadedDependencies) {
+        if (item.machineName == id) {
+          mainLibrary = item;
+          break;
+        }
+      }
+      const machineName = `${id} ${cache.view[library][library].version.major}.${cache.view[library][library].version.minor}`;
       const input = {
         title: info.title,
         baseUrl,
@@ -573,9 +555,10 @@ module.exports = {
         folder,
         session: session.name,
         sessions: JSON.stringify(sessions),
-        machineName: `${cache.view[library][library].id} ${cache.view[library][library].version.major}.${cache.view[library][library].version.minor}`,
-        version: `${cache.view[library][library].version.major}.${cache.view[library][library].version.minor}.${cache.view[library][library].version.patch}`,
-        id: cache.view[library][library].id,
+        machineName,
+        version: `${cache.view[library][library].version.major}.${cache.view[library][library].version.minor}`,
+        contentVersion: `${mainLibrary.majorVersion}.${mainLibrary.minorVersion}`,
+        id,
         jsonContent: JSON.stringify(jsonContent),
         preloadedCss: JSON.stringify(preloadedCss),
         preloadedJs: JSON.stringify(preloadedJs),
