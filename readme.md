@@ -53,15 +53,16 @@ These are required to view and edit h5p content types.
 4. `h5p register <entry.json>` updates the local registry file.  
 5. `h5p deps <library> <mode> [saveToCache] [version] [folder]` computes dependencies for an h5p library.  
 Use `view` or `edit` for `<mode>` to generate dependencies for those cases.  
-Specify `1` for `<saveToCache>` to save the result in the cache folder.  
+Specify `1` for `[saveToCache]` to save the result in the cache folder.  
 Specify a `[version]` to compute deps for that version.  
 Specify a `[folder]` to compute deps based on the library from `libraries/[folder]` folder.  
 6. `h5p use <library> <folder>` computes view & edit dependencies for a `<library>` using the provided `libraries/<folder>` as the main library.  
 7. `h5p tags <org> <library>` lists current library versions.  
-8. `h5p clone <library> <mode> <useCache>` clones the library and its dependencies in the libraries folder.  
-`<mode>` is the same as above and `<useCache>` can be `1` if you want it to use the cached deps.  
-9. `h5p install <library> <mode> <useCache>` installs the library and its dependencies in the libraries folder.  
-`<mode>` is the same as above and `<useCache>` can be `1` if you want it to use the cached deps.  
+8. `h5p clone <library> <mode> [useCache]` clones the library and its dependencies in the libraries folder.  
+Use `view` or `edit` for `<mode>`.  
+`[useCache]` can be `1` if you want it to use the cached deps.  
+9. `h5p install <library> <mode> [useCache]` installs the library and its dependencies in the libraries folder.  
+`<mode>` and `[useCache]` are the same as above.  
 10. Below is an example for the setup CLI commands needed before viewing and editing content types in the `h5p-accordion` library.  
 The first 2 commands compute dependencies for view & edit modes and saves them in the cache folder.  
 The last 2 commands install the dependencies for those modes using the cached dependency lists.  
