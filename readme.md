@@ -74,7 +74,7 @@ h5p clone h5p-accordion view 1
 h5p clone h5p-accordion edit 1
 ```
 11. `h5p setup <library> [version] [download]` computes & clones/installs view and edit `<library>` dependencies.  
-You can optionally specify a specific library `[version]`.  
+You can optionally specify a library `[version]`.  
 Using `1` for the `[download]` parameter will download the libraries instead of cloning them as git repos.  
 12. To check the status of the setup for a given library you can run `h5p verify <h5p-repo-name>`.  
 Running `h5p verify h5p-accordion` should return something like below if the library was properly set up.  
