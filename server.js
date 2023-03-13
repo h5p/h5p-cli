@@ -24,7 +24,7 @@ app.post('/edit/:library/:folder/files', multer.single('file'), api.uploadFile);
 app.post('/edit/:library/:folder', multer.none(), api.saveContent);
 app.get('/content-user-data/:folder/:type/:id', api.getUserData);
 app.post('/content-user-data/:folder/:type/:id', api.setUserData);
-app.use(express.static('./'));
+app.use(express.static(`${require.main.path}/../`));
 app.listen(config.port, () => {
   console.log(`h5p content type development server running on port ${config.port}`);
 });

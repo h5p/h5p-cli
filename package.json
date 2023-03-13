@@ -5,7 +5,7 @@
   "author": "andrei.busuioc@h5p.group",
   "license": "MIT",
   "bin": {
-    "h5p-cli": "./bin/h5p-cli.js"
+    "h5p": "./bin/h5p.js"
   },
   "dependencies": {
     "adm-zip": "^0.5.9",

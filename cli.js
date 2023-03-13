@@ -164,6 +164,10 @@ const cli = {
       console.log(error);
     }
   },
+  // run the dev server
+  server: () => {
+    require('./server.js');
+  },
   // various utility commands
   utils: function() {
     if (typeof utils[arguments[0]] != 'function') {

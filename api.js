@@ -18,7 +18,7 @@ module.exports = {
   // renders dashboard
   dashboard: (request, response, next) => {
     try {
-      const html = fs.readFileSync('./assets/templates/dashboard.html', 'utf-8');
+      const html = fs.readFileSync(`${require.main.path}/../assets/templates/dashboard.html`, 'utf-8');
       const input = {
         host: `${request.protocol}://${request.get('host')}`,
         status: session.status
@@ -240,7 +240,7 @@ module.exports = {
   // renders view & edit modes on the same page
   splitView: (request, response, next) => {
     try {
-      const splitView_html = fs.readFileSync('./assets/templates/splitView.html', 'utf-8');
+      const splitView_html = fs.readFileSync(`${require.main.path}/../assets/templates/splitView.html`, 'utf-8');
       const input = {
         viewFrameSRC: `/view/${request.params.library}/${request.params.folder}?simple=1`,
         editFrameSRC: `/edit/${request.params.library}/${request.params.folder}?simple=1`
@@ -429,8 +429,8 @@ module.exports = {
       if (!await verifySetup(library, response)) {
         return;
       }
-      const metadataSemantics = fs.readFileSync(`${config.folders.assets}/metadataSemantics.json`, 'utf-8');
-      const copyrightSemantics = fs.readFileSync(`${config.folders.assets}/copyrightSemantics.json`, 'utf-8');
+      const metadataSemantics = fs.readFileSync(`${require.main.path}/../${config.folders.assets}/metadataSemantics.json`, 'utf-8');
+      const copyrightSemantics = fs.readFileSync(`${require.main.path}/../${config.folders.assets}/copyrightSemantics.json`, 'utf-8');
       const cacheFile = `${config.folders.cache}/${library}_edit.json`;
       if (!cache?.edit[library]) {
         if (fs.existsSync(cacheFile)) {
@@ -459,11 +459,11 @@ module.exports = {
       const mathDisplay = JSON.parse(fs.readFileSync(`${config.folders.cache}/h5p-math-display.json`, 'utf-8'))['h5p-math-display'];
       const mathDisplayLabel = `${mathDisplay.id}-${mathDisplay.version.major}.${mathDisplay.version.minor}`;
       preloadedJs.push(`"/${config.folders.libraries}/${mathDisplayLabel}/dist/h5p-math-display.js"`);
-      const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
+      const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${require.main.path}/../${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
         baseUrl,
         mathDisplayLabel
       }));
-      const html = fs.readFileSync('./assets/templates/edit.html', 'utf-8');
+      const html = fs.readFileSync(`${require.main.path}/../assets/templates/edit.html`, 'utf-8');
       const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`));
       const formParams = {
         params: JSON.parse(jsonContent),
@@ -533,11 +533,11 @@ module.exports = {
       const mathDisplay = JSON.parse(fs.readFileSync(`${config.folders.cache}/h5p-math-display.json`, 'utf-8'))['h5p-math-display'];
       const mathDisplayLabel = `${mathDisplay.id}-${mathDisplay.version.major}.${mathDisplay.version.minor}`;
       preloadedJs.push(`/${config.folders.libraries}/${mathDisplayLabel}/dist/h5p-math-display.js`);
-      const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
+      const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${require.main.path}/../${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
         baseUrl,
         mathDisplayLabel
       }));
-      const html = fs.readFileSync('./assets/templates/view.html', 'utf-8');
+      const html = fs.readFileSync(`${require.main.path}/../assets/templates/view.html`, 'utf-8');
       const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
       const id = cache.view[library][library].id;
       let mainLibrary = {};
