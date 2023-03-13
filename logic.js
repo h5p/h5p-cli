@@ -81,7 +81,7 @@ module.exports = {
       output.reversed[list[item].id] = list[item];
       output.regular[list[item].repoName] = list[item];
     }
-    if (ignoreCache) {
+    if (ignoreCache || !fs.existsSync(registryFile)) {
       fs.writeFileSync(registryFile, JSON.stringify(list));
     }
     return output;
@@ -284,7 +284,8 @@ module.exports = {
   },
   /* clones/downloads dependencies to libraries folder using git and runs relevant npm commands
   mode - 'view' or 'edit' to download non-editor or editor libraries
-  saveToCache - if true cached dependency list is used */
+  useCache - if true cached dependency list is used
+  latest - if true master branch libraries are used; otherwise the versions found in the cached deps list are used*/
   getWithDependencies: async (action, library, mode, useCache, latest) => {
     let list;
     const doneFile = `${config.folders.cache}/${library}${mode == 'edit' ? '_edit' : ''}.json`;
