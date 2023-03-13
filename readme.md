@@ -17,6 +17,7 @@ The `<entry.json>` file needs to be created. Below is an example of how it shoul
 You can also use this command to update existing registry entries.  
 <details>
   <summary>"entry.json" example</summary>
+
     ```
     {
       "H5P.Accordion": {
@@ -33,9 +34,11 @@ You can also use this command to update existing registry entries.
       }
     }
     ```
+
 </details>
 <details>
   <summary>CLI commands & instructions</summary>
+
     1. `npm install` to install the project's npm dependencies.  
     2. `node cli.js core` installs the core h5p libraries.  
     These are required to view and edit h5p content types.  
@@ -109,4 +112,5 @@ You can also use this command to update existing registry entries.
     You can also install the utils cli globally by running `npm install -g ./h5p-cli` from the folder where you cloned this repository. You can then run utils commands via `h5p-cli <cmd> [<args>...]`.  
     17. Git related utility commands may require you to add your public ssh key to the ssh agent after starting it.  
     Here are some guides on how to add an ssh key to the ssh agent on [Linux](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent), [Mac](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=mac#adding-your-ssh-key-to-the-ssh-agent), [Windows](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=windows#adding-your-ssh-key-to-the-ssh-agent).  
+
 </details>
