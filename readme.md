@@ -12,10 +12,12 @@ This is required for running and editing content types based on that `<library>`
 5. `node server.js` starts the dev server.  
 Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types. To view the dashboard point your browser to  
 http://localhost:8080/dashboard  
-6. To use your own library instead of cloning one from the online repositories run  
-`node cli.js use <library> <folder>` which computes dependencies for a `<library>` using the provided `libraries/<folder>` as the main library.  
+6. To use your own library run `node cli.js use <library> <folder>`.  
+This computes dependencies for a `<library>` using the provided `<folder>` as the main library.  
+An example for this would be `node cli.js use h5p-my-library H5P.MyLibrary-1.01`. This assumes that the `libraries/H5P.MyLibrary-1.01` folder exists and is a valid H5P library.  
+You can also use this command to switch between different versions of the same library as long as the `libraries/<folder>` exists and is a valid H5P library.  
 7. To create a new library the local registry needs to be made aware of its existence by running `node cli.js register <entry.json>`.  
-The `<entry.json>` file needs to be created. Below is an example of how it should look.  
+The `<entry.json>` file needs to be created. Below is an example.  
 You can also use this command to update existing registry entries.  
 <details>
 <summary>"entry.json" example</summary>
@@ -40,7 +42,7 @@ You can also use this command to update existing registry entries.
 </details>
 
 <details>
-<summary>CLI commands & instructions</summary>
+<summary>Detailed CLI commands & instructions</summary>
 
 1. `npm install` to install the project's npm dependencies.  
 2. `node cli.js core` installs the core h5p libraries.  
@@ -85,7 +87,10 @@ node cli.js deps h5p-accordion edit 1
 node cli.js install h5p-accordion view 1
 node cli.js install h5p-accordion edit 1
 ```
-11. To check the status of the setup for a given library you can run `node cli.js verify <h5p-repo-name>`.  
+11. `node cli.js setup <library> [version] [download]` computes & clones/installs view and edit `<library>` dependencies.  
+You can optionally specify a specific library `[version]`.  
+Using `1` for the `[download]` parameter will download the libraries instead of cloning them as git repos.  
+12. To check the status of the setup for a given library you can run `node cli.js verify <h5p-repo-name>`.  
 Running `node cli.js verify h5p-accordion` should return something like below if the library was properly set up.  
 ```json
 {
@@ -100,20 +105,20 @@ Running `node cli.js verify h5p-accordion` should return something like below if
 }
 
 ```
-12. `node server.js` starts the dev server.  
+13. `node server.js` starts the dev server.  
 Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types. To view the dashboard point your browser to  
 http://localhost:8080/dashboard  
-13. `node cli.js export <library> <folder>` will export the `<library>` content type from the "content/`<folder>`" folder.  
+14. `node cli.js export <library> <folder>` will export the `<library>` content type from the "content/`<folder>`" folder.  
 Make sure that the library's dependency lists are cached and that the dependencies are installed.  
 Once finished, the export command outputs the location of the resulting file.  
-14. When viewing content types you can create and switch between resume sessions. A resume session allows you to save the state of the content type that supports it so that it will be the same on reload.  
+15. When viewing content types you can create and switch between resume sessions. A resume session allows you to save the state of the content type that supports it so that it will be the same on reload.  
 You can create a new session by clicking on the "new session" button and entering a new name for it.  
 To switch between existing sessions simply choose the one you want from the dropdown. Choose the "null" session to not save states.  
-15. To stop auto reloading the view page on library file changes set `files.watch` to `false` in `config.json`.  
-16. Run `node cli.js utils help` to get a list of utility commands.  
+16. To stop auto reloading the view page on library file changes set `files.watch` to `false` in `config.json`.  
+17. Run `node cli.js utils help` to get a list of utility commands.  
 Each utility command can then be run via `node cli.js utils <cmd> [<args>...]`.  
 You can also install the utils cli globally by running `npm install -g ./h5p-cli` from the folder where you cloned this repository. You can then run utils commands via `h5p-cli <cmd> [<args>...]`.  
-17. Git related utility commands may require you to add your public ssh key to the ssh agent after starting it.  
+18. Git related utility commands may require you to add your public ssh key to the ssh agent after starting it.  
 Here are some guides on how to add an ssh key to the ssh agent on [Linux](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent), [Mac](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=mac#adding-your-ssh-key-to-the-ssh-agent), [Windows](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=windows#adding-your-ssh-key-to-the-ssh-agent).  
 
 </details>
