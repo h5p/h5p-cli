@@ -65,13 +65,13 @@ Use `view` or `edit` for `<mode>`.
 `<mode>` and `[useCache]` are the same as above.  
 10. Below is an example for the setup CLI commands needed before viewing and editing content types in the `h5p-accordion` library.  
 The first 2 commands compute dependencies for view & edit modes and saves them in the cache folder.  
-The last 2 commands install the dependencies for those modes using the cached dependency lists.  
+The last 2 commands clone the dependencies for those modes using the cached dependency lists.  
 Running `h5p setup h5p-accordion` is the equivalent for all 4 commands.  
 ```
 h5p deps h5p-accordion view 1
 h5p deps h5p-accordion edit 1
-h5p install h5p-accordion view 1
-h5p install h5p-accordion edit 1
+h5p clone h5p-accordion view 1
+h5p clone h5p-accordion edit 1
 ```
 11. `h5p setup <library> [version] [download]` computes & clones/installs view and edit `<library>` dependencies.  
 You can optionally specify a specific library `[version]`.  
