@@ -15,14 +15,14 @@ http://localhost:8080/dashboard
 6. To use your own library run `node cli.js use <library> <folder>`.  
 This computes dependencies for a `<library>` using the provided `<folder>` as the main library.  
 An example for this would be `node cli.js use h5p-my-library H5P.MyLibrary-1.01`. This assumes that the `libraries/H5P.MyLibrary-1.01` folder exists and is a valid H5P library.  
-You can also use this command to switch between different versions of the same library as long as the `libraries/<folder>` exists and is a valid H5P library.  
+You can also use this command to switch between different versions of the same library.  
 7. To create a new library the local registry needs to be made aware of its existence by running `node cli.js register <entry.json>`.  
 The `<entry.json>` file needs to be created. Below is an example.  
 You can also use this command to update existing registry entries.  
 <details>
 <summary>"entry.json" example</summary>
 
-  ```json
+  ```
   {
     "H5P.Accordion": {
       "id": "H5P.Accordion", // library machine name
@@ -49,23 +49,6 @@ You can also use this command to update existing registry entries.
 These are required to view and edit h5p content types.  
 3. `node cli.js list` lists the current h5p libraries.  
 4. `node cli.js register <entry.json>` updates the local registry file.  
-Below is an example of how the input json file should look.  
-```json
-{
-  "H5P.Accordion": {
-    "id": "H5P.Accordion", // library machine name
-    "title": "Accordion",
-    "repo": { // optional; required for clone, install and deps (without local folder) commands;
-      "type": "github",
-      "url": "https://github.com/h5p/h5p-accordion"
-    },
-    "author": "Batman",
-    "runnable": true, // specify true if this is a main library from which you can create content types; false if it's a dependency for another;
-    "repoName": "h5p-accordion", // library name
-    "org": "h5p" // optional organization under which the library is published
-  }
-}
-```
 5. `node cli.js deps <library> <mode> [saveToCache] [version] [folder]` computes dependencies for an h5p library.  
 Use `view` or `edit` for `<mode>` to generate dependencies for those cases.  
 Specify `1` for `<saveToCache>` to save the result in the cache folder.  
@@ -92,7 +75,7 @@ You can optionally specify a specific library `[version]`.
 Using `1` for the `[download]` parameter will download the libraries instead of cloning them as git repos.  
 12. To check the status of the setup for a given library you can run `node cli.js verify <h5p-repo-name>`.  
 Running `node cli.js verify h5p-accordion` should return something like below if the library was properly set up.  
-```json
+```
 {
   registry: true, // library found in registry
   lists: { view: true, edit: true }, // dependency lists are cached
