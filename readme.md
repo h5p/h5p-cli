@@ -61,7 +61,7 @@ Specify a `[folder]` to compute deps based on the library from `libraries/[folde
 8. `h5p clone <library> <mode> [useCache]` clones the library and its dependencies in the libraries folder.  
 Use `view` or `edit` for `<mode>`.  
 `[useCache]` can be `1` if you want it to use the cached deps.  
-9. `h5p install <library> <mode> [useCache]` installs the library and its dependencies in the libraries folder.  
+9. `h5p install <library> <mode> [useCache]` downloads the library and its dependencies in the libraries folder.  
 `<mode>` and `[useCache]` are the same as above.  
 10. Below is an example for the setup CLI commands needed before viewing and editing content types in the `h5p-accordion` library.  
 The first 2 commands compute dependencies for view & edit modes and saves them in the cache folder.  
