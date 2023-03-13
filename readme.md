@@ -49,7 +49,8 @@ You can also use this command to update existing registry entries.
 1. `npm install` to install the project's npm dependencies.  
 2. `h5p core` installs the core h5p libraries.  
 These are required to view and edit h5p content types.  
-3. `h5p list` lists the current h5p libraries.  
+3. `h5p list [machineName]` lists the current h5p libraries.  
+Use `1` for `[machineName]` to list the machine name instead of the default repo name.  
 4. `h5p register <entry.json>` updates the local registry file.  
 5. `h5p deps <library> <mode> [saveToCache] [version] [folder]` computes dependencies for an h5p library.  
 Use `view` or `edit` for `<mode>` to generate dependencies for those cases.  
