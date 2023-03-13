@@ -4,9 +4,8 @@ NodeJS version 17 is currently recommended due to newer versions having compatib
 
 QUICK START GUIDE
 
-0. Install this tool as a global app by running `npm install -g h5p`.  
-If that doesn't work try running `npm install -g ./h5p-cli` from the folder where you cloned this repository.  
-To uninstall the global app run `npm uninstall -g h5p-cli`.  
+0. Install this tool as a global app by running `npm install -g h5p`. To uninstall it run `npm uninstall -g h5p`.  
+If that doesn't work try running `npm install -g ./h5p-cli` from the folder where you cloned this repository. To uninstall it run `npm uninstall -g h5p-cli`.  
 1. `npm install` to install the project's npm dependencies (if you cloned this repository).  
 2. `h5p core` installs the core h5p libraries.  
 3. `h5p list` lists and caches the currently published h5p libraries in the local library registry (`cache/libraryRegistry.json`).  
