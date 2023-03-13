@@ -1,7 +1,9 @@
 An h5p toolkit for running, editing and developing h5p content types.  
 Make sure you have git, NodeJS and npm installed.  
 NodeJS version 17 is currently recommended due to newer versions having compatibility issues with the `node-sass` npm package which is required by some h5p libraries.  
-###QUICK START GUIDE
+
+QUICK START GUIDE
+
 1. `npm install` to install the project's npm dependencies.  
 2. `node cli.js core` installs the core h5p libraries.  
 3. `node cli.js list` lists and caches the currently published h5p libraries in the local library registry (`cache/libraryRegistry.json`).  
