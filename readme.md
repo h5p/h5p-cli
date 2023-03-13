@@ -54,7 +54,7 @@ Use `view` or `edit` for `<mode>` to generate dependencies for those cases.
 Specify `1` for `<saveToCache>` to save the result in the cache folder.  
 Specify a `[version]` to compute deps for that version.  
 Specify a `[folder]` to compute deps based on the library from `libraries/[folder]` folder.  
-6. `node cli.js use <library> <folder>`computes dependencies for a `<library>` using the provided `libraries/<folder>` as the main library.  
+6. `node cli.js use <library> <folder>` computes view & edit dependencies for a `<library>` using the provided `libraries/<folder>` as the main library.  
 7. `node cli.js tags <org> <library>` lists current library versions.  
 8. `node cli.js clone <library> <mode> <useCache>` clones the library and its dependencies in the libraries folder.  
 `<mode>` is the same as above and `<useCache>` can be `1` if you want it to use the cached deps.  
