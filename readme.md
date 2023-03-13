@@ -103,8 +103,7 @@ To switch between existing sessions simply choose the one you want from the drop
 16. To stop auto reloading the view page on library file changes set `files.watch` to `false` in `config.json`.  
 17. Run `h5p utils help` to get a list of utility commands.  
 Each utility command can then be run via `h5p utils <cmd> [<args>...]`.  
-You can also install the utils cli globally by running `npm install -g ./h5p-cli` from the folder where you cloned this repository. You can then run utils commands via `h5p-cli <cmd> [<args>...]`.  
-18. Git related utility commands may require you to add your public ssh key to the ssh agent after starting it.  
+18. Git related commands may require you to add your public ssh key to the ssh agent after starting it.  
 Here are some guides on how to add an ssh key to the ssh agent on [Linux](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent), [Mac](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=mac#adding-your-ssh-key-to-the-ssh-agent), [Windows](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=windows#adding-your-ssh-key-to-the-ssh-agent).  
 
 </details>
