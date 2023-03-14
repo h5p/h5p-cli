@@ -253,7 +253,7 @@ module.exports = {
     if (!fs.existsSync(folder)) {
       await module.exports.clone(org, repo, 'master', label);
     }
-    console.log(execSync('git pull origin', {cwd: folder}).toString());
+    execSync('git pull origin', {cwd: folder}).toString();
     const tags = execSync('git tag', {cwd: folder}).toString().split('\n');
     const output = [];
     for (let item of tags) {
@@ -298,13 +298,20 @@ module.exports = {
     }
     for (let item in list) {
       const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
-      const version = latest ? 'master' : `${list[item].version.major}.${list[item].version.minor}.${list[item].version.patch}`;
+      const listVersion = `${list[item].version.major}.${list[item].version.minor}.${list[item].version.patch}`;
+      const version = latest ? 'master' : listVersion;
       const folder = `${config.folders.libraries}/${label}`;
       if (fs.existsSync(folder)) {
-        console.log(`>> ~ skipping ${list[item].repoName}; it already exists.`);
+        if (latest) {
+          console.log(`>> ~ updating to ${list[item].repoName} ${listVersion}`);
+          console.log(execSync('git pull origin', {cwd: folder}).toString());
+        }
+        else {
+          console.log(`>> ~ skipping ${list[item].repoName} ${listVersion}; it already exists.`);
+        }
         continue;
       }
-      console.log(`>> + installing ${list[item].repoName}`);
+      console.log(`>> + installing ${list[item].repoName} ${listVersion}`);
       if (action == 'download') {
         await module.exports.download(list[item].org, list[item].repoName, version, folder);
       }
@@ -424,7 +431,7 @@ module.exports = {
           continue;
         }
         upgraded = true;
-        console.log(`>>> running content upgrade script for version ${major}.${minor}`);
+        console.log(`>>> running content upgrade script for ${library} version ${major}.${minor}`);
         H5PUpgrades[lib.id][major][minor](content, (error, result) => {
           content = result;
         });
