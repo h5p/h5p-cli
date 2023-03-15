@@ -409,6 +409,10 @@ module.exports = {
         break;
       }
     }
+    mainLib.majorVersion = parseInt(mainLib.majorVersion);
+    mainLib.minorVersion = parseInt(mainLib.minorVersion);
+    lib.version.major = parseInt(lib.version.major);
+    lib.version.minor = parseInt(lib.version.minor);
     if (lib.version.major <= mainLib.majorVersion && lib.version.minor <= mainLib.minorVersion) {
       return;
     }
@@ -423,11 +427,13 @@ module.exports = {
     eval(fs.readFileSync(upgradesFile, 'utf-8'));
     let upgraded = false;
     for (let major in H5PUpgrades[lib.id]) {
+      major = parseInt(major);
       if (mainLib.majorVersion > major) {
         continue;
       }
       for (let minor in H5PUpgrades[lib.id][major]) {
-        if (mainLib.minorVersion >= minor) {
+        minor = parseInt(minor);
+        if (mainLib.majorVersion == major && mainLib.minorVersion >= minor) {
           continue;
         }
         upgraded = true;
@@ -440,8 +446,9 @@ module.exports = {
     if (!upgraded) {
       return;
     }
-    fs.writeFileSync(`content/${folder}/old_content.json`, backupContent);
-    fs.writeFileSync(`content/${folder}/old_h5p.json`, JSON.stringify(info));
+    const label = `${mainLib.majorVersion}.${mainLib.minorVersion}`;
+    fs.writeFileSync(`content/${folder}/${label}_content.json`, backupContent);
+    fs.writeFileSync(`content/${folder}/${label}_h5p.json`, JSON.stringify(info));
     fs.writeFileSync(contentFile, JSON.stringify(content));
     module.exports.generateInfo(folder, library);
   },
