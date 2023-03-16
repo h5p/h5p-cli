@@ -464,7 +464,15 @@ module.exports = {
         mathDisplayLabel
       }));
       const html = fs.readFileSync(`${require.main.path}/../assets/templates/edit.html`, 'utf-8');
-      const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`));
+      const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
+      const id = cache.edit[library][library].id;
+      let mainLibrary = {};
+      for (let item of info.preloadedDependencies) {
+        if (item.machineName == id) {
+          mainLibrary = item;
+          break;
+        }
+      }
       const formParams = {
         params: JSON.parse(jsonContent),
         metadata: info
@@ -482,6 +490,7 @@ module.exports = {
         l10n: JSON.stringify(l10n),
         machineName: `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
         version: `${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}.${cache.edit[library][library].version.patch}`,
+        contentVersion: `${mainLibrary.majorVersion}.${mainLibrary.minorVersion}`,
         id: cache.edit[library][library].id,
         parameters: he.encode(JSON.stringify(formParams)),
         libraryConfig: JSON.stringify(libraryConfig),

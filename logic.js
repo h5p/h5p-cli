@@ -73,8 +73,10 @@ module.exports = {
       reversed: {}
     }
     for (let item in list) {
-      list[item].repoName = list[item].repo.url.split('/').slice(-1)[0];
-      list[item].org = list[item].repo.url.split('/').slice(3, 4)[0];
+      if (list[item].repo) {
+        list[item].repoName = list[item].repo.url.split('/').slice(-1)[0];
+        list[item].org = list[item].repo.url.split('/').slice(3, 4)[0];
+      }
       delete list[item].resume;
       delete list[item].fullscreen;
       delete list[item].xapiVerbs;

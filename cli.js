@@ -123,22 +123,28 @@ const cli = {
       console.log(error);
     }
   },
-  // updates local library registry entry
-  register: async (file) => {
-    try {
-      let registry = await logic.getRegistry();
-      const entry = JSON.parse(fs.readFileSync(file, 'utf-8'));
-      registry.reversed = {...registry.reversed, ...entry};
-      fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));
-    }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
-    }
-  },
   // generates cache file for library based on local files; does not use git repos
   use: async (library, folder) => {
     try {
+      let registry = await logic.getRegistry();
+      if (!registry.regular[library]) {
+        console.log(`registering ${library} library`);
+        const lib = JSON.parse(fs.readFileSync(`${config.folders.libraries}/${folder}/library.json`, 'utf-8'));
+        const repoName = lib.machineName.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase().replace('.', '-');
+        if (library != repoName) {
+          throw `provided "${library}" differs from computed "${repoName}"`;
+        }
+        const entry = {};
+        entry[lib.machineName] = {
+          id: lib.machineName,
+          title: lib.title,
+          author: lib.author,
+          runnable: lib.runnable,
+          repoName
+        }
+        registry.reversed = {...registry.reversed, ...entry};
+        fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));
+      }
       let result = await logic.computeDependencies(library, 'view', 1, null, folder);
       for (let item in result) {
         console.log(item);
