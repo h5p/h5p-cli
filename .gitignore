@@ -1,4 +1,4 @@
 node_modules
 package-lock.json
-/libraries/**
-!/libraries/H5P.GreetingCard-1.0/*
+/libraries/*
+!/libraries/H5P.GreetingCard-1.0

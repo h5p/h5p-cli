@@ -1,0 +1,19 @@
+[ 
+  { 
+    "label": "Greeting text",
+    "name": "greeting",
+    "type": "text",
+    "widget": "html",
+    "enterMode": "p",
+    "default": "Hello world!",
+    "description": "The greeting text displayed to the end user.",
+    "tags": ["strong", "em", "sub", "h2", "h3", "pre", "code"]
+  }, 
+  {
+    "label": "Card image",
+    "name": "image",
+    "type": "image",
+    "optional": true,
+    "description": "Image shown on card, optional. Without this the card will show just the text."
+  }
+] 
