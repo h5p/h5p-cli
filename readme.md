@@ -17,8 +17,8 @@ http://localhost:8080/dashboard
 6. To use your own library run `h5p use <library> <folder>`.  
 This computes dependencies for a `<library>` using the provided `<folder>` as the main library.  
 An example for this is `h5p use h5p-greeting-card H5P.GreetingCard-1.0`. It will compute and cache dependencies for the library in `libraries/H5P.GreetingCard-1.0`.  
-A library development tutorial can be found [here](https://h5p.org/library-development).  
 You can also use this command to switch between different versions of the same library.  
+A library development tutorial can be found [here](https://h5p.org/library-development).  
 <details>
 <summary>Detailed CLI commands & instructions</summary>
 
