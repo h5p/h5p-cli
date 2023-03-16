@@ -71,6 +71,7 @@ Running `h5p verify h5p-accordion` should return something like below if the lib
 12. `h5p server` starts the dev server.  
 Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types. To view the dashboard point your browser to  
 http://localhost:8080/dashboard  
+When viewing content types they are automatically upgraded to the version of the currently used main library.  
 13. `h5p export <library> <folder>` will export the `<library>` content type from the `content/<folder>` folder.  
 Make sure that the library's dependency lists are cached and that the dependencies are installed.  
 Once finished, the export command outputs the location of the resulting file.  
