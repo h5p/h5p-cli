@@ -123,6 +123,19 @@ const cli = {
       console.log(error);
     }
   },
+  // updates local library registry entry
+  register: async (file) => {
+    try {
+      let registry = await logic.getRegistry();
+      const entry = JSON.parse(fs.readFileSync(file, 'utf-8'));
+      registry.reversed = {...registry.reversed, ...entry};
+      fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
+  },
   // generates cache file for library based on local files; does not use git repos
   use: async (library, folder) => {
     try {
