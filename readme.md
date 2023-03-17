@@ -37,8 +37,8 @@ Use `view` or `edit` for `<mode>` to generate dependencies for those cases.
 Specify `1` for `[saveToCache]` to save the result in the cache folder.  
 Specify a `[version]` to compute deps for that version.  
 Specify a `[folder]` to compute deps based on the library from `libraries/[folder]` folder.  
-6. `h5p use <library> <folder>` computes view & edit dependencies for a `<library>` using the provided `libraries/<folder>` as the main library.
-Its dependencies also need to be present in the `libraries` folder.  
+6. `h5p use <library> <folder>` computes view & edit dependencies for a `<library>` using the provided `libraries/<folder>` as the main library. A local library registry entry will also be created if the library is missing from the local registry.  
+Library dependencies also need to be present in the `libraries` folder.  
 7. To clone a new library the local registry needs to be made aware of its existence by running `h5p register <entry.json>`.  
 The `<entry.json>` file needs to be created. Below is an example.  
 You can also use this command to update existing registry entries.  
