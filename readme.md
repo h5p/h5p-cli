@@ -40,27 +40,22 @@ Its dependencies also need to be present in the `libraries` folder.
 7. To clone a new library the local registry needs to be made aware of its existence by running `h5p register <entry.json>`.  
 The `<entry.json>` file needs to be created. Below is an example.  
 You can also use this command to update existing registry entries.  
-<details>
-<summary>"entry.json" example</summary>
-
-  ```
-  {
-    "H5P.Accordion": {
-      "id": "H5P.Accordion", // library machine name
-      "title": "Accordion",
-      "repo": { // optional; required for clone, install and deps commands
-        "type": "github",
-        "url": "https://github.com/h5p/h5p-accordion"
-      },
-      "author": "Batman",
-      "runnable": true, // specify true if this is a main library from which you can create content types; false if it's a dependency for another
-      "repoName": "h5p-accordion", // library name
-      "org": "h5p" // github organization under which the library is published; optional; required for clone, install and deps commands
-    }
+```
+{
+  "H5P.Accordion": {
+    "id": "H5P.Accordion", // library machine name
+    "title": "Accordion",
+    "repo": { // optional; required for clone, install and deps commands
+      "type": "github",
+      "url": "https://github.com/h5p/h5p-accordion"
+    },
+    "author": "Batman",
+    "runnable": true, // specify true if this is a main library from which you can create content types; false if it's a dependency for another
+    "repoName": "h5p-accordion", // library name
+    "org": "h5p" // github organization under which the library is published; optional; required for clone, install and deps commands
   }
-  ```
-
-</details>
+}
+```
 8. `h5p clone <library> <mode> [useCache]` clones the library and its dependencies in the libraries folder.  
 Use `view` or `edit` for `<mode>`.  
 `[useCache]` can be `1` if you want it to use the cached deps.  
