@@ -29,14 +29,16 @@ These are required to view and edit h5p content types.
 3. `h5p list [machineName] [ignoreCache]` lists the current h5p libraries.  
 Use `1` for `[machineName]` to list the machine name instead of the default repo name.  
 Use `1` for `[ignoreCache]` to recreate the local registry.  
-4. `h5p deps <library> <mode> [saveToCache] [version] [folder]` computes dependencies for an h5p library.  
+The output format is `<library> (<org>)`.  
+4. `h5p tags <org> <library>` lists current library versions.  
+The `<org>` for a library is mentioned in the `list` command output.  
+5. `h5p deps <library> <mode> [saveToCache] [version] [folder]` computes dependencies for an h5p library.  
 Use `view` or `edit` for `<mode>` to generate dependencies for those cases.  
 Specify `1` for `[saveToCache]` to save the result in the cache folder.  
 Specify a `[version]` to compute deps for that version.  
 Specify a `[folder]` to compute deps based on the library from `libraries/[folder]` folder.  
-5. `h5p use <library> <folder>` computes view & edit dependencies for a `<library>` using the provided `libraries/<folder>` as the main library.
+6. `h5p use <library> <folder>` computes view & edit dependencies for a `<library>` using the provided `libraries/<folder>` as the main library.
 Its dependencies also need to be present in the `libraries` folder.  
-6. `h5p tags <org> <library>` lists current library versions.  
 7. To clone a new library the local registry needs to be made aware of its existence by running `h5p register <entry.json>`.  
 The `<entry.json>` file needs to be created. Below is an example.  
 You can also use this command to update existing registry entries.  
@@ -72,7 +74,7 @@ h5p clone h5p-accordion view 1
 h5p clone h5p-accordion edit 1
 ```
 11. `h5p setup <library> [version] [download]` computes & clones/installs view and edit `<library>` dependencies.  
-You can optionally specify a library `[version]`.  
+You can optionally specify a library `[version]`. To view current versions for a library use the `tags` command.  
 Using `1` for the `[download]` parameter will download the libraries instead of cloning them as git repos.  
 12. To check the status of the setup for a given library you can run `h5p verify <h5p-repo-name>`.  
 Running `h5p verify h5p-accordion` should return something like below if the library was properly set up.  
