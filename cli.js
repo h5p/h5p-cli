@@ -136,7 +136,7 @@ const cli = {
       console.log(error);
     }
   },
-  // generates cache file for library based on local files; does not use git repos
+  // generates cache entries for library based on local files; does not use git repos
   use: async (library, folder) => {
     try {
       let registry = await logic.getRegistry();

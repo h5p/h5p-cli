@@ -188,6 +188,9 @@ module.exports = {
           continue;
         }
         const info = JSON.parse(fs.readFileSync(`content/${item}/h5p.json`, 'utf-8'));
+        if (!cache.registry.reversed[info.mainLibrary]) {
+          continue;
+        }
         list.push({
           id: info.mainLibrary,
           title: info.title,
@@ -387,7 +390,7 @@ module.exports = {
           version,
           title: cache.edit[library][library].title,
           upgradesScript: `${baseUrl}/${config.folders.libraries}/${label}/upgrades.js`,
-          semantics: cache.edit[library][library].semantics,
+          semantics: JSON.parse(fs.readFileSync(`${config.folders.libraries}/${label}/semantics.json`, 'utf-8')),
           language: null,
           defaultLanguage: null,
           languages: preloaded[0].languages,
@@ -489,7 +492,7 @@ module.exports = {
         preloadedJs: preloadedJs.join(',\n'),
         l10n: JSON.stringify(l10n),
         machineName: `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
-        version: `${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}.${cache.edit[library][library].version.patch}`,
+        version: `${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
         contentVersion: `${mainLibrary.majorVersion}.${mainLibrary.minorVersion}`,
         id: cache.edit[library][library].id,
         parameters: he.encode(JSON.stringify(formParams)),
@@ -679,8 +682,8 @@ const handleError = (error, response) => {
 const verifySetup = async (library, response) => {
   const setupStatus = await logic.verifySetup(library);
   if (!setupStatus.ok) {
-    session.status = `"${library}" is not properly setup. Please run "node cli.js setup ${library}" for setup.
-For a detailed setup status report please run "node cli.js verify ${library}".`;
+    session.status = `"${library}" is not properly set up. Please run "h5p setup ${library}" for setup.
+For a detailed setup status report please run "h5p verify ${library}".`;
     response.redirect(`/dashboard`);
     return false;
   }

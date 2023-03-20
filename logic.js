@@ -212,7 +212,6 @@ module.exports = {
           await handleDepListEntry(item.machineName, dep, ver, dir);
         }
       }
-      done[level][dep].semantics = list.semantics;
       delete toDo[dep];
       console.log('done');
     }
