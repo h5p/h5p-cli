@@ -130,7 +130,7 @@ module.exports = {
       if (!fs.existsSync(viewDepsFile) || !fs.existsSync(editDepsFile)) {
         response.set('Content-Type', 'application/json');
         response.end(JSON.stringify({
-          error: `"${request.params.type}" library not cached; please run "node cli.js setup ${request.params.type}".`
+          error: `"${request.params.type}" library not cached; please run "h5p setup ${request.params.type}".`
         }));
         return;
       }
