@@ -5,183 +5,117 @@ const utils = require('./assets/utils/cli.js');
 const cli = {
   // exports content type as .h5p zipped file
   export: (library, folder) => {
-    try {
-      const file = logic.export(library, folder);
-      console.log(file);
-    }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
-    }
+    const file = logic.export(library, folder);
+    console.log(file);
   },
   // lists h5p libraries
   list: async (reversed, ignoreCache) => {
-    try {
-      console.log('> fetching h5p library registry');
-      const result = await logic.getRegistry(parseInt(ignoreCache));
-      for (let item in result.regular) {
-        console.log(`${parseInt(reversed) ? result.regular[item].id : item} (${result.regular[item].org})`);
-      }
-    }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
+    console.log('> fetching h5p library registry');
+    const result = await logic.getRegistry(parseInt(ignoreCache));
+    for (let item in result.regular) {
+      console.log(`${parseInt(reversed) ? result.regular[item].id : item} (${result.regular[item].org})`);
     }
   },
   // list tags for library
   tags: async (org, library) => {
-    try {
-      console.log('> fetching h5p library tags');
-      const result = await logic.tags(org, library);
-      console.log(result);
-    }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
-    }
+    console.log('> fetching h5p library tags');
+    const result = await logic.tags(org, library);
+    console.log(result);
   },
   // computes dependencies for h5p library
   deps: async (library, mode, saveToCache, version, folder) => {
-    try {
-      const result = await logic.computeDependencies(library, mode, parseInt(saveToCache), version, folder);
-      for (let item in result) {
-        console.log(item);
-      }
-    }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
+    const result = await logic.computeDependencies(library, mode, parseInt(saveToCache), version, folder);
+    for (let item in result) {
+      console.log(item);
     }
   },
   // installs dependencies for h5p library
   install: async (library, mode, useCache) => {
-    try {
-      console.log(`> downloading ${library} library and dependencies into "${config.folders.libraries}" folder`);
-      await logic.getWithDependencies('download', library, mode, parseInt(useCache));
-      console.log(`> done installing ${library}`);
-    }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
-    }
+    console.log(`> downloading ${library} library and dependencies into "${config.folders.libraries}" folder`);
+    await logic.getWithDependencies('download', library, mode, parseInt(useCache));
+    console.log(`> done installing ${library}`);
   },
   // clones dependencies for h5p library based on cache entries
   clone: async (library, mode, useCache) => {
-    try {
-      console.log(`> cloning ${library} library and dependencies into "${config.folders.libraries}" folder`);
-      await logic.getWithDependencies('clone', library, mode, parseInt(useCache));
-      console.log(`> done installing ${library}`);
-    }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
-    }
+    console.log(`> cloning ${library} library and dependencies into "${config.folders.libraries}" folder`);
+    await logic.getWithDependencies('clone', library, mode, parseInt(useCache));
+    console.log(`> done installing ${library}`);
   },
   // installs core h5p libraries
   core: async () => {
-    try {
-      for (let item of config.core.clone) {
-        const folder = `${config.folders.libraries}/${item}`;
-        if (fs.existsSync(folder)) {
-          console.log(`>> ~ skipping ${item}; it already exists.`);
-          continue;
-        }
-        console.log(`>> + installing ${item}`);
-        await logic.clone('h5p', item, 'master', item);
+    for (let item of config.core.clone) {
+      const folder = `${config.folders.libraries}/${item}`;
+      if (fs.existsSync(folder)) {
+        console.log(`>> ~ skipping ${item}; it already exists.`);
+        continue;
       }
-      for (let item of config.core.setup) {
-        await cli.setup(item);
-      }
-      console.log('> done setting up core libraries');
+      console.log(`>> + installing ${item}`);
+      await logic.clone('h5p', item, 'master', item);
     }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
+    for (let item of config.core.setup) {
+      await cli.setup(item);
     }
+    console.log('> done setting up core libraries');
   },
   // computes & installs dependencies for h5p library
   setup: async (library, version, download) => {
-    try {
-      const action = parseInt(download) ? 'download' : 'clone';
-      const latest = version ? false : true;
-      let result = await logic.computeDependencies(library, 'view', 1, version);
-      for (let item in result) {
-        console.log(item);
-      }
-      result = await logic.computeDependencies(library, 'edit', 1, version);
-      for (let item in result) {
-        console.log(item);
-      }
-      console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
-      await logic.getWithDependencies(action, library, 'view', 1, latest);
-      console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
-      await logic.getWithDependencies(action, library, 'edit', 1, latest);
-      console.log(`> done setting up ${library}`);
+    const action = parseInt(download) ? 'download' : 'clone';
+    const latest = version ? false : true;
+    let result = await logic.computeDependencies(library, 'view', 1, version);
+    for (let item in result) {
+      console.log(item);
     }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
+    result = await logic.computeDependencies(library, 'edit', 1, version);
+    for (let item in result) {
+      console.log(item);
     }
+    console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
+    await logic.getWithDependencies(action, library, 'view', 1, latest);
+    console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
+    await logic.getWithDependencies(action, library, 'edit', 1, latest);
+    console.log(`> done setting up ${library}`);
   },
   // updates local library registry entry
   register: async (file) => {
-    try {
-      let registry = await logic.getRegistry();
-      const entry = JSON.parse(fs.readFileSync(file, 'utf-8'));
-      registry.reversed = {...registry.reversed, ...entry};
-      fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));
-    }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
-    }
+    let registry = await logic.getRegistry();
+    const entry = JSON.parse(fs.readFileSync(file, 'utf-8'));
+    registry.reversed = {...registry.reversed, ...entry};
+    fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));
   },
   // generates cache entries for library based on local files; does not use git repos
   use: async (library, folder) => {
-    try {
-      let registry = await logic.getRegistry();
-      if (!registry.regular[library]) {
-        console.log(`registering ${library} library`);
-        const lib = JSON.parse(fs.readFileSync(`${config.folders.libraries}/${folder}/library.json`, 'utf-8'));
-        const repoName = lib.machineName.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase().replace('.', '-');
-        if (library != repoName) {
-          throw `provided "${library}" differs from computed "${repoName}"`;
-        }
-        const entry = {};
-        entry[lib.machineName] = {
-          id: lib.machineName,
-          title: lib.title,
-          author: lib.author,
-          runnable: lib.runnable,
-          repoName
-        }
-        registry.reversed = {...registry.reversed, ...entry};
-        fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));
+    let registry = await logic.getRegistry();
+    if (!registry.regular[library]) {
+      console.log(`registering ${library} library`);
+      const lib = JSON.parse(fs.readFileSync(`${config.folders.libraries}/${folder}/library.json`, 'utf-8'));
+      const repoName = lib.machineName.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase().replace('.', '-');
+      if (library != repoName) {
+        throw `provided "${library}" differs from computed "${repoName}"`;
       }
-      let result = await logic.computeDependencies(library, 'view', 1, null, folder);
-      for (let item in result) {
-        console.log(item);
+      const entry = {};
+      entry[lib.machineName] = {
+        id: lib.machineName,
+        title: lib.title,
+        author: lib.author,
+        runnable: lib.runnable,
+        repoName
       }
-      result = await logic.computeDependencies(library, 'edit', 1, null, folder);
-      for (let item in result) {
-        console.log(item);
-      }
+      registry.reversed = {...registry.reversed, ...entry};
+      fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));
     }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
+    let result = await logic.computeDependencies(library, 'view', 1, null, folder);
+    for (let item in result) {
+      console.log(item);
+    }
+    result = await logic.computeDependencies(library, 'edit', 1, null, folder);
+    for (let item in result) {
+      console.log(item);
     }
   },
   // generates report that verifies if an h5p library and its dependencies have been correctly computed & installed
   verify: async (library) => {
-    try {
-      let result = await logic.verifySetup(library);
-      console.log(result);
-    }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
-    }
+    let result = await logic.verifySetup(library);
+    console.log(result);
   },
   // run the dev server
   server: () => {
@@ -196,9 +130,15 @@ const cli = {
     utils[arguments[0]].apply(null, Array.prototype.slice.call(arguments).slice(1));
   }
 }
-if (typeof cli[process.argv[2]] == 'function') {
-  cli[process.argv[2]].apply(null, process.argv.slice(3));
+try {
+  if (typeof cli[process.argv[2]] == 'function') {
+    cli[process.argv[2]].apply(null, process.argv.slice(3));
+  }
+  else {
+    console.log(`> "${process.argv[2]}" is not a valid command`);
+  }
 }
-else {
-  console.log(`> "${process.argv[2]}" is not a valid command`);
+catch (error) {
+  console.log('> error');
+  console.log(error);
 }

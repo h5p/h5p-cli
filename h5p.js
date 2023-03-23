@@ -9,4 +9,4 @@ const setupFolders = () => {
   }
 }
 setupFolders();
-const utils = require('../cli.js');
+require('./cli.js');

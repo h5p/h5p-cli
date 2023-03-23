@@ -18,7 +18,7 @@ module.exports = {
   // renders dashboard
   dashboard: (request, response, next) => {
     try {
-      const html = fs.readFileSync(`${require.main.path}/../assets/templates/dashboard.html`, 'utf-8');
+      const html = fs.readFileSync(`${config.folders.assets}/templates/dashboard.html`, 'utf-8');
       const input = {
         host: `${request.protocol}://${request.get('host')}`,
         status: session.status
@@ -243,7 +243,7 @@ module.exports = {
   // renders view & edit modes on the same page
   splitView: (request, response, next) => {
     try {
-      const splitView_html = fs.readFileSync(`${require.main.path}/../assets/templates/splitView.html`, 'utf-8');
+      const splitView_html = fs.readFileSync(`${config.folders.assets}/templates/splitView.html`, 'utf-8');
       const input = {
         viewFrameSRC: `/view/${request.params.library}/${request.params.folder}?simple=1`,
         editFrameSRC: `/edit/${request.params.library}/${request.params.folder}?simple=1`
@@ -432,8 +432,8 @@ module.exports = {
       if (!await verifySetup(library, response)) {
         return;
       }
-      const metadataSemantics = fs.readFileSync(`${require.main.path}/../${config.folders.assets}/metadataSemantics.json`, 'utf-8');
-      const copyrightSemantics = fs.readFileSync(`${require.main.path}/../${config.folders.assets}/copyrightSemantics.json`, 'utf-8');
+      const metadataSemantics = fs.readFileSync(`${config.folders.assets}/metadataSemantics.json`, 'utf-8');
+      const copyrightSemantics = fs.readFileSync(`${config.folders.assets}/copyrightSemantics.json`, 'utf-8');
       const cacheFile = `${config.folders.cache}/${library}_edit.json`;
       if (!cache?.edit[library]) {
         if (fs.existsSync(cacheFile)) {
@@ -462,11 +462,11 @@ module.exports = {
       const mathDisplay = JSON.parse(fs.readFileSync(`${config.folders.cache}/h5p-math-display.json`, 'utf-8'))['h5p-math-display'];
       const mathDisplayLabel = `${mathDisplay.id}-${mathDisplay.version.major}.${mathDisplay.version.minor}`;
       preloadedJs.push(`"/${config.folders.libraries}/${mathDisplayLabel}/dist/h5p-math-display.js"`);
-      const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${require.main.path}/../${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
+      const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
         baseUrl,
         mathDisplayLabel
       }));
-      const html = fs.readFileSync(`${require.main.path}/../assets/templates/edit.html`, 'utf-8');
+      const html = fs.readFileSync(`${config.folders.assets}/templates/edit.html`, 'utf-8');
       const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
       const id = cache.edit[library][library].id;
       let mainLibrary = {};
@@ -545,11 +545,11 @@ module.exports = {
       const mathDisplay = JSON.parse(fs.readFileSync(`${config.folders.cache}/h5p-math-display.json`, 'utf-8'))['h5p-math-display'];
       const mathDisplayLabel = `${mathDisplay.id}-${mathDisplay.version.major}.${mathDisplay.version.minor}`;
       preloadedJs.push(`/${config.folders.libraries}/${mathDisplayLabel}/dist/h5p-math-display.js`);
-      const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${require.main.path}/../${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
+      const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
         baseUrl,
         mathDisplayLabel
       }));
-      const html = fs.readFileSync(`${require.main.path}/../assets/templates/view.html`, 'utf-8');
+      const html = fs.readFileSync(`${config.folders.assets}/templates/view.html`, 'utf-8');
       const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
       const id = cache.view[library][library].id;
       let mainLibrary = {};
@@ -683,7 +683,7 @@ const verifySetup = async (library, response) => {
   const setupStatus = await logic.verifySetup(library);
   if (!setupStatus.ok) {
     session.status = `"${library}" is not properly set up. Please run "h5p setup ${library}" for setup.
-For a detailed setup status report please run "h5p verify ${library}".`;
+For a setup status report run "h5p verify ${library}".`;
     response.redirect(`/dashboard`);
     return false;
   }
