@@ -20,6 +20,7 @@ module.exports = {
     try {
       const html = fs.readFileSync(`${require.main.path}/${config.folders.assets}/templates/dashboard.html`, 'utf-8');
       const input = {
+        assets: config.folders.assets,
         host: `${request.protocol}://${request.get('host')}`,
         status: session.status
       }
@@ -245,6 +246,7 @@ module.exports = {
     try {
       const splitView_html = fs.readFileSync(`${require.main.path}/${config.folders.assets}/templates/splitView.html`, 'utf-8');
       const input = {
+        assets: config.folders.assets,
         viewFrameSRC: `/view/${request.params.library}/${request.params.folder}?simple=1`,
         editFrameSRC: `/edit/${request.params.library}/${request.params.folder}?simple=1`
       }
@@ -481,6 +483,8 @@ module.exports = {
         metadata: info
       }
       const input = {
+        assets: config.folders.assets,
+        libraries: config.folders.libraries,
         title: info.title,
         baseUrl,
         ajaxPath: `${baseUrl}/edit/${library}/${folder}/`,
@@ -561,6 +565,8 @@ module.exports = {
       }
       const machineName = `${id} ${cache.view[library][library].version.major}.${cache.view[library][library].version.minor}`;
       const input = {
+        assets: config.folders.assets,
+        libraries: config.folders.libraries,
         title: info.title,
         baseUrl,
         library,
