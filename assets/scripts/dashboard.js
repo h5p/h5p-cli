@@ -104,7 +104,6 @@ function dashboard(options) {
     }
     catch (error) {
       this.handleError(error);
-      this.toggleNewContent(true);
     }
   }
   this.import = async () => {
@@ -122,7 +121,6 @@ function dashboard(options) {
     }
     catch (error) {
       this.handleError(error);
-      this.toggleImportContent(true);
     }
   }
   this.remove = async (project) => {
