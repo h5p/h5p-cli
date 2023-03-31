@@ -126,11 +126,13 @@ body {
   display: inline-block;
   flex-basis: 5%;
   pointer-events: auto;
+  padding: 0 0.5em 0 1.5em;
 }
 .itemIcon img {
-  width: 80%;
+  margin-left: 0;
+  width: 100%;
   min-width: 40px;
-  margin-left: 0.85em;
+  scale: 1.8;
 }
 .itemTitle {
   pointer-events: auto;
@@ -318,7 +320,7 @@ body {
     padding-right: 0em;
   }
   .itemIcon{
-        display: none;
+    display: none;
   }
   .item{
     align-items: flex-start;
@@ -329,4 +331,7 @@ body {
   .itemLinks{
     padding: 0.5em 0 0 0.5em;
   }
+}
+.h5peditor-form {
+  border: 0;
 }

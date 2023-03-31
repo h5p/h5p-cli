@@ -166,6 +166,8 @@ function dashboard(options) {
   this.showStatus = (msg) => {
     status.innerText = msg || status.innerText;
     status.classList.remove(options.classes.hidden);
+    newContent.classList.add(options.classes.hidden);
+    importContent.classList.add(options.classes.hidden);
   }
   this.hideStatus = () => {
     status.innerText = '';
