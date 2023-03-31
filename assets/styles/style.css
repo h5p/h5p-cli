@@ -76,15 +76,15 @@ body {
   font-family: dev-tool-icons;
   line-height: unset;
 }
-.menu *::before{
+.menu *::before {
   padding-right: 0.5em;
 }
-.menu .button, .menu a{
+.menu .button, .menu a {
   background-color: #ffffff;
   border-color: #ffffff;
   color: #040404;
 }
-.button:hover, .itemLinks a:hover{
+.button:hover, .itemLinks a:hover {
   border-color: #d7e5ff;
   background-color: #d7e5ff;
   color: #040404;
@@ -107,7 +107,7 @@ body {
 .dashboard:before {
   content: "\e903";
 }
-.save-button{
+.save-button {
   background-color: #388E3C;
   border-color: #388E3C;
   margin: 2em 0 0 0;
@@ -115,7 +115,7 @@ body {
   color: white;
   border-radius: 3px;
 }
-.save-button:hover{
+.save-button:hover {
   background-color: #4CAF50;
   border-color: #66BB6A;
   color: white;
@@ -155,7 +155,7 @@ body {
   text-transform: capitalize;
   margin-right: 0.85em;
 }
-#links{
+#links {
   width: 100%;
   display: flex;
 }
@@ -199,11 +199,11 @@ body {
   padding: 1em 0;
   color: #ffffff;
 }
-.col50{
+.col50 {
   flex-basis: 50%;
   display: inline-flex;
 }
-.align-right{
+.align-right {
   flex-direction: row-reverse;
 }
 .url {
@@ -266,7 +266,7 @@ body {
 }
 
 /******* IMPORT, NEW AND STATUS *************/
-#newContent, #importContent{
+#newContent, #importContent {
   background-color: #303F9F;
   padding: 1em 0;
   color: #ffffff;
@@ -276,7 +276,7 @@ body {
   z-index: 1000;
   width: 100%;
 }
-.center-content{
+.center-content {
   max-width: 1400px;
   margin-left: auto;
   margin-right: auto;
@@ -312,23 +312,27 @@ body {
 @media only screen and (max-width: 600px) {
   .item {
     flex-direction: column;
-  }
-  .button-label{
-    font-size: 0px;
-  }
-  .menu *::before{
-    padding-right: 0em;
-  }
-  .itemIcon{
-    display: none;
-  }
-  .item{
     align-items: flex-start;
   }
-  .holder{
+  .button {
+    margin-top: 0.25em;
+  }
+  input {
+    margin-top: 0.25em;
+  }
+  .button-label {
+    font-size: 0px;
+  }
+  .menu *::before {
+    padding-right: 0em;
+  }
+  .itemIcon {
+    display: none;
+  }
+  .holder {
     padding: 1em;
   }
-  .itemLinks{
+  .itemLinks {
     padding: 0.5em 0 0 0.5em;
   }
 }

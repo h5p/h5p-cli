@@ -305,7 +305,8 @@ module.exports = {
       const contentFiles = parseContentFiles([input.params]);
       const list = [];
       for (let item in contentFiles) {
-        list.push(item.split('/')[1]);
+        const parts = item.split('/');
+        list.push(parts[parts.length - 1]);
       }
       for (let type of config.mediaTypes) {// delete unused media files
         const targetFolder = `content/${request.params.folder}/${type}`;
