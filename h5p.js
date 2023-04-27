@@ -8,5 +8,7 @@ const setupFolders = () => {
     }
   }
 }
-setupFolders();
+if (process.argv[2] != 'utils') {
+  setupFolders();
+}
 require('./cli.js');
