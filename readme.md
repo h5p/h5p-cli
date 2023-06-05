@@ -4,7 +4,7 @@ NodeJS version 17 is currently recommended due to newer versions having compatib
 
 QUICK START GUIDE
 
-(clean-up). Uninstall any previous h5p-cli toolkit instance by running  
+Uninstall any previous h5p-cli toolkit instance by running  
 ```
 npm uninstall -g h5p-cli
 npm uninstall -g h5p
