@@ -4,6 +4,11 @@ NodeJS version 17 is currently recommended due to newer versions having compatib
 
 QUICK START GUIDE
 
+(clean-up). Uninstall any previous h5p-cli toolkit instance by running  
+```
+npm uninstall -g h5p-cli
+npm uninstall -g h5p
+```  
 0. `npm install` to install the project's npm dependencies (if you cloned this repository).  
 1. Install this tool as a global app by running `npm install -g h5p`. To uninstall it you can run `npm uninstall -g h5p`.  
 If that doesn't work or if you cloned this repository then rename the project folder to `h5p-cli` and run `npm install -g ./h5p-cli` from its parent folder (where you cloned this repository). To uninstall it you can run `npm uninstall -g h5p-cli`.  
