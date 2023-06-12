@@ -4,32 +4,35 @@ NodeJS version 17 is currently recommended due to newer versions having compatib
 
 QUICK START GUIDE
 
-Uninstall any previous h5p-cli toolkit instance by running  
+0. Uninstall any previous h5p-cli toolkit instance by running  
 ```
 npm uninstall -g h5p-cli
 npm uninstall -g h5p
 ```  
-0. `npm install` to install the project's npm dependencies (if you cloned this repository).  
-1. Install this tool as a global app by running `npm install -g h5p`. To uninstall it you can run `npm uninstall -g h5p`.  
+1. `npm install` to install the project's npm dependencies (if you cloned this repository).  
+2. Install this tool as a global app by running `npm install -g h5p`. To uninstall it you can run `npm uninstall -g h5p`.  
 If that doesn't work or if you cloned this repository then rename the project folder to `h5p-cli` and run `npm install -g ./h5p-cli` from its parent folder (where you cloned this repository). To uninstall it you can run `npm uninstall -g h5p-cli`.  
 All `h5p` commands that follow can be run from any folder. They will create the development environment folder structure ('cache', 'content', 'temp', 'libraries', 'uploads') if it does not already exist.  
 You can skip the global app installation and run all commands in the `node cli.js <cmd> <args...>` format within this folder.  
-2. `h5p core` installs the core h5p libraries.  
-3. `h5p list` lists and caches the currently published h5p libraries in the local library registry (`cache/libraryRegistry.json`).  
-4. `h5p setup <library>` computes and clones an h5p `<library>` and its dependencies.  
+3. `h5p core` installs the core h5p libraries.  
+4. `h5p list` lists and caches the currently published h5p libraries in the local library registry (`cache/libraryRegistry.json`).  
+5. `h5p setup <library>` computes and clones an h5p `<library>` and its dependencies.  
 This is required for running and editing content types based on that `<library>`.  
-5. `h5p server` starts the dev server.  
+6. `h5p server` starts the dev server.  
 Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types. To view the dashboard point your browser to  
 http://localhost:8080/dashboard  
-6. To use your own library run `h5p use <library> <folder>`.  
+7. To use your own library run `h5p use <library> <folder>`.  
 This computes dependencies for a `<library>` using the provided `<folder>` as the main library.  
 An example for this is `h5p use h5p-greeting-card H5P.GreetingCard-1.0`. It will compute and cache dependencies for the library in `libraries/H5P.GreetingCard-1.0`. Its dependencies also need to be present in the `libraries` folder.  
 Please note that, should the dependencies change (including the optional ones in semantics.json), you will have to run this command again in order to regenerate the cached dependency lists.  
 You can also use this command to switch between different versions of the same library.  
 A library development tutorial can be found [here](https://h5p.org/library-development).  
+8. Please note that all `h5p` commands run relative to the current folder.  
+This means that if you setup a library it will only be available in the location where you've set it up.  
+The same goes for `h5p server`. The dashboard will only display content types found in the `<current_directory>/content` folder.  
+Remember to keep track of your development folder. :)  
 
-<details>
-<summary>Detailed CLI commands & instructions</summary>
+Detailed CLI commands & instructions
 
 1. `npm install` to install the project's npm dependencies.  
 2. `h5p core` installs the core h5p libraries.  
@@ -114,5 +117,3 @@ To switch between existing sessions simply choose the one you want from the drop
 Each utility command can then be run via `h5p utils <cmd> [<args>...]`.  
 18. Git related commands may require you to add your ssh key to the ssh agent after starting it.  
 Here are some guides on how to add an ssh key to the ssh agent on [Linux](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent), [Mac](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=mac#adding-your-ssh-key-to-the-ssh-agent), [Windows](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=windows#adding-your-ssh-key-to-the-ssh-agent).  
-
-</details>
