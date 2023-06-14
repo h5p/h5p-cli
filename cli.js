@@ -29,10 +29,10 @@ const cli = {
     }
   },
   // list tags for library
-  tags: async (org, library) => {
+  tags: async (org, library, mainBranch) => {
     try {
       console.log('> fetching h5p library tags');
-      const result = await logic.tags(org, library);
+      const result = await logic.tags(org, library, mainBranch);
       console.log(result);
     }
     catch (error) {
@@ -45,6 +45,32 @@ const cli = {
     try {
       const result = await logic.computeDependencies(library, mode, parseInt(saveToCache), version, folder);
       for (let item in result) {
+        console.log(result[item] ? item : `!!! unregistered ${item} library`);
+      }
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
+  },
+  // computes missing dependencies for h5p library
+  missing: async (library) => {
+    try {
+      const missing = [];
+      let result = await logic.computeDependencies(library, 'view');
+      for (let item in result) {
+        if (!result[item]) {
+          missing.push(item);
+        }
+      }
+      result = await logic.computeDependencies(library, 'edit');
+      for (let item in result) {
+        if (!result[item]) {
+          missing.push(item);
+        }
+      }
+      console.log(`> unregistered dependencies for ${library}`);
+      for (let item of missing) {
         console.log(item);
       }
     }
@@ -100,16 +126,33 @@ const cli = {
     }
   },
   // computes & installs dependencies for h5p library
-  setup: async (library, version, download) => {
+  setup: async function(library, version, download) {
+    let url;
     try {
+      url = new URL(library);
+    }
+    catch (error) {
+      url = null;
+    }
+    try {
+      if (url) {
+        library = url.pathname.split('/').filter(n=>n).slice(-1).toString();
+        await this.register(url);
+      }
       const action = parseInt(download) ? 'download' : 'clone';
       const latest = version ? false : true;
       let result = await logic.computeDependencies(library, 'view', 1, version);
       for (let item in result) {
+        if (!result[item]) {
+          throw `unregistered ${item} library`;
+        }
         console.log(item);
       }
       result = await logic.computeDependencies(library, 'edit', 1, version);
       for (let item in result) {
+        if (!result[item]) {
+          throw `unregistered ${item} library`;
+        }
         console.log(item);
       }
       console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
@@ -124,12 +167,21 @@ const cli = {
     }
   },
   // updates local library registry entry
-  register: async (file) => {
+  register: async (input) => {
+    let isUrl = true;
+    try {
+      url = new URL(input);
+    }
+    catch (error) {
+      isUrl = false;
+    }
     try {
       let registry = await logic.getRegistry();
-      const entry = JSON.parse(fs.readFileSync(file, 'utf-8'));
+      const entry = isUrl ? await logic.registryEntryFromRepoUrl(input) : JSON.parse(fs.readFileSync(input, 'utf-8'));
       registry.reversed = {...registry.reversed, ...entry};
       fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));
+      console.log('> updated registry entry');
+      console.log(entry);
     }
     catch (error) {
       console.log('> error');
@@ -143,7 +195,7 @@ const cli = {
       if (!registry.regular[library]) {
         console.log(`registering ${library} library`);
         const lib = JSON.parse(fs.readFileSync(`${config.folders.libraries}/${folder}/library.json`, 'utf-8'));
-        const repoName = lib.machineName.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase().replace('.', '-');
+        const repoName = logic.machineToRepo(lib.machineName);
         if (library != repoName) {
           throw `provided "${library}" differs from computed "${repoName}"`;
         }
@@ -160,10 +212,16 @@ const cli = {
       }
       let result = await logic.computeDependencies(library, 'view', 1, null, folder);
       for (let item in result) {
+        if (!result[item]) {
+          throw `unregistered ${item} library`;
+        }
         console.log(item);
       }
       result = await logic.computeDependencies(library, 'edit', 1, null, folder);
       for (let item in result) {
+        if (!result[item]) {
+          throw `unregistered ${item} library`;
+        }
         console.log(item);
       }
     }
@@ -197,7 +255,7 @@ const cli = {
   }
 }
 if (typeof cli[process.argv[2]] == 'function') {
-  cli[process.argv[2]].apply(null, process.argv.slice(3));
+  cli[process.argv[2]].apply(cli, process.argv.slice(3));
 }
 else {
   console.log(`> "${process.argv[2]}" is not a valid command`);

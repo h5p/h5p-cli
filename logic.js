@@ -92,7 +92,7 @@ module.exports = {
   mode - 'view' or 'edit' to compute non-editor or editor dependencies
   saveToCache - if true list is saved to cache folder
   version - optional version to compute; defaults to 'master'
-  folder - optional local library folder to use instead of git repo */
+  folder - optional local library folder to use instead of git repo; use "" to ignore */
   computeDependencies: async (library, mode, saveToCache, version, folder) => {
     console.log(`> ${library} deps ${mode}`);
     version = version || 'master';
@@ -137,6 +137,8 @@ module.exports = {
       const lib = registry.reversed[machineName];
       const entry = lib?.repoName;
       if (!entry) {
+        saveToCache = 0;
+        done[level][machineName] = false;
         process.stdout.write(`\n${machineName} not found in registry; `);
         return false;
       }
@@ -172,8 +174,7 @@ module.exports = {
         cache[dep] = list;
       }
       if (!list.title) {
-        console.log(`missing library info for ${toDo[dep].folder || dep}`);
-        throw 'library_info_not_found';
+        throw `unregistered ${toDo[dep].folder || dep} library`;
       }
       done[level][dep].title = list.title;
       done[level][dep].version = {
@@ -247,12 +248,12 @@ module.exports = {
     return output;
   },
   // list tags for library using git
-  tags: async (org, repo) => {
-    const library = await getFile(fromTemplate(config.urls.library.list, { org, dep: repo, version: 'master' }), true);
+  tags: async (org, repo, mainBranch = 'master') => {
+    const library = await getFile(fromTemplate(config.urls.library.list, { org, dep: repo, version: mainBranch }), true);
     const label = `${library.machineName}-${library.majorVersion}.${library.minorVersion}`;
     const folder = `${config.folders.libraries}/${label}`;
     if (!fs.existsSync(folder)) {
-      await module.exports.clone(org, repo, 'master', label);
+      await module.exports.clone(org, repo, mainBranch, label);
     }
     execSync('git pull origin', {cwd: folder});
     const tags = execSync('git tag', {cwd: folder}).toString().split('\n');
@@ -298,6 +299,9 @@ module.exports = {
       list = await module.exports.computeDependencies(library, mode, 1);
     }
     for (let item in list) {
+      if (!list[item]) {
+        throw `unregistered ${item} library`;
+      }
       const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
       const listVersion = `${list[item].version.major}.${list[item].version.minor}.${list[item].version.patch}`;
       const version = latest ? 'master' : listVersion;
@@ -356,6 +360,11 @@ module.exports = {
     let list = JSON.parse(fs.readFileSync(viewList, 'utf-8'));
     list = {...list, ...JSON.parse(fs.readFileSync(editList, 'utf-8'))};
     for (let item in list) {
+      if (!list[item]) {
+        output.libraries[item] = false;
+        output.ok = false;
+        continue;
+      }
       const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
       output.libraries[label] = fs.existsSync(`${config.folders.libraries}/${label}`);
       if (!output.libraries[label]) {
@@ -364,6 +373,7 @@ module.exports = {
     }
     return output;
   },
+  // generates h5p.json file with info describing the library in the specified folder
   generateInfo: (folder, library) => {
     const target = `content/${folder}`;
     const lib = JSON.parse(fs.readFileSync(`${config.folders.cache}/${library}.json`, 'utf-8'))[library];
@@ -452,6 +462,30 @@ module.exports = {
     fs.writeFileSync(`content/${folder}/${label}_h5p.json`, JSON.stringify(info));
     fs.writeFileSync(contentFile, JSON.stringify(content));
     module.exports.generateInfo(folder, library);
+  },
+  machineToRepo: (machineName) => {
+    return machineName.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase().replace('.', '-');
+  },
+  registryEntryFromRepoUrl: async (repoUrl) => {
+    const url = new URL(repoUrl);
+    const pieces = url.pathname.split('/').filter(n=>n);
+    const org = pieces[pieces.length - 2];
+    const repoName = pieces[pieces.length - 1];
+    const list = await getFile(fromTemplate(config.urls.library.list, { org, dep: repoName, version: 'master' }), true);
+    const output = {};
+    output[list.machineName] = {
+      "id": list.machineName,
+      "title": list.title,
+      "repo": {
+        "type": url.host,
+        "url": repoUrl
+      },
+      "author": list.author,
+      "runnable": list.runnable,
+      "repoName": repoName,
+      "org": org
+    }
+    return output;
   },
   fromTemplate
 }
