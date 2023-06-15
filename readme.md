@@ -28,7 +28,7 @@ http://localhost:8080/dashboard
 7. To use your own local library run `h5p use <library> <folder>`.  
 This computes dependencies for a `<library>` using the provided `<folder>` as the main library.  
 `<library>` is something like `h5p-accordion`.  
-<folder> is something like `H5P.GreetingCard-1.0`. The format for it is `<h5pMachineName>-<majorVersion>.<minorVersion>`.  
+`<folder>` is something like `H5P.GreetingCard-1.0`. The format for it is `<h5pMachineName>-<majorVersion>.<minorVersion>`.  
 An example for this is `h5p use h5p-greeting-card H5P.GreetingCard-1.0`. It will compute and cache dependencies for the library in `libraries/H5P.GreetingCard-1.0`. Its dependencies also need to be present in the `libraries` folder (otherwise they need to be installed by running the appropriate `h5p use <dependency> <depFolder>` command).  
 Please note that, should the dependencies change (including the optional ones in semantics.json), you will have to run this command again in order to regenerate the cached dependency lists.  
 You can also use this command to switch between different versions of the same library.  
