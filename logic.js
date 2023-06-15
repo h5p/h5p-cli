@@ -288,7 +288,7 @@ module.exports = {
   mode - 'view' or 'edit' to download non-editor or editor libraries
   useCache - if true cached dependency list is used
   latest - if true master branch libraries are used; otherwise the versions found in the cached deps list are used*/
-  getWithDependencies: async (action, library, mode, useCache, latest) => {
+  getWithDependencies: async (action, library, mode, useCache, latest, toSkip = []) => {
     let list;
     const doneFile = `${config.folders.cache}/${library}${mode == 'edit' ? '_edit' : ''}.json`;
     if (useCache && fs.existsSync(doneFile)) {
@@ -299,6 +299,11 @@ module.exports = {
       list = await module.exports.computeDependencies(library, mode, 1);
     }
     for (let item in list) {
+      if (toSkip.indexOf(item) != -1) {
+        console.log(`> skipping ${item}; already installed.`);
+        continue;
+      }
+      toSkip.push(item);
       if (!list[item]) {
         throw `unregistered ${item} library`;
       }
@@ -336,7 +341,9 @@ module.exports = {
       console.log('>>> npm run build');
       console.log(execSync('npm run build', {cwd: folder}).toString());
       fs.rmSync(`${folder}/node_modules`, { recursive: true, force: true });
+      toSkip.push(item);
     }
+    return toSkip;
   },
   /* checks if dependency lists are cached and dependencies are installed for a given library;
   returns a report with boolean statuses; the overall status is reflected under the "ok" attribute;*/

@@ -151,6 +151,7 @@ const cli = {
         library = url.pathname.split('/').filter(n=>n).slice(-1).toString();
         await this.register(url);
       }
+      let toSkip = [];
       const action = parseInt(download) ? 'download' : 'clone';
       const latest = version ? false : true;
       let result = await logic.computeDependencies(library, 'view', 1, version);
@@ -158,19 +159,19 @@ const cli = {
         if (!result[item]) {
           throw `unregistered ${item} library`;
         }
-        console.log(item);
+        // setup editor dependencies for every view dependency
+        toSkip = await logic.getWithDependencies(action, item, 'edit', 1, latest, toSkip);
       }
       result = await logic.computeDependencies(library, 'edit', 1, version);
       for (let item in result) {
         if (!result[item]) {
           throw `unregistered ${item} library`;
         }
-        console.log(item);
       }
       console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
-      await logic.getWithDependencies(action, library, 'view', 1, latest);
+      toSkip = await logic.getWithDependencies(action, library, 'view', 1, latest, toSkip);
       console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
-      await logic.getWithDependencies(action, library, 'edit', 1, latest);
+      toSkip = await logic.getWithDependencies(action, library, 'edit', 1, latest, toSkip);
       console.log(`> done setting up ${library}`);
     }
     catch (error) {
