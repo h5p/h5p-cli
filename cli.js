@@ -59,15 +59,27 @@ const cli = {
       const missing = [];
       let result = await logic.computeDependencies(library, 'view');
       for (let item in result) {
-        if (!result[item]) {
+        if (!result[item] && missing.indexOf(item) == -1) {
           missing.push(item);
+        }
+        else {
+          const list = await logic.computeDependencies(item, 'edit');
+          for (let elem in list) {
+            if (!list[elem] && missing.indexOf(elem) == -1) {
+              missing.push(elem);
+            }
+          }
         }
       }
       result = await logic.computeDependencies(library, 'edit');
       for (let item in result) {
-        if (!result[item]) {
+        if (!result[item] && missing.indexOf(item) == -1) {
           missing.push(item);
         }
+      }
+      if (!missing.length) {
+        console.log(`> ${library} has no unregistered dependencies`);
+        return;
       }
       console.log(`> unregistered dependencies for ${library}`);
       for (let item of missing) {
