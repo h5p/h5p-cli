@@ -2,7 +2,7 @@ An h5p toolkit for running, editing and developing h5p content types.
 Make sure you have git, NodeJS and npm installed.  
 NodeJS version 17 is currently recommended due to newer versions having compatibility issues with the `node-sass` npm package which is required by some h5p libraries.  
 
-QUICK START GUIDE
+### QUICK START GUIDE
 
 0. Uninstall any previous h5p-cli toolkit instance by running  
 ```
@@ -38,7 +38,7 @@ This means that if you setup a library it will only be available in the location
 The same goes for `h5p server`. The dashboard will only display content types found in the `<current_directory>/content` folder.  
 Remember to keep track of your development folders. :)  
 
-handling unregistered libraries
+### Handling unregistered libraries
 
 Running `h5p setup <library>` command may return the `library_not_found` error. This means that the local library registry is missing this library. We have to find its repository url and register it.  
 As an example, run `h5p register https://github.com/otacke/h5p-game-map` to register the `h5p-game-map` library in the local registry.  
@@ -57,7 +57,7 @@ h5p register https://github.com/otacke/h5p-transcript-library
 Run `h5p missing h5p-game-map` again to make sure the are no other unregistered dependencies.  
 Finally, run `h5p setup h5p-game-map` to install the library and its dependencies.  
 
-Detailed CLI commands & instructions
+### Detailed CLI commands & instructions
 
 1. `npm install` to install the project's npm dependencies.  
 2. `h5p core` installs the core h5p libraries.  
