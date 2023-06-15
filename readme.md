@@ -38,6 +38,25 @@ This means that if you setup a library it will only be available in the location
 The same goes for `h5p server`. The dashboard will only display content types found in the `<current_directory>/content` folder.  
 Remember to keep track of your development folders. :)  
 
+handling unregistered libraries
+
+Running `h5p setup <library>` command may return the `library_not_found` error. This means that the local library registry is missing this library. We have to find its repository url and register it.  
+As an example, run `h5p register https://github.com/otacke/h5p-game-map` to register the `h5p-game-map` library in the local registry.  
+Run `h5p missing h5p-game-map` to find the unregistered dependencies for `h5p-game-map`. Then find their repository urls and register them.  
+```
+h5p register https://github.com/otacke/h5p-editor-game-map
+h5p register https://github.com/otacke/h5p-combination-lock
+h5p register https://github.com/otacke/h5p-tabs
+h5p register https://github.com/otacke/h5p-transcript
+```
+Run `h5p missing h5p-game-map` again to find any unregistered dependencies for the newly registered ones. And register them.  
+```
+h5p register https://github.com/otacke/h5p-editor-tabs
+h5p register https://github.com/otacke/h5p-transcript-library
+```
+Run `h5p missing h5p-game-map` again to make sure the are no other unregistered dependencies.  
+Finally, run `h5p setup h5p-game-map` to install the library and its dependencies.  
+
 Detailed CLI commands & instructions
 
 1. `npm install` to install the project's npm dependencies.  
