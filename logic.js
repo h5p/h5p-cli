@@ -281,8 +281,8 @@ module.exports = {
     fs.renameSync(`${config.folders.libraries}/${repo}-master`, target);
   },
   // clone repository using git
-  clone: async (org, repo, version, target) => {
-    return execSync(`git clone ${fromTemplate(config.urls.library.clone, {org, repo})} ${target} --branch ${version}`, {cwd: config.folders.libraries}).toString();
+  clone: async (org, repo, branch, target) => {
+    return execSync(`git clone ${fromTemplate(config.urls.library.clone, {org, repo})} ${target} --branch ${branch}`, {cwd: config.folders.libraries}).toString();
   },
   /* clones/downloads dependencies to libraries folder using git and runs relevant npm commands
   mode - 'view' or 'edit' to download non-editor or editor libraries
