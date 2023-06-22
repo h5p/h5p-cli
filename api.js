@@ -212,7 +212,7 @@ module.exports = {
       output.total = list.length;
       for (let i = start; i < Math.min(end, list.length); i++) {
         let entry = cache.registry.reversed?.[list[i].id];
-        const library = entry.repoName;
+        const library = entry.shortName;
         const cacheFile = `${config.folders.cache}/${library}.json`;
         if (fs.existsSync(cacheFile)) {
           entry = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'))[library];
@@ -345,7 +345,7 @@ module.exports = {
       }
       const translations = {};
       for (let item of request.body.libraries) {
-        const entry = cache.view[library][cache.registry.reversed[item.split(' ')[0]].repoName];
+        const entry = cache.view[library][cache.registry.reversed[item.split(' ')[0]].shortName];
         const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
         const idx = `${entry.id} ${entry.version.major}.${entry.version.minor}`;
         const languageFolder = `${config.folders.libraries}/${label}/language`;
@@ -371,12 +371,12 @@ module.exports = {
         libraries = [];
         for (let item of request.body.libraries) {
           item = item.split(' ')[0];
-          libraries.push(registry.reversed[item].repoName);
+          libraries.push(registry.reversed[item].shortName);
         }
       }
       if (request.query.machineName) {
         libraries = [];
-        libraries.push(registry.reversed[request.query.machineName].repoName);
+        libraries.push(registry.reversed[request.query.machineName].shortName);
       }
       const toDo = [];
       for (let item of libraries) {

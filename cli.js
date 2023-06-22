@@ -208,9 +208,9 @@ const cli = {
       if (!registry.regular[library]) {
         console.log(`registering ${library} library`);
         const lib = JSON.parse(fs.readFileSync(`${config.folders.libraries}/${folder}/library.json`, 'utf-8'));
-        const repoName = logic.machineToRepo(lib.machineName);
-        if (library != repoName) {
-          throw `provided "${library}" differs from computed "${repoName}"`;
+        const shortName = logic.machineToShort(lib.machineName);
+        if (library != shortName) {
+          throw `provided "${library}" differs from computed "${shortName}"`;
         }
         const entry = {};
         entry[lib.machineName] = {
@@ -218,7 +218,7 @@ const cli = {
           title: lib.title,
           author: lib.author,
           runnable: lib.runnable,
-          repoName
+          shortName
         }
         registry.reversed = {...registry.reversed, ...entry};
         fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));

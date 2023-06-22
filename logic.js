@@ -74,14 +74,14 @@ module.exports = {
     }
     for (let item in list) {
       if (list[item].repo) {
-        list[item].repoName = list[item].repo.url.split('/').slice(-1)[0];
+        list[item].shortName = list[item].repo.url.split('/').slice(-1)[0];
         list[item].org = list[item].repo.url.split('/').slice(3, 4)[0];
       }
       delete list[item].resume;
       delete list[item].fullscreen;
       delete list[item].xapiVerbs;
       output.reversed[list[item].id] = list[item];
-      output.regular[list[item].repoName] = list[item];
+      output.regular[list[item].shortName] = list[item];
     }
     if (ignoreCache || !fs.existsSync(registryFile)) {
       fs.writeFileSync(registryFile, JSON.stringify(list));
@@ -135,7 +135,7 @@ module.exports = {
     }
     const handleDepListEntry = async (machineName, parent, ver, dir) => {
       const lib = registry.reversed[machineName];
-      const entry = lib?.repoName;
+      const entry = lib?.shortName;
       if (!entry) {
         saveToCache = 0;
         done[level][machineName] = false;
@@ -316,20 +316,20 @@ module.exports = {
       const folder = `${config.folders.libraries}/${label}`;
       if (fs.existsSync(folder)) {
         if (latest) {
-          console.log(`>> ~ updating to ${list[item].repoName} ${listVersion}`);
+          console.log(`>> ~ updating to ${list[item].shortName} ${listVersion}`);
           console.log(execSync('git pull origin', {cwd: folder}).toString());
         }
         else {
-          console.log(`>> ~ skipping ${list[item].repoName} ${listVersion}; it already exists.`);
+          console.log(`>> ~ skipping ${list[item].shortName} ${listVersion}; it already exists.`);
         }
         continue;
       }
-      console.log(`>> + installing ${list[item].repoName} ${listVersion}`);
+      console.log(`>> + installing ${list[item].shortName} ${listVersion}`);
       if (action == 'download') {
-        await module.exports.download(list[item].org, list[item].repoName, version, folder);
+        await module.exports.download(list[item].org, list[item].shortName, version, folder);
       }
       else {
-        console.log(await module.exports.clone(list[item].org, list[item].repoName, version, label));
+        console.log(await module.exports.clone(list[item].org, list[item].shortName, version, label));
       }
       const packageFile = `${folder}/package.json`;
       if (!fs.existsSync(packageFile)) {
@@ -473,15 +473,16 @@ module.exports = {
     fs.writeFileSync(contentFile, JSON.stringify(content));
     module.exports.generateInfo(folder, library);
   },
-  machineToRepo: (machineName) => {
+  machineToShort: (machineName) => {
     return machineName.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase().replace('.', '-');
   },
-  registryEntryFromRepoUrl: async (repoUrl) => {
+  registryEntryFromRepoUrl: async function (repoUrl) {
     const url = new URL(repoUrl);
     const pieces = url.pathname.split('/').filter(n=>n);
     const org = pieces[pieces.length - 2];
-    const repoName = pieces[pieces.length - 1];
-    const list = await getFile(fromTemplate(config.urls.library.list, { org, dep: repoName, version: 'master' }), true);
+    shortName = pieces[pieces.length - 1];
+    const list = await getFile(fromTemplate(config.urls.library.list, { org, dep: shortName, version: 'master' }), true);
+    shortName = this.machineToShort(list.machineName);
     const output = {};
     output[list.machineName] = {
       "id": list.machineName,
@@ -492,7 +493,7 @@ module.exports = {
       },
       "author": list.author,
       "runnable": list.runnable,
-      "repoName": repoName,
+      "shortName": shortName,
       "org": org
     }
     return output;
