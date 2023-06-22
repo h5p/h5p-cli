@@ -194,11 +194,13 @@ module.exports = {
       done[level][dep].level = level;
       let ver = version == 'master' ? version : `${done[level][dep].version.major}.${done[level][dep].version.minor}.${done[level][dep].version.patch}`;
       const optionals = await getOptionals(org, dep, ver, toDo[dep].folder);
-      if ((mode != 'edit' || level > 0) && list.preloadedDependencies) {
-        for (let item of list.preloadedDependencies) {
-          ver = version == 'master' ? version : `${item.majorVersion}.${item.minorVersion}`;
-          const dir = folder ? `${item.machineName}-${item.majorVersion}.${item.minorVersion}` : null;
-          await handleDepListEntry(item.machineName, dep, ver, dir);
+      if (mode != 'edit' || level > 0) {
+        if (list.preloadedDependencies) {
+          for (let item of list.preloadedDependencies) {
+            ver = version == 'master' ? version : `${item.majorVersion}.${item.minorVersion}`;
+            const dir = folder ? `${item.machineName}-${item.majorVersion}.${item.minorVersion}` : null;
+            await handleDepListEntry(item.machineName, dep, ver, dir);
+          }
         }
         for (let item in optionals) {
           ver = version == 'master' ? version : optionals[item].version;
@@ -285,9 +287,10 @@ module.exports = {
     return execSync(`git clone ${fromTemplate(config.urls.library.clone, {org, repo})} ${target} --branch ${branch}`, {cwd: config.folders.libraries}).toString();
   },
   /* clones/downloads dependencies to libraries folder using git and runs relevant npm commands
-  mode - 'view' or 'edit' to download non-editor or editor libraries
+  mode - 'view' or 'edit' to fetch non-editor or editor libraries
   useCache - if true cached dependency list is used
-  latest - if true master branch libraries are used; otherwise the versions found in the cached deps list are used*/
+  latest - if true master branch libraries are used; otherwise the versions found in the cached deps list are used
+  toSkip - optional array of libraries to skip; after a library is parsed by the function it's auto-added to the array so it's skipped for efficiency */
   getWithDependencies: async (action, library, mode, useCache, latest, toSkip = []) => {
     let list;
     const doneFile = `${config.folders.cache}/${library}${mode == 'edit' ? '_edit' : ''}.json`;
