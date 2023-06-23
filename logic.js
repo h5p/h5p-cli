@@ -221,7 +221,7 @@ module.exports = {
     }
     registry = await module.exports.getRegistry();
     if (!folder && !registry.regular[library]) {
-      throw 'library_not_found';
+      throw `unregistered ${library} library`;
     }
     while (Object.keys(toDo).length) {
       level++;
