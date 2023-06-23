@@ -12,8 +12,10 @@ npm uninstall -g h5p
 1. `npm install` to install the project's npm dependencies (if you cloned this repository).  
 2. Install this tool as a global app by running `npm install -g h5p`. To uninstall it you can run `npm uninstall -g h5p`.  
 If that doesn't work or if you cloned this repository then rename the project folder to `h5p-cli` and run `npm install -g ./h5p-cli` from its parent folder (where you cloned this repository). To uninstall it you can run `npm uninstall -g h5p-cli`.  
-All `h5p` commands that follow can be run from any folder. They will create the development environment folder structure ('cache', 'content', 'temp', 'libraries', 'uploads') if it does not already exist.  
-You can skip the global app installation and run all commands in the `node cli.js <cmd> <args...>` format within this folder.  
+You can skip the global app installation and run all commands in the `node cli.js <cmd> <args...>` format within this folder. Otherwise, all `h5p` commands run relative to the current working directory.  
+This means that if you setup a library it will only be available in the location where you've set it up.  
+The same goes for `h5p server`. The dashboard will only display content types found in the `<current_directory>/content` folder.  
+Remember to keep track of your development folders. :)  
 3. `h5p core` installs the core h5p libraries.  
 4. `h5p list` lists and caches the currently published h5p libraries in the local library registry (`cache/libraryRegistry.json`).  
 5. `h5p setup <library|repoUrl>` computes and clones an h5p library and its dependencies.  
@@ -35,10 +37,6 @@ Its dependencies also need to be present in the `libraries` folder (otherwise th
 Please note that, should the dependencies change (including the optional ones in semantics.json), you will have to run this command again in order to regenerate the cached dependency lists.  
 You can also use this command to switch between different versions of the same library.  
 A library development tutorial can be found [here](https://h5p.org/library-development).  
-8. All `h5p` commands run relative to the current directory.  
-This means that if you setup a library it will only be available in the location where you've set it up.  
-The same goes for `h5p server`. The dashboard will only display content types found in the `<current_directory>/content` folder.  
-Remember to keep track of your development folders. :)  
 
 ### Handling unregistered libraries
 
