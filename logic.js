@@ -139,7 +139,8 @@ module.exports = {
       if (!entry) {
         saveToCache = 0;
         done[level][machineName] = false;
-        process.stdout.write(`\n${machineName} not found in registry; `);
+        const parentVersion = `${done[level][parent].version.major}.${done[level][parent].version.minor}.${done[level][parent].version.patch}`
+        process.stdout.write(`\n!!! ${machineName} ${ver} not found in registry; required by ${done[level][parent].requiredBy}/${parent} (${parentVersion}) `);
         return false;
       }
       const version = ver == 'master' ? ver : await latestPatch(lib.org, entry, ver);
