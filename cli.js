@@ -271,8 +271,8 @@ const cli = {
     try {
       const help = fs.readFileSync('commands.md', 'utf-8');
       if (command) {
-        regexp = `•  \`h5p ${command}(.*?)(\\n\\n|\\Z)`;
-        console.log(marked(help.match(new RegExp(regexp, 's'))?.[0]).replace('\n\n', ''));
+        regexp = ` \`h5p ${command}(.*?)(\\n\\n|\\Z)`;
+        console.log(marked(help.match(new RegExp(regexp, 's'))?.[0]));
         return;
       }
       console.log(marked(help));
