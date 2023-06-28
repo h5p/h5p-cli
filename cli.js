@@ -2,6 +2,14 @@ const fs = require('fs');
 const logic = require('./logic.js');
 const config = require('./config.js');
 const utils = require('./assets/utils/cli.js');
+let marked = require('marked');
+const markedTerminal = require('marked-terminal');
+marked.setOptions({
+  mangle: false,
+  headerIds: false,
+  renderer: new markedTerminal()
+});
+marked = marked.marked;
 const cli = {
   // exports content type as .h5p zipped file
   export: (library, folder) => {
@@ -257,6 +265,22 @@ const cli = {
   // run the dev server
   server: () => {
     require('./server.js');
+  },
+  // help section
+  help: (command) => {
+    try {
+      const help = fs.readFileSync('commands.md', 'utf-8');
+      if (command) {
+        regexp = `•  \`h5p ${command}(.*?)(\\n\\n|\\Z)`;
+        console.log(marked(help.match(new RegExp(regexp, 's'))?.[0]).replace('\n\n', ''));
+        return;
+      }
+      console.log(marked(help));
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
   },
   // various utility commands
   utils: function() {
