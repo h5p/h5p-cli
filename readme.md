@@ -27,7 +27,8 @@ For example, `h5p setup https://github.com/h5p/h5p-accordion` installs the "h5p-
 6. `h5p server` starts the dev server.  
 Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types. To view the dashboard point your browser to  
 http://localhost:8080/dashboard  
-7. To use your own local library run `h5p use <library> <folder>`.  
+7. `h5p help` lists available commands.  
+8. To use your own local library run `h5p use <library> <folder>`.  
 This computes dependencies for a `<library>` using the provided `<folder>` as the main library.  
 `<library>` is something like `h5p-accordion`.  
 `<folder>` is something like `H5P.GreetingCard-1.0`. The format for it is `<h5pMachineName>-<majorVersion>.<minorVersion>`.  
