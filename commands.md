@@ -1,25 +1,25 @@
- `h5p core` installs the core h5p libraries.  
+• `h5p core` installs the core h5p libraries.  
 These are required to view and edit h5p content types.  
 
- `h5p list [machineName] [ignoreCache]` lists the current h5p libraries.  
+• `h5p list [machineName] [ignoreCache]` lists the current h5p libraries.  
 Use `1` for `[machineName]` to list the machine name instead of the default repo name.  
 Use `1` for `[ignoreCache]` to recreate the local registry.  
 The output format is `<library> (<org>)`.  
 
- `h5p tags <org> <library> <mainBranch>` lists current library versions.  
+• `h5p tags <org> <library> <mainBranch>` lists current library versions.  
 The `<org>` for a library is mentioned in the `list` command output.  
 `<mainBranch>` is the main branch of repository. Default is `master`.  
 
- `h5p deps <library> <mode> [saveToCache] [version] [folder] [showMissing] [verbose]` computes dependencies for an h5p library.  
+• `h5p deps <library> <mode> [saveToCache] [version] [folder] [showMissing] [verbose]` computes dependencies for an h5p library.  
 Use `view` or `edit` for `<mode>` to generate dependencies for those cases.  
 Specify `1` for `[saveToCache]` to save the result in the cache folder. Default is `0`.  
 Specify a `[version]` to compute deps for that version. Default is `master`.  
 Specify a `[folder]` to compute deps based on the library from `libraries/[folder]` folder. Default is `""`.  
 
- `h5p use <library> <folder>` computes view & edit dependencies for a `<library>` using the provided `libraries/<folder>` as the main library. A local library registry entry will also be created if the library is missing from the local registry.  
+• `h5p use <library> <folder>` computes view & edit dependencies for a `<library>` using the provided `libraries/<folder>` as the main library. A local library registry entry will also be created if the library is missing from the local registry.  
 Library dependencies also need to be present in the `libraries` folder.  
 
- `h5p register <repoUrl>` or `h5p register <entry.json>` to add or update entries in the local registry.  
+• `h5p register <repoUrl>` or `h5p register <entry.json>` to add or update entries in the local registry.  
 `<repoUrl>` is the library repository url.
 If specified, the `<entry.json>` file needs to be created. Below is an example.  
 You can also use this command to update existing registry entries.  
@@ -40,22 +40,22 @@ You can also use this command to update existing registry entries.
 }
 ```
 
- `h5p clone <library> <mode> [useCache]` clones the library and its dependencies in the libraries folder.  
+• `h5p clone <library> <mode> [useCache]` clones the library and its dependencies in the libraries folder.  
 Use `view` or `edit` for `<mode>`.  
 `[useCache]` can be `1` if you want it to use the cached deps.  
 
- `h5p install <library> <mode> [useCache]` downloads the library and its dependencies in the libraries folder.  
+• `h5p install <library> <mode> [useCache]` downloads the library and its dependencies in the libraries folder.  
 Use `view` or `edit` for `<mode>`.  
 `[useCache]` can be `1` if you want it to use the cached deps.  
 
- `h5p setup <library|repoUrl> [version] [download]` computes & clones/installs view and edit dependencies for a library.  
+• `h5p setup <library|repoUrl> [version] [download]` computes & clones/installs view and edit dependencies for a library.  
 You can optionally specify a library `[version]`. To view current versions for a library use the `tags` command.  
 Using `1` for the `[download]` parameter will download the libraries instead of cloning them as git repos.  
 
- `h5p missing <library>` will compute the unregistered dependencies for a library.  
+• `h5p missing <library>` will compute the unregistered dependencies for a library.  
 The library itself has to exist in the local library registry.  
 
- `h5p verify <h5p-repo-name>` to check the status of the setup for a given library.  
+• `h5p verify <h5p-repo-name>` to check the status of the setup for a given library.  
 Running `h5p verify h5p-accordion` should return something like below if the library was properly set up.  
 ```
 {
@@ -70,11 +70,11 @@ Running `h5p verify h5p-accordion` should return something like below if the lib
 }
 ```
 
- `h5p server` starts the dev server.  
+• `h5p server` starts the dev server.  
 Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types. To view the dashboard point your browser to  
 http://localhost:8080/dashboard  
 
- `h5p export <library> <folder>` will export the `<library>` content type from the `content/<folder>` folder.  
+• `h5p export <library> <folder>` will export the `<library>` content type from the `content/<folder>` folder.  
 Make sure that the library's dependency lists are cached and that the dependencies are installed.  
 Once finished, the export command outputs the location of the resulting file.  
 

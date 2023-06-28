@@ -271,8 +271,13 @@ const cli = {
     try {
       const help = fs.readFileSync('commands.md', 'utf-8');
       if (command) {
-        regexp = ` \`h5p ${command}(.*?)(\\n\\n|\\Z)`;
-        console.log(marked(help.match(new RegExp(regexp, 's'))?.[0]));
+        const regexp = ` \`h5p ${command}(.*?)(\\n\\n|\\Z)`;
+        const data = help.match(new RegExp(regexp, 's'))?.[0];
+        if (!data) {
+          console.log(`> "${command}" is not a valid command`);
+          return;
+        }
+        console.log(marked(data));
         return;
       }
       console.log(marked(help));
