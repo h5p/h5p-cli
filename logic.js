@@ -11,6 +11,59 @@ const fromTemplate = (template, input) => {
   }
   return template;
 }
+// get file from source and optionally parse it as JSON
+const getFile = async (source, parseJson) => {
+  let local = false;
+  try {
+    new URL(source);
+  }
+  catch {
+    local = true;
+  }
+  let output;
+  if (local) {
+    if (!fs.existsSync(source)) {
+      return '';
+    }
+    output = fs.readFileSync(source, 'utf-8');
+  }
+  else {
+    output = (await superAgent.get(source).set('User-Agent', 'h5p-cli').ok(res => [200, 404].includes(res.status))).text;
+  }
+  if (output == '404: Not Found') {
+    return '';
+  }
+  if (parseJson) {
+    output = JSON.parse(output);
+  }
+  return output;
+}
+// generates list of files and their relative paths in a folder tree
+const getFileList = (folder) => {
+  const output = [];
+  let toDo = [folder];
+  let list = [];
+  const compute = () => {
+    for (let item of list) {
+      const dirs = fs.readdirSync(item);
+      for (let entry of dirs) {
+        const file = `${item}/${entry}`;
+        if (fs.lstatSync(file).isDirectory()) {
+          toDo.push(file);
+        }
+        else {
+          output.push(file);
+        }
+      }
+    }
+  }
+  while (toDo.length) {
+    list = toDo;
+    toDo = [];
+    compute();
+  }
+  return output;
+}
 module.exports = {
   // imports content type from zip archive file in the .h5p format
   import: (folder, archive) => {
@@ -499,33 +552,9 @@ module.exports = {
     }
     return output;
   },
-  fromTemplate
-}
-// generates list of files and their relative paths in a folder tree
-const getFileList = (folder) => {
-  const output = [];
-  let toDo = [folder];
-  let list = [];
-  const compute = () => {
-    for (let item of list) {
-      const dirs = fs.readdirSync(item);
-      for (let entry of dirs) {
-        const file = `${item}/${entry}`;
-        if (fs.lstatSync(file).isDirectory()) {
-          toDo.push(file);
-        }
-        else {
-          output.push(file);
-        }
-      }
-    }
-  }
-  while (toDo.length) {
-    list = toDo;
-    toDo = [];
-    compute();
-  }
-  return output;
+  fromTemplate,
+  getFile,
+  getFileList
 }
 // determines if provided path has duplicate entries; entries are separated by '/';
 const pathHasDuplicates = (path) => {
@@ -579,33 +608,6 @@ const parseSemanticLibraries = (entries) => {
   list = entries;
   while (list.length) {
     parseList();
-  }
-  return output;
-}
-// get file from source and optionally parse it as JSON
-const getFile = async (source, parseJson) => {
-  let local = false;
-  try {
-    new URL(source);
-  }
-  catch {
-    local = true;
-  }
-  let output;
-  if (local) {
-    if (!fs.existsSync(source)) {
-      return '';
-    }
-    output = fs.readFileSync(source, 'utf-8');
-  }
-  else {
-    output = (await superAgent.get(source).set('User-Agent', 'h5p-cli').ok(res => [200, 404].includes(res.status))).text;
-  }
-  if (output == '404: Not Found') {
-    return '';
-  }
-  if (parseJson) {
-    output = JSON.parse(output);
   }
   return output;
 }

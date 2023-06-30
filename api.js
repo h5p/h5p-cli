@@ -16,14 +16,23 @@ let session = {
 }
 module.exports = {
   // renders dashboard
-  dashboard: (request, response, next) => {
+  dashboard: async (request, response, next) => {
     try {
       const html = fs.readFileSync(`${require.main.path}/${config.folders.assets}/templates/dashboard.html`, 'utf-8');
-      const input = {
+      const labels = await logic.getFile(`${config.folders.assets}/languages/${session.language}.json`, true);
+      const languageFiles = logic.getFileList(`${config.folders.libraries}/h5p-editor-php-library/language`);
+      const languages = [];
+      for (let item of languageFiles) {
+        languages.push(item.match(/language\/(.*?)\.js/)?.[1]);
+      }
+      let input = {
         assets: config.folders.assets,
         host: `${request.protocol}://${request.get('host')}`,
-        status: session.status
+        status: session.status,
+        language: session.language,
+        languages: JSON.stringify(languages)
       }
+      input = {...input, ...labels};
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));
       session.status = '';
@@ -71,7 +80,10 @@ module.exports = {
   // updates session file used for resume functionality
   setUserData: (request, response, next) => {
     try {
-      manageSession(request.params.folder, request.query?.session);
+      manageSession(request.params.folder, {
+        language: request.query?.language,
+        name: request.query?.session
+      });
       if (session.name == 'null') {
         response.set('Content-Type', 'application/json');
         response.end(JSON.stringify({success: true}));
@@ -92,7 +104,10 @@ module.exports = {
   // retrieves session data for resume functionality
   getUserData: (request, response, next) => {
     try {
-      manageSession(request.params.folder, request.query?.session);
+      manageSession(request.params.folder, {
+        language: request.query?.language,
+        name: request.query?.session
+      });
       const data = getSession(request.params.folder);
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify(data?.[0] || {}));
@@ -471,6 +486,7 @@ module.exports = {
       }));
       const html = fs.readFileSync(`${require.main.path}/${config.folders.assets}/templates/edit.html`, 'utf-8');
       const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
+      info.language = session.language;
       const id = cache.edit[library][library].id;
       let mainLibrary = {};
       for (let item of info.preloadedDependencies) {
@@ -479,6 +495,10 @@ module.exports = {
           break;
         }
       }
+      manageSession(request.params.folder, {
+        language: request.query?.language,
+        name: request.query?.session
+      }, true);
       const formParams = {
         params: JSON.parse(jsonContent),
         metadata: info
@@ -532,9 +552,14 @@ module.exports = {
         }
       }
       const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
-      const sessions = manageSession(request.params.folder, request.query?.session, true);
+      const sessions = manageSession(request.params.folder, {
+        language: request.query?.language,
+        name: request.query?.session
+      }, true);
       const userData = getSession(request.params.folder);
-      const metadata = fs.readFileSync(`content/${folder}/h5p.json`);
+      let metadata = await logic.getFile(`content/${folder}/h5p.json`, true);
+      metadata.language = session.language;
+      metadata = JSON.stringify(metadata);
       let preloadedJs = [];
       let preloadedCss = [];
       for (let item in cache.view[library]) {
@@ -698,9 +723,11 @@ For a setup status report run "h5p verify ${library}".`;
     return true;
   }
 }
-const manageSession = (folder, name, getSessions) => {
-  if (name) {
-    session.name = name;
+const manageSession = (folder, options, getSessions) => {
+  for (let key in options) {
+    if (typeof options[key] !== 'undefined') {
+      session[key] = options[key];
+    }
   }
   const sessionFolder = `content/${folder}/sessions`;
   const sessionFile = `${sessionFolder}/${session.name}.json`;

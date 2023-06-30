@@ -84,6 +84,9 @@ body {
   border-color: #ffffff;
   color: #040404;
 }
+.languages {
+  margin-left: auto;
+}
 .button:hover, .itemLinks a:hover {
   border-color: #d7e5ff;
   background-color: #d7e5ff;

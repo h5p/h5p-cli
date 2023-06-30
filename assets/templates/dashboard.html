@@ -21,11 +21,14 @@
       archive: 'archive',
       status: 'status',
       content: 'content',
-      pagination: 'pagination'
+      pagination: 'pagination',
+      languages: 'languages'
     },
     classes: {
       hidden: 'hidden'
-    }
+    },
+    language: "{language}",
+    languages: {languages}
   });
   runner.init();
 </script>
@@ -40,6 +43,12 @@
         </div>
         <div class="button import" id="importContentButton" onclick="runner.toggleImportContent()">
           <span class="button-label">import</span>
+        </div>
+        <div class="languages">
+          {lang_language}
+          <select id="languages" class="selector">
+            <option value="{value}"{selected}>{name}</option>
+          </select>
         </div>
         <div id="newContent" class="hidden inline">
           <div class="center-content">

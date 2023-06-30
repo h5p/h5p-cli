@@ -10,6 +10,7 @@ function dashboard(options) {
   let status;
   let content;
   let pagination;
+  let languages;
   let entry;
   let link;
   this.init = () => {
@@ -27,11 +28,13 @@ function dashboard(options) {
       status = document.getElementById(options.ids.status);
       content = document.getElementById(options.ids.content);
       pagination = document.getElementById(options.ids.pagination);
+      languages = document.getElementById(options.ids.languages);
       entry = content.innerHTML;
       link = pagination.innerHTML;
       option = contentTypes.innerHTML;
       this.getPage();
       this.getContentTypes();
+      this.setLanguages();
       if (status.innerText) {
         this.showStatus();
       }
@@ -170,5 +173,17 @@ function dashboard(options) {
   this.hideStatus = () => {
     status.innerText = '';
     status.classList.add(options.classes.hidden);
+  }
+  this.setLanguages = () => {
+    const option = languages.innerHTML;
+    let html = '';
+    for (let item of options.languages) {
+      html += this.fromTemplate(option, {
+        value: item,
+        name: item,
+        selected: options.language === item ? ' selected' : ''
+      });
+    }
+    languages.innerHTML = html;
   }
 }
