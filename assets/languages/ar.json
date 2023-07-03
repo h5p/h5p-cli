@@ -1,0 +1,21 @@
+{
+   "lang_language": "عرض / تحرير اللغة",
+   "lang_new": "جديد",
+   "lang_import": "استيراد",
+   "lang_create": "إنشاء",
+   "lang_View": "عرض",
+   "lang_Edit": "تحرير",
+   "lang_Delete": "حذف",
+   "lang_TypeContentTitle": "اكتب عنوان المحتوى هنا ...",
+   "lang_SplitView": "عرض مقسم",
+   "lang_ViewMode": "وضع العرض",
+   "lang_EditMode": "وضع التحرير",
+   "lang_dashboard": "لوحة القيادة",
+   "lang_running": "قيد التشغيل",
+   "lang_contentCreatedFor": "تم إنشاء المحتوى لـ",
+   "lang_userStateSession": "جلسة حالة المستخدم",
+   "lang_newSession": "جلسة جديدة",
+   "lang_sessionName": "اسم الجلسة",
+   "lang_createSession": "إنشاء جلسة",
+   "lang_saveAllChanges": "احفظ كل التغييرات"
+} 

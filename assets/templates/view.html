@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>h5p-dev - view content type - {title}</title>
+<title>h5p-dev - {lang_View} - {title}</title>
 <meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="/{assets}/styles/reset.css">
 <link rel="stylesheet" type="text/css" href="/{assets}/styles/style.css">
@@ -112,17 +112,17 @@
 </script>
 </head>
 <body>
-<div id="status">running {id} {version}; content created for {id} {contentVersion}</div>
+<div id="status">{lang_running} {id} {version}; {lang_contentCreatedFor} {id} {contentVersion}</div>
 <div class="menu-holder {simple}" id="menu">
   <div class="menu">
     <div id="links">
       <div class="col50">
-        <a class="button dashboard" href="/dashboard"><span class="button-label">dashboard</span></a>
+        <a class="button dashboard" href="/dashboard"><span class="button-label">{lang_dashboard}</span></a>
       </div>
       <div class="col50 align-right">
-        <div class="button delete" id="deleteButton"><span class="button-label">delete</span></div>
-        <a class="button split-view" href="/split/{library}/{folder}"><span class="button-label">split view</span></a>
-        <a class="button edit" href="/edit/{library}/{folder}"><span class="button-label">edit</span></a>
+        <div class="button delete" id="deleteButton"><span class="button-label">{lang_Delete}</span></div>
+        <a class="button split-view" href="/split/{library}/{folder}"><span class="button-label">{lang_SplitView}</span></a>
+        <a class="button edit" href="/edit/{library}/{folder}"><span class="button-label">{lang_Edit}</span></a>
       </div>
     </div>
   </div>
@@ -130,12 +130,12 @@
 <div class="submenu">
   <div class="menu">
     <div>
-      user state session:
+      {lang_userStateSession}:
       <select id="sessions"></select>
-      <div class="button" id="newSessionButton">new session</div>
+      <div class="button" id="newSessionButton">{lang_newSession}</div>
       <div class="session inline hidden" id="newSession">
-        <input type="text" class="input" id="sessionName" placeholder="session name">
-        <div class="button" id="saveSessionButton">create session</div>
+        <input type="text" class="input" id="sessionName" placeholder="{lang_sessionName}">
+        <div class="button" id="saveSessionButton">{lang_createSession}</div>
       </div>
     </div>
   </div>

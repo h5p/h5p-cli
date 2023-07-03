@@ -1,0 +1,21 @@
+{
+  "lang_language": "afficher/modifier langue",
+  "lang_new": "nouveau",
+  "lang_import": "importer",
+  "lang_create": "créer",
+  "lang_View": "Voir",
+  "lang_Edit": "Modifier",
+  "lang_Delete": "Supprimer",
+  "lang_TypeContentTitle": "Tapez le titre du contenu ici...",
+  "lang_SplitView": "vue fractionnée",
+  "lang_ViewMode": "Mode d'affichage",
+  "lang_EditMode": "Mode d'édition",
+  "lang_dashboard": "tableau de bord",
+  "lang_running": "en cours d'exécution",
+  "lang_contentCreatedFor": "contenu créé pour",
+  "lang_userStateSession": "session d'état de l'utilisateur",
+  "lang_newSession": "nouvelle session",
+  "lang_sessionName": "nom de la session",
+  "lang_createSession": "créer une session",
+  "lang_saveAllChanges": "enregistrer toutes les modifications"
+}

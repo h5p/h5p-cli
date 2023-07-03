@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>h5p-dev edit content - {title}</title>
+<title>h5p-dev {lang_Edit} - {title}</title>
 <meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="/{assets}/styles/reset.css">
 <link rel="stylesheet" type="text/css" href="/{assets}/styles/style.css">
@@ -150,16 +150,17 @@
 </script>
 </head>
 <body>
-<div id="status">running {id} {version}; content created for {id} {contentVersion}</div>
+<div id="status">{lang_running} {id} {version}; {lang_contentCreatedFor} {id} {contentVersion}</div>
 <div class="menu-holder {simple}" id="menu">
   <div class="menu">
     <div id="links">
       <div class="col50">
-        <a class="button dashboard" href="/dashboard"><span class="button-label">dashboard</span></a>
+        <a class="button dashboard" href="/dashboard"><span class="button-label">{lang_dashboard}</span></a>
       </div>
       <div class="col50 align-right">
-        <div class="button delete" id="deleteButton"><span class="button-label">delete</span></div>
-        <a class="button view" href="/view/{library}/{folder}"><span class="button-label">view</span></a> </div>
+        <div class="button delete" id="deleteButton"><span class="button-label">{lang_Delete}</span></div>
+        <a class="button view" href="/view/{library}/{folder}"><span class="button-label">{lang_View}</span></a>
+      </div>
     </div>
   </div>
 </div>
@@ -173,7 +174,7 @@
     <div class="h5p-create">
       <div class="h5p-editor">...</div>
     </div>
-    <input type="submit" id="saveButton" value="save all changes" class="button save-button">
+    <input type="submit" id="saveButton" value="{lang_saveAllChanges}" class="button save-button">
   </form>
 </div>
 </body>

@@ -23,11 +23,7 @@ module.exports = {
         name: request.query?.session
       });
       const html = fs.readFileSync(`${require.main.path}/${config.folders.assets}/templates/dashboard.html`, 'utf-8');
-      let langFile = `${config.folders.assets}/languages/${session.language}.json`;
-      if (!fs.existsSync(langFile)) {
-        langFile = `${config.folders.assets}/languages/en.json`;
-      }
-      const labels = await logic.getFile(langFile, true);
+      const labels = await getLangLabels();
       const languageFiles = logic.getFileList(`${config.folders.libraries}/h5p-editor-php-library/language`);
       const languages = [];
       for (let item of languageFiles) {
@@ -265,14 +261,16 @@ module.exports = {
     }
   },
   // renders view & edit modes on the same page
-  splitView: (request, response, next) => {
+  splitView: async (request, response, next) => {
     try {
       const splitView_html = fs.readFileSync(`${require.main.path}/${config.folders.assets}/templates/splitView.html`, 'utf-8');
-      const input = {
+      const labels = await getLangLabels();
+      let input = {
         assets: config.folders.assets,
         viewFrameSRC: `/view/${request.params.library}/${request.params.folder}?simple=1`,
         editFrameSRC: `/edit/${request.params.library}/${request.params.folder}?simple=1`
       }
+      input = {...input, ...labels};
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(splitView_html, input));
     }
@@ -511,7 +509,8 @@ module.exports = {
         params: JSON.parse(jsonContent),
         metadata: info
       }
-      const input = {
+      const labels = await getLangLabels();
+      let input = {
         assets: config.folders.assets,
         libraries: config.folders.libraries,
         title: info.title,
@@ -533,6 +532,7 @@ module.exports = {
         language: session.language,
         simple: request.query.simple ? 'hidden' : ''
       }
+      input = {...input, ...labels};
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));
     }
@@ -598,7 +598,8 @@ module.exports = {
         }
       }
       const machineName = `${id} ${cache.view[library][library].version.major}.${cache.view[library][library].version.minor}`;
-      const input = {
+      const labels = await getLangLabels();
+      let input = {
         assets: config.folders.assets,
         libraries: config.folders.libraries,
         title: info.title,
@@ -622,6 +623,7 @@ module.exports = {
         watcher: config.files.watch,
         simple: request.query.simple ? 'hidden' : ''
       }
+      input = {...input, ...labels};
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));
     }
@@ -760,4 +762,11 @@ const getSession = (folder) => {
     userData = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
   }
   return userData;
+}
+const getLangLabels = async () => {
+  let langFile = `${config.folders.assets}/languages/${session.language}.json`;
+  if (!fs.existsSync(langFile)) {
+    langFile = `${config.folders.assets}/languages/en.json`;
+  }
+  return await logic.getFile(langFile, true);
 }

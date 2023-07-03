@@ -1,9 +1,21 @@
 {
-  "lang_language": "language",
+  "lang_language": "view/edit language",
   "lang_new": "new",
   "lang_import": "import",
   "lang_create": "create",
   "lang_View": "View",
   "lang_Edit": "Edit",
-  "lang_Delete": "Delete"
+  "lang_Delete": "Delete",
+  "lang_TypeContentTitle": "Type Content Title here...",
+  "lang_SplitView": "split-view",
+  "lang_ViewMode": "View Mode",
+  "lang_EditMode": "Edit Mode",
+  "lang_dashboard": "dashboard",
+  "lang_running": "running",
+  "lang_contentCreatedFor": "content created for",
+  "lang_userStateSession": "user state session",
+  "lang_newSession": "new session",
+  "lang_sessionName": "session name",
+  "lang_createSession": "create session",
+  "lang_saveAllChanges": "save all changes"
 }

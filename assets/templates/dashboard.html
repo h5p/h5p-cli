@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>h5p-dev dashboard</title>
+<title>h5p-dev {lang_dashboard}</title>
 <meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="/{assets}/styles/reset.css">
 <link rel="stylesheet" type="text/css" href="/{assets}/styles/style.css">
@@ -55,13 +55,13 @@
             <select id="contentTypes" class="selector">
               <option value="{value}">{name}</option>
             </select>
-            <input type="text" class="input" id="createFolder" placeholder="Type Content Title here...">
+            <input type="text" class="input" id="createFolder" placeholder="{lang_TypeContentTitle}">
             <div class="button" onclick="runner.create()">{lang_create}</div>
           </div>
         </div>
         <div id="importContent" class="hidden inline">
           <div class="center-content">
-            <input type="text" class="input" id="importFolder" placeholder="Type Content Title here...">
+            <input type="text" class="input" id="importFolder" placeholder="{lang_TypeContentTitle}">
             <input type="file" class="input" id="archive" accept=".h5p">
             <div class="button" onclick="runner.import()">{lang_import}</div>
           </div>

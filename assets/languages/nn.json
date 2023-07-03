@@ -1,0 +1,21 @@
+{
+  "lang_language": "se/rediger språk",
+  "lang_new": "ny",
+  "lang_import": "import",
+  "lang_create": "opprett",
+  "lang_View": "Vis",
+  "lang_Edit": "Rediger",
+  "lang_Delete": "Slett",
+  "lang_TypeContentTitle": "Skriv inn innholdstittel her...",
+  "lang_SplitView": "delt visning",
+  "lang_ViewMode": "Visningsmodus",
+  "lang_EditMode": "Redigeringsmodus",
+  "lang_dashboard": "dashbord",
+  "lang_running": "løper",
+  "lang_contentCreatedFor": "innhold opprettet for",
+  "lang_userStateSession": "brukerstatusøkt",
+  "lang_newSession": "ny økt",
+  "lang_sessionName": "sesjonsnavn",
+  "lang_createSession": "opprett økt",
+  "lang_saveAllChanges": "lagre alle endringer"
+}
