@@ -18,8 +18,16 @@ module.exports = {
   // renders dashboard
   dashboard: async (request, response, next) => {
     try {
+      manageSession(null, {
+        language: request.query?.language,
+        name: request.query?.session
+      });
       const html = fs.readFileSync(`${require.main.path}/${config.folders.assets}/templates/dashboard.html`, 'utf-8');
-      const labels = await logic.getFile(`${config.folders.assets}/languages/${session.language}.json`, true);
+      let langFile = `${config.folders.assets}/languages/${session.language}.json`;
+      if (!fs.existsSync(langFile)) {
+        langFile = `${config.folders.assets}/languages/en.json`;
+      }
+      const labels = await logic.getFile(langFile, true);
       const languageFiles = logic.getFileList(`${config.folders.libraries}/h5p-editor-php-library/language`);
       const languages = [];
       for (let item of languageFiles) {
@@ -731,15 +739,15 @@ const manageSession = (folder, options, getSessions) => {
   }
   const sessionFolder = `content/${folder}/sessions`;
   const sessionFile = `${sessionFolder}/${session.name}.json`;
-  if (!fs.existsSync(sessionFolder)) {
+  if (folder && !fs.existsSync(sessionFolder)) {
     fs.mkdirSync(sessionFolder);
   }
-  if (session.name != 'null' && !fs.existsSync(sessionFile)) {
+  if (folder && session.name != 'null' && !fs.existsSync(sessionFile)) {
     fs.writeFileSync(sessionFile, JSON.stringify({
       resume: []
     }));
   }
-  if (getSessions) {
+  if (folder && getSessions) {
     const files = fs.readdirSync(sessionFolder);
     return files;
   }

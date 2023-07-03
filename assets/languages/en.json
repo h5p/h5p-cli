@@ -2,5 +2,8 @@
   "lang_language": "language",
   "lang_new": "new",
   "lang_import": "import",
-  "lang_create": "create"
+  "lang_create": "create",
+  "lang_View": "View",
+  "lang_Edit": "Edit",
+  "lang_Delete": "Delete"
 }
