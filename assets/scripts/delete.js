@@ -2,7 +2,7 @@ window.addEventListener('load', () => {
   document.getElementById('deleteButton')?.addEventListener('click', async () => {
     try {
       const folder = window.location.href.split('/').pop();
-      if (window.confirm(`Are you sure you want to delete the "content/${folder}" project?`)) {
+      if (window.confirm(`Are you sure you want to delete "content/${folder}"?`)) {
         console.log(`deleting "content/${folder}"...`);
         const output = await (await fetch(`/remove/${folder}`, {method: 'post'})).json();
         console.log(output.result);
