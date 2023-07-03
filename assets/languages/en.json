@@ -1,3 +1,6 @@
 {
-  "lang_language": "language"
+  "lang_language": "language",
+  "lang_new": "new",
+  "lang_import": "import",
+  "lang_create": "create"
 }

@@ -186,4 +186,7 @@ function dashboard(options) {
     }
     languages.innerHTML = html;
   }
+  this.changeLanguage = () => {
+    window.location.href = `${options.host}/dashboard?language=${languages.options[languages.selectedIndex].value}`;
+  }
 }

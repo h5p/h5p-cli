@@ -312,7 +312,7 @@ body {
   display: none;
 }
 /******* RESPONSIVE STYLE *************/
-@media only screen and (max-width: 600px) {
+@media (orientation: portrait) {
   .item {
     flex-direction: column;
     align-items: flex-start;

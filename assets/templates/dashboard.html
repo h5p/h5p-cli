@@ -39,14 +39,14 @@
     <div class="menu-holder">
       <div class="menu">
         <div class="button new" id="newContentButton" onclick="runner.toggleNewContent()">
-          <span class="button-label">new</span>
+          <span class="button-label">{lang_new}</span>
         </div>
         <div class="button import" id="importContentButton" onclick="runner.toggleImportContent()">
-          <span class="button-label">import</span>
+          <span class="button-label">{lang_import}</span>
         </div>
         <div class="languages">
           {lang_language}
-          <select id="languages" class="selector">
+          <select id="languages" class="selector" onchange="runner.changeLanguage()">
             <option value="{value}"{selected}>{name}</option>
           </select>
         </div>
@@ -56,14 +56,14 @@
               <option value="{value}">{name}</option>
             </select>
             <input type="text" class="input" id="createFolder" placeholder="Type Content Title here...">
-            <div class="button" onclick="runner.create()">create</div>
+            <div class="button" onclick="runner.create()">{lang_create}</div>
           </div>
         </div>
         <div id="importContent" class="hidden inline">
           <div class="center-content">
             <input type="text" class="input" id="importFolder" placeholder="Type Content Title here...">
             <input type="file" class="input" id="archive" accept=".h5p">
-            <div class="button" onclick="runner.import()">import</div>
+            <div class="button" onclick="runner.import()">{lang_import}</div>
           </div>
         </div>
       </div>
