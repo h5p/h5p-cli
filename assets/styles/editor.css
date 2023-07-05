@@ -1,0 +1,12 @@
+.h5peditor-form {
+  background: #fcfcfc;
+  border: 1px solid #d0d0d1;
+  position: relative;
+}
+.h5peditor-form>.common,
+.h5peditor-form>.field,
+.h5peditor-form>.tree {
+  margin: 20px auto;
+  max-width: 918px;
+  padding: 0 20px;
+}
