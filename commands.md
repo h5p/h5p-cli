@@ -13,14 +13,14 @@ The `<org>` for a library is mentioned in the `list` command output.
 • `h5p deps <library> <mode> [saveToCache] [version] [folder]` computes dependencies for an h5p library.  
 Use `view` or `edit` for `<mode>` to generate dependencies for those cases.  
 Specify `1` for `[saveToCache]` to save the result in the cache folder. Default is `0`.  
-Specify a `[version]` to compute deps for that version. Default is `master`.  
+Specify a `[version]` to compute deps for that version. Default is `master`. Use the `tags` command to list versions for a library.  
 Specify a `[folder]` to compute deps based on the library from `libraries/[folder]` folder. Default is `""`.  
 
 • `h5p use <library> <folder>` computes view & edit dependencies for a `<library>` using the provided `libraries/<folder>` as the main library. A local library registry entry will also be created if the library is missing from the local registry.  
 Library dependencies also need to be present in the `libraries` folder.  
 
 • `h5p register <repoUrl>` or `h5p register <entry.json>` to add or update entries in the local registry.  
-`<repoUrl>` is the library repository url.
+`<repoUrl>` is the library repository url.  
 If specified, the `<entry.json>` file needs to be created. Below is an example.  
 You can also use this command to update existing registry entries.  
 ```
@@ -75,8 +75,13 @@ Once the dev server is started you can use your browser to view, edit, delete, i
 http://localhost:8080/dashboard  
 
 • `h5p export <library> <folder>` will export the `<library>` content type from the `content/<folder>` folder.  
+An example here is `h5p export h5p-agamotto agamotto-test` which will export the `h5p-agamotto` content type located in the `content/agamotto-test` folder.  
 Make sure that the library's dependency lists are cached and that the dependencies are installed.  
 Once finished, the export command outputs the location of the resulting file.  
+
+• `h5p import <folder> <h5p_archive_file_path>` will import the archived .h5p `<h5p_archive_file_path>` content type into the `content/<folder>` folder.  
+An example here is `h5p import agamotto-test ~/Downloads/agamotto_test.h5p` which will import the `~/Downloads/agamotto_test.h5p` archived .h5p file into the `content/agamotto-test` folder.  
+Once finished, the import command outputs the location of the resulting content type folder.  
 
  When viewing content types they are automatically upgraded to the version of the currently used main library.  
 

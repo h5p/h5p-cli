@@ -22,6 +22,17 @@ const cli = {
       console.log(error);
     }
   },
+  // imports content type from .h5p zipped file
+  import: (folder, archive) => {
+    try {
+      const output = logic.import(folder, archive);
+      console.log(`content/${output}`);
+    }
+    catch (error) {
+      console.log('> error');
+      console.log(error);
+    }
+  },
   // lists h5p libraries
   list: async (reversed, ignoreCache) => {
     try {
@@ -269,7 +280,7 @@ const cli = {
   // help section
   help: (command) => {
     try {
-      const help = fs.readFileSync('commands.md', 'utf-8');
+      const help = fs.readFileSync(`${require.main.path}/commands.md`, 'utf-8');
       if (command) {
         const regexp = ` \`h5p ${command}(.*?)(\\n\\n|\\Z)`;
         const data = help.match(new RegExp(regexp, 's'))?.[0];

@@ -66,13 +66,12 @@ const getFileList = (folder) => {
 }
 module.exports = {
   // imports content type from zip archive file in the .h5p format
-  import: (folder, archive) => {
+  import: (folder, archive, ) => {
     const target = `${config.folders.temp}/${folder}`;
     new admZip(archive).extractAllTo(target);
     fs.renameSync(`${target}/content`, `content/${folder}`);
     fs.renameSync(`${target}/h5p.json`, `content/${folder}/h5p.json`);
     fs.rmSync(target, { recursive: true, force: true });
-    fs.rmSync(archive);
     return folder;
   },
   // creates zip archive export file in the .h5p format
