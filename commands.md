@@ -10,7 +10,7 @@ The output format is `<library> (<org>)`.
 The `<org>` for a library is mentioned in the `list` command output.  
 `<mainBranch>` is the main branch of repository. Default is `master`.  
 
-• `h5p deps <library> <mode> [saveToCache] [version] [folder] [showMissing] [verbose]` computes dependencies for an h5p library.  
+• `h5p deps <library> <mode> [saveToCache] [version] [folder]` computes dependencies for an h5p library.  
 Use `view` or `edit` for `<mode>` to generate dependencies for those cases.  
 Specify `1` for `[saveToCache]` to save the result in the cache folder. Default is `0`.  
 Specify a `[version]` to compute deps for that version. Default is `master`.  
