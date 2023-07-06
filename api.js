@@ -764,7 +764,7 @@ const getSession = (folder) => {
   return userData;
 }
 const getLangLabels = async () => {
-  let langFile = `${config.folders.assets}/languages/${session.language}.json`;
+  let langFile = `${require.main.path}/${config.folders.assets}/languages/${session.language}.json`;
   if (!fs.existsSync(langFile)) {
     langFile = `${config.folders.assets}/languages/en.json`;
   }
