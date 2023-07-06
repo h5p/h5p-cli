@@ -96,7 +96,7 @@ function dashboard(options) {
       }
       this.showStatus('...');
       const type = contentTypes.value;
-      const output = await (await fetch(`${options.host}/create/${type}/${createFolder.value}`, {method: 'post'})).json();
+      const output = await (await fetch(`${options.host}/create/${type}/${encodeURIComponent(createFolder.value)}`, {method: 'post'})).json();
       if (output.result) {
         window.location.href = `/edit/${type}/${createFolder.value}`;
         return;
@@ -117,7 +117,7 @@ function dashboard(options) {
       this.showStatus('...');
       const body = new FormData();
       body.append('file', archive.files[0]);
-      const output = await (await fetch(`${options.host}/import/${importFolder.value}`, { method: 'post', body })).json();
+      const output = await (await fetch(`${options.host}/import/${encodeURIComponent(importFolder.value)}`, { method: 'post', body })).json();
       this.toggleImportContent();
       this.getPage();
       this.showStatus(output?.path ? `imported into "content/${output.path}"` : 0 || output?.error || output);

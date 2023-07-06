@@ -123,6 +123,8 @@ module.exports = {
   // import zipped archive of content type
   import: (request, response, next) => {
     try {
+      request.params.folder = request.params.folder.replaceAll(/[^a-zA-Z0-9 -]/g, '');
+      request.params.folder = request.params.folder.replaceAll(' ', '-');
       const path = logic.import(request.params.folder, request.file.path);
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify({path}));
@@ -144,6 +146,8 @@ module.exports = {
   // create empty content type
   create: async (request, response, next) => {
     try {
+      request.params.folder = request.params.folder.replaceAll(/[^a-zA-Z0-9 -]/g, '');
+      request.params.folder = request.params.folder.replaceAll(' ', '-');
       const target = `content/${request.params.folder}`;
       const viewDepsFile = `${config.folders.cache}/${request.params.type}.json`;
       const editDepsFile = `${config.folders.cache}/${request.params.type}_edit.json`;
