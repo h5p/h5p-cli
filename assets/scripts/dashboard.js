@@ -98,7 +98,7 @@ function dashboard(options) {
       const type = contentTypes.value;
       const output = await (await fetch(`${options.host}/create/${type}/${encodeURIComponent(createFolder.value)}`, {method: 'post'})).json();
       if (output.result) {
-        window.location.href = `/edit/${type}/${createFolder.value}`;
+        window.location.href = `/edit/${type}/${output?.result}`;
         return;
       }
       this.toggleNewContent();

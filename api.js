@@ -174,7 +174,7 @@ module.exports = {
       fs.writeFileSync(`${target}/content.json`, JSON.stringify({}));
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify({
-        result: `created in "${target}"`
+        result: request.params.folder
       }));
     }
     catch (error) {
