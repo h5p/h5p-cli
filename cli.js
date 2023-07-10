@@ -144,7 +144,7 @@ const cli = {
           continue;
         }
         console.log(`>> + installing ${item}`);
-        await logic.clone('h5p', item, 'master', item);
+        logic.clone('h5p', item, 'master', item);
       }
       for (let item of config.core.setup) {
         await cli.setup(item);
@@ -200,13 +200,7 @@ const cli = {
   },
   // updates local library registry entry
   register: async (input) => {
-    let isUrl = true;
-    try {
-      url = new URL(input);
-    }
-    catch (error) {
-      isUrl = false;
-    }
+    const isUrl = input.indexOf('git@') !== -1;
     try {
       let registry = await logic.getRegistry();
       const entry = isUrl ? await logic.registryEntryFromRepoUrl(input) : JSON.parse(fs.readFileSync(input, 'utf-8'));

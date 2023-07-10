@@ -38,6 +38,18 @@ const getFile = async (source, parseJson) => {
   }
   return output;
 }
+// clone repo and retrieve file
+const getRepoFile = function(gitUrl, path, parseJson) {
+  const pieces = gitUrl.match(/:(.*?).git/)[1].split('/');
+  let repoName = pieces[1];
+  const target = `${config.folders.temp}/${repoName}`;
+  fs.rmSync(target, { recursive: true, force: true });
+  console.log(execSync(`git clone --depth 1 ${gitUrl} ${target}`).toString());
+  const filePath = `${target}/${path}`;
+  const data = fs.readFileSync(filePath, 'utf-8');
+  fs.rmSync(target, { recursive: true, force: true });
+  return parseJson ? JSON.parse(data) : data;
+}
 // generates list of files and their relative paths in a folder tree
 const getFileList = (folder) => {
   const output = [];
@@ -336,8 +348,8 @@ module.exports = {
     fs.renameSync(`${config.folders.libraries}/${repo}-master`, target);
   },
   // clone repository using git
-  clone: async (org, repo, branch, target) => {
-    return execSync(`git clone ${fromTemplate(config.urls.library.clone, {org, repo})} ${target} --branch ${branch}`, {cwd: config.folders.libraries}).toString();
+  clone: (org, repo, branch, target) => {
+    return execSync(`git clone --depth 1 ${fromTemplate(config.urls.library.clone, {org, repo})} ${target} --branch ${branch}`, {cwd: config.folders.libraries}).toString();
   },
   /* clones/downloads dependencies to libraries folder using git and runs relevant npm commands
   mode - 'view' or 'edit' to fetch non-editor or editor libraries
@@ -382,7 +394,7 @@ module.exports = {
         await module.exports.download(list[item].org, list[item].repoName, version, folder);
       }
       else {
-        console.log(await module.exports.clone(list[item].org, list[item].repoName, version, label));
+        console.log(module.exports.clone(list[item].org, list[item].repoName, version, label));
       }
       const packageFile = `${folder}/package.json`;
       if (!fs.existsSync(packageFile)) {
@@ -529,20 +541,21 @@ module.exports = {
   machineToShort: (machineName) => {
     return machineName.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase().replace('.', '-');
   },
-  registryEntryFromRepoUrl: async function (repoUrl) {
-    const url = new URL(repoUrl);
-    const pieces = url.pathname.split('/').filter(n=>n);
-    const org = pieces[pieces.length - 2];
-    repoName = pieces[pieces.length - 1];
-    const list = await getFile(fromTemplate(config.urls.library.list, { org, dep: repoName, version: 'master' }), true);
+  registryEntryFromRepoUrl: function(gitUrl) {
+    const pieces = gitUrl.match(/:(.*?).git/)[1].split('/');
+    const org = pieces[0];
+    let repoName = pieces[1];
+    const list = getRepoFile(gitUrl, 'library.json', true);
     repoName = this.machineToShort(list.machineName);
+    const gitHost = gitUrl.match(/git@(.*?):/)[1];
+    const type = gitHost.split('.')[0];
     const output = {};
     output[list.machineName] = {
       "id": list.machineName,
       "title": list.title,
       "repo": {
-        "type": url.host,
-        "url": repoUrl
+        "type": type,
+        "url": `https://${gitHost}/${org}/${repoName}`
       },
       "author": list.author,
       "runnable": list.runnable,

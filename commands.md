@@ -19,8 +19,8 @@ Specify a `[folder]` to compute deps based on the library from `libraries/[folde
 • `h5p use <library> <folder>` computes view & edit dependencies for a `<library>` using the provided `libraries/<folder>` as the main library. A local library registry entry will also be created if the library is missing from the local registry.  
 Library dependencies also need to be present in the `libraries` folder.  
 
-• `h5p register <repoUrl>` or `h5p register <entry.json>` to add or update entries in the local registry.  
-`<repoUrl>` is the library repository url.  
+• `h5p register <gitUrl>` or `h5p register <entry.json>` to add or update entries in the local registry.  
+`<gitUrl>` is something like `git@github.com:h5p/h5p-accordion.git`.  
 If specified, the `<entry.json>` file needs to be created. Below is an example.  
 You can also use this command to update existing registry entries.  
 ```
