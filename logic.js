@@ -427,7 +427,6 @@ module.exports = {
       console.log('>>> npm run build');
       console.log(execSync('npm run build', {cwd: folder}).toString());
       fs.rmSync(`${folder}/node_modules`, { recursive: true, force: true });
-      toSkip.push(item);
     }
     return toSkip;
   },

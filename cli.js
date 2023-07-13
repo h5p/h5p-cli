@@ -157,7 +157,7 @@ const cli = {
     }
   },
   // computes & installs dependencies for h5p library
-  setup: async function(library, version = 'master', download) {
+  setup: async function(library, version, download) {
     const isUrl = library.indexOf('git@') !== -1;
     const url = library;
     try {
