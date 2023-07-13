@@ -1,3 +1,4 @@
+const { execSync } = require("child_process");
 const fs = require('fs');
 const logic = require('./logic.js');
 const config = require('./config.js');
@@ -215,9 +216,10 @@ const cli = {
   use: async (library, folder) => {
     try {
       let registry = await logic.getRegistry();
+      const target = `${config.folders.libraries}/${folder}`;
       if (!registry.regular[library]) {
         console.log(`registering ${library} library`);
-        const lib = JSON.parse(fs.readFileSync(`${config.folders.libraries}/${folder}/library.json`, 'utf-8'));
+        const lib = JSON.parse(fs.readFileSync(`${target}/library.json`, 'utf-8'));
         const repoName = logic.machineToShort(lib.machineName);
         if (library != repoName) {
           throw `provided "${library}" differs from computed "${repoName}"`;
@@ -247,6 +249,19 @@ const cli = {
         }
         console.log(item);
       }
+      const packageFile = `${target}/package.json`;
+      if (!fs.existsSync(packageFile)) {
+        return;
+      }
+      const info = JSON.parse(fs.readFileSync(packageFile));
+      if (!info?.scripts?.build) {
+        return;
+      }
+      console.log('>>> npm install');
+      console.log(execSync('npm install', {cwd: target}).toString());
+      console.log('>>> npm run build');
+      console.log(execSync('npm run build', {cwd: target}).toString());
+      fs.rmSync(`${target}/node_modules`, { recursive: true, force: true });
     }
     catch (error) {
       console.log('> error');
