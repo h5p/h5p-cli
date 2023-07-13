@@ -183,6 +183,7 @@ const cli = {
           throw `unregistered ${item} library`;
         }
       }
+      toSkip = [];
       console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
       toSkip = await logic.getWithDependencies(action, library, 'view', 1, latest, toSkip);
       console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
