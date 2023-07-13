@@ -20,7 +20,7 @@ module.exports = {
       language: 'https://raw.githubusercontent.com/{org}/{dep}/{version}/language/en.json',
       semantics: 'https://raw.githubusercontent.com/{org}/{dep}/{version}/semantics.json',
       list: 'https://raw.githubusercontent.com/{org}/{dep}/{version}/library.json',
-      clone: `https://github.com/{org}/{repo}.git`,
+      clone: 'git@github.com:{org}/{repo}.git',
       zip: 'https://github.com/{org}/{repo}/archive/refs/heads/{version}.zip'
     }
   },

@@ -48,10 +48,10 @@ const cli = {
     }
   },
   // list tags for library
-  tags: async (org, library, mainBranch) => {
+  tags: (org, library, mainBranch) => {
     try {
       console.log('> fetching h5p library tags');
-      const result = await logic.tags(org, library, mainBranch);
+      const result = logic.tags(org, library, mainBranch);
       console.log(result);
     }
     catch (error) {
@@ -157,17 +157,13 @@ const cli = {
     }
   },
   // computes & installs dependencies for h5p library
-  setup: async function(library, version, download) {
-    let url;
+  setup: async function(library, version = 'master', download) {
+    const isUrl = library.indexOf('git@') !== -1;
+    const url = library;
     try {
-      url = new URL(library);
-    }
-    catch (error) {
-      url = null;
-    }
-    try {
-      if (url) {
-        library = url.pathname.split('/').filter(n=>n).slice(-1).toString();
+      if (isUrl) {
+        const pieces = library.match(/:(.*?).git/)[1].split('/');
+        library = pieces[1];
         await this.register(url);
       }
       let toSkip = [];

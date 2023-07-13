@@ -11,6 +11,20 @@ const fromTemplate = (template, input) => {
   }
   return template;
 }
+// retrieves org & repoName from git url
+const parseGitUrl = (gitUrl) => {
+  'git@github.com:falcon-git/h5p-image-slider.git'
+  gitUrl = gitUrl.replace('git@', '');
+  gitUrl = gitUrl.replace('.git', '');
+  let pieces = gitUrl.split(':');
+  const host = pieces[0];
+  pieces = pieces[1].split('/');
+  return {
+    host,
+    org: pieces[0],
+    repoName: pieces[1]
+  }
+}
 // get file from source and optionally parse it as JSON
 const getFile = async (source, parseJson) => {
   let local = false;
@@ -39,15 +53,20 @@ const getFile = async (source, parseJson) => {
   return output;
 }
 // clone repo and retrieve file
-const getRepoFile = function(gitUrl, path, parseJson) {
-  const pieces = gitUrl.match(/:(.*?).git/)[1].split('/');
-  let repoName = pieces[1];
-  const target = `${config.folders.temp}/${repoName}`;
-  fs.rmSync(target, { recursive: true, force: true });
-  console.log(execSync(`git clone --depth 1 ${gitUrl} ${target}`).toString());
+const getRepoFile = (gitUrl, path, branch = 'master', parseJson, cleanStart) => {
+  const { repoName } = parseGitUrl(gitUrl);
+  const target = `${config.folders.temp}/${repoName}_${branch}`;
   const filePath = `${target}/${path}`;
+  if (cleanStart) {
+    fs.rmSync(target, { recursive: true, force: true });
+  }
+  if (!fs.existsSync(target)) {
+    execSync(`git clone --depth 1 ${gitUrl} ${target} --branch ${branch}`, { stdio : 'pipe' }).toString();
+  }
+  if (!fs.existsSync(filePath)) {
+    return '';
+  }
   const data = fs.readFileSync(filePath, 'utf-8');
-  fs.rmSync(target, { recursive: true, force: true });
   return parseJson ? JSON.parse(data) : data;
 }
 // generates list of files and their relative paths in a folder tree
@@ -175,13 +194,13 @@ module.exports = {
       if (cache[dep].optionals) {
         return cache[dep].optionals;
       }
-      const source = dir ? `${config.folders.libraries}/${dir}/semantics.json` : fromTemplate(config.urls.library.semantics, { org, dep, version });
-      cache[dep].semantics = await getFile(source, true);
+      cache[dep].semantics = dir ? await getFile(`${config.folders.libraries}/${dir}/semantics.json`, true)
+        : getRepoFile(fromTemplate(config.urls.library.clone, { org, repo: dep }), 'semantics.json', version, true);
       cache[dep].optionals = parseSemanticLibraries(cache[dep].semantics);
       return cache[dep].optionals;
     }
-    const latestPatch = async (org, repo, version) => {
-      const tags = await module.exports.tags(org, repo);
+    const latestPatch = (org, repo, version) => {
+      const tags = module.exports.tags(org, repo);
       let patch = -1;
       for (let item of tags) {
         if (item.indexOf(version) != 0) {
@@ -207,7 +226,7 @@ module.exports = {
         process.stdout.write(`\n!!! ${machineName} ${ver} not found in registry; required by ${done[level][parent].requiredBy}/${parent} (${parentVersion}) `);
         return false;
       }
-      const version = ver == 'master' ? ver : await latestPatch(lib.org, entry, ver);
+      const version = ver == 'master' ? ver : latestPatch(lib.org, entry, ver);
       if (!done[level][entry] && !toDo[entry]?.parent) {
         toDo[entry] = { parent, version, folder: dir };
       }
@@ -234,8 +253,8 @@ module.exports = {
         process.stdout.write(' (cached) ');
       }
       else {
-        const source = toDo[dep].folder ? `${config.folders.libraries}/${toDo[dep].folder}/library.json` : fromTemplate(config.urls.library.list, { org, dep, version });
-        list = await getFile(source, true);
+        list = toDo[dep].folder ? await getFile(`${config.folders.libraries}/${toDo[dep].folder}/library.json`, true)
+          : getRepoFile(fromTemplate(config.urls.library.clone, { org, repo: dep }), 'library.json', version, true);
         cache[dep] = list;
       }
       if (!list.title) {
@@ -315,15 +334,15 @@ module.exports = {
     return output;
   },
   // list tags for library using git
-  tags: async (org, repo, mainBranch = 'master') => {
-    const library = await getFile(fromTemplate(config.urls.library.list, { org, dep: repo, version: mainBranch }), true);
+  tags: (org, repo, mainBranch = 'master') => {
+    const library = getRepoFile(fromTemplate(config.urls.library.clone, { org, repo }), 'library.json', mainBranch, true);
     const label = `${library.machineName}-${library.majorVersion}.${library.minorVersion}`;
     const folder = `${config.folders.libraries}/${label}`;
     if (!fs.existsSync(folder)) {
-      await module.exports.clone(org, repo, mainBranch, label);
+      module.exports.clone(org, repo, mainBranch, label);
     }
-    execSync('git pull origin', {cwd: folder});
-    const tags = execSync('git tag', {cwd: folder}).toString().split('\n');
+    execSync(`git pull origin ${mainBranch}`, { cwd: folder, stdio : 'pipe' });
+    const tags = execSync('git tag', { cwd: folder }).toString().split('\n');
     const output = [];
     for (let item of tags) {
       if (!item) {
@@ -349,7 +368,7 @@ module.exports = {
   },
   // clone repository using git
   clone: (org, repo, branch, target) => {
-    return execSync(`git clone --depth 1 ${fromTemplate(config.urls.library.clone, {org, repo})} ${target} --branch ${branch}`, {cwd: config.folders.libraries}).toString();
+    return execSync(`git clone ${fromTemplate(config.urls.library.clone, {org, repo})} ${target} --branch ${branch}`, { cwd: config.folders.libraries }).toString();
   },
   /* clones/downloads dependencies to libraries folder using git and runs relevant npm commands
   mode - 'view' or 'edit' to fetch non-editor or editor libraries
@@ -382,7 +401,7 @@ module.exports = {
       if (fs.existsSync(folder)) {
         if (latest) {
           console.log(`>> ~ updating to ${list[item].repoName} ${listVersion}`);
-          console.log(execSync('git pull origin', {cwd: folder}).toString());
+          console.log(execSync('git pull origin', { cwd: folder }).toString());
         }
         else {
           console.log(`>> ~ skipping ${list[item].repoName} ${listVersion}; it already exists.`);
@@ -539,23 +558,21 @@ module.exports = {
     module.exports.generateInfo(folder, library);
   },
   machineToShort: (machineName) => {
+    machineName = machineName.replace('H5PEditor', 'H5P-Editor');
     return machineName.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase().replace('.', '-');
   },
   registryEntryFromRepoUrl: function(gitUrl) {
-    const pieces = gitUrl.match(/:(.*?).git/)[1].split('/');
-    const org = pieces[0];
-    let repoName = pieces[1];
-    const list = getRepoFile(gitUrl, 'library.json', true);
+    let { host, org, repoName } = parseGitUrl(gitUrl);
+    const list = getRepoFile(gitUrl, 'library.json', 'master', true);
     repoName = this.machineToShort(list.machineName);
-    const gitHost = gitUrl.match(/git@(.*?):/)[1];
-    const type = gitHost.split('.')[0];
+    const type = host.split('.')[0];
     const output = {};
     output[list.machineName] = {
       "id": list.machineName,
       "title": list.title,
       "repo": {
         "type": type,
-        "url": `https://${gitHost}/${org}/${repoName}`
+        "url": `https://${host}/${org}/${repoName}`
       },
       "author": list.author,
       "runnable": list.runnable,
@@ -565,6 +582,7 @@ module.exports = {
     return output;
   },
   fromTemplate,
+  parseGitUrl,
   getFile,
   getFileList
 }
