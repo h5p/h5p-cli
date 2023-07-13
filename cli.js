@@ -162,8 +162,8 @@ const cli = {
     const url = library;
     try {
       if (isUrl) {
-        const pieces = library.match(/:(.*?).git/)[1].split('/');
-        library = pieces[1];
+        const { repoName } = logic.parseGitUrl(url);
+        library = repoName;
         await this.register(url);
       }
       let toSkip = [];
