@@ -13,7 +13,6 @@ const fromTemplate = (template, input) => {
 }
 // retrieves org & repoName from git url
 const parseGitUrl = (gitUrl) => {
-  'git@github.com:falcon-git/h5p-image-slider.git'
   gitUrl = gitUrl.replace('git@', '');
   gitUrl = gitUrl.replace('.git', '');
   let pieces = gitUrl.split(':');
