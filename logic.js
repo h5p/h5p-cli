@@ -1,6 +1,5 @@
 const { execSync } = require("child_process");
 const fs = require('fs');
-const URL = require('url').URL;
 const superAgent = require('superagent');
 const admZip = require("adm-zip");
 const config = require('./config.js');
@@ -26,13 +25,7 @@ const parseGitUrl = (gitUrl) => {
 }
 // get file from source and optionally parse it as JSON
 const getFile = async (source, parseJson) => {
-  let local = false;
-  try {
-    new URL(source);
-  }
-  catch {
-    local = true;
-  }
+  let local = source.indexOf('http') === -1 ? true : false;
   let output;
   if (local) {
     if (!fs.existsSync(source)) {
