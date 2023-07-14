@@ -59,6 +59,14 @@ h5p register git@github.com:otacke/h5p-transcript-library.git
 Run `h5p missing h5p-game-map` again to make sure there are no other unregistered dependencies.  
 Finally, run `h5p setup h5p-game-map` to install the library and its dependencies.  
 
+If you have to setup libraries from private repositories or if you encounter the `Permission denied (publickey)` error make sure you add your public ssh key to your local ssh agent.  
+It's as easy as running the two commands below.  
+```
+eval `ssh-agent -t 8h`
+ssh-add
+```
+All git related commands should now work in the current session for at leat 8h. Feel free to change the duration to better suit your needs. :)  
+
 ### Detailed CLI commands & instructions
 
 [commands.md](commands.md)
