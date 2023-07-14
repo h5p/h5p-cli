@@ -25,7 +25,7 @@ const parseGitUrl = (gitUrl) => {
 }
 // get file from source and optionally parse it as JSON
 const getFile = async (source, parseJson) => {
-  let local = source.indexOf('http') === -1 ? true : false;
+  const local = source.indexOf('http') !== 0 ? true : false;
   let output;
   if (local) {
     if (!fs.existsSync(source)) {
