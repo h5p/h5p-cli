@@ -23,7 +23,7 @@ This is required for running and editing content types based on that library.
 `<library>` must be one of the libraries in `h5p list`.  
 For example, `h5p setup h5p-accordion` installs the "h5p-accordion" library and its dependencies.  
 `<repoUrl>` is a github repository url. Running the command in this format will also update the library in the local registry. This is useful for unregistered libraries.  
-For example, `h5p setup https://github.com/h5p/h5p-accordion` installs the "h5p-accordion" library and its dependencies. It also updates its entry in the local library registry.  
+For example, `h5p setup git@github.com:h5p/h5p-accordion.git` installs the "h5p-accordion" library and its dependencies. It also updates its entry in the local library registry.  
 6. `h5p server` starts the dev server.  
 Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types. To view the dashboard point your browser to  
 http://localhost:8080/dashboard  

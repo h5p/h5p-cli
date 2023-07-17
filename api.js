@@ -676,7 +676,9 @@ const computePreloaded = async (library, baseUrl) => {
       cache.edit[library] = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
     }
     else {
+      process.stdout.write(`>> computing dependency list for ${library} ... `);
       cache.edit[library] = await logic.computeDependencies(library, 'edit', true);
+      console.log(' done');
     }
   }
   const directories = {};
