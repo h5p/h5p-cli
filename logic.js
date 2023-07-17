@@ -602,6 +602,16 @@ const parseSemanticLibraries = (entries) => {
   const parseList = () => {
     toDo = [];
     for (let obj of list) { // go through semantics array entries
+      if (obj?.type == 'library' && Array.isArray(obj?.options)) {
+        for (let lib of obj.options) {
+          const parts = lib.split(' ');
+          output[parts[0]] = {
+            name: parts[0],
+            version: parts[1]
+          };
+        }
+        continue;
+      }
       for (let attr in obj) { // go through entry attributes
         if (attr == 'fields' && Array.isArray(obj[attr])) {
           for (let item of obj[attr]) {
