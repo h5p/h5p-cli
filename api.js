@@ -535,6 +535,7 @@ module.exports = {
         parameters: he.encode(JSON.stringify(formParams)),
         libraryConfig: JSON.stringify(libraryConfig),
         language: session.language,
+        watcher: config.files.watch,
         simple: request.query.simple ? 'hidden' : ''
       }
       input = {...input, ...labels};
