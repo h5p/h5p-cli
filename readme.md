@@ -28,14 +28,14 @@ For example, `h5p setup git@github.com:h5p/h5p-accordion.git` installs the "h5p-
 Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types. To view the dashboard point your browser to  
 http://localhost:8080/dashboard  
 7. `h5p help` lists available commands.  
-`h5p help <command>` prints help entry for that `<command>`.  
+`h5p help <command>` prints the help entry for that `<command>`.  
 8. To use your own local library run `h5p use <library> <folder>`.  
 This computes dependencies for a `<library>` using the provided `<folder>` as the main library.  
 `<library>` is something like `h5p-accordion`.  
 `<folder>` is something like `H5P.GreetingCard-1.0`. The format for it is `<h5pMachineName>-<majorVersion>.<minorVersion>`.  
 An example for this is `h5p use h5p-greeting-card H5P.GreetingCard-1.0`.  
 It will compute and cache dependencies for the `h5p-greeting-card` library located in the `libraries/H5P.GreetingCard-1.0` directory.  
-Its dependencies also need to be present in the `libraries` folder (otherwise they need to be installed by running the appropriate `h5p use <dependency> <depFolder>` command).  
+Its dependencies also need to be present in the `libraries` folder (otherwise they need to be installed).  
 Please note that, should the dependencies change (including the optional ones in semantics.json), you will have to run this command again in order to regenerate the cached dependency lists.  
 You can also use this command to switch between different versions of the same library.  
 A library development tutorial can be found [here](https://h5p.org/library-development).  
