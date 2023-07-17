@@ -391,7 +391,7 @@ module.exports = {
       const version = latest ? 'master' : listVersion;
       const folder = `${config.folders.libraries}/${label}`;
       if (fs.existsSync(folder)) {
-        if (latest) {
+        if (latest && !process.env.H5P_NO_UPDATES) {
           console.log(`>> ~ updating to ${list[item].repoName} ${listVersion}`);
           console.log(execSync('git pull origin', { cwd: folder }).toString());
         }
@@ -602,7 +602,7 @@ const parseSemanticLibraries = (entries) => {
   const parseList = () => {
     toDo = [];
     for (let obj of list) { // go through semantics array entries
-      if (obj?.type == 'library' && Array.isArray(obj?.options)) {
+      if (obj?.type === 'library' && Array.isArray(obj?.options)) {
         for (let lib of obj.options) {
           const parts = lib.split(' ');
           output[parts[0]] = {
@@ -613,9 +613,9 @@ const parseSemanticLibraries = (entries) => {
         continue;
       }
       for (let attr in obj) { // go through entry attributes
-        if (attr == 'fields' && Array.isArray(obj[attr])) {
+        if (attr === 'fields' && Array.isArray(obj[attr])) {
           for (let item of obj[attr]) {
-            if (item?.type == 'library' && Array.isArray(item?.options)) {
+            if (item?.type === 'library' && Array.isArray(item?.options)) {
               for (let lib of item.options) {
                 const parts = lib.split(' ');
                 output[parts[0]] = {
@@ -629,7 +629,7 @@ const parseSemanticLibraries = (entries) => {
             }
           }
         }
-        if (typeof obj[attr] == 'object' && !Array.isArray(obj[attr])) {
+        if (typeof obj[attr] === 'object' && !Array.isArray(obj[attr])) {
           toDo.push(obj[attr]);
         }
       }

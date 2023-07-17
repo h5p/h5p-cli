@@ -51,6 +51,7 @@ Use `view` or `edit` for `<mode>`.
 • `h5p setup <library|repoUrl> [version] [download]` computes & clones/installs view and edit dependencies for a library.  
 You can optionally specify a library `[version]`. To view current versions for a library use the `tags` command.  
 Using `1` for the `[download]` parameter will download the libraries instead of cloning them as git repos.  
+Set the `H5P_NO_UPDATES` environment variable to `1` in order to skip updating libraries and speed up the setup process.  
 
 • `h5p missing <library>` will compute the unregistered dependencies for a library.  
 The library itself has to exist in the local library registry.  
