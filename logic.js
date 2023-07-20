@@ -12,15 +12,32 @@ const fromTemplate = (template, input) => {
 }
 // retrieves org & repoName from git url
 const parseGitUrl = (gitUrl) => {
-  gitUrl = gitUrl.replace('git@', '');
-  gitUrl = gitUrl.replace('.git', '');
-  let pieces = gitUrl.split(':');
-  const host = pieces[0];
-  pieces = pieces[1].split('/');
-  return {
-    host,
-    org: pieces[0],
-    repoName: pieces[1]
+  const type = gitUrl.slice(0, 4);
+  switch (type) {
+    case 'git@': {
+      gitUrl = gitUrl.replace('git@', '');
+      gitUrl = gitUrl.replace('.git', '');
+      let pieces = gitUrl.split(':');
+      const host = pieces[0];
+      pieces = pieces[1].split('/');
+      return {
+        host,
+        org: pieces[0],
+        repoName: pieces[1]
+      }
+      break;
+    }
+    case 'http': {
+      gitUrl = gitUrl.replace('https://', '');
+      gitUrl = gitUrl.replace('.git', '');
+      const pieces = gitUrl.split('/');
+      return {
+        host: pieces[0],
+        org: pieces[1],
+        repoName: pieces[2]
+      }
+      break;
+    }
   }
 }
 // get file from source and optionally parse it as JSON

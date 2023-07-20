@@ -43,21 +43,22 @@ A library development tutorial can be found [here](https://h5p.org/library-devel
 ### Handling unregistered libraries
 
 Running `h5p setup <library>` may return the `unregistered library` error. This means that the local library registry is missing this library. We have to find its repository url and register it.  
-As an example, run `h5p register git@github.com:otacke/h5p-game-map.git` to register the `h5p-game-map` library in the local registry.  
+As an example, run `h5p register https://github.com/otacke/h5p-game-map` to register the `h5p-game-map` library in the local registry.  
 Run `h5p missing h5p-game-map` to list the unregistered dependencies for `h5p-game-map`. Then find their repository urls and register them.  
 ```
-h5p register git@github.com:otacke/h5p-editor-game-map.git
-h5p register git@github.com:otacke/h5p-combination-lock.git
-h5p register git@github.com:otacke/h5p-tabs.git
-h5p register git@github.com:otacke/h5p-transcript.git
+h5p register https://github.com/otacke/h5p-editor-game-map
+h5p register https://github.com/otacke/h5p-combination-lock
+h5p register https://github.com/otacke/h5p-tabs
+h5p register https://github.com/otacke/h5p-transcript
 ```
 Run `h5p missing h5p-game-map` again to list any unregistered dependencies for the newly registered ones. And register them.  
 ```
-h5p register git@github.com:otacke/h5p-editor-tabs.git
-h5p register git@github.com:otacke/h5p-transcript-library.git
+h5p register https://github.com/otacke/h5p-editor-tabs
+h5p register https://github.com/otacke/h5p-transcript-library
 ```
 Run `h5p missing h5p-game-map` again to make sure there are no other unregistered dependencies.  
 Finally, run `h5p setup h5p-game-map` to install the library and its dependencies.  
+You can also use the `git@github.com:otacke/h5p-game-map.git` url format when dealing with private repositories.  
 
 If you have to setup libraries from private repositories or if you encounter the `Permission denied (publickey)` error make sure you add your public ssh key to your local ssh agent.  
 It's as easy as running the two commands below.  

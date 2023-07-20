@@ -11,6 +11,9 @@ marked.setOptions({
   renderer: new markedTerminal()
 });
 marked = marked.marked;
+if (process.env.H5P_SSH_CLONE) {
+  config.urls.library.clone = config.urls.library.sshClone;
+}
 const cli = {
   // exports content type as .h5p zipped file
   export: (library, folder) => {
@@ -159,7 +162,7 @@ const cli = {
   },
   // computes & installs dependencies for h5p library
   setup: async function(library, version, download) {
-    const isUrl = library.indexOf('git@') !== -1;
+    const isUrl = ['http', 'git@'].includes(library.slice(0, 4)) ? true : false;
     const url = library;
     try {
       if (isUrl) {
@@ -198,7 +201,7 @@ const cli = {
   },
   // updates local library registry entry
   register: async (input) => {
-    const isUrl = input.indexOf('git@') !== -1;
+    const isUrl = ['http', 'git@'].includes(input.slice(0, 4)) ? true : false;
     try {
       let registry = await logic.getRegistry();
       const entry = isUrl ? await logic.registryEntryFromRepoUrl(input) : JSON.parse(fs.readFileSync(input, 'utf-8'));

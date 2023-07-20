@@ -20,7 +20,7 @@ Specify a `[folder]` to compute deps based on the library from `libraries/[folde
 Library dependencies also need to be present in the `libraries` folder.  
 
 • `h5p register <gitUrl>` or `h5p register <entry.json>` to add or update entries in the local registry.  
-`<gitUrl>` is something like `git@github.com:h5p/h5p-accordion.git`.  
+`<gitUrl>` is something like `git@github.com:h5p/h5p-accordion.git` or `https://github.com/h5p/h5p-accordion`.  
 If specified, the `<entry.json>` file needs to be created. Below is an example.  
 You can also use this command to update existing registry entries.  
 ```
@@ -51,7 +51,8 @@ Use `view` or `edit` for `<mode>`.
 • `h5p setup <library|repoUrl> [version] [download]` computes & clones/installs view and edit dependencies for a library.  
 You can optionally specify a library `[version]`. To view current versions for a library use the `tags` command.  
 Using `1` for the `[download]` parameter will download the libraries instead of cloning them as git repos.  
-Set the `H5P_NO_UPDATES` environment variable to `1` in order to skip updating libraries and speed up the setup process.  
+Set the `H5P_NO_UPDATES` environment variable to `1` to skip updating libraries and speed up the setup process.  
+Set the `H5P_SSH_CLONE` environment variable to `1` so that ssh urls are used when cloning private repositories.  
 
 • `h5p missing <library>` will compute the unregistered dependencies for a library.  
 The library itself has to exist in the local library registry.  
