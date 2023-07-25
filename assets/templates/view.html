@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>h5p-dev - {lang_View} - {title}</title>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="/{assets}/styles/reset.css">
+<link rel="stylesheet" type="text/css" href="/{assets}/styles/style.css">
+<script type="text/javascript" src="/{assets}/scripts/delete.js"></script>
+<script type="text/javascript">
+  H5PIntegration = {
+    ajax: {
+      contentUserData: "/content-user-data/:contentId/:dataType/:subContentId"
+    },
+    baseUrl: "/",
+    contents: {
+      "cid-{folder}": {
+        library: "{machineName}",
+        metadata: {metadata},
+        jsonContent: {jsonContent},
+        url: "{baseUrl}/view/{library}/{folder}",
+        mainId: "{folder}",
+        displayOptions: {
+          "copy": true,
+          "copyright": true,
+          "embed": false,
+          "export": true,
+          "frame": true,
+          "icon": true
+        },
+        exportUrl: "{baseUrl}/export/{library}/{folder}",
+        contentUserData: {contentUserData},
+        resizeCode: "",
+        title: "{title}",
+        styles: {preloadedCss},
+        scripts: {preloadedJs}
+      }
+    },
+    l10n: {l10n},
+    core: {
+      scripts: [
+        "/{libraries}/h5p-php-library/js/jquery.js",
+        "/{libraries}/h5p-php-library/js/h5p.js",
+        "/{libraries}/h5p-php-library/js/h5p-event-dispatcher.js",
+        "/{libraries}/h5p-php-library/js/h5p-x-api-event.js",
+        "/{libraries}/h5p-php-library/js/h5p-x-api.js",
+        "/{libraries}/h5p-php-library/js/h5p-content-type.js",
+        "/{libraries}/h5p-php-library/js/h5p-confirmation-dialog.js",
+        "/{libraries}/h5p-php-library/js/h5p-action-bar.js",
+        "/{libraries}/h5p-php-library/js/h5p-display-options.js",
+        "/{libraries}/h5p-php-library/js/h5p-tooltip.js",
+        "/{libraries}/h5p-php-library/js/request-queue.js"
+      ],
+      styles: [
+        "/{libraries}/h5p-php-library/styles/h5p.css",
+        "/{libraries}/h5p-php-library/styles/h5p-confirmation-dialog.css",
+        "/{libraries}/h5p-php-library/styles/h5p-core-button.css",
+        "/{libraries}/h5p-php-library/styles/h5p-tooltip.css"
+      ]
+    },
+    libraryConfig: {libraryConfig},
+    saveFreq: 30,
+    siteUrl: "{baseUrl}",
+    url: "{baseUrl}",
+    user: { name: "developer", mail: "some.developer@some.company.com" }
+  };
+  window.addEventListener('load', () => {
+    const sessionName = document.getElementById('sessionName');
+    const sessionSelect = document.getElementById('sessions');
+    const newSessionButton = document.getElementById('newSessionButton');
+    const saveSessionButton = document.getElementById('saveSessionButton');
+    const session = '{session}';
+    const sessions = {sessions};
+    let params = new URLSearchParams(window.location.search);
+    const sessionChanged = (event) => {
+      params.set('session', event.target.value);
+      window.location.href = `/view/{library}/{folder}?${params.toString()}`;
+    }
+    const newSessionEvent = () => {
+      newSession.classList.toggle('hidden');
+    }
+    const saveSessionEvent = () => {
+      params.set('session', sessionName.value);
+      window.location.href = `/view/{library}/{folder}?${params.toString()}`;
+    }
+    let options = '<option value="null">null</option>';
+    for (let item of sessions) {
+      const value = item.split('.')[0];
+      options += `<option value="${value}"${value == session ? ' selected="selected"' : ''}>${value}</option>`;
+    }
+    sessionSelect.innerHTML = options;
+    sessionSelect.addEventListener('change', sessionChanged);
+    newSessionButton.addEventListener('click', newSessionEvent);
+    saveSessionButton.addEventListener('click', saveSessionEvent);
+  });
+</script>
+<script type="text/javascript" src="/{libraries}/h5p-php-library/js/jquery.js"></script>
+<script type="text/javascript" src="/{libraries}/h5p-php-library/js/h5p.js"></script>
+<script type="text/javascript" src="/{libraries}/h5p-php-library/js/h5p-event-dispatcher.js"></script>
+<script type="text/javascript" src="/{libraries}/h5p-php-library/js/h5p-x-api-event.js"></script>
+<script type="text/javascript" src="/{libraries}/h5p-php-library/js/h5p-x-api.js"></script>
+<script type="text/javascript" src="/{libraries}/h5p-php-library/js/h5p-content-type.js"></script>
+<script type="text/javascript" src="/{libraries}/h5p-php-library/js/h5p-confirmation-dialog.js"></script>
+<script type="text/javascript" src="/{libraries}/h5p-php-library/js/h5p-action-bar.js"></script>
+<script type="text/javascript" src="/{libraries}/h5p-php-library/js/h5p-display-options.js"></script>
+<script type="text/javascript" src="/{libraries}/h5p-php-library/js/h5p-tooltip.js"></script>
+<script type="text/javascript" src="/{libraries}/h5p-php-library/js/request-queue.js"></script>
+<script type="text/javascript">
+  if ({watcher}) {
+    var watcher = document.createElement('script');
+    watcher.setAttribute('src', `http://${location.host.split(':')[0]}:35729/livereload.js?snipver=1`);
+    document.head.appendChild(watcher);
+  }
+</script>
+</head>
+<body>
+<div id="status">{lang_running} {id} {version}; {lang_contentCreatedFor} {id} {contentVersion}</div>
+<div class="menu-holder {simple}" id="menu">
+  <div class="menu">
+    <div id="links">
+      <div class="col50">
+        <a class="button dashboard" href="/dashboard"><span class="button-label">{lang_dashboard}</span></a>
+      </div>
+      <div class="col50 align-right">
+        <div class="button delete" id="deleteButton"><span class="button-label">{lang_Delete}</span></div>
+        <a class="button split-view" href="/split/{library}/{folder}"><span class="button-label">{lang_SplitView}</span></a>
+        <a class="button edit" href="/edit/{library}/{folder}"><span class="button-label">{lang_Edit}</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="submenu">
+  <div class="menu">
+    <div>
+      {lang_userStateSession}:
+      <select id="sessions"></select>
+      <div class="button" id="newSessionButton">{lang_newSession}</div>
+      <div class="session inline hidden" id="newSession">
+        <input type="text" class="input" id="sessionName" placeholder="{lang_sessionName}">
+        <div class="button" id="saveSessionButton">{lang_createSession}</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="holder">
+  <div class="h5p-cli-iframe-wrapper">
+    <iframe id="h5p-iframe-{folder}" class="h5p-iframe" data-content-id="{folder}" src="about:blank" frameBorder="0" scrolling="no"></iframe>
+  </div>
+</div>
+</body>
+</html>

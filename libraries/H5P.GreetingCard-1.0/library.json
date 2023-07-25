@@ -1,0 +1,21 @@
+{
+  "title": "Greeting card",
+  "description": "Displays a greeting card",
+  "majorVersion": 1,
+  "minorVersion": 0,
+  "patchVersion": 0,
+  "runnable": 1,
+  "author": "Amendor AS",
+  "license": "cc-by-sa",
+  "machineName": "H5P.GreetingCard",
+  "coreApi": {
+    "majorVersion": 1,
+    "minorVersion": 19
+  },
+  "preloadedJs": [
+    { "path": "greetingcard.js" }
+  ],
+  "preloadedCss": [
+    {"path": "greetingcard.css"}
+  ]
+} 

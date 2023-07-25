@@ -1,3 +1,4 @@
 node_modules
-npm-debug.log
-*~
+package-lock.json
+/libraries/*
+!/libraries/H5P.GreetingCard-1.0

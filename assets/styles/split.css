@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600;800&display=swap');
+@font-face {
+  font-family: dev-tool-icons;
+  src: url(/assets/fonts/h5p-development-tool-icon-set.woff);
+}
+body {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 50vw 50vw;
+  grid-template-rows: 100vh 100vh;
+  grid-gap: 0;
+  overflow: hidden;
+  background-color: #e8ebf0;
+  font-family: 'Rubik', sans-serif;
+  color: #040404;
+  -webkit-font-smoothing: antialiased;
+}
+.h5p-cli-view iframe {
+  width: 100%;
+  height: 100%;
+}
+.h5p-cli-edit iframe {
+  width: 100%;
+  height: 100%
+}
+.h5p-cli-view, .h5p-cli-edit{
+  margin: 1em;
+  padding: 1em;
+  background-color: #ffffff;
+  box-shadow: 5px 5px 22px rgb(0 0 0 / 5%);
+  border-radius: 3px;
+}
+.title{
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 1em;
+  display: inline-block;
+}
+*:before {
+  font-weight: normal;
+  font-size: 1em;
+  font-family: dev-tool-icons;
+  line-height: unset;
+  margin-right: 0.3em;
+}
+.view:before {
+  content: "\e901";
+}
+.edit:before {
+  content: "\e905";
+}
+.col50 {
+  display: inline-block;
+  float: right;
+}

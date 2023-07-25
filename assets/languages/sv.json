@@ -1,0 +1,21 @@
+{
+  "lang_language": "visa/redigera språk",
+  "lang_new": "ny",
+  "lang_import": "importera",
+  "lang_create": "skapa",
+  "lang_View": "Visa",
+  "lang_Edit": "Redigera",
+  "lang_Delete": "Ta bort",
+  "lang_TypeContentTitle": "Skriv innehållstitel här...",
+  "lang_SplitView": "delad vy",
+  "lang_ViewMode": "Visningsläge",
+  "lang_EditMode": "Redigeringsläge",
+  "lang_dashboard": "dashboard",
+  "lang_running": "springer",
+  "lang_contentCreatedFor": "innehåll skapat för",
+  "lang_userStateSession": "användartillståndssession",
+  "lang_newSession": "ny session",
+  "lang_sessionName": "sessionens namn",
+  "lang_createSession": "skapa session",
+  "lang_saveAllChanges": "spara alla ändringar"
+}

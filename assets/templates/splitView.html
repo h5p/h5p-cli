@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>h5p-dev {lang_SplitView}</title>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="/{assets}/styles/style.css">
+<link rel="stylesheet" type="text/css" href="/{assets}/styles/split.css">
+<script type="text/javascript">
+  window.addEventListener('load', (event) => {
+    console.log('> split page loaded');
+    const runner = document.getElementById('h5p-cli-view');
+    const editor = document.getElementById('h5p-cli-edit');
+    editor.addEventListener('load', (event) => {
+      console.log('> reloading runner...');
+      runner.contentDocument.location.reload(true);
+    });
+  });
+</script>
+</head>
+<body>
+<div class="h5p-cli-view">
+  <div class="title view">{lang_ViewMode}</div>
+  <div class="col50"><a class="button dashboard" href="/dashboard"><span class="button-label">{lang_dashboard}</span></a></div>
+  <iframe id="h5p-cli-view" src="{viewFrameSRC}" frameBorder="0"></iframe>
+</div>
+<div class="h5p-cli-edit">
+  <div class="title edit">{lang_EditMode}</div>
+  <iframe id="h5p-cli-edit" src="{editFrameSRC}" frameBorder="0"></iframe>
+</div>
+</body>
+</html>

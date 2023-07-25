@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>h5p-dev {lang_dashboard}</title>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="/{assets}/styles/reset.css">
+<link rel="stylesheet" type="text/css" href="/{assets}/styles/style.css">
+<script type="text/javascript" src="/{assets}/scripts/dashboard.js"></script>
+<script type="text/javascript">
+  const runner = new dashboard({
+    self: 'runner',
+    host: '{host}',
+    ids: {
+      newContentButton: 'newContentButton',
+      newContent: 'newContent',
+      importContentButton: 'importContentButton',
+      importContent: 'importContent',
+      contentTypes: 'contentTypes',
+      createFolder: 'createFolder',
+      importFolder: 'importFolder',
+      archive: 'archive',
+      status: 'status',
+      content: 'content',
+      pagination: 'pagination',
+      languages: 'languages'
+    },
+    classes: {
+      hidden: 'hidden'
+    },
+    language: "{language}",
+    languages: {languages}
+  });
+  runner.init();
+</script>
+</head>
+<body>
+  <div class="sticky">
+    <div class="hidden" id="status">{status}</div>
+    <div class="menu-holder">
+      <div class="menu">
+        <div class="button new" id="newContentButton" onclick="runner.toggleNewContent()">
+          <span class="button-label">{lang_new}</span>
+        </div>
+        <div class="button import" id="importContentButton" onclick="runner.toggleImportContent()">
+          <span class="button-label">{lang_import}</span>
+        </div>
+        <div class="languages">
+          {lang_language}
+          <select id="languages" class="selector" onchange="runner.changeLanguage()">
+            <option value="{value}"{selected}>{name}</option>
+          </select>
+        </div>
+        <div id="newContent" class="hidden inline">
+          <div class="center-content">
+            <select id="contentTypes" class="selector">
+              <option value="{value}">{name}</option>
+            </select>
+            <input type="text" class="input" id="createFolder" placeholder="{lang_TypeContentTitle}">
+            <div class="button" onclick="runner.create()">{lang_create}</div>
+          </div>
+        </div>
+        <div id="importContent" class="hidden inline">
+          <div class="center-content">
+            <input type="text" class="input" id="importFolder" placeholder="{lang_TypeContentTitle}">
+            <input type="file" class="input" id="archive" accept=".h5p">
+            <div class="button" onclick="runner.import()">{lang_import}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="holder">
+    <div class="content" id="content">
+      <div class="item">
+        <div class="itemIcon"><img src="{icon}" /></div>
+        <div class="itemTitle"><a href="view/{library}/{folder}">{title}</a>
+          <div class="itemPath">{library}</div>
+        </div>
+        <div class="itemLinks">
+          <a class="view transition tooltip" href="view/{library}/{folder}">
+            <span class="tooltiptext">{lang_View}</span>
+          </a>
+          <a class="edit transition tooltip" href="edit/{library}/{folder}">
+            <span class="tooltiptext">{lang_Edit}</span>
+          </a>
+          <div class="button transition delete tooltip" onclick="runner.remove('{folder}')">
+            <span class="tooltiptext">{lang_Delete}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pagination" id="pagination">
+      <div class="button{selected}" onclick="{onclick}">{page}</div>
+    </div>
+  </div>
+</body>
+</html>
