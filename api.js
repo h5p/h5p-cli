@@ -244,12 +244,18 @@ module.exports = {
         let icon = '/assets/icon.svg';
         if (entry.version) {
           const libraryFolder = `${config.folders.libraries}/${list[i].id}-${entry.version.major}.${entry.version.minor}`;
+          const iconFile = `${libraryFolder}/icon.svg`;
           if (fs.existsSync(libraryFolder)) {
-            const files = fs.readdirSync(libraryFolder);
-            for (let item of files) {
-              if (item.split('.')?.[1] == 'svg') {
-                icon = `${libraryFolder}/${item}`;
-                break;
+            if (fs.existsSync(iconFile)) {
+              icon = iconFile;
+            }
+            else {
+              const files = fs.readdirSync(libraryFolder);
+              for (let item of files) {
+                if (item.split('.')?.[1] == 'svg') {
+                  icon = `${libraryFolder}/${item}`;
+                  break;
+                }
               }
             }
           }
