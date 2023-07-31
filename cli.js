@@ -166,9 +166,8 @@ const cli = {
     const url = library;
     try {
       if (isUrl) {
-        const { repoName } = logic.parseGitUrl(url);
-        library = repoName;
-        await this.register(url);
+        const entry = await this.register(url);
+        library = logic.machineToShort(Object.keys(entry)[0]);
       }
       let toSkip = [];
       const action = parseInt(download) ? 'download' : 'clone';
@@ -209,6 +208,7 @@ const cli = {
       fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));
       console.log('> updated registry entry');
       console.log(entry);
+      return entry;
     }
     catch (error) {
       console.log('> error');

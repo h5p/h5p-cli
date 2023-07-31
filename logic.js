@@ -166,14 +166,21 @@ module.exports = {
     }
     for (let item in list) {
       if (list[item].repo) {
-        list[item].repoName = list[item].repo.url.split('/').slice(-1)[0];
-        list[item].org = list[item].repo.url.split('/').slice(3, 4)[0];
+        if (!list[item].repoName) {
+          list[item].repoName = list[item].repo.url.split('/').slice(-1)[0];
+        }
+        if (!list[item].shortName) {
+          list[item].shortName = list[item].repoName;
+        }
+        if (!list[item].org) {
+          list[item].org = list[item].repo.url.split('/').slice(3, 4)[0];
+        }
       }
       delete list[item].resume;
       delete list[item].fullscreen;
       delete list[item].xapiVerbs;
       output.reversed[list[item].id] = list[item];
-      output.regular[list[item].repoName] = list[item];
+      output.regular[list[item].shortName] = list[item];
     }
     if (ignoreCache || !fs.existsSync(registryFile)) {
       fs.writeFileSync(registryFile, JSON.stringify(list));
@@ -199,12 +206,12 @@ module.exports = {
       version,
       folder
     };
-    const getOptionals = async (org, dep, version, dir) => {
+    const getOptionals = async (dep, org, repoName, version, dir) => {
       if (cache[dep].optionals) {
         return cache[dep].optionals;
       }
       cache[dep].semantics = dir ? await getFile(`${config.folders.libraries}/${dir}/semantics.json`, true)
-        : getRepoFile(fromTemplate(config.urls.library.clone, { org, repo: dep }), 'semantics.json', version, true);
+        : getRepoFile(fromTemplate(config.urls.library.clone, { org, repo: repoName }), 'semantics.json', version, true);
       cache[dep].optionals = parseSemanticLibraries(cache[dep].semantics);
       return cache[dep].optionals;
     }
@@ -227,7 +234,7 @@ module.exports = {
     }
     const handleDepListEntry = async (machineName, parent, ver, dir) => {
       const lib = registry.reversed[machineName];
-      const entry = lib?.repoName;
+      const entry = lib?.shortName;
       if (!entry) {
         saveToCache = 0;
         done[level][machineName] = false;
@@ -257,13 +264,14 @@ module.exports = {
       process.stdout.write(`>> ${dep} required by ${toDo[dep].parent} ... `);
       done[level][dep] = registry.regular[dep];
       let list;
+      const { repoName } = parseGitUrl(registry.regular[dep].repo.url);
       if (cache[dep]) {
         list = cache[dep];
         process.stdout.write(' (cached) ');
       }
       else {
         list = toDo[dep].folder ? await getFile(`${config.folders.libraries}/${toDo[dep].folder}/library.json`, true)
-          : getRepoFile(fromTemplate(config.urls.library.clone, { org, repo: dep }), 'library.json', version, true);
+          : getRepoFile(fromTemplate(config.urls.library.clone, { org, repo: repoName }), 'library.json', version, true);
         cache[dep] = list;
       }
       if (!list.title) {
@@ -286,7 +294,7 @@ module.exports = {
       done[level][dep].requiredBy.push(requiredByPath);
       done[level][dep].level = level;
       let ver = version == 'master' ? version : `${done[level][dep].version.major}.${done[level][dep].version.minor}.${done[level][dep].version.patch}`;
-      const optionals = await getOptionals(org, dep, ver, toDo[dep].folder);
+      const optionals = await getOptionals(dep, org, repoName, ver, toDo[dep].folder);
       if (mode != 'edit' || level > 0) {
         if (list.preloadedDependencies) {
           for (let item of list.preloadedDependencies) {
@@ -572,20 +580,21 @@ module.exports = {
   registryEntryFromRepoUrl: function(gitUrl) {
     let { host, org, repoName } = parseGitUrl(gitUrl);
     const list = getRepoFile(gitUrl, 'library.json', 'master', true);
-    repoName = this.machineToShort(list.machineName);
+    const shortName = this.machineToShort(list.machineName);
     const type = host.split('.')[0];
     const output = {};
     output[list.machineName] = {
-      "id": list.machineName,
-      "title": list.title,
-      "repo": {
-        "type": type,
-        "url": `https://${host}/${org}/${repoName}`
+      id: list.machineName,
+      title: list.title,
+      repo: {
+        type: type,
+        url: `https://${host}/${org}/${repoName}`
       },
-      "author": list.author,
-      "runnable": list.runnable,
-      "repoName": repoName,
-      "org": org
+      author: list.author,
+      runnable: list.runnable,
+      shortName,
+      repoName,
+      org
     }
     return output;
   },
