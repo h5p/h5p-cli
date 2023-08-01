@@ -177,10 +177,10 @@ function dashboard(options) {
   this.setLanguages = () => {
     const option = languages.innerHTML;
     let html = '';
-    for (let item of options.languages) {
+    for (let item in options.languages) {
       html += this.fromTemplate(option, {
         value: item,
-        name: item,
+        name: options.languages[item],
         selected: options.language === item ? ' selected' : ''
       });
     }

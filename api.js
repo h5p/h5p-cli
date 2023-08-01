@@ -4,6 +4,7 @@ const imageSize = require('image-size');
 const logic = require('./logic.js');
 const config = require('./config.js');
 const l10n = require('./assets/l10n.json');
+const supportedLanguages = require(`${require.main.path}/${config.folders.assets}/languageCatcher.js`);
 let cache = {
   registry: null,
   view: {},
@@ -25,9 +26,10 @@ module.exports = {
       const html = fs.readFileSync(`${require.main.path}/${config.folders.assets}/templates/dashboard.html`, 'utf-8');
       const labels = await getLangLabels();
       const languageFiles = logic.getFileList(`${config.folders.libraries}/h5p-editor-php-library/language`);
-      const languages = [];
+      const languages = {};
       for (let item of languageFiles) {
-        languages.push(item.match(/language\/(.*?)\.js/)?.[1]);
+        const key = item.match(/language\/(.*?)\.js/)?.[1];
+        languages[key] = supportedLanguages[key];
       }
       let input = {
         assets: config.folders.assets,
