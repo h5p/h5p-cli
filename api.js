@@ -4,6 +4,7 @@ const imageSize = require('image-size');
 const logic = require('./logic.js');
 const config = require('./config.js');
 const l10n = require('./assets/l10n.json');
+const supportedLanguages = require(`${require.main.path}/${config.folders.assets}/languageCatcher.js`);
 let cache = {
   registry: null,
   view: {},
@@ -25,9 +26,10 @@ module.exports = {
       const html = fs.readFileSync(`${require.main.path}/${config.folders.assets}/templates/dashboard.html`, 'utf-8');
       const labels = await getLangLabels();
       const languageFiles = logic.getFileList(`${config.folders.libraries}/h5p-editor-php-library/language`);
-      const languages = [];
+      const languages = {};
       for (let item of languageFiles) {
-        languages.push(item.match(/language\/(.*?)\.js/)?.[1]);
+        const key = item.match(/language\/(.*?)\.js/)?.[1];
+        languages[key] = supportedLanguages[key];
       }
       let input = {
         assets: config.folders.assets,
@@ -236,7 +238,7 @@ module.exports = {
       output.total = list.length;
       for (let i = start; i < Math.min(end, list.length); i++) {
         let entry = cache.registry.reversed?.[list[i].id];
-        const library = entry.repoName;
+        const library = entry.shortName;
         const cacheFile = `${config.folders.cache}/${library}.json`;
         if (fs.existsSync(cacheFile)) {
           entry = JSON.parse(fs.readFileSync(cacheFile, 'utf-8'))[library];
@@ -244,12 +246,18 @@ module.exports = {
         let icon = '/assets/icon.svg';
         if (entry.version) {
           const libraryFolder = `${config.folders.libraries}/${list[i].id}-${entry.version.major}.${entry.version.minor}`;
+          const iconFile = `${libraryFolder}/icon.svg`;
           if (fs.existsSync(libraryFolder)) {
-            const files = fs.readdirSync(libraryFolder);
-            for (let item of files) {
-              if (item.split('.')?.[1] == 'svg') {
-                icon = `${libraryFolder}/${item}`;
-                break;
+            if (fs.existsSync(iconFile)) {
+              icon = iconFile;
+            }
+            else {
+              const files = fs.readdirSync(libraryFolder);
+              for (let item of files) {
+                if (item.split('.')?.[1] == 'svg') {
+                  icon = `${libraryFolder}/${item}`;
+                  break;
+                }
               }
             }
           }
@@ -371,7 +379,7 @@ module.exports = {
       }
       const translations = {};
       for (let item of request.body.libraries) {
-        const entry = cache.view[library][cache.registry.reversed[item.split(' ')[0]].repoName];
+        const entry = cache.view[library][cache.registry.reversed[item.split(' ')[0]].shortName];
         const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
         const idx = `${entry.id} ${entry.version.major}.${entry.version.minor}`;
         const languageFolder = `${config.folders.libraries}/${label}/language`;
@@ -397,12 +405,12 @@ module.exports = {
         libraries = [];
         for (let item of request.body.libraries) {
           item = item.split(' ')[0];
-          libraries.push(registry.reversed[item].repoName);
+          libraries.push(registry.reversed[item].shortName);
         }
       }
       if (request.query.machineName) {
         libraries = [];
-        libraries.push(registry.reversed[request.query.machineName].repoName);
+        libraries.push(registry.reversed[request.query.machineName].shortName);
       }
       const toDo = [];
       for (let item of libraries) {
