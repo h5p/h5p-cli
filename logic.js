@@ -169,12 +169,12 @@ module.exports = {
         if (!list[item].repoName) {
           list[item].repoName = list[item].repo.url.split('/').slice(-1)[0];
         }
-        if (!list[item].shortName) {
-          list[item].shortName = list[item].repoName;
-        }
         if (!list[item].org) {
           list[item].org = list[item].repo.url.split('/').slice(3, 4)[0];
         }
+      }
+      if (!list[item].shortName) {
+        list[item].shortName = list[item].repoName;
       }
       delete list[item].resume;
       delete list[item].fullscreen;
