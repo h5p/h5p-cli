@@ -7,6 +7,7 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
+app.get('/', (req, res) => res.redirect('/dashboard'));
 app.get('/dashboard', api.dashboard);
 app.get('/projects', api.projects);
 app.get('/runnable', api.contentTypes);
