@@ -28,13 +28,14 @@ You can also use this command to update existing registry entries.
   "H5P.Accordion": {
     "id": "H5P.Accordion", // library machine name
     "title": "Accordion",
-    "repo": { // optional; required for clone, install and deps commands
+    "repo": {
       "type": "github",
       "url": "https://github.com/h5p/h5p-accordion"
     },
     "author": "Batman",
     "runnable": true, // specify true if this is a main library from which you can create content types; false if it's a dependency for another
-    "repoName": "h5p-accordion", // library name
+    "shortName": "h5p-accordion", // library name
+    "repoName": "h5p-accordion", // repository name
     "org": "h5p" // github organization under which the library is published; optional; required for clone, install and deps commands
   }
 }
