@@ -70,7 +70,7 @@ const getRepoFile = (gitUrl, path, branch = 'master', parseJson, cleanStart) => 
     fs.rmSync(target, { recursive: true, force: true });
   }
   if (!fs.existsSync(target)) {
-    execSync(`git clone --depth 1 ${gitUrl} ${target} --branch ${branch}`, { stdio : 'pipe' }).toString();
+    execSync(`git clone ${gitUrl} ${target} --branch ${branch}`, { stdio : 'pipe' }).toString();
   }
   if (!fs.existsSync(filePath)) {
     return '';
@@ -228,6 +228,7 @@ module.exports = {
         }
         if (numbers[2] > patch) {
           patch = numbers[2];
+          break;
         }
       }
       return patch > -1 ? `${version}.${patch}` : version;
@@ -353,8 +354,8 @@ module.exports = {
   // list tags for library using git
   tags: (org, repo, mainBranch = 'master') => {
     const library = getRepoFile(fromTemplate(config.urls.library.clone, { org, repo }), 'library.json', mainBranch, true);
-    const label = `${library.machineName}-${library.majorVersion}.${library.minorVersion}`;
-    const folder = `${config.folders.libraries}/${label}`;
+    const label = `${repo}_${mainBranch}`;
+    const folder = `${config.folders.temp}/${label}`;
     if (!fs.existsSync(folder)) {
       module.exports.clone(org, repo, mainBranch, label);
     }
