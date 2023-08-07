@@ -265,7 +265,7 @@ module.exports = {
       process.stdout.write(`>> ${dep} required by ${toDo[dep].parent} ... `);
       done[level][dep] = registry.regular[dep];
       let list;
-      const { repoName } = parseGitUrl(registry.regular[dep].repo.url);
+      const { repoName } = registry.regular[dep]?.repo?.url ? parseGitUrl(registry.regular[dep].repo.url) : dep;
       if (cache[dep]) {
         list = cache[dep];
         process.stdout.write(' (cached) ');
