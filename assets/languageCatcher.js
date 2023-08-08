@@ -18,7 +18,7 @@ global.navigator = {
     match: () => {}
   }
 }
-require(`../${config.folders.libraries}/h5p-editor-php-library/scripts/h5peditor.js`);
+require(`${process.cwd()}/${config.folders.libraries}/h5p-editor-php-library/scripts/h5peditor.js`);
 module.exports = ns.supportedLanguages;
 // remove scaffolding
 delete global.window;
