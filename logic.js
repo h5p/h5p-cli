@@ -233,7 +233,7 @@ module.exports = {
       }
       return patch > -1 ? `${version}.${patch}` : version;
     }
-    const handleDepListEntry = async (machineName, parent, ver, dir) => {
+    const handleDepListEntry = (machineName, parent, ver, dir) => {
       const lib = registry.reversed[machineName];
       const entry = lib?.shortName;
       if (!entry) {
@@ -276,7 +276,7 @@ module.exports = {
         cache[dep] = list;
       }
       if (!list.title) {
-        throw `unregistered ${toDo[dep].folder || dep} library`;
+        throw new Error(`unregistered ${toDo[dep].folder || dep} library`);
       }
       done[level][dep].title = list.title;
       done[level][dep].version = {
@@ -296,25 +296,23 @@ module.exports = {
       done[level][dep].level = level;
       let ver = version == 'master' ? version : `${done[level][dep].version.major}.${done[level][dep].version.minor}.${done[level][dep].version.patch}`;
       const optionals = await getOptionals(dep, org, repoName, ver, toDo[dep].folder);
-      if (mode != 'edit' || level > 0) {
-        if (list.preloadedDependencies) {
-          for (let item of list.preloadedDependencies) {
-            ver = version == 'master' ? version : `${item.majorVersion}.${item.minorVersion}`;
-            const dir = folder ? `${item.machineName}-${item.majorVersion}.${item.minorVersion}` : null;
-            await handleDepListEntry(item.machineName, dep, ver, dir);
-          }
+      if (list.preloadedDependencies) {
+        for (let item of list.preloadedDependencies) {
+          ver = version == 'master' ? version : `${item.majorVersion}.${item.minorVersion}`;
+          const dir = folder ? `${item.machineName}-${item.majorVersion}.${item.minorVersion}` : null;
+          handleDepListEntry(item.machineName, dep, ver, dir);
         }
-        for (let item in optionals) {
-          ver = version == 'master' ? version : optionals[item].version;
-          const dir = folder ? `${item}-${optionals[item].version}` : null;
-          await handleDepListEntry(item, dep, ver, dir);
-        }
+      }
+      for (let item in optionals) {
+        ver = version == 'master' ? version : optionals[item].version;
+        const dir = folder ? `${item}-${optionals[item].version}` : null;
+        handleDepListEntry(item, dep, ver, dir);
       }
       if (mode == 'edit' && list.editorDependencies) {
         for (let item of list.editorDependencies) {
           ver = version == 'master' ? version : `${item.majorVersion}.${item.minorVersion}`;
           const dir = folder ? `${item.machineName}-${item.majorVersion}.${item.minorVersion}` : null;
-          await handleDepListEntry(item.machineName, dep, ver, dir);
+          handleDepListEntry(item.machineName, dep, ver, dir);
         }
       }
       delete toDo[dep];
@@ -322,7 +320,7 @@ module.exports = {
     }
     registry = await module.exports.getRegistry();
     if (!folder && !registry.regular[library]) {
-      throw `unregistered ${library} library`;
+      throw new Error(`unregistered ${library} library`);
     }
     while (Object.keys(toDo).length) {
       level++;
@@ -410,7 +408,7 @@ module.exports = {
       }
       toSkip.push(item);
       if (!list[item]) {
-        throw `unregistered ${item} library`;
+        throw new Error(`unregistered ${item} library`);
       }
       const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
       const listVersion = `${list[item].version.major}.${list[item].version.minor}.${list[item].version.patch}`;
