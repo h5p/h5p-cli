@@ -82,8 +82,10 @@ const cli = {
       const missing = [];
       let result = await logic.computeDependencies(library, 'view');
       for (let item in result) {
-        if (!result[item] && missing.indexOf(item) == -1) {
-          missing.push(item);
+        if (!result[item]) {
+          if (missing.indexOf(item) == -1) {
+            missing.push(item);
+          }
         }
         else {
           const list = await logic.computeDependencies(item, 'edit');
@@ -175,7 +177,7 @@ const cli = {
       let result = await logic.computeDependencies(library, 'view', 1, version);
       for (let item in result) {
         if (!result[item]) {
-          throw `unregistered ${item} library`;
+          throw new Error(`unregistered ${item} library`);
         }
         // setup editor dependencies for every view dependency
         toSkip = await logic.getWithDependencies(action, item, 'edit', 1, latest, toSkip);
@@ -183,7 +185,7 @@ const cli = {
       result = await logic.computeDependencies(library, 'edit', 1, version);
       for (let item in result) {
         if (!result[item]) {
-          throw `unregistered ${item} library`;
+          throw new Error(`unregistered ${item} library`);
         }
       }
       toSkip = [];
@@ -225,7 +227,7 @@ const cli = {
         const lib = JSON.parse(fs.readFileSync(`${target}/library.json`, 'utf-8'));
         const repoName = logic.machineToShort(lib.machineName);
         if (library != repoName) {
-          throw `provided "${library}" differs from computed "${repoName}"`;
+          throw new Error(`provided "${library}" differs from computed "${repoName}"`);
         }
         const entry = {};
         entry[lib.machineName] = {
@@ -241,14 +243,14 @@ const cli = {
       let result = await logic.computeDependencies(library, 'view', 1, null, folder);
       for (let item in result) {
         if (!result[item]) {
-          throw `unregistered ${item} library`;
+          throw new Error(`unregistered ${item} library`);
         }
         console.log(item);
       }
       result = await logic.computeDependencies(library, 'edit', 1, null, folder);
       for (let item in result) {
         if (!result[item]) {
-          throw `unregistered ${item} library`;
+          throw new Error(`unregistered ${item} library`);
         }
         console.log(item);
       }
