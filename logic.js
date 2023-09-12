@@ -1,6 +1,5 @@
 const { execSync } = require("child_process");
 const fs = require('fs');
-const worker = require('./worker.js');
 const superAgent = require('superagent');
 const admZip = require("adm-zip");
 const config = require('./config.js');
@@ -387,51 +386,6 @@ module.exports = {
   clone: (org, repo, branch, target) => {
     return execSync(`git clone ${fromTemplate(config.urls.library.clone, {org, repo})} ${target} --branch ${branch}`, { cwd: config.folders.libraries }).toString();
   },
-  // clones/downloads library and runs npm install & build if required
-  getLibrary: async (input) => {
-    let { item, list, action, library, latest, toSkip } = input;
-    if (toSkip.indexOf(item) != -1) {
-      console.log(`> skipping ${item}; already installed.`);
-      return;
-    }
-    if (!list[item]) {
-      throw new Error(`unregistered ${item} library`);
-    }
-    const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
-    const listVersion = `${list[item].version.major}.${list[item].version.minor}.${list[item].version.patch}`;
-    const version = latest ? 'master' : listVersion;
-    const folder = `${config.folders.libraries}/${label}`;
-    if (fs.existsSync(folder)) {
-      if (latest && !process.env.H5P_NO_UPDATES) {
-        console.log(`>> ~ updating to ${list[item].repoName} ${listVersion}`);
-        console.log(execSync('git pull origin', { cwd: folder }).toString());
-      }
-      else {
-        console.log(`>> ~ skipping ${list[item].repoName} ${listVersion}; it already exists.`);
-      }
-      return;
-    }
-    console.log(`>> + installing ${list[item].repoName} ${listVersion}`);
-    if (action == 'download') {
-      await module.exports.download(list[item].org, list[item].repoName, version, folder);
-    }
-    else {
-      console.log(module.exports.clone(list[item].org, list[item].repoName, version, label));
-    }
-    const packageFile = `${folder}/package.json`;
-    if (!fs.existsSync(packageFile)) {
-      return;
-    }
-    const info = JSON.parse(fs.readFileSync(packageFile));
-    if (!info?.scripts?.build) {
-      return;
-    }
-    console.log('>>> npm install');
-    console.log(execSync('npm install', {cwd: folder}).toString());
-    console.log('>>> npm run build');
-    console.log(execSync('npm run build', {cwd: folder}).toString());
-    fs.rmSync(`${folder}/node_modules`, { recursive: true, force: true });
-  },
   /* clones/downloads dependencies to libraries folder using git and runs relevant npm commands
   mode - 'view' or 'edit' to fetch non-editor or editor libraries
   useCache - if true cached dependency list is used
@@ -447,18 +401,49 @@ module.exports = {
     else {
       list = await module.exports.computeDependencies(library, mode, 1);
     }
-    const toRun = [];
     for (let item in list) {
-      toRun.push({
-        method: 'getLibrary',
-        params: [{ item, list, action, library, latest, toSkip }]
-      });
-    }
-    await worker(toRun);
-    for (let item in list) {
-      if (toSkip.indexOf(item) === -1) {
-        toSkip.push(item);
+      if (toSkip.indexOf(item) != -1) {
+        console.log(`> skipping ${item}; already installed.`);
+        continue;
       }
+      toSkip.push(item);
+      if (!list[item]) {
+        throw new Error(`unregistered ${item} library`);
+      }
+      const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
+      const listVersion = `${list[item].version.major}.${list[item].version.minor}.${list[item].version.patch}`;
+      const version = latest ? 'master' : listVersion;
+      const folder = `${config.folders.libraries}/${label}`;
+      if (fs.existsSync(folder)) {
+        if (latest && !process.env.H5P_NO_UPDATES) {
+          console.log(`>> ~ updating to ${list[item].repoName} ${listVersion}`);
+          console.log(execSync('git pull origin', { cwd: folder }).toString());
+        }
+        else {
+          console.log(`>> ~ skipping ${list[item].repoName} ${listVersion}; it already exists.`);
+        }
+        continue;
+      }
+      console.log(`>> + installing ${list[item].repoName} ${listVersion}`);
+      if (action == 'download') {
+        await module.exports.download(list[item].org, list[item].repoName, version, folder);
+      }
+      else {
+        console.log(module.exports.clone(list[item].org, list[item].repoName, version, label));
+      }
+      const packageFile = `${folder}/package.json`;
+      if (!fs.existsSync(packageFile)) {
+        continue;
+      }
+      const info = JSON.parse(fs.readFileSync(packageFile));
+      if (!info?.scripts?.build) {
+        continue;
+      }
+      console.log('>>> npm install');
+      console.log(execSync('npm install', {cwd: folder}).toString());
+      console.log('>>> npm run build');
+      console.log(execSync('npm run build', {cwd: folder}).toString());
+      fs.rmSync(`${folder}/node_modules`, { recursive: true, force: true });
     }
     return toSkip;
   },
