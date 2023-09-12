@@ -164,6 +164,7 @@ const cli = {
   },
   // computes & installs dependencies for h5p library
   setup: async function(library, version, download) {
+    const start = new Date();
     const isUrl = ['http', 'git@'].includes(library.slice(0, 4)) ? true : false;
     const url = library;
     try {
@@ -194,6 +195,8 @@ const cli = {
       console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
       toSkip = await logic.getWithDependencies(action, library, 'edit', 1, latest, toSkip);
       console.log(`> done setting up ${library}`);
+      const end = new Date();
+      console.log(`setup took ${(end - start) / 1000} s`);
     }
     catch (error) {
       console.log('> error');
