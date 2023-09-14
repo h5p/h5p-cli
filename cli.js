@@ -321,6 +321,9 @@ const cli = {
 if (typeof cli[process.argv[2]] == 'function') {
   cli[process.argv[2]].apply(cli, process.argv.slice(3));
 }
+else if (process.argv[2] === undefined) {
+  cli.help();
+}
 else {
   console.log(`> "${process.argv[2]}" is not a valid command`);
 }

@@ -8,7 +8,7 @@ const setupFolders = () => {
     }
   }
 }
-if (!['utils', 'help'].includes(process.argv[2] && process.argv[2])) {
+if (![undefined, 'utils', 'help'].includes(process.argv[2])) {
   setupFolders();
 }
 require('./cli.js');
