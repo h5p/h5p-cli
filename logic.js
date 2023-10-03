@@ -357,6 +357,7 @@ module.exports = {
     if (!fs.existsSync(folder)) {
       module.exports.clone(org, repo, mainBranch, label);
     }
+    execSync(`git checkout ${mainBranch}`, { cwd: folder, stdio : 'pipe' });
     execSync(`git pull origin ${mainBranch}`, { cwd: folder, stdio : 'pipe' });
     const tags = execSync('git tag', { cwd: folder }).toString().split('\n');
     const output = [];
@@ -417,6 +418,7 @@ module.exports = {
       if (fs.existsSync(folder)) {
         if (latest && !process.env.H5P_NO_UPDATES) {
           console.log(`>> ~ updating to ${list[item].repoName} ${listVersion}`);
+          execSync(`git checkout master`, { cwd: folder, stdio : 'pipe' });
           console.log(execSync('git pull origin', { cwd: folder }).toString());
         }
         else {
