@@ -17,12 +17,12 @@ Specify a `[version]` to compute deps for that version. Default is `master`. Use
 Specify a `[folder]` to compute deps based on the library from `libraries/[folder]` folder. Default is `""`.  
 
 • `h5p use <library> <folder>` computes view & edit dependencies for a `<library>` using the provided `libraries/<folder>` as the main library. A local library registry entry will also be created if the library is missing from the local registry.  
-Library dependencies also need to be present in the `libraries` folder.  
+Library dependencies need to be present in the `libraries` folder.
 
 • `h5p register <gitUrl>` or `h5p register <entry.json>` to add or update entries in the local registry.  
 `<gitUrl>` is something like `git@github.com:h5p/h5p-accordion.git` or `https://github.com/h5p/h5p-accordion`.  
 If specified, the `<entry.json>` file needs to be created. Below is an example.  
-You can also use this command to update existing registry entries.  
+You can use this command to update existing registry entries.
 ```
 {
   "H5P.Accordion": {

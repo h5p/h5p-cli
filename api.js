@@ -16,6 +16,17 @@ let session = {
   status: ''
 }
 module.exports = {
+  // load favicon.ico file
+  favicon: (request, response, next) => {
+    try {
+      const icon = fs.readFileSync(`${require.main.path}/favicon.ico`);
+      response.set('Content-Type', 'image/x-icon');
+      response.end(icon);
+    }
+    catch (error) {
+      handleError(error, response);
+    }
+  },
   // renders dashboard
   dashboard: async (request, response, next) => {
     try {
