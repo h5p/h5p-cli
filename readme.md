@@ -66,7 +66,7 @@ It's as easy as running the two commands below.
 eval `ssh-agent -t 8h`
 ssh-add
 ```
-All git related commands should now work in the current session for at leat 8h. Feel free to change the duration to better suit your needs. :)  
+All git related commands should now work in the current session for at least 8h. Feel free to change the duration to better suit your needs. :)  
 More info on this [here](commands.md#git-ssh-agent-setup).
 
 ### Detailed CLI commands & instructions
