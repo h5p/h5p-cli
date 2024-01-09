@@ -185,7 +185,12 @@
     "attemptBar":"Attempts control bar",
     "attemptBarClose":"Close the attempts control bar",
     "width":"width",
-    "height":"height"
+    "height":"height",
+    "rotateLeft":"Rotate Left",
+    "rotateRight":"Rotate Right",
+    "cropImage":"Crop Image",
+    "confirmCrop":"Confirm Crop",
+    "cancelCrop":"Cancel Crop"
   },
   "multiplayerRoleSwitcher":{
     "presenter_preview":"Presenter",
