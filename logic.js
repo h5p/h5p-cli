@@ -285,6 +285,7 @@ module.exports = {
         patch: list.patchVersion
       }
       done[level][dep].runnable = list.runnable;
+      done[level][dep].fullscreen = list.fullscreen;
       done[level][dep].preloadedJs = list.preloadedJs || [];
       done[level][dep].preloadedCss = list.preloadedCss || [];
       done[level][dep].preloadedDependencies = list.preloadedDependencies || [];

@@ -299,7 +299,7 @@ module.exports = {
       response.end(logic.fromTemplate(splitView_html, input));
     }
     catch (error) {
-     handleError(error, response); 
+     handleError(error, response);
     }
   },
   // editor file upload
@@ -637,6 +637,7 @@ module.exports = {
         version: `${cache.view[library][library].version.major}.${cache.view[library][library].version.minor}`,
         contentVersion: `${mainLibrary.majorVersion}.${mainLibrary.minorVersion}`,
         id,
+        fullscreen: cache.view[library][library].fullscreen,
         jsonContent: JSON.stringify(jsonContent),
         preloadedCss: JSON.stringify(preloadedCss),
         preloadedJs: JSON.stringify(preloadedJs),
