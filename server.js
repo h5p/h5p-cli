@@ -28,8 +28,15 @@ app.get('/content-user-data/:folder/:type/:id', api.getUserData);
 app.post('/content-user-data/:folder/:type/:id', api.setUserData);
 app.use(`/${config.folders.assets}`, express.static(`${require.main.path}/${config.folders.assets}`))
 app.use(express.static('./'));
-app.listen(config.port, () => {
-  console.log(`h5p content type development server running on port ${config.port}`);
+
+let port = config.port;
+
+if (process.argv.length > 3) {
+  port = +process.argv[3];
+}
+
+app.listen(port, () => {
+  console.log(`h5p content type development server running on http://localhost:${port}`);
 });
 if (config.files.watch) {
   const eye = require('livereload').createServer();
