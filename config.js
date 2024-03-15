@@ -1,5 +1,4 @@
 module.exports = {
-  host: 'http://localhost',
   port: 8080,
   mediaTypes: ['images', 'audios', 'videos'],
   folders: {
@@ -32,6 +31,7 @@ module.exports = {
   },
   registry: 'libraryRegistry.json'
 }
+module.exports.api = `http://localhost:${module.exports.port}`;
 // files.patterns.allowed & files.patterns.ignored are used in the export logic to determine which files are allowed/ignored in the .h5p zip archive
 module.exports.files.patterns.allowed = process.env.h5p_cli_allowed_files ? new RegExp(process.env.h5p_cli_allowed_files, process.env.h5p_cli_allowed_modifiers) : module.exports.files.patterns.allowed;
 module.exports.files.patterns.ignored = process.env.h5p_cli_ignored_files ? new RegExp(process.env.h5p_cli_ignored_files, process.env.h5p_cli_ignored_modifiers) : module.exports.files.patterns.ignored;

@@ -42,7 +42,7 @@ function dashboard(options) {
   }
   this.getPage = async (page = 0, limit = options.limit) => {
     try {
-      let result = await (await fetch(`${options.host}/projects?page=${page}&limit=${limit}`)).json();
+      let result = await (await fetch(`${options.api}/projects?page=${page}&limit=${limit}`)).json();
       let contentHTML = '';
       let paginationHTML = '';
       for (let item of result.list) {
@@ -76,7 +76,7 @@ function dashboard(options) {
   this.getContentTypes = async () => {
     try {
       let html = '';
-      let result = await (await fetch(`${options.host}/runnable`)).json();
+      let result = await (await fetch(`${options.api}/runnable`)).json();
       for (let item in result) {
         html += this.fromTemplate(option, {
           value: item,
@@ -96,7 +96,7 @@ function dashboard(options) {
       }
       this.showStatus('...');
       const type = contentTypes.value;
-      const output = await (await fetch(`${options.host}/create/${type}/${encodeURIComponent(createFolder.value)}`, {method: 'post'})).json();
+      const output = await (await fetch(`${options.api}/create/${type}/${encodeURIComponent(createFolder.value)}`, {method: 'post'})).json();
       if (output.result) {
         window.location.href = `/edit/${type}/${output?.result}`;
         return;
@@ -117,7 +117,7 @@ function dashboard(options) {
       this.showStatus('...');
       const body = new FormData();
       body.append('file', archive.files[0]);
-      const output = await (await fetch(`${options.host}/import/${encodeURIComponent(importFolder.value)}`, { method: 'post', body })).json();
+      const output = await (await fetch(`${options.api}/import/${encodeURIComponent(importFolder.value)}`, { method: 'post', body })).json();
       this.toggleImportContent();
       this.getPage();
       this.showStatus(output?.path ? `imported into "content/${output.path}"` : 0 || output?.error || output);
@@ -130,7 +130,7 @@ function dashboard(options) {
     try {
       if (window.confirm(`Are you sure you want to delete "content/${project}"?`)) {
         this.showStatus('...');
-        const output = await (await fetch(`${options.host}/remove/${project}`, {method: 'post'})).json();
+        const output = await (await fetch(`${options.api}/remove/${project}`, {method: 'post'})).json();
         this.showStatus(output.result);
         this.getPage();
       }
@@ -187,6 +187,6 @@ function dashboard(options) {
     languages.innerHTML = html;
   }
   this.changeLanguage = () => {
-    window.location.href = `${options.host}/dashboard?language=${languages.options[languages.selectedIndex].value}`;
+    window.location.href = `${options.api}/dashboard?language=${languages.options[languages.selectedIndex].value}`;
   }
 }
