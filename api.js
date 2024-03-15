@@ -44,7 +44,7 @@ module.exports = {
       }
       let input = {
         assets: config.folders.assets,
-        host: `${request.protocol}://${request.get('host')}`,
+        host: `${config.host}:${config.port}`,
         status: session.status,
         language: session.language,
         languages: JSON.stringify(languages)
