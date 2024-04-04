@@ -21,17 +21,19 @@ const OK = 'ok';
  * @param {Array} inputList
  */
 module.exports = function (...inputList) {
+  return new Promise((resolve, reject) => {
+    const input = new Input(inputList);
+    var results = [];
+    input.init().then(() => {
+      const libraries = input.getLibraries();
 
-  const input = new Input(inputList);
-  var results = [];
-  input.init().then(() => {
-    const libraries = input.getLibraries();
-
-    parallel(libraries, (index, library, done) => {
-      validateLibrary(library, done);
-    }, (error, results) => {
-      // Finished with all libraries
-      outputReport(results);
+      parallel(libraries, (index, library, done) => {
+        validateLibrary(library, done);
+      }, (error, results) => {
+        // Finished with all libraries
+        outputReport(results);
+        resolve(results);
+      });
     });
   });
 };
