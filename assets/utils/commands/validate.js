@@ -19,6 +19,7 @@ const OK = 'ok';
  * May supply flag for showing diff.
  *
  * @param {Array} inputList
+ * @returns {Promise} Validation results.
  */
 module.exports = function (...inputList) {
   return new Promise((resolve, reject) => {

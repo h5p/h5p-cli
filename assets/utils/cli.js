@@ -499,14 +499,8 @@ var commands = [
       const input = new Input(inputList);
       if (!input.hasFlag('-f')) {
         const result = await validate.apply(null, inputList);
-        let ok = true;
-        for (let item of result) {
-          if (item.status !== 'ok') {
-            ok = false;
-            break;
-          }
-        }
-        if (!ok) {
+        const notValid = result.some((item) => item.status !== 'ok');
+        if (notValid) {
           console.log('validation failed; use \'-f\' to skip validation');
           return;
         }
