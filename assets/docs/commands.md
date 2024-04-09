@@ -56,8 +56,8 @@ You can optionally specify a library `[version]`. To view current versions for a
 Using `1` for the `[download]` parameter will download the libraries instead of cloning them as git repos.  
 Set the `H5P_NO_UPDATES` environment variable to `1` to skip updating libraries and speed up the setup process.  
 Set the `H5P_SSH_CLONE` environment variable to `1` so that ssh urls are used when cloning private repositories. This is useful for cloning private repos and for when you want to commit from the `libraries/<library>` folder.  
-[!IMPORTANT]
-Remember that if no `[version]` is specified master branches will be cloned.  
+> [!IMPORTANT]
+> Remember that if no `[version]` is specified master branches will be cloned.  
 
 • `h5p missing <library>` will compute the unregistered dependencies for a library.  
 The library itself has to exist in the local library registry.  
