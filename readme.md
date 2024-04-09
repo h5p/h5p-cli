@@ -17,6 +17,8 @@ cd ..
 npm install -g ./h5p-cli
 ```
 
+![installation gif](assets/docs/install.gif)
+
 # QUICK START GUIDE
 
 0. h5p commands run relative to the current working directory. It's recommended that you run them in a new folder. Remember to keep track of your development folders. :)  
