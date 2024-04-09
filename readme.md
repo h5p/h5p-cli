@@ -29,7 +29,7 @@ Remember to keep track of your development folders. :)
 ```
 h5p core
 ```
-2. Setup an h5p library like, for example, `h5p-course-presentation`.
+2. Setup an h5p library such as `h5p-course-presentation`.
 ```
 h5p setup h5p-course-presentation
 ```
