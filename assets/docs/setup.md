@@ -1,5 +1,7 @@
 ### Setup a local library
 
+---
+
 To use your own local library run `h5p use <library> <folder>`.  
 This computes dependencies for a `<library>` using the provided `<folder>` as the main library.  
 `<library>` is something like `h5p-accordion`.  
@@ -15,6 +17,8 @@ You can also use this command to switch between different versions of the same l
 A library development tutorial can be found [here](https://h5p.org/library-development).  
 
 ### Setup a library from github
+
+---
 
 Running `h5p setup <library>` may return the `unregistered library` error. This means that the local library registry is missing this library. We have to find its repository url and register it.  
 As an example, run `h5p register https://github.com/otacke/h5p-game-map` to register the `h5p-game-map` library in the local registry.  
@@ -36,6 +40,8 @@ You can also use the `git@github.com:otacke/h5p-game-map.git` url format when de
 
 ### GIT and your SSH-AGENT
 
+---
+
 If you have to setup libraries from private repositories or if you encounter the `Permission denied (publickey)` error make sure you add your public ssh key to your local ssh agent.  
 It's as easy as running the two commands below.  
 ```
@@ -47,9 +53,13 @@ All git related commands should now work in the current session for at least 8h.
 
 ### Linux, MacOS, Windows
 
+---
+
 Some of the commands listed here are Linux & MacOS specific. On Windows it’s recommended that you run them inside [git bash](https://git-scm.com/download/win).  
 
 ### Folder structure
+
+---
 
 Running commands listed in [commands.md](assets/docs/commands.md) results in the creation of five folders.  
 `cache` holds computed dependency lists for the libraries that have been set up.  
