@@ -1,9 +1,7 @@
 An h5p toolkit for running, editing and developing h5p content types.  
 Make sure you have [git](https://git-scm.com/downloads), [NodeJS](https://nodejs.org/en/download/current) and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) (usually included in NodeJS) installed.  
 
-### INSTALLATION
-
----
+# INSTALLATION
 
 Uninstall any previous h5p-cli toolkit instance
 ```
@@ -23,9 +21,7 @@ cd ..
 npm install -g ./h5p-cli
 ```
 
-### QUICK START GUIDE
-
----
+# QUICK START GUIDE
 
 0. `h5p` commands run relative to the current working directory. It's recommended that you run them in a new folder.  
 Remember to keep track of your development folders. :)  
@@ -54,8 +50,6 @@ h5p help
 ```
 `h5p help <command>` prints the help entry for that `<command>`.  
 
-### Detailed CLI commands
-
----
+# Detailed CLI commands
 
 [commands.md](assets/docs/commands.md)
