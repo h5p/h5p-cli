@@ -50,10 +50,14 @@ Use `view` or `edit` for `<mode>`.
 `[useCache]` can be `1` if you want it to use the cached deps.  
 
 • `h5p setup <library|repoUrl> [version] [download]` computes & clones/installs view and edit dependencies for a library.  
-You can optionally specify a library `[version]`. To view current versions for a library use the `tags` command. If no `[version]` is specified master branches will be cloned.  
+`<repoUrl>` is a github repository url. Running the command in this format will also update the library in the local registry. This is useful for unregistered libraries.  
+For example, `h5p setup git@github.com:h5p/h5p-accordion.git` installs the "h5p-accordion" library and its dependencies. It also updates its entry in the local library registry.  
+You can optionally specify a library `[version]`. To view current versions for a library use the `tags` command.
 Using `1` for the `[download]` parameter will download the libraries instead of cloning them as git repos.  
 Set the `H5P_NO_UPDATES` environment variable to `1` to skip updating libraries and speed up the setup process.  
 Set the `H5P_SSH_CLONE` environment variable to `1` so that ssh urls are used when cloning private repositories. This is useful for cloning private repos and for when you want to commit from the `libraries/<library>` folder.  
+[!IMPORTANT]
+Remember that if no `[version]` is specified master branches will be cloned.  
 
 • `h5p missing <library>` will compute the unregistered dependencies for a library.  
 The library itself has to exist in the local library registry.  
