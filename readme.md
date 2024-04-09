@@ -29,11 +29,11 @@ Remember to keep track of your development folders. :)
 ```
 h5p core
 ```
-2. Setup an h5p library such as **h5p-course-presentation**.
+2. Setup an h5p library such as h5p-course-presentation.
 ```
 h5p setup h5p-course-presentation
 ```
-This is required for running and editing content types in the **h5p-course-presentation** library.  
+This is required for running and editing content types in the h5p-course-presentation library.  
 You can install other libraries listed by `h5p list` in the same way.  
 For example, `h5p setup h5p-accordion` installs the "h5p-accordion" library and its dependencies.  
 > [!NOTE]
