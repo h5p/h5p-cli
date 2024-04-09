@@ -49,7 +49,7 @@ Use `view` or `edit` for `<mode>`.
 Use `view` or `edit` for `<mode>`.  
 `[useCache]` can be `1` if you want it to use the cached deps.  
 
-• `h5p setup <library|repoUrl> [version] [download]` computes & clones/installs view and edit dependencies for a library.  
+• `h5p setup <library|repoUrl> [version] [download]` sets up a library and its dependencies.  
 `<repoUrl>` is a github repository url. Running the command in this format will also update the library in the local registry. This is useful for unregistered libraries.  
 For example, `h5p setup git@github.com:h5p/h5p-accordion.git` installs the "h5p-accordion" library and its dependencies. It also updates its entry in the local library registry.  
 You can optionally specify a library `[version]`. To view current versions for a library use the `tags` command.
@@ -92,16 +92,11 @@ Once finished, the import command outputs the location of the resulting content 
 
  When viewing content types they are automatically upgraded to the version of the currently used main library.  
  When viewing content types you can create and switch between resume sessions. A resume session allows you to save the state of the content type that supports it so that it will be the same on reload.  
-You can create a new session by clicking on the "new session" button and entering a new name for it.  
-To switch between existing sessions simply choose the one you want from the dropdown. Choose the "null" session to not save states.  
+ You can create a new session by clicking on the "new session" button and entering a new name for it.  
+ To switch between existing sessions simply choose the one you want from the dropdown. Choose the "null" session to not save states.  
  To stop auto reloading the view page on library file changes set `files.watch` to `false` in `config.json`.  
  Run `h5p utils help` to get a list of utility commands.  
-Each utility command can then be run via `h5p utils <cmd> [<args>...]`.  
- Git related commands may require you to add your ssh key to the ssh agent after starting it.  
-This is required if you run h5p commands on private git repositories or if you encounter the following error.  
-```
-Permission denied (publickey).
-fatal: Could not read from remote repository.
-```
+ Each utility command can then be run via `h5p utils <cmd> [<args>...]`.  
+
 > [!IMPORTANT]
 > The `temp` folder holds local copies of git repositories that are used when computing dependencies. Make sure to delete the `temp` folder when updating to the latest version of a library that has added or removed dependencies so that fresh git repository copies are cloned.  
