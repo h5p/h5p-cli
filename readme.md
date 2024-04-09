@@ -50,4 +50,4 @@ h5p help
 
 ### Detailed CLI commands
 
-[commands.md](commands.md)
+[commands.md](assets/docs/commands.md)
