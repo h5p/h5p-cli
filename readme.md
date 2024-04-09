@@ -34,10 +34,8 @@ h5p setup h5p-course-presentation
 This is required for running and editing content types in the `h5p-course-presentation` library.  
 You can install other libraries listed by `h5p list` in the same way.  
 For example, `h5p setup h5p-accordion` installs the "h5p-accordion" library and its dependencies.  
-`<repoUrl>` is a github repository url. Running the command in this format will also update the library in the local registry. This is useful for unregistered libraries.  
-For example, `h5p setup git@github.com:h5p/h5p-accordion.git` installs the "h5p-accordion" library and its dependencies. It also updates its entry in the local library registry.  
-[!NOTE]
-You can read more on setting up libraries [here](assets/docs/setup.md).  
+> [!NOTE]
+> You can read more on setting up libraries [here](assets/docs/setup.md).  
 3. `h5p server` starts the development server.  
 You can now use your browser to view, edit, delete, import, export and create new content types.  
 4. `h5p help` lists available commands.  
