@@ -481,6 +481,7 @@ var commands = [
     shortDescription: 'Packs the given libraries',
     description:
       'Use -r for recursive packaging, will pack all dependencies as well' + lf +
+      'Use -f to skip library validation' + lf +
       lf +
       'You can change the default output package by setting:' + lf +
       'export H5P_DEFAULT_PACK="~/my-libraries.h5p"' + lf +
@@ -494,7 +495,18 @@ var commands = [
       'export H5P_ALLOWED_FILE_MODIFIERS=""' + lf +
       lf +
       'Put these in your ~/.bashrc for permanent settings.',
-    handler: pack
+    handler: async (...inputList) => {
+      const input = new Input(inputList);
+      if (!input.hasFlag('-f')) {
+        const result = await validate.apply(null, inputList);
+        const notValid = result.some((item) => item.status !== 'ok');
+        if (notValid) {
+          console.log('validation failed; use \'-f\' to skip validation');
+          return;
+        }
+      }
+      pack.apply(null, inputList);
+    }
   },
   {
     name: 'increase-patch-version',
