@@ -30,11 +30,6 @@ app.use(`/${config.folders.assets}`, express.static(`${require.main.path}/${conf
 app.use(express.static('./'));
 
 let port = config.port;
-
-if (process.argv.length > 3) {
-  port = +process.argv[3];
-}
-
 app.listen(port, () => {
   console.log(`h5p content type development server running on http://localhost:${port}`);
 });
