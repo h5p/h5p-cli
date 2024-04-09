@@ -36,9 +36,16 @@ You can install other libraries listed by `h5p list` in the same way.
 For example, `h5p setup h5p-accordion` installs the "h5p-accordion" library and its dependencies.  
 > [!NOTE]
 > You can read more on setting up libraries [here](assets/docs/setup.md).  
-3. `h5p server` starts the development server.  
+3. Start the development server.
+```
+h5p server [port]
+```
+`[port]` is an optional port number. Default is 8080.  
 You can now use your browser to view, edit, delete, import, export and create new content types.  
-4. `h5p help` lists available commands.  
+4. List all available commands.
+```
+h5p help
+```
 `h5p help <command>` prints the help entry for that `<command>`.  
 
 ### Detailed CLI commands
