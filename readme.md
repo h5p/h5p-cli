@@ -8,11 +8,7 @@ Uninstall any previous h5p-cli toolkit instance
 npm uninstall -g h5p-cli
 npm uninstall -g h5p
 ```
-then install it from npm
-```
-npm install -g h5p
-```
-OR from this repository
+then install it from this repository
 ```
 git clone git@github.com:h5p/h5p-cli.git
 cd h5p-cli
