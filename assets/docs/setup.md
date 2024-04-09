@@ -39,6 +39,9 @@ It's as easy as running the two commands below.
 eval `ssh-agent -t 8h`
 ssh-add
 ```
-The ssh commands are Linux & Mac specific. On Windows it’s recommended that you run them inside [git bash](https://git-scm.com/download/win).  
+Here are some guides on how to add an ssh key to the ssh agent on [Linux](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent), [Mac](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=mac#adding-your-ssh-key-to-the-ssh-agent), [Windows](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=windows#adding-your-ssh-key-to-the-ssh-agent).  
 All git related commands should now work in the current session for at least 8h. Feel free to change the duration to better suit your needs. :)  
-More info on this [here](assets/docs/commands.md#git-ssh-agent-setup).
+
+### Linux, MacOS, Windows
+
+Some of the commands listed here are Linux & MacOS specific. On Windows it’s recommended that you run them inside [git bash](https://git-scm.com/download/win).  

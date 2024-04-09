@@ -291,7 +291,7 @@ const cli = {
   // help section
   help: (command) => {
     try {
-      const help = fs.readFileSync(`${require.main.path}/commands.md`, 'utf-8');
+      const help = fs.readFileSync(`${require.main.path}/assets/docs/commands.md`, 'utf-8');
       if (command) {
         const regexp = ` \`h5p ${command}(.*?)(\\n\\n|\\Z)`;
         const data = help.match(new RegExp(regexp, 's'))?.[0];
