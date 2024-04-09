@@ -108,7 +108,5 @@ Permission denied (publickey).
 fatal: Could not read from remote repository.
 ```
 
-### Git ssh-agent setup
-Here are some guides on how to add an ssh key to the ssh agent on [Linux](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent), [Mac](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=mac#adding-your-ssh-key-to-the-ssh-agent), [Windows](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=windows#adding-your-ssh-key-to-the-ssh-agent).  
-
-The `temp` folder holds local copies of git repositories that are used when computing dependencies. Make sure to delete the `temp` folder when updating to the latest version of a library that has added or removed dependencies so that fresh git repository copies are cloned.  
+> [!IMPORTANT]
+> The `temp` folder holds local copies of git repositories that are used when computing dependencies. Make sure to delete the `temp` folder when updating to the latest version of a library that has added or removed dependencies so that fresh git repository copies are cloned.  
