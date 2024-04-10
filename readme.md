@@ -41,6 +41,7 @@ h5p server [port]
 ```
 `[port]` is an optional port number. Default is 8080.  
 You can now use your browser to view, edit, delete, import, export and create new content types.  
+[!(server command video)](assets/docs/server.mp4)
 4. List all available commands.
 ```
 h5p help
