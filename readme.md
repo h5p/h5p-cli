@@ -42,7 +42,7 @@ h5p server [port]
 ```
 `[port]` is an optional port number. Default is 8080.  
 You can now use your browser to view, edit, delete, import, export and create new content types.  
-[server.webm](https://github.com/h5p/h5p-cli/assets/5208532/98bff16a-16a1-494c-bfff-11d95ebfe3dd)
+<video src="https://github.com/h5p/h5p-cli/assets/5208532/98bff16a-16a1-494c-bfff-11d95ebfe3dd"></video>
 4. List all available commands.
 ```
 h5p help
