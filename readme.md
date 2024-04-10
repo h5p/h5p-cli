@@ -10,7 +10,7 @@ npm uninstall -g h5p
 ```
 then install it from this repository
 ```
-git clone git@github.com:h5p/h5p-cli.git
+git clone https://github.com/h5p/h5p-cli.git
 cd h5p-cli
 npm install
 cd ..
@@ -47,6 +47,10 @@ You can now use your browser to view, edit, delete, import, export and create ne
 h5p help
 ```
 `h5p help <command>` prints the help entry for that `<command>`.  
+
+# Linux, MacOS, Windows
+
+Some of the commands listed here are Linux & MacOS specific. On Windows it’s recommended that you run them inside [git bash](https://git-scm.com/download/win).  
 
 # Detailed CLI commands
 
