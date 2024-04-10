@@ -34,8 +34,7 @@ This is required for running and editing content types in the h5p-course-present
 You can install other libraries listed by `h5p list` in the same way.  
 For example, `h5p setup h5p-accordion` installs the "h5p-accordion" library and its dependencies.  
 > [!NOTE]
-> You can read more on setting up libraries [here](assets/doc
-s/setup.md).  
+> You can read more on setting up libraries [here](assets/docs/setup.md).  
 3. Start the development server.
 ```
 h5p server [port]
