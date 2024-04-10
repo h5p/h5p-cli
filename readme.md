@@ -34,13 +34,15 @@ This is required for running and editing content types in the h5p-course-present
 You can install other libraries listed by `h5p list` in the same way.  
 For example, `h5p setup h5p-accordion` installs the "h5p-accordion" library and its dependencies.  
 > [!NOTE]
-> You can read more on setting up libraries [here](assets/docs/setup.md).  
+> You can read more on setting up libraries [here](assets/doc
+s/setup.md).  
 3. Start the development server.
 ```
 h5p server [port]
 ```
 `[port]` is an optional port number. Default is 8080.  
 You can now use your browser to view, edit, delete, import, export and create new content types.  
+[server.webm](https://github.com/h5p/h5p-cli/assets/5208532/98bff16a-16a1-494c-bfff-11d95ebfe3dd)
 4. List all available commands.
 ```
 h5p help
