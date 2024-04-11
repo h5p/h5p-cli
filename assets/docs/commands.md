@@ -60,7 +60,7 @@ Using `1` for the `[download]` parameter will download the libraries instead of 
 Set the `H5P_NO_UPDATES` environment variable to `1` to skip updating libraries and speed up the setup process.  
 Set the `H5P_SSH_CLONE` environment variable to `1` so that ssh urls are used when cloning private repositories. This is useful for cloning private repos and for when you want to commit from the `libraries/<library>` folder.  
 > [!IMPORTANT]
-> Remember that if no `[version]` is specified master branches will be used.  
+> If no `[version]` is specified master branches will be used.  
 
 • `h5p missing <library>` will compute the unregistered dependencies for a library.  
 The library itself has to exist in the local library registry.  
@@ -93,13 +93,12 @@ Once finished, the export command outputs the location of the resulting file.
 An example here is `h5p import agamotto-test ~/Downloads/agamotto_test.h5p` which will import the `~/Downloads/agamotto_test.h5p` archived .h5p file into the `content/agamotto-test` folder.  
 Once finished, the import command outputs the location of the resulting content type folder.  
 
+• `h5p utils help` prints a list of utility commands.  
+Each utility command can then be run via `h5p utils <cmd> [<args>...]`.  
+Run `h5p utils help <cmd>` for a detailed help entry for each utility `<cmd>`.  
+
  When viewing content types they are automatically upgraded to the version of the currently used main library.  
  When viewing content types you can create and switch between resume sessions. A resume session allows you to save the state of the content type that supports it so that it will be the same on reload.  
  You can create a new session by clicking on the "new session" button and entering a new name for it.  
  To switch between existing sessions simply choose the one you want from the dropdown. Choose the "null" session to not save states.  
  To stop auto reloading the view page on library file changes set `files.watch` to `false` in `config.json`.  
- Run `h5p utils help` to get a list of utility commands.  
- Each utility command can then be run via `h5p utils <cmd> [<args>...]`.  
-
-> [!IMPORTANT]
-> The `temp` folder holds local copies of git repositories that are used when computing dependencies. Make sure to delete the `temp` folder when updating to the latest version of a library that has added or removed dependencies so that fresh git repository copies are cloned.  
