@@ -1,3 +1,5 @@
+• `h5p help <command>` prints the help entry for that `<command>`.  
+
 • `h5p core` installs the core h5p libraries.  
 These are required to view and edit h5p content types.  
 
