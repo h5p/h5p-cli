@@ -41,7 +41,7 @@ h5p server [port]
 ```
 `[port]` is an optional port number. Default is 8080.  
 You can now use your browser to view, edit, delete, import, export and create new content types.  
-<video src="https://github.com/h5p/h5p-cli/assets/5208532/98bff16a-16a1-494c-bfff-11d95ebfe3dd"></video>
+<video src="https://github.com/h5p/h5p-cli/assets/5208532/b33a12e6-3200-488c-81c6-eae41b13f512"></video>
 > [!IMPORTANT]
 > h5p commands run relative to the current working directory. This means that the folder where you run the h5p server is where the server will look for the libraries. If you run the setup commands in another folder then the server will not find those libraries.
 > It's recommended that you create a new folder and run the setup and server commands from there. You can have different folders each with different library setups.
