@@ -15,7 +15,7 @@ The output format is `<library> (<org>)`.
 
 • `h5p tags <org> <library> <mainBranch>` lists current library versions.  
 The `<org>` for a library is mentioned in the `list` command output.  
-`<mainBranch>` is the main branch of repository. Default is `master`.  
+`<mainBranch>` is the main branch of the repository. Default is `master`.  
 
 • `h5p deps <library> <mode> [saveToCache] [version] [folder]` computes dependencies for an h5p library.  
 Use `view` or `edit` for `<mode>` to generate dependencies for those cases.  
