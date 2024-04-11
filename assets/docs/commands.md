@@ -1,6 +1,10 @@
 • `h5p help` prints this help page.  
 `h5p help <command>` prints the help entry for that `<command>`.  
 
+• `h5p utils help` prints a list of utility commands.  
+Each utility command can then be run via `h5p utils <cmd> [<args>...]`.  
+Run `h5p utils help <cmd>` for a detailed help entry for each utility `<cmd>`.  
+
 • `h5p core` installs the core h5p libraries.  
 These are required to view and edit h5p content types.  
 
@@ -92,10 +96,6 @@ Once finished, the export command outputs the location of the resulting file.
 • `h5p import <folder> <h5p_archive_file_path>` will import the archived .h5p `<h5p_archive_file_path>` content type into the `content/<folder>` folder.  
 An example here is `h5p import agamotto-test ~/Downloads/agamotto_test.h5p` which will import the `~/Downloads/agamotto_test.h5p` archived .h5p file into the `content/agamotto-test` folder.  
 Once finished, the import command outputs the location of the resulting content type folder.  
-
-• `h5p utils help` prints a list of utility commands.  
-Each utility command can then be run via `h5p utils <cmd> [<args>...]`.  
-Run `h5p utils help <cmd>` for a detailed help entry for each utility `<cmd>`.  
 
  When viewing content types they are automatically upgraded to the version of the currently used main library.  
  When viewing content types you can create and switch between resume sessions. A resume session allows you to save the state of the content type that supports it so that it will be the same on reload.  
