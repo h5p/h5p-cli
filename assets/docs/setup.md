@@ -1,6 +1,6 @@
 # Folder structure
 
-Running commands listed in [commands.md](assets/docs/commands.md) results in the creation of five folders. The folders are created in the current working directory (the folder where you ran the command).  
+Running commands listed in [commands.md](commands.md) results in the creation of five folders. The folders are created in the current working directory (the folder where you ran the command).  
 `cache` holds computed dependency lists for the libraries that have been set up.  
 `content` holds actual content types and their assets.  
 `libraries` holds the libraries that have been set up.  
