@@ -26,7 +26,7 @@ You can now use `h5p` as a global command.
 
 > [!IMPORTANT]
 > h5p commands run relative to the current working directory.  
-> You can create multiple working directories each with different library setups.  
+> You can create multiple work directories each with different library setups.  
 
 0. Create a new folder for your first h5p development environment and change your current work dir to it.  
 ```
