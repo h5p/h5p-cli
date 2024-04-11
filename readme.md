@@ -56,6 +56,7 @@ h5p server
 You can now use your browser to view, edit, delete, import, export and create new content types.  
 > [!IMPORTANT]
 > Remember that the folder where you run the h5p server is where the server will look for the libraries. If you run the setup commands in another folder then the server will not find those libraries.  
+
 <video src="https://github.com/h5p/h5p-cli/assets/5208532/b33a12e6-3200-488c-81c6-eae41b13f512"></video>
 
 Other h5p commands can be found [here](assets/docs/commands.md) or by running `h5p help`.  
