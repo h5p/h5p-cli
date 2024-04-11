@@ -9,7 +9,7 @@ Uninstall any previous h5p-cli toolkit instance
 npm uninstall -g h5p-cli
 npm uninstall -g h5p
 ```
-then install it from this repository
+then install it from this repository.
 ```
 git clone https://github.com/h5p/h5p-cli.git
 cd h5p-cli
@@ -17,6 +17,7 @@ npm install
 cd ..
 npm install -g ./h5p-cli
 ```
+You can now use `h5p` as a global command.  
 
 ![installation gif](assets/docs/install.gif)
 
@@ -40,9 +41,10 @@ For example, `h5p setup h5p-accordion` installs the "h5p-accordion" library and 
 h5p server
 ```
 You can now use your browser to view, edit, delete, import, export and create new content types.  
-<video src="https://github.com/h5p/h5p-cli/assets/5208532/b33a12e6-3200-488c-81c6-eae41b13f512"></video>
 > [!IMPORTANT]
-> h5p commands run relative to the current working directory. This means that the folder where you run the h5p server is where the server will look for the libraries. If you run the setup commands in another folder then the server will not find those libraries.  
-> It's recommended that you create a new folder and run the setup and server commands from there. You can have different folders each with different library setups.  
+> h5p commands run relative to the current working directory.  
+> This means that the folder where you run the h5p server is where the server will look for the libraries. If you run the setup commands in another folder then the server will not find those libraries.  
+> You can create multiple working directories each with different library setups.  
+<video src="https://github.com/h5p/h5p-cli/assets/5208532/b33a12e6-3200-488c-81c6-eae41b13f512"></video>
 
 Other h5p commands can be found [here](assets/docs/commands.md) or by running `h5p help`.  
