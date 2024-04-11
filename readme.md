@@ -23,10 +23,16 @@ You can now use `h5p` as a global command.
 
 # QUICK START GUIDE
 
+> [!IMPORTANT]
+> h5p commands run relative to the current working directory.  
+> This means that the folder where you run the h5p server is where the server will look for the libraries. If you run the setup commands in another folder then the server will not find those libraries.  
+> You can create multiple working directories each with different library setups.  
+
 1. Install the core h5p libraries.
 ```
 h5p core
 ```
+
 2. Setup an h5p library such as h5p-course-presentation.
 ```
 h5p setup h5p-course-presentation
@@ -36,15 +42,12 @@ You can install other libraries listed by `h5p list` in the same way.
 For example, `h5p setup h5p-accordion` installs the "h5p-accordion" library and its dependencies.  
 > [!NOTE]
 > You can read more on setting up libraries [here](assets/docs/setup.md).
+
 3. Start the development server.
 ```
 h5p server
 ```
 You can now use your browser to view, edit, delete, import, export and create new content types.  
-> [!IMPORTANT]
-> h5p commands run relative to the current working directory.  
-> This means that the folder where you run the h5p server is where the server will look for the libraries. If you run the setup commands in another folder then the server will not find those libraries.  
-> You can create multiple working directories each with different library setups.  
 <video src="https://github.com/h5p/h5p-cli/assets/5208532/b33a12e6-3200-488c-81c6-eae41b13f512"></video>
 
 Other h5p commands can be found [here](assets/docs/commands.md) or by running `h5p help`.  
