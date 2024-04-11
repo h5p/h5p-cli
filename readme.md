@@ -1,4 +1,5 @@
 An h5p toolkit for running, editing and developing h5p content types.  
+
 Make sure you have [git](https://git-scm.com/downloads), [NodeJS](https://nodejs.org/en/download/current) and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) (usually included in NodeJS) installed.  
 Some of the commands listed here are Linux & MacOS specific. On Windows it’s recommended that you run them inside [git bash](https://git-scm.com/download/win).  
 
@@ -25,8 +26,13 @@ You can now use `h5p` as a global command.
 
 > [!IMPORTANT]
 > h5p commands run relative to the current working directory.  
-> This means that the folder where you run the h5p server is where the server will look for the libraries. If you run the setup commands in another folder then the server will not find those libraries.  
 > You can create multiple working directories each with different library setups.  
+
+0. Create a new folder for your first h5p development environment and change your current work dir to it.  
+```
+mkdir my_first_h5p_environment
+cd my_first_h5p_environment
+```
 
 1. Install the core h5p libraries.
 ```
@@ -48,6 +54,8 @@ For example, `h5p setup h5p-accordion` installs the "h5p-accordion" library and 
 h5p server
 ```
 You can now use your browser to view, edit, delete, import, export and create new content types.  
+> [!IMPORTANT]
+> Remember that the folder where you run the h5p server is where the server will look for the libraries. If you run the setup commands in another folder then the server will not find those libraries.  
 <video src="https://github.com/h5p/h5p-cli/assets/5208532/b33a12e6-3200-488c-81c6-eae41b13f512"></video>
 
 Other h5p commands can be found [here](assets/docs/commands.md) or by running `h5p help`.  
