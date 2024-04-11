@@ -1,4 +1,5 @@
-• `h5p help <command>` prints the help entry for that `<command>`.  
+• `h5p help` prints this help page.  
+`h5p help <command>` prints the help entry for that `<command>`.  
 
 • `h5p core` installs the core h5p libraries.  
 These are required to view and edit h5p content types.  
@@ -79,9 +80,9 @@ Running `h5p verify h5p-accordion` should return something like below if the lib
 }
 ```
 
-• `h5p server` starts the dev server.  
-Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types. To view the dashboard point your browser to  
-http://localhost:8080/dashboard  
+• `h5p server [port]` starts the dev server.  
+`[port]` is an optional port number. Default is 8080.  
+Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types.  
 
 • `h5p export <library> <folder>` will export the `<library>` content type from the `content/<folder>` folder.  
 An example here is `h5p export h5p-agamotto agamotto-test` which will export the `h5p-agamotto` content type located in the `content/agamotto-test` folder.  
