@@ -1,16 +1,23 @@
-• `h5p core` installs the core h5p libraries.  
-These are required to view and edit h5p content types.  
+• `h5p help` prints this help page.  
+`h5p help <command>` prints the help entry for that `<command>`.  
 
-• `h5p list [machineName] [ignoreCache]` lists the current h5p libraries.  
+• `h5p utils help` prints a list of utility commands.  
+Each utility command can then be run via `h5p utils <cmd> [<args>...]`.  
+Run `h5p utils help <cmd>` for a detailed help entry for each utility `<cmd>`.  
+
+• `h5p core` installs the core H5P libraries.  
+These are required to view and edit H5P content types.  
+
+• `h5p list [machineName] [ignoreCache]` lists the current H5P libraries.  
 Use `1` for `[machineName]` to list the machine name instead of the default repo name.  
 Use `1` for `[ignoreCache]` to recreate the local registry.  
 The output format is `<library> (<org>)`.  
 
 • `h5p tags <org> <library> <mainBranch>` lists current library versions.  
 The `<org>` for a library is mentioned in the `list` command output.  
-`<mainBranch>` is the main branch of repository. Default is `master`.  
+`<mainBranch>` is the main branch of the repository. Default is `master`.  
 
-• `h5p deps <library> <mode> [saveToCache] [version] [folder]` computes dependencies for an h5p library.  
+• `h5p deps <library> <mode> [saveToCache] [version] [folder]` computes dependencies for an H5P library.  
 Use `view` or `edit` for `<mode>` to generate dependencies for those cases.  
 Specify `1` for `[saveToCache]` to save the result in the cache folder. Default is `0`.  
 Specify a `[version]` to compute deps for that version. Default is `master`. Use the `tags` command to list versions for a library.  
@@ -49,11 +56,15 @@ Use `view` or `edit` for `<mode>`.
 Use `view` or `edit` for `<mode>`.  
 `[useCache]` can be `1` if you want it to use the cached deps.  
 
-• `h5p setup <library|repoUrl> [version] [download]` computes & clones/installs view and edit dependencies for a library.  
-You can optionally specify a library `[version]`. To view current versions for a library use the `tags` command. If no `[version]` is specified master branches will be cloned.  
+• `h5p setup <library|repoUrl> [version] [download]` sets up a library and its dependencies.  
+`<repoUrl>` is a github repository url. Running the command in this format will also update the library in the local registry. This is useful for unregistered libraries.  
+For example, `h5p setup git@github.com:h5p/h5p-accordion.git` installs the "h5p-accordion" library and its dependencies. It also updates its entry in the local library registry.  
+You can optionally specify a library `[version]`. To view current versions for a library use the `tags` command.
 Using `1` for the `[download]` parameter will download the libraries instead of cloning them as git repos.  
 Set the `H5P_NO_UPDATES` environment variable to `1` to skip updating libraries and speed up the setup process.  
 Set the `H5P_SSH_CLONE` environment variable to `1` so that ssh urls are used when cloning private repositories. This is useful for cloning private repos and for when you want to commit from the `libraries/<library>` folder.  
+> [!IMPORTANT]
+> If no `[version]` is specified master branches will be used.  
 
 • `h5p missing <library>` will compute the unregistered dependencies for a library.  
 The library itself has to exist in the local library registry.  
@@ -73,9 +84,9 @@ Running `h5p verify h5p-accordion` should return something like below if the lib
 }
 ```
 
-• `h5p server` starts the dev server.  
-Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types. To view the dashboard point your browser to  
-http://localhost:8080/dashboard  
+• `h5p server [port]` starts the dev server.  
+`[port]` is an optional port number. Default is 8080.  
+Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types.  
 
 • `h5p export <library> <folder>` will export the `<library>` content type from the `content/<folder>` folder.  
 An example here is `h5p export h5p-agamotto agamotto-test` which will export the `h5p-agamotto` content type located in the `content/agamotto-test` folder.  
@@ -87,24 +98,7 @@ An example here is `h5p import agamotto-test ~/Downloads/agamotto_test.h5p` whic
 Once finished, the import command outputs the location of the resulting content type folder.  
 
  When viewing content types they are automatically upgraded to the version of the currently used main library.  
-
  When viewing content types you can create and switch between resume sessions. A resume session allows you to save the state of the content type that supports it so that it will be the same on reload.  
-You can create a new session by clicking on the "new session" button and entering a new name for it.  
-To switch between existing sessions simply choose the one you want from the dropdown. Choose the "null" session to not save states.  
-
+ You can create a new session by clicking on the "new session" button and entering a new name for it.  
+ To switch between existing sessions simply choose the one you want from the dropdown. Choose the "null" session to not save states.  
  To stop auto reloading the view page on library file changes set `files.watch` to `false` in `config.json`.  
-
- Run `h5p utils help` to get a list of utility commands.  
-Each utility command can then be run via `h5p utils <cmd> [<args>...]`.  
-
- Git related commands may require you to add your ssh key to the ssh agent after starting it.  
-This is required if you run h5p commands on private git repositories or if you encounter the following error.  
-```
-Permission denied (publickey).
-fatal: Could not read from remote repository.
-```
-
-### Git ssh-agent setup
-Here are some guides on how to add an ssh key to the ssh agent on [Linux](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent), [Mac](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=mac#adding-your-ssh-key-to-the-ssh-agent), [Windows](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=windows#adding-your-ssh-key-to-the-ssh-agent).  
-
-The `temp` folder holds local copies of git repositories that are used when computing dependencies. Make sure to delete the `temp` folder when updating to the latest version of a library that has added or removed dependencies so that fresh git repository copies are cloned.  
