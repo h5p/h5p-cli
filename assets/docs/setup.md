@@ -29,22 +29,22 @@ Please [find a library development tutorial](https://h5p.org/library-development
 
 Libraries that can be automatically installed are stored in the local library registry. The registry is a json file located at `cache/libraryRegistry.json`.  
 Running `h5p setup <library>` may return the `unregistered library` error. This means that the local library registry is missing this library. We have to find its repository url and register it.  
-As an example, run `h5p register https://github.com/otacke/h5p-game-map` to register the `h5p-game-map` library in the local registry.  
-Run `h5p missing h5p-game-map` to list the unregistered dependencies for `h5p-game-map`. Then find their repository urls and register them.  
+As an example, run `h5p register https://github.com/otacke/h5p-portfolio` to register the `h5p-portfolio` library in the local registry.  
+Run `h5p missing h5p-portfolio` to list the unregistered dependencies for `h5p-portfolio`. Then find their repository urls and register them.  
 ```
-h5p register https://github.com/otacke/h5p-editor-game-map
-h5p register https://github.com/otacke/h5p-combination-lock
-h5p register https://github.com/otacke/h5p-tabs
-h5p register https://github.com/otacke/h5p-transcript
+h5p register https://github.com/otacke/h5p-portfolio-placeholder
+h5p register https://github.com/otacke/h5p-portfolio-chapter
+h5p register https://github.com/otacke/h5p-editor-portfolio
 ```
-Run `h5p missing h5p-game-map` again to list any unregistered dependencies for the newly registered ones. And register them.  
+Run `h5p missing h5p-portfolio` again to list any unregistered dependencies for the newly registered ones. And register them.  
 ```
-h5p register https://github.com/otacke/h5p-editor-tabs
-h5p register https://github.com/otacke/h5p-transcript-library
+h5p register https://github.com/otacke/h5p-file-for-download
+h5p register https://github.com/otacke/h5p-editor-portfolio-placeholder
+h5p register https://github.com/otacke/h5p-editor-portfolio-chapter
 ```
-Run `h5p missing h5p-game-map` again to make sure there are no other unregistered dependencies.  
-Finally, run `h5p setup h5p-game-map` to install the library and its dependencies.  
-You can use the `git@github.com:otacke/h5p-game-map.git` url format when dealing with private repositories.  
+Run `h5p missing h5p-portfolio` again to make sure there are no other unregistered dependencies.  
+Finally, run `h5p setup h5p-portfolio` to install the library and its dependencies.  
+You can use the `git@github.com:otacke/h5p-portfolio.git` url format when dealing with private repositories.  
 
 # GIT and your SSH-AGENT
 
