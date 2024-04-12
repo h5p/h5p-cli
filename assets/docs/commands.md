@@ -5,10 +5,10 @@
 Each utility command can then be run via `h5p utils <cmd> [<args>...]`.  
 Run `h5p utils help <cmd>` for a detailed help entry for each utility `<cmd>`.  
 
-• `h5p core` installs the core h5p libraries.  
-These are required to view and edit h5p content types.  
+• `h5p core` installs the core H5P libraries.  
+These are required to view and edit H5P content types.  
 
-• `h5p list [machineName] [ignoreCache]` lists the current h5p libraries.  
+• `h5p list [machineName] [ignoreCache]` lists the current H5P libraries.  
 Use `1` for `[machineName]` to list the machine name instead of the default repo name.  
 Use `1` for `[ignoreCache]` to recreate the local registry.  
 The output format is `<library> (<org>)`.  
@@ -17,7 +17,7 @@ The output format is `<library> (<org>)`.
 The `<org>` for a library is mentioned in the `list` command output.  
 `<mainBranch>` is the main branch of the repository. Default is `master`.  
 
-• `h5p deps <library> <mode> [saveToCache] [version] [folder]` computes dependencies for an h5p library.  
+• `h5p deps <library> <mode> [saveToCache] [version] [folder]` computes dependencies for an H5P library.  
 Use `view` or `edit` for `<mode>` to generate dependencies for those cases.  
 Specify `1` for `[saveToCache]` to save the result in the cache folder. Default is `0`.  
 Specify a `[version]` to compute deps for that version. Default is `master`. Use the `tags` command to list versions for a library.  

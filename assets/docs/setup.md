@@ -1,11 +1,11 @@
 # Folder structure
 
 Running commands listed in [commands.md](commands.md) results in the creation of five folders. The folders are created in the current working directory (the folder where you ran the command).  
-`cache` holds computed dependency lists for the libraries that have been set up.  
-`content` holds actual content types and their assets.  
-`libraries` holds the libraries that have been set up.  
-`temp` holds local copies of git repositories that are used when computing dependencies.  
-`uploads` is a temporary location used by the import and export commands.  
+- `cache` holds computed dependency lists for the libraries that have been set up.  
+- `content` holds actual content types and their assets.  
+- `libraries` holds the libraries that have been set up.  
+- `temp` holds local copies of git repositories that are used when computing dependencies.  
+- `uploads` is a temporary location used by the import and export commands.  
 
 > [!IMPORTANT]
 > Make sure to delete the `temp` folder when updating to the latest version of a library that has new or updated dependencies so that fresh git repository copies are cloned.  
@@ -21,9 +21,9 @@ An example for this is
 h5p use h5p-greeting-card H5P.GreetingCard-1.0
 ```
 It will setup the `h5p-greeting-card` library located in the `libraries/H5P.GreetingCard-1.0` directory.  
-Its dependencies need to be present in the `libraries` folder. Ootherwise they need to be set up separately.  
+Its dependencies need to be present in the `libraries` folder. Otherwise they need to be set up separately.  
 Please note that, should the dependencies change (including the optional ones in semantics.json), you will have to run this command again in order to regenerate the cached dependency lists.  
-A library development tutorial can be found [here](https://h5p.org/library-development).  
+Please [find a library development tutorial](https://h5p.org/library-development) for details on that topic.  
 
 # Setup a library from github
 
