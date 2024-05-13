@@ -460,7 +460,7 @@ module.exports = {
             title: cache.edit[library][library].title,
             runnable: cache.edit[library][library].runnable,
             restricted: false,
-            metadataSettings: null
+            metadataSettings: cache.edit[library][library].metadataSettings
           });
         }
       }
