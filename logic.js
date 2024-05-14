@@ -289,6 +289,7 @@ module.exports = {
       done[level][dep].preloadedCss = list.preloadedCss || [];
       done[level][dep].preloadedDependencies = list.preloadedDependencies || [];
       done[level][dep].editorDependencies = list.editorDependencies || [];
+      done[level][dep].metadataSettings = list.metadataSettings;
       if (!done[level][dep].requiredBy) {
         done[level][dep].requiredBy = [];
       }
