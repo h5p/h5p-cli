@@ -304,7 +304,9 @@ module.exports = {
       const entry = lib?.shortName;
       if (!entry) {
         const optional = isOptional(cache[parent], machineName);
-        done[level][machineName] = { optional };
+        if (!done[level][machineName] || done[level][machineName].optional) {
+          done[level][machineName] = { optional, parent };
+        }
         const parentVersion = `${done[level][parent].version.major}.${done[level][parent].version.minor}.${done[level][parent].version.patch}`
         process.stdout.write(`\n!!! optional library ${machineName} ${ver} not found in registry; required by ${done[level][parent].requiredBy}/${parent} (${parentVersion}) `);
         return;
@@ -316,10 +318,10 @@ module.exports = {
       weights[entry] = weights[entry] ? weights[entry] + 1 : 1;
       return;
     }
-    // determine if library is a soft dependency
-    const isOptional = (library, machineName) => {
+    // determine if a library is a soft dependency of its parent
+    const isOptional = (parent, machineName) => {
       const finder = (element) => element.machineName === machineName;
-      if (library.preloadedDependencies.find(finder) !== undefined || library.editorDependencies.find(finder) !== undefined) {
+      if (parent.preloadedDependencies.find(finder) !== undefined || parent.editorDependencies.find(finder) !== undefined) {
         return false;
       }
       return true;

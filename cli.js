@@ -80,27 +80,27 @@ const cli = {
   missing: async (library) => {
     try {
       const missing = [];
+      const parseMissing = (result, item) => {
+        const label = `${item} ${result[item].optional ? 'soft' : 'hard'} dependency of ${result[item].parent}`;
+        if (typeof result[item].optional !== 'undefined' && missing.indexOf(label) == -1) {
+          missing.push(label);
+        }
+      }
       let result = await logic.computeDependencies(library, 'view');
       for (let item in result) {
-        if (!result[item]) {
-          if (missing.indexOf(item) == -1) {
-            missing.push(item);
-          }
+        if (typeof result[item].optional !== 'undefined') {
+          parseMissing(result, item);
         }
         else {
           const list = await logic.computeDependencies(item, 'edit');
           for (let elem in list) {
-            if (!list[elem] && missing.indexOf(elem) == -1) {
-              missing.push(elem);
-            }
+            parseMissing(list, elem);
           }
         }
       }
       result = await logic.computeDependencies(library, 'edit');
       for (let item in result) {
-        if (!result[item] && missing.indexOf(item) == -1) {
-          missing.push(item);
-        }
+        parseMissing(result, item);
       }
       if (!missing.length) {
         console.log(`> ${library} has no unregistered dependencies`);
