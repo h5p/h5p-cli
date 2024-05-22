@@ -233,21 +233,95 @@ module.exports = {
       }
       return patch > -1 ? `${version}.${patch}` : version;
     }
+    // determines if provided path has duplicate entries; entries are separated by '/';
+    const pathHasDuplicates = (path) => {
+      const ledger = {};
+      const list = path.split('/');
+      for (let item of list) {
+        if (ledger[item]) {
+          return true;
+        }
+        else {
+          ledger[item] = true;
+        }
+      }
+      return false;
+    }
+    // parses semantics array of objects for entries of library type
+    const parseSemanticLibraries = (entries) => {
+      if (!Array.isArray(entries)) {
+        return {};
+      }
+      let toDo = [];
+      let list = [];
+      const output = {};
+      const parseList = () => {
+        toDo = [];
+        for (let obj of list) { // go through semantics array entries
+          if (obj?.type === 'library' && Array.isArray(obj?.options)) {
+            for (let lib of obj.options) {
+              const parts = lib.split(' ');
+              output[parts[0]] = {
+                name: parts[0],
+                version: parts[1]
+              };
+            }
+            continue;
+          }
+          for (let attr in obj) { // go through entry attributes
+            if (attr === 'fields' && Array.isArray(obj[attr])) {
+              for (let item of obj[attr]) {
+                if (item?.type === 'library' && Array.isArray(item?.options)) {
+                  for (let lib of item.options) {
+                    const parts = lib.split(' ');
+                    output[parts[0]] = {
+                      name: parts[0],
+                      version: parts[1]
+                    };
+                  }
+                }
+                else {
+                  toDo.push(item);
+                }
+              }
+            }
+            if (typeof obj[attr] === 'object' && !Array.isArray(obj[attr])) {
+              toDo.push(obj[attr]);
+            }
+          }
+        }
+        list = toDo;
+      }
+      list = entries;
+      while (list.length) {
+        parseList();
+      }
+      return output;
+    }
+    // determine if dependency needs to be processed
     const handleDepListEntry = (machineName, parent, ver, dir) => {
       const lib = registry.reversed[machineName];
       const entry = lib?.shortName;
       if (!entry) {
-        saveToCache = 0;
-        done[level][machineName] = false;
+        const optional = isOptional(cache[parent], machineName);
+        done[level][machineName] = { optional };
         const parentVersion = `${done[level][parent].version.major}.${done[level][parent].version.minor}.${done[level][parent].version.patch}`
-        process.stdout.write(`\n!!! ${machineName} ${ver} not found in registry; required by ${done[level][parent].requiredBy}/${parent} (${parentVersion}) `);
-        return false;
+        process.stdout.write(`\n!!! optional library ${machineName} ${ver} not found in registry; required by ${done[level][parent].requiredBy}/${parent} (${parentVersion}) `);
+        return;
       }
       const version = ver == 'master' ? ver : latestPatch(lib.org, entry, ver);
-      if (!done[level][entry] && !toDo[entry]?.parent) {
+      if (!done[level][entry]?.id && !toDo[entry]?.parent) {
         toDo[entry] = { parent, version, folder: dir };
       }
       weights[entry] = weights[entry] ? weights[entry] + 1 : 1;
+      return;
+    }
+    // determine if library is a soft dependency
+    const isOptional = (library, machineName) => {
+      const finder = (element) => element.machineName === machineName;
+      if (library.preloadedDependencies.find(finder) !== undefined || library.editorDependencies.find(finder) !== undefined) {
+        return false;
+      }
       return true;
     }
     const compute = async (org, dep, version) => {
@@ -332,6 +406,7 @@ module.exports = {
       }
     }
     let output = {};
+    let toSave = {};
     for (let i = level; i >= 0; i--) {
       const keys = Object.keys(done[i]);
       keys.sort((a, b) => {
@@ -339,12 +414,16 @@ module.exports = {
       });
       for (let key of keys) {
         output[key] = done[i][key];
+        if (!done[i][key].id) {
+          continue;
+        }
+        toSave[key] = done[i][key];
       }
     }
     if (saveToCache) {
       const doneFile = `${config.folders.cache}/${library}${mode == 'edit' ? '_edit' : ''}.json`;
       if (!fs.existsSync(config.folders.cache)) fs.mkdirSync(config.folders.cache);
-      fs.writeFileSync(doneFile, JSON.stringify(output));
+      fs.writeFileSync(doneFile, JSON.stringify(toSave));
       console.log(`deps saved to ${doneFile}`);
     }
     process.stdout.write('\n');
@@ -405,12 +484,18 @@ module.exports = {
     }
     for (let item in list) {
       if (toSkip.indexOf(item) != -1) {
-        console.log(`> skipping ${item}; already installed.`);
+        // console.log(`> skipping ${item}; already installed.`);
         continue;
       }
       toSkip.push(item);
-      if (!list[item]) {
-        throw new Error(`unregistered ${item} library`);
+      if (!list[item].id) {
+        if (list[item].optional) {
+          console.log(`> skipping optional unregistered ${item} library`);
+          continue;
+        }
+        else {
+          throw new Error(`unregistered ${item} library`);
+        }
       }
       const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
       const listVersion = `${list[item].version.major}.${list[item].version.minor}.${list[item].version.patch}`;
@@ -423,7 +508,7 @@ module.exports = {
           console.log(execSync('git pull origin', { cwd: folder }).toString());
         }
         else {
-          console.log(`>> ~ skipping ${list[item].repoName} ${listVersion}; it already exists.`);
+          console.log(`>> ~ skipping updates for ${list[item].repoName} ${listVersion}`);
         }
         continue;
       }
@@ -604,69 +689,4 @@ module.exports = {
   parseGitUrl,
   getFile,
   getFileList
-}
-// determines if provided path has duplicate entries; entries are separated by '/';
-const pathHasDuplicates = (path) => {
-  const ledger = {};
-  const list = path.split('/');
-  for (let item of list) {
-    if (ledger[item]) {
-      return true;
-    }
-    else {
-      ledger[item] = true;
-    }
-  }
-  return false;
-}
-// parses semantics array of objects for entries of library type
-const parseSemanticLibraries = (entries) => {
-  if (!Array.isArray(entries)) {
-    return {};
-  }
-  let toDo = [];
-  let list = [];
-  const output = {};
-  const parseList = () => {
-    toDo = [];
-    for (let obj of list) { // go through semantics array entries
-      if (obj?.type === 'library' && Array.isArray(obj?.options)) {
-        for (let lib of obj.options) {
-          const parts = lib.split(' ');
-          output[parts[0]] = {
-            name: parts[0],
-            version: parts[1]
-          };
-        }
-        continue;
-      }
-      for (let attr in obj) { // go through entry attributes
-        if (attr === 'fields' && Array.isArray(obj[attr])) {
-          for (let item of obj[attr]) {
-            if (item?.type === 'library' && Array.isArray(item?.options)) {
-              for (let lib of item.options) {
-                const parts = lib.split(' ');
-                output[parts[0]] = {
-                  name: parts[0],
-                  version: parts[1]
-                };
-              }
-            }
-            else {
-              toDo.push(item);
-            }
-          }
-        }
-        if (typeof obj[attr] === 'object' && !Array.isArray(obj[attr])) {
-          toDo.push(obj[attr]);
-        }
-      }
-    }
-    list = toDo;
-  }
-  list = entries;
-  while (list.length) {
-    parseList();
-  }
-  return output;
 }

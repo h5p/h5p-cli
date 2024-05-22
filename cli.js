@@ -166,6 +166,7 @@ const cli = {
   setup: async function(library, version, download) {
     const isUrl = ['http', 'git@'].includes(library.slice(0, 4)) ? true : false;
     const url = library;
+    const missing = [];
     try {
       if (isUrl) {
         const entry = await this.register(url);
@@ -180,7 +181,14 @@ const cli = {
           throw new Error(`unregistered ${item} library`);
         }
         // setup editor dependencies for every view dependency
-        toSkip = await logic.getWithDependencies(action, item, 'edit', 1, latest, toSkip);
+        if (!result[item].id) {
+          if (result[item].optional) {
+            missing.push(item);
+          }
+          else {
+            toSkip = await logic.getWithDependencies(action, item, 'edit', 1, latest, toSkip);
+          }
+        }
       }
       result = await logic.computeDependencies(library, 'edit', 1, version);
       for (let item in result) {
@@ -193,6 +201,9 @@ const cli = {
       toSkip = await logic.getWithDependencies(action, library, 'view', 1, latest, toSkip);
       console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
       toSkip = await logic.getWithDependencies(action, library, 'edit', 1, latest, toSkip);
+      if (missing.length) {
+        console.log('!!! missing optional libraries', missing);
+      }
       console.log(`> done setting up ${library}`);
     }
     catch (error) {
