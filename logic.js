@@ -308,7 +308,7 @@ module.exports = {
           done[level][machineName] = { optional, parent };
         }
         const parentVersion = `${done[level][parent].version.major}.${done[level][parent].version.minor}.${done[level][parent].version.patch}`
-        process.stdout.write(`\n!!! optional library ${machineName} ${ver} not found in registry; required by ${done[level][parent].requiredBy}/${parent} (${parentVersion}) `);
+        process.stdout.write(`\n!!! ${optional ? 'optional' : 'required'} library ${machineName} ${ver} not found in registry; required by ${parent} (${parentVersion}) `);
         return;
       }
       const version = ver == 'master' ? ver : latestPatch(lib.org, entry, ver);
@@ -352,7 +352,7 @@ module.exports = {
         cache[dep] = list;
       }
       if (!list.title) {
-        throw new Error(`unregistered ${toDo[dep].folder || dep} library`);
+        throw new Error(`missing library.json for ${toDo[dep].folder || dep}`);
       }
       done[level][dep].title = list.title;
       done[level][dep].version = {
@@ -415,7 +415,9 @@ module.exports = {
         return weights[b] - weights[a];
       });
       for (let key of keys) {
-        output[key] = done[i][key];
+        if (!output[key] || output[key]?.optional) {
+          output[key] = done[i][key];
+        }
         if (!done[i][key].id) {
           continue;
         }

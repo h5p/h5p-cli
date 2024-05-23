@@ -14,6 +14,16 @@ marked = marked.marked;
 if (process.env.H5P_SSH_CLONE) {
   config.urls.library.clone = config.urls.library.sshClone;
 }
+const handleMissingOptionals = (missingOptionals, result, item) => {
+  if (result[item].optional) {
+    if (!missingOptionals[item]) {
+      missingOptionals[item] = result[item];
+    }
+  }
+  else {
+    throw new Error(`unregistered ${item} library required by ${result[item].parent}`);
+  }
+}
 const cli = {
   // exports content type as .h5p zipped file
   export: (library, folder) => {
@@ -68,7 +78,7 @@ const cli = {
     try {
       const result = await logic.computeDependencies(library, mode, parseInt(saveToCache), version, folder);
       for (let item in result) {
-        console.log(result[item] ? item : `!!! unregistered ${item} library`);
+        console.log(result[item].id ? item : `!!! unregistered ${result[item].optional ? 'optional' : 'required'} ${item} library`);
       }
     }
     catch (error) {
@@ -79,11 +89,10 @@ const cli = {
   // computes missing dependencies for h5p library
   missing: async (library) => {
     try {
-      const missing = [];
+      const missing = {};
       const parseMissing = (result, item) => {
-        const label = `${item} ${result[item].optional ? 'soft' : 'hard'} dependency of ${result[item].parent}`;
-        if (typeof result[item].optional !== 'undefined' && missing.indexOf(label) == -1) {
-          missing.push(label);
+        if (typeof result[item].optional !== 'undefined' && (typeof missing[item] === 'undefined' || missing[item])) {
+          missing[item] = result[item].optional;
         }
       }
       let result = await logic.computeDependencies(library, 'view');
@@ -102,13 +111,13 @@ const cli = {
       for (let item in result) {
         parseMissing(result, item);
       }
-      if (!missing.length) {
+      if (!Object.keys(missing).length) {
         console.log(`> ${library} has no unregistered dependencies`);
         return;
       }
       console.log(`> unregistered dependencies for ${library}`);
-      for (let item of missing) {
-        console.log(item);
+      for (let item in missing) {
+        console.log(`${item} (${missing[item] ? 'optional' : 'required'})`);
       }
     }
     catch (error) {
@@ -166,7 +175,7 @@ const cli = {
   setup: async function(library, version, download) {
     const isUrl = ['http', 'git@'].includes(library.slice(0, 4)) ? true : false;
     const url = library;
-    const missing = [];
+    const missingOptionals = {};
     try {
       if (isUrl) {
         const entry = await this.register(url);
@@ -177,23 +186,18 @@ const cli = {
       const latest = version ? false : true;
       let result = await logic.computeDependencies(library, 'view', 1, version);
       for (let item in result) {
-        if (!result[item]) {
-          throw new Error(`unregistered ${item} library`);
-        }
         // setup editor dependencies for every view dependency
         if (!result[item].id) {
-          if (result[item].optional) {
-            missing.push(item);
-          }
-          else {
-            toSkip = await logic.getWithDependencies(action, item, 'edit', 1, latest, toSkip);
-          }
+          handleMissingOptionals(missingOptionals, result, item);
+        }
+        else {
+          toSkip = await logic.getWithDependencies(action, item, 'edit', 1, latest, toSkip);
         }
       }
       result = await logic.computeDependencies(library, 'edit', 1, version);
       for (let item in result) {
-        if (!result[item]) {
-          throw new Error(`unregistered ${item} library`);
+        if (!result[item].id) {
+          handleMissingOptionals(missingOptionals, result, item);
         }
       }
       toSkip = [];
@@ -201,8 +205,11 @@ const cli = {
       toSkip = await logic.getWithDependencies(action, library, 'view', 1, latest, toSkip);
       console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
       toSkip = await logic.getWithDependencies(action, library, 'edit', 1, latest, toSkip);
-      if (missing.length) {
-        console.log('!!! missing optional libraries', missing);
+      if (Object.keys(missingOptionals).length) {
+        console.log('!!! missing optional libraries');
+        for (let item in missingOptionals) {
+          console.log(`${item} (${missingOptionals[item].optional ? 'optional' : 'required'}) required by ${missingOptionals[item].parent}`);
+        }
       }
       console.log(`> done setting up ${library}`);
     }
@@ -232,6 +239,7 @@ const cli = {
   use: async (library, folder) => {
     try {
       let registry = await logic.getRegistry();
+      let missingOptionals = {};
       const target = `${config.folders.libraries}/${folder}`;
       if (!registry.regular[library]) {
         console.log(`registering ${library} library`);
@@ -253,15 +261,15 @@ const cli = {
       }
       let result = await logic.computeDependencies(library, 'view', 1, null, folder);
       for (let item in result) {
-        if (!result[item]) {
-          throw new Error(`unregistered ${item} library`);
+        if (!result[item].id) {
+          handleMissingOptionals(missingOptionals, result, item);
         }
         console.log(item);
       }
       result = await logic.computeDependencies(library, 'edit', 1, null, folder);
       for (let item in result) {
-        if (!result[item]) {
-          throw new Error(`unregistered ${item} library`);
+        if (!result[item].id) {
+          handleMissingOptionals(missingOptionals, result, item);
         }
         console.log(item);
       }
@@ -278,6 +286,12 @@ const cli = {
       console.log('>>> npm run build');
       console.log(execSync('npm run build', {cwd: target}).toString());
       fs.rmSync(`${target}/node_modules`, { recursive: true, force: true });
+      if (Object.keys(missingOptionals).length) {
+        console.log('!!! missing optional libraries');
+        for (let item in missingOptionals) {
+          console.log(`${item} (${missingOptionals[item].optional ? 'optional' : 'required'}) required by ${missingOptionals[item].parent}`);
+        }
+      }
     }
     catch (error) {
       console.log('> error');
