@@ -233,21 +233,32 @@ module.exports = {
       }
       return patch > -1 ? `${version}.${patch}` : version;
     }
+    // determine if dependency needs to be processed
     const handleDepListEntry = (machineName, parent, ver, dir) => {
       const lib = registry.reversed[machineName];
       const entry = lib?.shortName;
       if (!entry) {
-        saveToCache = 0;
-        done[level][machineName] = false;
+        const optional = isOptional(cache[parent], machineName);
+        if (!done[level][machineName] || done[level][machineName].optional) {
+          done[level][machineName] = { optional, parent };
+        }
         const parentVersion = `${done[level][parent].version.major}.${done[level][parent].version.minor}.${done[level][parent].version.patch}`
-        process.stdout.write(`\n!!! ${machineName} ${ver} not found in registry; required by ${done[level][parent].requiredBy}/${parent} (${parentVersion}) `);
-        return false;
+        process.stdout.write(`\n!!! ${optional ? 'optional' : 'required'} library ${machineName} ${ver} not found in registry; required by ${parent} (${parentVersion}) `);
+        return;
       }
       const version = ver == 'master' ? ver : latestPatch(lib.org, entry, ver);
-      if (!done[level][entry] && !toDo[entry]?.parent) {
+      if (!done[level][entry]?.id && !toDo[entry]?.parent) {
         toDo[entry] = { parent, version, folder: dir };
       }
       weights[entry] = weights[entry] ? weights[entry] + 1 : 1;
+      return;
+    }
+    // determine if a library is a soft dependency of its parent
+    const isOptional = (parent, machineName) => {
+      const finder = (element) => element.machineName === machineName;
+      if (parent.preloadedDependencies.find(finder) !== undefined || parent.editorDependencies.find(finder) !== undefined) {
+        return false;
+      }
       return true;
     }
     const compute = async (org, dep, version) => {
@@ -276,7 +287,7 @@ module.exports = {
         cache[dep] = list;
       }
       if (!list.title) {
-        throw new Error(`unregistered ${toDo[dep].folder || dep} library`);
+        throw new Error(`missing library.json for ${toDo[dep].folder || dep}`);
       }
       done[level][dep].title = list.title;
       done[level][dep].version = {
@@ -332,19 +343,26 @@ module.exports = {
       }
     }
     let output = {};
+    let toSave = {};
     for (let i = level; i >= 0; i--) {
       const keys = Object.keys(done[i]);
       keys.sort((a, b) => {
         return weights[b] - weights[a];
       });
       for (let key of keys) {
-        output[key] = done[i][key];
+        if (!output[key] || output[key]?.optional) {
+          output[key] = done[i][key];
+        }
+        if (!done[i][key].id) {
+          continue;
+        }
+        toSave[key] = done[i][key];
       }
     }
     if (saveToCache) {
       const doneFile = `${config.folders.cache}/${library}${mode == 'edit' ? '_edit' : ''}.json`;
       if (!fs.existsSync(config.folders.cache)) fs.mkdirSync(config.folders.cache);
-      fs.writeFileSync(doneFile, JSON.stringify(output));
+      fs.writeFileSync(doneFile, JSON.stringify(toSave));
       console.log(`deps saved to ${doneFile}`);
     }
     process.stdout.write('\n');
@@ -405,12 +423,17 @@ module.exports = {
     }
     for (let item in list) {
       if (toSkip.indexOf(item) != -1) {
-        console.log(`> skipping ${item}; already installed.`);
         continue;
       }
       toSkip.push(item);
-      if (!list[item]) {
-        throw new Error(`unregistered ${item} library`);
+      if (!list[item].id) {
+        if (list[item].optional) {
+          console.log(`> skipping optional unregistered ${item} library`);
+          continue;
+        }
+        else {
+          throw new Error(`unregistered ${item} library`);
+        }
       }
       const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
       const listVersion = `${list[item].version.major}.${list[item].version.minor}.${list[item].version.patch}`;
@@ -423,7 +446,7 @@ module.exports = {
           console.log(execSync('git pull origin', { cwd: folder }).toString());
         }
         else {
-          console.log(`>> ~ skipping ${list[item].repoName} ${listVersion}; it already exists.`);
+          console.log(`>> ~ skipping updates for ${list[item].repoName} ${listVersion}`);
         }
         continue;
       }
