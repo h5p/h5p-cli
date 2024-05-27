@@ -488,7 +488,6 @@ module.exports = {
     }
     for (let item in list) {
       if (toSkip.indexOf(item) != -1) {
-        // console.log(`> skipping ${item}; already installed.`);
         continue;
       }
       toSkip.push(item);
