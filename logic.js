@@ -233,71 +233,6 @@ module.exports = {
       }
       return patch > -1 ? `${version}.${patch}` : version;
     }
-    // determines if provided path has duplicate entries; entries are separated by '/';
-    const pathHasDuplicates = (path) => {
-      const ledger = {};
-      const list = path.split('/');
-      for (let item of list) {
-        if (ledger[item]) {
-          return true;
-        }
-        else {
-          ledger[item] = true;
-        }
-      }
-      return false;
-    }
-    // parses semantics array of objects for entries of library type
-    const parseSemanticLibraries = (entries) => {
-      if (!Array.isArray(entries)) {
-        return {};
-      }
-      let toDo = [];
-      let list = [];
-      const output = {};
-      const parseList = () => {
-        toDo = [];
-        for (let obj of list) { // go through semantics array entries
-          if (obj?.type === 'library' && Array.isArray(obj?.options)) {
-            for (let lib of obj.options) {
-              const parts = lib.split(' ');
-              output[parts[0]] = {
-                name: parts[0],
-                version: parts[1]
-              };
-            }
-            continue;
-          }
-          for (let attr in obj) { // go through entry attributes
-            if (attr === 'fields' && Array.isArray(obj[attr])) {
-              for (let item of obj[attr]) {
-                if (item?.type === 'library' && Array.isArray(item?.options)) {
-                  for (let lib of item.options) {
-                    const parts = lib.split(' ');
-                    output[parts[0]] = {
-                      name: parts[0],
-                      version: parts[1]
-                    };
-                  }
-                }
-                else {
-                  toDo.push(item);
-                }
-              }
-            }
-            if (typeof obj[attr] === 'object' && !Array.isArray(obj[attr])) {
-              toDo.push(obj[attr]);
-            }
-          }
-        }
-        list = toDo;
-      }
-      list = entries;
-      while (list.length) {
-        parseList();
-      }
-      return output;
-    }
     // determine if dependency needs to be processed
     const handleDepListEntry = (machineName, parent, ver, dir) => {
       const lib = registry.reversed[machineName];
@@ -692,4 +627,69 @@ module.exports = {
   parseGitUrl,
   getFile,
   getFileList
+}
+// determines if provided path has duplicate entries; entries are separated by '/';
+const pathHasDuplicates = (path) => {
+  const ledger = {};
+  const list = path.split('/');
+  for (let item of list) {
+    if (ledger[item]) {
+      return true;
+    }
+    else {
+      ledger[item] = true;
+    }
+  }
+  return false;
+}
+// parses semantics array of objects for entries of library type
+const parseSemanticLibraries = (entries) => {
+  if (!Array.isArray(entries)) {
+    return {};
+  }
+  let toDo = [];
+  let list = [];
+  const output = {};
+  const parseList = () => {
+    toDo = [];
+    for (let obj of list) { // go through semantics array entries
+      if (obj?.type === 'library' && Array.isArray(obj?.options)) {
+        for (let lib of obj.options) {
+          const parts = lib.split(' ');
+          output[parts[0]] = {
+            name: parts[0],
+            version: parts[1]
+          };
+        }
+        continue;
+      }
+      for (let attr in obj) { // go through entry attributes
+        if (attr === 'fields' && Array.isArray(obj[attr])) {
+          for (let item of obj[attr]) {
+            if (item?.type === 'library' && Array.isArray(item?.options)) {
+              for (let lib of item.options) {
+                const parts = lib.split(' ');
+                output[parts[0]] = {
+                  name: parts[0],
+                  version: parts[1]
+                };
+              }
+            }
+            else {
+              toDo.push(item);
+            }
+          }
+        }
+        if (typeof obj[attr] === 'object' && !Array.isArray(obj[attr])) {
+          toDo.push(obj[attr]);
+        }
+      }
+    }
+    list = toDo;
+  }
+  list = entries;
+  while (list.length) {
+    parseList();
+  }
+  return output;
 }
