@@ -256,7 +256,7 @@ module.exports = {
     // determine if a library is a soft dependency of its parent
     const isOptional = (parent, machineName) => {
       const finder = (element) => element.machineName === machineName;
-      if (parent.preloadedDependencies.find(finder) !== undefined || parent.editorDependencies.find(finder) !== undefined) {
+      if (parent.preloadedDependencies?.find(finder) !== undefined || parent.editorDependencies?.find(finder) !== undefined) {
         return false;
       }
       return true;
