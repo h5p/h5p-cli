@@ -548,6 +548,14 @@ module.exports = {
   upgrade: (folder, library) => {
     const lib = JSON.parse(fs.readFileSync(`${config.folders.cache}/${library}.json`, 'utf-8'))[library];
     const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
+    const extraAttrs = [
+      'authors', 'source', 'license', 'licenseVersion', 'licenseExtras', 'yearsFrom',
+      'yearsTo', 'changes', 'authorComments', 'w', 'h', 'metaKeywords', 'metaDescription'
+    ];
+    const extra = {};
+    for (let item of extraAttrs) {
+      extra[item] = info[item];
+    }
     let mainLib = {};
     for (let item of info.preloadedDependencies) {
       if (item.machineName == lib.id) {
@@ -586,7 +594,7 @@ module.exports = {
         console.log(`>>> running content upgrade script for ${library} version ${major}.${minor}`);
         H5PUpgrades[lib.id][major][minor](content, (error, result) => {
           content = result;
-        });
+        }, extra);
       }
     }
     if (!upgraded) {
