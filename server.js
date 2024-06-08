@@ -33,7 +33,10 @@ let port = config.port;
 app.listen(port, () => {
   console.log(`h5p content type development server running on http://localhost:${port}`);
 });
+
 if (config.files.watch) {
-  const eye = require('livereload').createServer();
+  const eye = require('livereload').createServer({
+    exclusions: config?.files?.watchExclusions ?? []
+  });
   eye.watch(config.folders.libraries);
 }
