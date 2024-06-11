@@ -31,7 +31,7 @@ app.use(express.static('./'));
 
 let port = config.port;
 app.listen(port, () => {
-  console.log(`h5p content type development server running on http://localhost:${port}`);
+  console.log(`h5p content type development server running on http://localhost:${port}/dashboard`);
 });
 
 if (config.files.watch) {
