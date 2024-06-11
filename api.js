@@ -480,7 +480,7 @@ module.exports = {
       }
       const labels = await getLangLabels();
       const machineName = `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`;
-      const libraryDirectories = JSON.stringify((await ajaxLibraries({ machineName: id })).directories);
+      const libraryDirectories = JSON.stringify(await getLibraryDirectories(id));
       let input = {
         assets: config.folders.assets,
         libraries: config.folders.libraries,
@@ -572,7 +572,7 @@ module.exports = {
       }
       const machineName = `${id} ${cache.view[library][library].version.major}.${cache.view[library][library].version.minor}`;
       const labels = await getLangLabels();
-      const libraryDirectories = JSON.stringify((await ajaxLibraries({ machineName: id })).directories);
+      const libraryDirectories = JSON.stringify(await getLibraryDirectories(id));
       let input = {
         assets: config.folders.assets,
         libraries: config.folders.libraries,
@@ -756,6 +756,13 @@ const ajaxLibraries = async (options) => {
   catch (error) {
     handleError(error, response);
   }
+}
+const getLibraryDirectories = async (id) => {
+  const output = (await ajaxLibraries({ machineName: id })).directories;
+  for (let item in output) {
+    output[item] = item;
+  }
+  return output;
 }
 const handleError = (error, response) => {
   console.log(error);
