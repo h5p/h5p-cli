@@ -1,0 +1,2500 @@
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 400;
+    src: url(/fonts/opensans-italic-400-600-700-v28-cyrillic-ext.woff2?837258541375f05090862b295613d88c) format("woff2");
+    unicode-range: u+0460-052f,u+1c80-1c88,u+20b4,u+2de0-2dff,u+a640-a69f,u+fe2e-fe2f
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 400;
+    src: url(/fonts/opensans-italic-400-600-700-v28-cyrillic.woff2?4569dea8783da389990a0b14bd929910) format("woff2");
+    unicode-range: u+0400-045f,u+0490-0491,u+04b0-04b1,u+2116
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 400;
+    src: url(/fonts/opensans-italic-400-600-700-v28-greek-ext.woff2?b82713a8cd03fb7dfde80162e59799fe) format("woff2");
+    unicode-range: u+1f??
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 400;
+    src: url(/fonts/opensans-italic-400-600-700-v28-greek.woff2?83b1134cba4cb5f52cb8a46dd08c52aa) format("woff2");
+    unicode-range: u+0370-03ff
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 400;
+    src: url(/fonts/opensans-italic-400-600-700-v28-hebrew.woff2?afc772de923f1f2d63ca5754d954bd05) format("woff2");
+    unicode-range: u+0590-05ff,u+200c-2010,u+20aa,u+25cc,u+fb1d-fb4f
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 400;
+    src: url(/fonts/opensans-italic-400-600-700-v28-vietnamese.woff2?73d0c793fc86f2ca516135ac0a179c1b) format("woff2");
+    unicode-range: u+0102-0103,u+0110-0111,u+0128-0129,u+0168-0169,u+01a0-01a1,u+01af-01b0,u+1ea0-1ef9,u+20ab
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 400;
+    src: url(/fonts/opensans-italic-400-600-700-v28-latin-ext.woff2?162d0e47b964e525c9c0bc399f91c341) format("woff2");
+    unicode-range: u+0100-024f,u+0259,u+1e??,u+2020,u+20a0-20ab,u+20ad-20cf,u+2113,u+2c60-2c7f,u+a720-a7ff
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 400;
+    src: url(/fonts/opensans-italic-400-600-700-v28-latin.woff2?4ec2aab40b54c853d975330e0685751f) format("woff2");
+    unicode-range: u+00??,u+0131,u+0152-0153,u+02bb-02bc,u+02c6,u+02da,u+02dc,u+2000-206f,u+2074,u+20ac,u+2122,u+2191,u+2193,u+2212,u+2215,u+feff,u+fffd
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 600;
+    src: url(/fonts/opensans-italic-400-600-700-v28-cyrillic-ext.woff2?837258541375f05090862b295613d88c) format("woff2");
+    unicode-range: u+0460-052f,u+1c80-1c88,u+20b4,u+2de0-2dff,u+a640-a69f,u+fe2e-fe2f
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 600;
+    src: url(/fonts/opensans-italic-400-600-700-v28-cyrillic.woff2?4569dea8783da389990a0b14bd929910) format("woff2");
+    unicode-range: u+0400-045f,u+0490-0491,u+04b0-04b1,u+2116
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 600;
+    src: url(/fonts/opensans-italic-400-600-700-v28-greek-ext.woff2?b82713a8cd03fb7dfde80162e59799fe) format("woff2");
+    unicode-range: u+1f??
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 600;
+    src: url(/fonts/opensans-italic-400-600-700-v28-greek.woff2?83b1134cba4cb5f52cb8a46dd08c52aa) format("woff2");
+    unicode-range: u+0370-03ff
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 600;
+    src: url(/fonts/opensans-italic-400-600-700-v28-hebrew.woff2?afc772de923f1f2d63ca5754d954bd05) format("woff2");
+    unicode-range: u+0590-05ff,u+200c-2010,u+20aa,u+25cc,u+fb1d-fb4f
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 600;
+    src: url(/fonts/opensans-italic-400-600-700-v28-vietnamese.woff2?73d0c793fc86f2ca516135ac0a179c1b) format("woff2");
+    unicode-range: u+0102-0103,u+0110-0111,u+0128-0129,u+0168-0169,u+01a0-01a1,u+01af-01b0,u+1ea0-1ef9,u+20ab
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 600;
+    src: url(/fonts/opensans-italic-400-600-700-v28-latin-ext.woff2?162d0e47b964e525c9c0bc399f91c341) format("woff2");
+    unicode-range: u+0100-024f,u+0259,u+1e??,u+2020,u+20a0-20ab,u+20ad-20cf,u+2113,u+2c60-2c7f,u+a720-a7ff
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 600;
+    src: url(/fonts/opensans-italic-400-600-700-v28-latin.woff2?4ec2aab40b54c853d975330e0685751f) format("woff2");
+    unicode-range: u+00??,u+0131,u+0152-0153,u+02bb-02bc,u+02c6,u+02da,u+02dc,u+2000-206f,u+2074,u+20ac,u+2122,u+2191,u+2193,u+2212,u+2215,u+feff,u+fffd
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 700;
+    src: url(/fonts/opensans-italic-400-600-700-v28-cyrillic-ext.woff2?837258541375f05090862b295613d88c) format("woff2");
+    unicode-range: u+0460-052f,u+1c80-1c88,u+20b4,u+2de0-2dff,u+a640-a69f,u+fe2e-fe2f
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 700;
+    src: url(/fonts/opensans-italic-400-600-700-v28-cyrillic.woff2?4569dea8783da389990a0b14bd929910) format("woff2");
+    unicode-range: u+0400-045f,u+0490-0491,u+04b0-04b1,u+2116
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 700;
+    src: url(/fonts/opensans-italic-400-600-700-v28-greek-ext.woff2?b82713a8cd03fb7dfde80162e59799fe) format("woff2");
+    unicode-range: u+1f??
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 700;
+    src: url(/fonts/opensans-italic-400-600-700-v28-greek.woff2?83b1134cba4cb5f52cb8a46dd08c52aa) format("woff2");
+    unicode-range: u+0370-03ff
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 700;
+    src: url(/fonts/opensans-italic-400-600-700-v28-hebrew.woff2?afc772de923f1f2d63ca5754d954bd05) format("woff2");
+    unicode-range: u+0590-05ff,u+200c-2010,u+20aa,u+25cc,u+fb1d-fb4f
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 700;
+    src: url(/fonts/opensans-italic-400-600-700-v28-vietnamese.woff2?73d0c793fc86f2ca516135ac0a179c1b) format("woff2");
+    unicode-range: u+0102-0103,u+0110-0111,u+0128-0129,u+0168-0169,u+01a0-01a1,u+01af-01b0,u+1ea0-1ef9,u+20ab
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 700;
+    src: url(/fonts/opensans-italic-400-600-700-v28-latin-ext.woff2?162d0e47b964e525c9c0bc399f91c341) format("woff2");
+    unicode-range: u+0100-024f,u+0259,u+1e??,u+2020,u+20a0-20ab,u+20ad-20cf,u+2113,u+2c60-2c7f,u+a720-a7ff
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: italic;
+    font-weight: 700;
+    src: url(/fonts/opensans-italic-400-600-700-v28-latin.woff2?4ec2aab40b54c853d975330e0685751f) format("woff2");
+    unicode-range: u+00??,u+0131,u+0152-0153,u+02bb-02bc,u+02c6,u+02da,u+02dc,u+2000-206f,u+2074,u+20ac,u+2122,u+2191,u+2193,u+2212,u+2215,u+feff,u+fffd
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/opensans-400-600-700-v28-cyrillic-ext.woff2?f3b67861680d4143f5bc598a478d6afd) format("woff2");
+    unicode-range: u+0460-052f,u+1c80-1c88,u+20b4,u+2de0-2dff,u+a640-a69f,u+fe2e-fe2f
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/opensans-400-600-700-v28-cyrillic.woff2?b325227e887e8a699813d662aa6475da) format("woff2");
+    unicode-range: u+0400-045f,u+0490-0491,u+04b0-04b1,u+2116
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/opensans-400-600-700-v28-greek-ext.woff2?28982b117fb752957e25db0114cd7a30) format("woff2");
+    unicode-range: u+1f??
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/opensans-400-600-700-v28-greek.woff2?59a9e26897567aaeb210913da0d40dce) format("woff2");
+    unicode-range: u+0370-03ff
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/opensans-400-600-700-v28-hebrew.woff2?f22dade936a9983a739352f63057a75b) format("woff2");
+    unicode-range: u+0590-05ff,u+200c-2010,u+20aa,u+25cc,u+fb1d-fb4f
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/opensans-400-600-700-v28-vietnamese.woff2?9e3654c3e6e0e7b379c222083a5e6ab3) format("woff2");
+    unicode-range: u+0102-0103,u+0110-0111,u+0128-0129,u+0168-0169,u+01a0-01a1,u+01af-01b0,u+1ea0-1ef9,u+20ab
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/opensans-400-600-700-v28-latin-ext.woff2?41529361328dc62c3650cb6ab18c896a) format("woff2");
+    unicode-range: u+0100-024f,u+0259,u+1e??,u+2020,u+20a0-20ab,u+20ad-20cf,u+2113,u+2c60-2c7f,u+a720-a7ff
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/opensans-400-600-700-v28-latin.woff2?168737b898bbf91dcdb33d144e8d0ae3) format("woff2");
+    unicode-range: u+00??,u+0131,u+0152-0153,u+02bb-02bc,u+02c6,u+02da,u+02dc,u+2000-206f,u+2074,u+20ac,u+2122,u+2191,u+2193,u+2212,u+2215,u+feff,u+fffd
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 600;
+    src: url(/fonts/opensans-400-600-700-v28-cyrillic-ext.woff2?f3b67861680d4143f5bc598a478d6afd) format("woff2");
+    unicode-range: u+0460-052f,u+1c80-1c88,u+20b4,u+2de0-2dff,u+a640-a69f,u+fe2e-fe2f
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 600;
+    src: url(/fonts/opensans-400-600-700-v28-cyrillic.woff2?b325227e887e8a699813d662aa6475da) format("woff2");
+    unicode-range: u+0400-045f,u+0490-0491,u+04b0-04b1,u+2116
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 600;
+    src: url(/fonts/opensans-400-600-700-v28-greek-ext.woff2?28982b117fb752957e25db0114cd7a30) format("woff2");
+    unicode-range: u+1f??
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 600;
+    src: url(/fonts/opensans-400-600-700-v28-greek.woff2?59a9e26897567aaeb210913da0d40dce) format("woff2");
+    unicode-range: u+0370-03ff
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 600;
+    src: url(/fonts/opensans-400-600-700-v28-hebrew.woff2?f22dade936a9983a739352f63057a75b) format("woff2");
+    unicode-range: u+0590-05ff,u+200c-2010,u+20aa,u+25cc,u+fb1d-fb4f
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 600;
+    src: url(/fonts/opensans-400-600-700-v28-vietnamese.woff2?9e3654c3e6e0e7b379c222083a5e6ab3) format("woff2");
+    unicode-range: u+0102-0103,u+0110-0111,u+0128-0129,u+0168-0169,u+01a0-01a1,u+01af-01b0,u+1ea0-1ef9,u+20ab
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 600;
+    src: url(/fonts/opensans-400-600-700-v28-latin-ext.woff2?41529361328dc62c3650cb6ab18c896a) format("woff2");
+    unicode-range: u+0100-024f,u+0259,u+1e??,u+2020,u+20a0-20ab,u+20ad-20cf,u+2113,u+2c60-2c7f,u+a720-a7ff
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 600;
+    src: url(/fonts/opensans-400-600-700-v28-latin.woff2?168737b898bbf91dcdb33d144e8d0ae3) format("woff2");
+    unicode-range: u+00??,u+0131,u+0152-0153,u+02bb-02bc,u+02c6,u+02da,u+02dc,u+2000-206f,u+2074,u+20ac,u+2122,u+2191,u+2193,u+2212,u+2215,u+feff,u+fffd
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 700;
+    src: url(/fonts/opensans-400-600-700-v28-cyrillic-ext.woff2?f3b67861680d4143f5bc598a478d6afd) format("woff2");
+    unicode-range: u+0460-052f,u+1c80-1c88,u+20b4,u+2de0-2dff,u+a640-a69f,u+fe2e-fe2f
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 700;
+    src: url(/fonts/opensans-400-600-700-v28-cyrillic.woff2?b325227e887e8a699813d662aa6475da) format("woff2");
+    unicode-range: u+0400-045f,u+0490-0491,u+04b0-04b1,u+2116
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 700;
+    src: url(/fonts/opensans-400-600-700-v28-greek-ext.woff2?28982b117fb752957e25db0114cd7a30) format("woff2");
+    unicode-range: u+1f??
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 700;
+    src: url(/fonts/opensans-400-600-700-v28-greek.woff2?59a9e26897567aaeb210913da0d40dce) format("woff2");
+    unicode-range: u+0370-03ff
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 700;
+    src: url(/fonts/opensans-400-600-700-v28-hebrew.woff2?f22dade936a9983a739352f63057a75b) format("woff2");
+    unicode-range: u+0590-05ff,u+200c-2010,u+20aa,u+25cc,u+fb1d-fb4f
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 700;
+    src: url(/fonts/opensans-400-600-700-v28-vietnamese.woff2?9e3654c3e6e0e7b379c222083a5e6ab3) format("woff2");
+    unicode-range: u+0102-0103,u+0110-0111,u+0128-0129,u+0168-0169,u+01a0-01a1,u+01af-01b0,u+1ea0-1ef9,u+20ab
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 700;
+    src: url(/fonts/opensans-400-600-700-v28-latin-ext.woff2?41529361328dc62c3650cb6ab18c896a) format("woff2");
+    unicode-range: u+0100-024f,u+0259,u+1e??,u+2020,u+20a0-20ab,u+20ad-20cf,u+2113,u+2c60-2c7f,u+a720-a7ff
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Open Sans;
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 700;
+    src: url(/fonts/opensans-400-600-700-v28-latin.woff2?168737b898bbf91dcdb33d144e8d0ae3) format("woff2");
+    unicode-range: u+00??,u+0131,u+0152-0153,u+02bb-02bc,u+02c6,u+02da,u+02dc,u+2000-206f,u+2074,u+20ac,u+2122,u+2191,u+2193,u+2212,u+2215,u+feff,u+fffd
+}
+
+@font-face {
+    font-family: h5p;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/h5p-core-30.eot?7c3e7ce59789c6bb5bc960e318e987f7);
+    src: url(/fonts/h5p-core-30.eot?7c3e7ce59789c6bb5bc960e318e987f7#iefix) format("embedded-opentype"),url(/fonts/h5p-core-30.ttf?e7c2455fc0c35b7619f2cf2e7bd9d97f) format("truetype"),url(/fonts/h5p-core-30.woff?2cc69801a9f5bd1200db0ae9f76c0170) format("woff"),url(/fonts/h5p-core-30.svg?361669ec813e374c08720fdd7511e2a1#h5p-core-30) format("svg")
+}
+
+@font-face {
+    font-display: block;
+    font-family: h5p-hub-publish;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/h5p-hub-publish.eot?3f6b42ecaa65cab454bf2fec5f5f8b89);
+    src: url(/fonts/h5p-hub-publish.eot?3f6b42ecaa65cab454bf2fec5f5f8b89#iefix) format("embedded-opentype"),url(/fonts/h5p-hub-publish.ttf?9e2ebd8dd61be7c3847943d19f3252a6) format("truetype"),url(/fonts/h5p-hub-publish.woff?86e1be85fb754b6fe5a57f6bd39a11b4) format("woff"),url(/fonts/h5p-hub-publish.svg?5a3764f483d6997b4eeb7989c33d0d5b#h5p-hub) format("svg")
+}
+
+html.h5p-iframe,html.h5p-iframe>body {
+    font-family: Sans-Serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%
+}
+
+.h5p-fullscreen,.h5p-semi-fullscreen,html.h5p-iframe .h5p-container {
+    overflow: hidden
+}
+
+.h5p-content {
+    background: #fefefe;
+    border: 1px solid #eee;
+    border-bottom: none;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    position: relative
+}
+
+.h5p-noselect {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none
+}
+
+html.h5p-iframe .h5p-content {
+    -webkit-text-size-adjust: none;
+    -moz-text-size-adjust: none;
+    text-size-adjust: none;
+    font-size: 16px;
+    height: auto;
+    line-height: 1.5em;
+    width: 100%
+}
+
+html.h5p-iframe .h5p-fullscreen .h5p-content,html.h5p-iframe .h5p-semi-fullscreen .h5p-content {
+    height: 100%
+}
+
+.h5p-content.h5p-no-frame,.h5p-fullscreen .h5p-content,.h5p-semi-fullscreen .h5p-content {
+    border: 0
+}
+
+.h5p-container {
+    position: relative;
+    z-index: 1
+}
+
+.h5p-iframe-wrapper.h5p-fullscreen {
+    background-color: #000
+}
+
+.h5p-container.h5p-semi-fullscreen,body.h5p-semi-fullscreen {
+    height: 100%;
+    position: fixed;
+    width: 100%
+}
+
+.h5p-container.h5p-semi-fullscreen {
+    background-color: #fff;
+    left: 0;
+    top: 0;
+    z-index: 101
+}
+
+.h5p-content-controls {
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 3
+}
+
+.h5p-fullscreen .h5p-content-controls {
+    display: none
+}
+
+.h5p-content-controls>a:link,.h5p-content-controls>a:visited,a.h5p-disable-fullscreen:link,a.h5p-disable-fullscreen:visited {
+    color: #e5eef6
+}
+
+.h5p-enable-fullscreen:before {
+    content: "\e88c";
+    font-family: H5P
+}
+
+.h5p-disable-fullscreen:before {
+    content: "\e891";
+    font-family: H5P
+}
+
+.h5p-disable-fullscreen,.h5p-enable-fullscreen {
+    background: #000;
+    background: rgba(0,0,0,.3);
+    color: #eee;
+    cursor: pointer;
+    font-size: 2em;
+    height: 1em;
+    line-height: .975em;
+    text-indent: .04em;
+    width: 1.125em
+}
+
+.h5p-disable-fullscreen {
+    height: .9em;
+    line-height: .925em;
+    width: 1.1em
+}
+
+.h5p-disable-fullscreen:focus,.h5p-enable-fullscreen:focus {
+    outline-offset: .25em;
+    outline-style: solid;
+    outline-width: 1px
+}
+
+.h5p-disable-fullscreen:hover,.h5p-enable-fullscreen:hover {
+    background: rgba(0,0,0,.5)
+}
+
+.h5p-semi-fullscreen .h5p-enable-fullscreen {
+    display: none
+}
+
+div.h5p-fullscreen {
+    height: 100%;
+    width: 100%
+}
+
+.h5p-iframe-wrapper {
+    height: auto;
+    width: auto
+}
+
+.h5p-fullscreen .h5p-iframe-wrapper,.h5p-semi-fullscreen .h5p-iframe-wrapper {
+    height: 100%;
+    width: 100%
+}
+
+.h5p-iframe-wrapper.h5p-semi-fullscreen {
+    background: #000;
+    bottom: 0;
+    height: auto;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: auto;
+    z-index: 100001
+}
+
+.h5p-iframe-wrapper.h5p-semi-fullscreen .buttons {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 20
+}
+
+.h5p-iframe-wrapper iframe.h5p-iframe {
+    border: 0;
+    display: block;
+    height: 100%;
+    min-width: 100%;
+    overflow: hidden;
+    width: 10px;
+    *width: 100%;
+    z-index: 10
+}
+
+.h5p-content ul.h5p-actions {
+    background: #fafbfc;
+    border-bottom: 1px solid #eee;
+    border-top: 1px solid #eee;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    clear: both;
+    font-family: Sans-Serif;
+    font-size: 12px;
+    height: 25px;
+    list-style: none;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    z-index: 0
+}
+
+.h5p-fullscreen .h5p-actions,.h5p-semi-fullscreen .h5p-actions {
+    display: none
+}
+
+.h5p-actions>.h5p-button {
+    background: none;
+    border-right: 1px solid #ededed;
+    color: #707070;
+    cursor: pointer;
+    display: inline-flex;
+    float: left;
+    line-height: 24px;
+    outline: none;
+    text-decoration: none;
+    vertical-align: top
+}
+
+.h5p-actions button:hover {
+    background-color: #f7f7f8;
+    color: #333
+}
+
+.h5p-actions .h5p-link:active,.h5p-actions .h5p-link:focus,.h5p-actions button:active,.h5p-actions button:focus {
+    color: #333
+}
+
+.h5p-actions button {
+    background: none;
+    border: none;
+    color: #6a6a6a;
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    line-height: 2;
+    margin: 0;
+    padding: 0 .5em 0 .25em;
+    position: relative
+}
+
+.h5p-actions .h5p-link:focus,.h5p-actions button:focus {
+    outline-color: #5981a1;
+    outline-offset: -3.5px;
+    outline-style: solid;
+    outline-width: thin
+}
+
+.h5p-actions button:before {
+    font-family: H5P;
+    font-size: 20px;
+    line-height: 22px;
+    padding-right: 0;
+    vertical-align: top
+}
+
+.h5p-actions>.h5p-button:nth-child(2) {
+    padding-left: 1em;
+    position: relative
+}
+
+.h5p-actions>.h5p-button.h5p-export>button:before {
+    content: "\e90b"
+}
+
+.h5p-actions>.h5p-button.h5p-copyrights>button:before {
+    content: "\e88f"
+}
+
+.h5p-actions>.h5p-button.h5p-embed>button:before {
+    content: "\e892"
+}
+
+.h5p-actions>.h5p-button.h5p-confusion {
+    border-left: 1px solid #ededed;
+    border-right: none;
+    flex-direction: row-reverse;
+    float: right;
+    padding: 0
+}
+
+.h5p-actions>.h5p-button.h5p-confusion>button {
+    padding: 0 .75em
+}
+
+.h5p-actions>.h5p-button.h5p-confusion>button:after {
+    align-items: center;
+    align-self: center;
+    background-color: #6a6a6a;
+    border-radius: 50%;
+    color: #fff;
+    content: "\e943";
+    display: inline-flex;
+    font-family: h5pcom;
+    font-size: 11px;
+    height: 17px;
+    justify-content: center;
+    margin: 0 0 0 .5em;
+    vertical-align: middle;
+    width: 17px
+}
+
+.h5p-actions>.h5p-button.h5p-confusion:hover>button:after {
+    background-color: #d4ecff;
+    color: #315aff
+}
+
+.h5p-actions>.h5p-button.h5p-logo {
+    border-right: 0;
+    padding: 0;
+    position: relative
+}
+
+.h5p-actions>.h5p-button.h5p-logo .h5p-link:after {
+    background: #fafbfc;
+    border-right: 1px solid #eee;
+    border-top: 1px solid #eee;
+    content: "";
+    display: block;
+    height: 15.5px;
+    left: 100%;
+    position: absolute;
+    top: 0;
+    transform: rotate(45deg);
+    transform-origin: top left;
+    width: 15.5px;
+    z-index: 1
+}
+
+.h5p-actions>.h5p-button.h5p-logo .h5p-link:hover:after {
+    background-color: #f7f7f8
+}
+
+.h5p-actions .h5p-link {
+    color: #6a6a6a;
+    font-size: 2em;
+    height: 100%;
+    line-height: 23px;
+    outline: none;
+    padding: 0 0 0 .3em;
+    position: relative;
+    text-decoration: none;
+    width: 100%
+}
+
+.h5p-actions .h5p-button:hover .h5p-link {
+    color: #333
+}
+
+.h5p-actions .h5p-link:before {
+    content: "\e88e";
+    font-family: H5P;
+    padding: 0 .15em;
+    position: relative;
+    vertical-align: baseline;
+    z-index: 2
+}
+
+.h5p-actions>li {
+    list-style: none;
+    margin: 0
+}
+
+.h5p-popup-dialog {
+    background: #000;
+    background: rgba(0,0,0,.75);
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    left: 0;
+    min-height: 100%;
+    opacity: 0;
+    padding: 2em;
+    position: absolute;
+    top: 0;
+    transition: opacity .2s;
+    width: 100%;
+    z-index: 100
+}
+
+.h5p-popup-dialog.h5p-open {
+    opacity: 1
+}
+
+.h5p-popup-dialog .h5p-inner {
+    background: #fff;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    height: 100%;
+    max-height: 100%;
+    position: relative
+}
+
+.h5p-popup-dialog .h5p-inner>h2 {
+    background: #eee;
+    border-bottom: 1px solid #ccc;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    color: #656565;
+    display: block;
+    font-size: 1.25em;
+    line-height: 1.25em;
+    margin: 0;
+    padding: .325em .5em .25em;
+    position: absolute;
+    width: 100%;
+    z-index: 2
+}
+
+.h5p-popup-dialog .h5p-inner>h2>a {
+    font-size: 12px;
+    margin-left: 1em
+}
+
+.h5p-embed-dialog,.h5p-reuse-dialog {
+    align-items: flex-end;
+    display: flex
+}
+
+.h5p-content-user-data-reset-dialog .h5p-inner,.h5p-embed-dialog .h5p-inner,.h5p-reuse-dialog .h5p-inner {
+    left: 50%;
+    max-width: 400px;
+    min-width: 316px;
+    top: 50%;
+    transform: translateX(-50%)
+}
+
+.h5p-embed-dialog .h5p-embed-code-container,.h5p-embed-size {
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 2px 0 #d0d0d0;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    font-family: sans-serif;
+    font-size: .875em;
+    height: 2.0714em;
+    letter-spacing: .065em;
+    line-height: 1.5em;
+    margin: 0;
+    outline: none;
+    overflow: hidden;
+    padding: .375em .5em .25em;
+    resize: none;
+    white-space: pre;
+    width: 100%
+}
+
+.h5p-embed-dialog .h5p-embed-code-container:focus {
+    height: 5em
+}
+
+.h5p-embed-size {
+    line-height: 2em;
+    margin: .5em 0;
+    text-align: right;
+    width: 3.5em
+}
+
+.h5p-popup-dialog .h5p-scroll-content {
+    border-top: 2.25em solid transparent;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    color: #555;
+    padding: 1em;
+    z-index: 1
+}
+
+.h5p-popup-dialog.h5p-open .h5p-scroll-content {
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto
+}
+
+.h5p-popup-dialog .h5p-scroll-content::-webkit-scrollbar {
+    width: 8px
+}
+
+.h5p-popup-dialog .h5p-scroll-content::-webkit-scrollbar-track {
+    background: #e0e0e0
+}
+
+.h5p-popup-dialog .h5p-scroll-content::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    box-shadow: inset 0 0 10px #000
+}
+
+.h5p-popup-dialog .h5p-close {
+    color: #656565;
+    cursor: pointer;
+    font-size: 2em;
+    height: 1.125em;
+    line-height: 1.125em;
+    position: absolute;
+    right: 0;
+    text-indent: -.065em;
+    top: 0;
+    width: 1.125em;
+    z-index: 3
+}
+
+.h5p-popup-dialog .h5p-close:after {
+    content: "\e894";
+    font-family: H5P
+}
+
+.h5p-popup-dialog .h5p-close:focus:after,.h5p-popup-dialog .h5p-close:hover:after {
+    color: #454545
+}
+
+.h5p-popup-dialog .h5p-close:active:after {
+    color: #252525
+}
+
+.h5p-poopup-dialog h2 {
+    margin: .25em 0 .5em
+}
+
+.h5p-popup-dialog h3 {
+    margin: .75em 0 .25em
+}
+
+.h5p-popup-dialog dl {
+    margin: .25em 0 .75em
+}
+
+.h5p-popup-dialog dt {
+    float: left;
+    margin: 0 .75em 0 0
+}
+
+.h5p-popup-dialog dt:after {
+    content: ":"
+}
+
+.h5p-popup-dialog dd {
+    margin: 0
+}
+
+.h5p-expander {
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1.125em;
+    margin: .5em 0 0
+}
+
+.h5p-expander:before {
+    content: "+";
+    display: inline-block;
+    font-weight: 700;
+    width: 1em
+}
+
+.h5p-expander.h5p-open:before {
+    content: "-";
+    text-indent: .125em
+}
+
+.h5p-expander:focus,.h5p-expander:hover {
+    color: #303030
+}
+
+.h5p-expander:active {
+    color: #202020
+}
+
+.h5p-expander-content {
+    display: none
+}
+
+.h5p-expander-content p {
+    margin: .5em 0
+}
+
+.h5p-content-copyrights {
+    border-left: .25em solid #d0d0d0;
+    margin-left: .25em;
+    padding-left: .25em
+}
+
+.h5p-throbber {
+    background: url(/images/throbber.gif?d25b8a456ffda80d1f01e6e4285df857) 10px no-repeat;
+    line-height: 30px;
+    min-height: 30px;
+    padding-left: 38px
+}
+
+.h5p-dialog-ok-button {
+    background: #eee;
+    border: 2px solid #ccc;
+    cursor: default;
+    float: right;
+    outline: none;
+    padding: .25em .75em .125em
+}
+
+.h5p-dialog-ok-button:focus,.h5p-dialog-ok-button:hover {
+    background: #fafafa
+}
+
+.h5p-dialog-ok-button:active {
+    background: #efe
+}
+
+.h5p-big-button {
+    background: linear-gradient(#fff,#f1f1f2);
+    border: 1px solid #dedede;
+    border-radius: .25em;
+    cursor: pointer;
+    display: block;
+    line-height: 1.25;
+    padding: 1em 1em 1em 3.75em;
+    position: relative;
+    text-align: left;
+    width: 100%
+}
+
+.h5p-big-button:before {
+    color: #2747f7;
+    content: "\e893";
+    font-family: h5p;
+    font-size: 3em;
+    left: .125em;
+    line-height: 1;
+    position: absolute;
+    top: .125em
+}
+
+.h5p-copy-button:before {
+    content: "\e905"
+}
+
+.h5p-big-button:hover {
+    background: #eff1fe;
+    border: 1px solid #2747f7
+}
+
+.h5p-big-button:active {
+    background: #dfe4fe;
+    border: 1px solid #dedede
+}
+
+.h5p-big-button:disabled {
+    background: #fff;
+    border: 1px solid #fff;
+    cursor: default
+}
+
+.h5p-big-button:disabled:before {
+    animation: h5pspin .25s linear infinite;
+    content: "\e90d";
+    font-size: 2em;
+    left: .4em;
+    top: .4em
+}
+
+.h5p-button-title {
+    color: #2747f7;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: .5em
+}
+
+.h5p-button-description {
+    color: #4a4c5e
+}
+
+.h5p-horizontal-line-text {
+    border-top: 1px solid #dadada;
+    color: #474747;
+    line-height: 1;
+    margin: 1.25em 0;
+    position: relative;
+    text-align: center
+}
+
+.h5p-horizontal-line-text>span {
+    background: #fff;
+    left: 50%;
+    padding: .5em;
+    position: absolute;
+    top: -1em;
+    transform: translateX(-50%)
+}
+
+.h5p-toast {
+    background-color: rgba(0,0,0,.9);
+    border-radius: 4px;
+    color: #fff;
+    font-size: .75em;
+    line-height: 2;
+    opacity: 1;
+    padding: 0 .5em;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    transition: opacity 1s;
+    visibility: visible;
+    white-space: nowrap;
+    z-index: 110
+}
+
+.h5p-toast-disabled {
+    opacity: 0;
+    visibility: hidden
+}
+
+.h5p-content code,.h5peditor code {
+    background: #e0e0e0;
+    border-radius: 2px;
+    color: #3d3d3d;
+    padding: 0 5px
+}
+
+.h5p-content pre>code,.h5peditor pre>code {
+    background-color: #fafafa;
+    border: 1px solid #c7c7c7;
+    border-left-width: 4px;
+    display: block;
+    line-height: normal;
+    max-width: 100%;
+    overflow: auto;
+    padding: 5px;
+    white-space: pre
+}
+
+@keyframes h5pspin {
+    to {
+        transform: rotate(1turn)
+    }
+}
+
+.h5peditor-semi-fullscreen {
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 100%;
+    z-index: 101
+}
+
+iframe.h5peditor-semi-fullscreen {
+    background: #fff;
+    z-index: 100001
+}
+
+.h5p-content.using-mouse :not(textarea):focus {
+    outline: none!important
+}
+
+.h5p-content-hub-button:before {
+    font-family: h5p;
+    font-size: .7em;
+    line-height: 1;
+    margin-right: .5em
+}
+
+.h5p-content-hub-button.unpublish:before {
+    content: "\e916"
+}
+
+.h5p-content-hub-button.sync:before,.h5p-content-hub-button.waiting:before {
+    content: "\e917"
+}
+
+.h5p-content-hub-button.waiting:before {
+    animation: rotate 2s linear infinite;
+    display: inline-block
+}
+
+@keyframes rotate {
+    to {
+        transform: rotate(1turn)
+    }
+}
+
+.h5p-confusion-tip {
+    background-color: #fff;
+    border: 3px solid #ccc;
+    border-radius: 5px;
+    bottom: 3em;
+    color: #666;
+    font-size: 1.166667em;
+    max-width: calc(100% - 4em);
+    padding: 1em;
+    position: absolute;
+    right: 1em;
+    transform: translateX(150%);
+    transition: all .3s ease-in-out;
+    width: 20em
+}
+
+.h5p-confusion-tip.show {
+    transform: translateX(0)
+}
+
+.h5p-confusion-tip:after,.h5p-confusion-tip:before {
+    border: solid transparent;
+    content: "";
+    height: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 2em;
+    top: 100%;
+    width: 0
+}
+
+.h5p-confusion-tip:after {
+    border-color: #fff hsla(0,0%,100%,0) hsla(0,0%,100%,0);
+    border-width: 15px;
+    margin-left: -15px
+}
+
+.h5p-confusion-tip:before {
+    border-color: #ccc hsla(0,0%,80%,0) hsla(0,0%,80%,0);
+    border-width: 19px;
+    margin-left: -19px;
+    right: calc(2em - 4px)
+}
+
+#h5p-confusion-tip-body {
+    line-height: 1.5em;
+    margin-bottom: 1em
+}
+
+.h5p-confusion-tip .h5p-confusion-tip-close-button {
+    background: #fff;
+    border: 1px solid #888;
+    color: #666;
+    display: block;
+    font-size: 1em;
+    line-height: normal;
+    padding: .5em 1em
+}
+
+.h5p-confusion-tip .h5p-confusion-tip-close-button:hover {
+    background-color: #e0e0e0;
+    border-color: #333;
+    color: #333
+}
+
+.h5p-confusion-dialog {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: calc(100% - 25px);
+    padding: 4em 0 0;
+    z-index: 1
+}
+
+.h5p-confusion-dialog * {
+    line-height: 24px;
+    text-align: left;
+    text-shadow: none!important
+}
+
+.h5p-confusion-dialog-container {
+    max-height: 85%;
+    max-width: 100%;
+    min-width: 70%
+}
+
+.h5p-confusion-close {
+    background-color: #f5f5f5;
+    border-radius: 10em 10em 0 0;
+    color: #333;
+    cursor: pointer;
+    font-size: 16px;
+    height: 2em;
+    position: absolute;
+    right: 2em;
+    text-align: center;
+    transform: translateY(-100%);
+    width: 4em
+}
+
+.h5p-confusion-close:before {
+    content: "\e907";
+    font-family: h5p-hub-publish;
+    line-height: 3em
+}
+
+.h5p-confusion-close:hover {
+    background-color: #d4d4d4
+}
+
+.h5p-confusion-container {
+    background-color: #f5f5f5;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color: #242424;
+    display: flex;
+    flex-direction: column;
+    font-family: Nunito;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 1.5em 2.5em .75em
+}
+
+.h5p-confusion-container>.h5p-confusion-header {
+    display: inline;
+    font-size: 1.25em
+}
+
+.h5p-confusion-container>.h5p-confusion-header:before {
+    color: #1a73d9;
+    content: "\e946";
+    font-family: h5pcom;
+    font-size: 1.5em;
+    margin-right: .25em;
+    vertical-align: sub
+}
+
+.h5p-confusion-container>.h5p-confusion-text {
+    border-color: #ddd;
+    border-radius: 5px;
+    font-family: Nunito;
+    font-weight: 700;
+    height: 8em;
+    margin: 1.5em 0;
+    padding: 1.5em .5em 1em 1.5em;
+    resize: none
+}
+
+.h5p-confusion-container>.h5p-confusion-bottom {
+    flex-direction: row;
+    line-height: 3em;
+    margin-bottom: 1em
+}
+
+.h5p-confusion-container>.h5p-confusion-bottom>.h5p-confusion-checkbox-label {
+    cursor: pointer;
+    margin: 0
+}
+
+.h5p-confusion-container>.h5p-confusion-bottom>.h5p-confusion-checkbox-label>.h5p-confusion-checkbox {
+    border-color: #ddd;
+    cursor: pointer;
+    height: 2em;
+    margin: 0 1em 0 0;
+    vertical-align: middle;
+    width: 2em
+}
+
+.h5p-confusion-container>.h5p-confusion-bottom>.h5p-confusion-button {
+    align-content: center;
+    background: #1a73d9;
+    border: none;
+    border-radius: 2em;
+    color: #fff;
+    cursor: pointer;
+    float: right;
+    font-size: 1em;
+    height: 3em;
+    line-height: 1.2;
+    margin: 0 0 0 1em;
+    padding: .5em 1.25em;
+    transform: translateZ(0)
+}
+
+.h5p-confusion-container>.h5p-confusion-bottom>.h5p-confusion-button:disabled {
+    opacity: .7
+}
+
+.h5p-confusion-button:disabled:focus,.h5p-confusion-container>.h5p-confusion-bottom>.h5p-confusion-button:disabled:hover {
+    background: #1a73d9
+}
+
+.h5p-confusion-button:focus,.h5p-confusion-container>.h5p-confusion-bottom>.h5p-confusion-button:hover {
+    background: #1356a3;
+    color: #fff
+}
+
+.h5p-confusion-container>.h5p-confusion-bottom>.h5p-confusion-button:active {
+    background: #104888;
+    color: #fff
+}
+
+.h5p-confusion-container>.h5p-confusion-bottom>.h5p-confusion-button:before {
+    color: #fff;
+    content: "\e945";
+    font-family: h5pcom;
+    font-size: 1.5em;
+    margin-right: .25em;
+    vertical-align: sub
+}
+
+.h5p-confusion-done-title {
+    font-size: 1.25em;
+    margin-top: .5em
+}
+
+.h5p-confusion-done-text {
+    font-weight: 400;
+    margin: 1em 0
+}
+
+@media (max-width: 746px) {
+    .h5p-confusion-container {
+        padding-left:1.5em;
+        padding-right: 1.5em
+    }
+}
+
+@media (max-width: 576px) {
+    .h5p-actions>.h5p-button:nth-child(2) {
+        padding-left:.5em
+    }
+
+    .h5p-actions>.h5p-button.h5p-confusion>span {
+        padding: 0 .75em 0 .25em
+    }
+
+    .h5p-actions>.h5p-button>span {
+        padding: 0 .5em
+    }
+
+    .h5p-actions>.h5p-button>span>span {
+        display: none
+    }
+}
+
+.h5p-attempts {
+    align-items: center;
+    background-color: #e8f1fb;
+    border: 1px solid #cddff7;
+    box-sizing: border-box;
+    color: #111;
+    display: flex;
+    flex-flow: row wrap;
+    font-family: Montserrat;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 700;
+    justify-content: flex-start;
+    min-height: 24px;
+    padding: .15em 1.2em;
+    position: relative;
+    -webkit-text-decoration: none solid #425cb8;
+    text-decoration: none solid #425cb8
+}
+
+.h5p-fullscreen>.h5p-attempts,.h5p-semi-fullscreen>.h5p-attempts {
+    display: none
+}
+
+.h5p-fullscreen>.h5p-attempts.fullscreen-cover,.h5p-semi-fullscreen>.h5p-attempts.fullscreen-cover {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    opacity: .9;
+    position: absolute;
+    width: inherit;
+    z-index: 102
+}
+
+.h5p-fullscreen>.h5p-attempts.fullscreen-on-top,.h5p-semi-fullscreen>.h5p-attempts.fullscreen-on-top {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center
+}
+
+.h5p-fullscreen>.h5p-content.has-attempt-bar,.h5p-semi-fullscreen>.h5p-content.has-attempt-bar .h5p-container.h5p-semi-fullscreen {
+    max-height: calc(100% - 24px)
+}
+
+.h5p-semi-fullscreen>.h5p-content.has-attempt-bar .h5p-container.h5p-semi-fullscreen {
+    top: 24px
+}
+
+.h5p-attempt-text+.h5p-attempt-text,.h5p-attempt-text:first-of-type {
+    margin-right: .5em
+}
+
+.h5p-attempt-number {
+    align-items: center;
+    align-self: center;
+    background-color: #425cb8;
+    border-radius: 1em;
+    color: #fff;
+    display: inline-flex;
+    font-style: normal;
+    height: 20px;
+    justify-content: center;
+    margin: 0 .2em 0 .3em;
+    min-width: 10px;
+    padding: 0 .4em;
+    width: auto
+}
+
+.h5p-attempts>.h5p-attempt-close {
+    cursor: pointer;
+    position: absolute;
+    right: .25em;
+    top: .25em
+}
+
+.h5p-attempts>.h5p-attempt-close:after {
+    content: "\e90c";
+    font-family: h5pcom;
+    font-style: normal;
+    font-weight: lighter
+}
+
+.h5p-attempts>.h5p-attempt-submit {
+    height: 100%;
+    margin-right: .5em
+}
+
+.h5p-attempts>.h5p-attempt-submit:before {
+    animation: rotate 1s linear infinite;
+    content: "\e93f";
+    display: block;
+    font-family: h5p;
+    font-style: normal
+}
+
+.h5p-attempts>.h5p-attempt-reset {
+    align-items: center;
+    background: none;
+    border: none;
+    color: #425cb8;
+    cursor: pointer;
+    display: flex;
+    font-family: Montserrat;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 700;
+    padding: 0
+}
+
+.h5p-attempts>.h5p-attempt-reset>p {
+    margin: 0;
+    text-decoration: underline
+}
+
+.h5p-attempts>.h5p-attempt-reset:before {
+    align-self: center;
+    content: "\e917";
+    display: block;
+    font-family: h5p;
+    font-size: x-small;
+    font-style: normal;
+    font-weight: lighter;
+    margin-right: .25em;
+    text-decoration: none
+}
+
+.h5p-attempts.submit {
+    background-color: #e8f1fb;
+    border-color: #cddff7;
+    color: #425cb8
+}
+
+.h5p-attempts.success {
+    background-color: #d3ede9;
+    border-color: #bad9d4;
+    color: #0e7569
+}
+
+.h5p-attempts.success:before {
+    content: "\e940";
+    font-family: h5p;
+    font-style: normal;
+    margin-right: .5em
+}
+
+.h5p-attempts.failed {
+    background-color: #fbe7e7;
+    border-color: #f7cdd4;
+    color: #b84242;
+    justify-content: center
+}
+
+.h5p-confirmation-dialog-background {
+    background: rgba(44,44,44,.9);
+    height: 100%;
+    left: 0;
+    opacity: 1;
+    position: fixed;
+    top: 0;
+    transition: opacity .1s linear 0s,visibility 0s linear 0s;
+    visibility: visible;
+    width: 100%;
+    z-index: 201
+}
+
+.h5p-confirmation-dialog-background.hidden {
+    display: none
+}
+
+.h5p-confirmation-dialog-background.hiding {
+    opacity: 0;
+    transition: opacity .1s linear 0s,visibility 0s linear .1s;
+    visibility: hidden
+}
+
+.h5p-confirmation-dialog-popup:focus {
+    outline: none
+}
+
+.h5p-confirmation-dialog-popup {
+    box-shadow: 0 0 6px 6px hsla(0,0%,4%,.3);
+    box-sizing: border-box;
+    color: #555;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    left: 50%;
+    max-width: 35em;
+    min-width: 14em;
+    position: absolute;
+    top: 2em;
+    transform: translate(-50%);
+    transition: transform .1s ease-in
+}
+
+.h5p-confirmation-dialog-popup.hidden {
+    transform: translate(-50%,50%)
+}
+
+.h5p-confirmation-dialog-header {
+    background: #fff;
+    color: #356593;
+    padding: 1.5em
+}
+
+.h5p-confirmation-dialog-header-text {
+    font-size: 1.25em
+}
+
+.h5p-confirmation-dialog-body {
+    background: #fafbfc;
+    border-top: 1px solid #dde0e9;
+    padding: 1.25em 1.5em
+}
+
+.h5p-confirmation-dialog-text {
+    margin-bottom: 1.5em
+}
+
+.h5p-confirmation-dialog-buttons {
+    float: right
+}
+
+button.h5p-confirmation-dialog-exit,button.h5p-confirmation-dialog-exit:link,button.h5p-confirmation-dialog-exit:visited {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 2.5em;
+    position: absolute;
+    right: -1.15em;
+    text-decoration: none;
+    top: -.9em
+}
+
+button.h5p-confirmation-dialog-exit:focus,button.h5p-confirmation-dialog-exit:hover {
+    color: #e4ecf5
+}
+
+.h5p-confirmation-dialog-exit:before {
+    content: "\e890";
+    font-family: H5P
+}
+
+.h5p-core-button.h5p-confirmation-dialog-confirm-button {
+    @media screen and (max-width: 576px) {
+        padding-left:1.5rem
+    }
+
+    margin-bottom: 0;
+    padding-left: .75em
+}
+
+.h5p-core-button.h5p-confirmation-dialog-confirm-button:before {
+    content: "\e601";
+    display: inline-block;
+    margin-top: -6px
+}
+
+.h5p-confirmation-dialog-popup.offline .h5p-confirmation-dialog-buttons {
+    float: none;
+    text-align: center
+}
+
+.h5p-confirmation-dialog-popup.offline .count-down {
+    color: #000;
+    font-family: Arial;
+    margin-top: .15em
+}
+
+.h5p-confirmation-dialog-popup.offline .h5p-confirmation-dialog-confirm-button:before {
+    content: "\e90b";
+    font-weight: 400;
+    vertical-align: text-bottom
+}
+
+.throbber-wrapper {
+    background: rgba(44,44,44,.9);
+    display: none;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1
+}
+
+.throbber-wrapper.show {
+    display: block
+}
+
+.throbber-wrapper .throbber-container {
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%,-50%)
+}
+
+.throbber-wrapper .sending-requests-throbber {
+    left: 50%;
+    position: absolute;
+    top: 7em;
+    transform: translateX(-50%)
+}
+
+.throbber-wrapper .sending-requests-throbber:before {
+    animation: request-throbber 1.5s linear infinite;
+    color: #fff;
+    content: "\e90b";
+    display: block;
+    font-family: H5P;
+    font-size: 10em
+}
+
+@keyframes request-throbber {
+    0% {
+        transform: rotate(0)
+    }
+
+    to {
+        transform: rotate(359deg)
+    }
+}
+
+button.h5p-core-button,button.h5p-core-button:link,button.h5p-core-button:visited {
+    background: #2579c6;
+    border: none;
+    border-radius: 2em;
+    box-shadow: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Open Sans,sans-serif;
+    font-size: 1em;
+    font-weight: 600;
+    line-height: 1.2;
+    outline: none;
+    padding: .5em 1.25em;
+    text-align: center;
+    text-decoration: none;
+    text-shadow: none;
+    transition: initial;
+    vertical-align: baseline
+}
+
+button.h5p-core-button:focus {
+    background: #1f67a8;
+    outline: 2px solid #000
+}
+
+button.h5p-core-button:hover {
+    background: rgba(31,103,168,.83)
+}
+
+button.h5p-core-button:active {
+    background: #104888
+}
+
+button.h5p-core-button:before {
+    font-family: H5P;
+    font-size: 1.5em;
+    line-height: .7;
+    padding-right: .15em;
+    vertical-align: middle
+}
+
+button.h5p-core-cancel-button,button.h5p-core-cancel-button:link,button.h5p-core-cancel-button:visited {
+    background: none;
+    border: none;
+    color: #a00;
+    cursor: pointer;
+    font-size: 1em;
+    margin-right: 1em;
+    text-decoration: none
+}
+
+button.h5p-core-cancel-button:focus,button.h5p-core-cancel-button:hover {
+    background: none;
+    border: none;
+    color: #e40000
+}
+
+.h5p-tooltip {
+    background: #000;
+    color: #fff;
+    cursor: default;
+    display: none;
+    font-size: .8rem;
+    line-height: 1.2;
+    max-width: min(300px,90%);
+    padding: .25rem .5rem;
+    position: absolute;
+    text-align: left;
+    white-space: normal;
+    width: -moz-max-content;
+    width: max-content;
+    z-index: 110
+}
+
+.h5p-tooltip-narrow {
+    max-width: min(300px,70%)
+}
+
+.h5p-tooltip-visible {
+    display: block
+}
+
+.h5p-editor-iframe {
+    margin-bottom: 0!important
+}
+
+@font-face {
+    font-display: block;
+    font-family: h5pcom;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/h5pcom.eot?71d83099a656c26a82cb66d6472f00af);
+    src: url(/fonts/h5pcom.eot?71d83099a656c26a82cb66d6472f00af#iefix) format("embedded-opentype"),url(/fonts/h5pcom.ttf?4add4916f06e73e84bae5002287909a2) format("truetype"),url(/fonts/h5pcom.woff?735fc5e53485b153fb4fdf4c5b81e4bf) format("woff"),url(/fonts/h5pcom.svg?3f01df9a254a990dc8b4eab471225da1#h5pcom-icons) format("svg")
+}
+
+[class*=" h5picon-"],[class^=h5picon-] {
+    speak: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: h5pcom!important;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 1;
+    text-transform: none
+}
+
+.h5picon-search {
+    line-height: 1.5
+}
+
+.h5picon-roles-no:before {
+    content: "\e916"
+}
+
+.h5picon-roles-yes:before {
+    content: "\e917"
+}
+
+.h5picon-menu:before {
+    content: "\e918"
+}
+
+.h5picon-back:before {
+    content: "\e919"
+}
+
+.h5picon-loading:before {
+    content: "\e94b"
+}
+
+.h5picon-upload:before {
+    content: "\e91b"
+}
+
+.h5picon-check:before {
+    content: "\e900"
+}
+
+.h5picon-dropdown-arrow:before {
+    content: "\e901"
+}
+
+.h5picon-add-user:before {
+    content: "\e902"
+}
+
+.h5picon-author:before {
+    content: "\e903"
+}
+
+.h5picon-clone:before {
+    content: "\e904"
+}
+
+.h5picon-edit:before {
+    content: "\e905"
+}
+
+.h5picon-move:before {
+    content: "\e906"
+}
+
+.h5picon-trash:before {
+    content: "\e907"
+}
+
+.h5picon-multiple-authors:before {
+    content: "\e908"
+}
+
+.h5picon-organization:before,.h5picon-protected:before {
+    content: "\e909"
+}
+
+.h5picon-public:before {
+    content: "\e90a"
+}
+
+.h5picon-collaborators:before {
+    content: "\e90b"
+}
+
+.h5picon-close:before {
+    content: "\e90c"
+}
+
+.h5picon-info:before {
+    content: "\e90d"
+}
+
+.h5picon-down:before {
+    content: "\e90e"
+}
+
+.h5picon-up:before {
+    content: "\e90f"
+}
+
+.h5picon-logo:before {
+    content: "\e910"
+}
+
+.h5picon-link:before {
+    content: "\e911"
+}
+
+.h5picon-plus:before {
+    content: "\e912"
+}
+
+.h5picon-more-options:before {
+    content: "\e913"
+}
+
+.h5picon-search:before {
+    content: "\e914"
+}
+
+.h5picon-restore:before {
+    content: "\e915"
+}
+
+.h5picon-folder:before {
+    content: "\e91e"
+}
+
+.h5picon-folder-open:before {
+    content: "\e91f"
+}
+
+.h5picon-reports:before {
+    content: "\e920"
+}
+
+.h5picon-funnel:before {
+    content: "\e921"
+}
+
+.h5picon-unpublished:before {
+    content: "\e922"
+}
+
+.h5picon-publics:before {
+    content: "\e923"
+}
+
+.h5picon-assign-owner:before {
+    content: "\e924"
+}
+
+.h5picon-plus-square:before {
+    content: "\e926"
+}
+
+.h5picon-minus-square:before {
+    content: "\e925"
+}
+
+.h5picon-learner-content:before {
+    color: #a78ed4;
+    content: "\e927"
+}
+
+.h5picon-insert:before {
+    content: "\e932"
+}
+
+.h5picon-check-circle:before {
+    content: "\e933"
+}
+
+.h5picon-checkbox-selected:before {
+    content: "\e934"
+}
+
+.h5picon-checkbox-unselected:before {
+    content: "\e935"
+}
+
+.h5picon-radio-selected:before {
+    content: "\e937"
+}
+
+.h5picon-radio-unselected:before {
+    content: "\e936"
+}
+
+.h5picon-content-hub:before {
+    content: "\e93d"
+}
+
+.h5picon-getting-started:before {
+    content: "\e939"
+}
+
+.h5picon-log-out:before {
+    content: "\e93a"
+}
+
+.h5picon-side-by-side:before {
+    content: "\e93e"
+}
+
+.h5picon-presentation:before {
+    content: "\e93f"
+}
+
+.h5picon-filters-2:before {
+    content: "\e940"
+}
+
+.h5picon-manage-columns:before {
+    content: "\e941"
+}
+
+.h5picon-sorting:before {
+    content: "\e942"
+}
+
+.h5picon-flag:before {
+    content: "\e943"
+}
+
+.h5picon-download:before {
+    content: "\e944"
+}
+
+.h5picon-next-step:before {
+    content: "\e947"
+}
+
+.h5picon-print:before {
+    content: "\e948"
+}
+
+.h5picon-sent:before {
+    content: "\e94c"
+}
+
+@font-face {
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-regular.eot?29e4da8fed9df7d4e7a50405c1088ec9);
+    src: local(""),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-regular.eot?29e4da8fed9df7d4e7a50405c1088ec9?#iefix) format("embedded-opentype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-regular.woff2?68c4665fc6369344a4655a2e926680f3) format("woff2"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-regular.woff?39772efa32f407bcd9c661746f1f9b8d) format("woff"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-regular.ttf?90a8d18bc362f095f72906c25bc68f05) format("truetype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-regular.svg?bd9184cb04713870c0d617c62f7e56cd#Nunito) format("svg")
+}
+
+@font-face {
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: 300;
+    src: url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300.eot?633067e978bd3d78a85b87b4b0f9787a);
+    src: local(""),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300.eot?633067e978bd3d78a85b87b4b0f9787a?#iefix) format("embedded-opentype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300.woff2?3112277c25d77daed8db8e64d2b73d7a) format("woff2"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300.woff?81237ec487f4f600d4f130e40f6bfb69) format("woff"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300.ttf?885b94c7b44615df569282241d96b758) format("truetype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300.svg?5fec9b7a61908c47f0d04dbbd0188bc5#Nunito) format("svg")
+}
+
+@font-face {
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: 600;
+    src: url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600.eot?7dbc759b5b30a2f7d119a6900e147c9f);
+    src: local(""),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600.eot?7dbc759b5b30a2f7d119a6900e147c9f?#iefix) format("embedded-opentype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600.woff2?df7d8f03c673e02440bbee48bf04deaf) format("woff2"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600.woff?f1c56c6aa79dc53efee1d10dc457b672) format("woff"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600.ttf?b04ea3dff555e46aaf796c0c299e733d) format("truetype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600.svg?8747fa6e4f92d86e3b0a2bcb900df5d5#Nunito) format("svg")
+}
+
+@font-face {
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: 700;
+    src: url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700.eot?9b160bda9a3243bdfab5ac47775965e0);
+    src: local(""),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700.eot?9b160bda9a3243bdfab5ac47775965e0?#iefix) format("embedded-opentype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700.woff2?6c275decb32038ed05a0adebad1cce68) format("woff2"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700.woff?26714444649f740f83ec9efd8f44f133) format("woff"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700.ttf?39367d1a97f8ca7752155ffc6bb4e708) format("truetype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700.svg?2f47470b02106e590a6f7f25fab75471#Nunito) format("svg")
+}
+
+@font-face {
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: 800;
+    src: url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800.eot?5eb75dddd31194b0ebc12609e24a5124);
+    src: local(""),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800.eot?5eb75dddd31194b0ebc12609e24a5124?#iefix) format("embedded-opentype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800.woff2?8ba729ce012c8f252a9686ef54a1cafa) format("woff2"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800.woff?88de9c1758aafc38befd42c008cd049f) format("woff"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800.ttf?65231f9922efe99e731d3629da6c13f5) format("truetype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800.svg?cb6f1153c9e51323c7eac89b9b545dbe#Nunito) format("svg")
+}
+
+@font-face {
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: 900;
+    src: url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-900.eot?8a186c4c13f06735c91c540c6d718e4a);
+    src: local(""),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-900.eot?8a186c4c13f06735c91c540c6d718e4a?#iefix) format("embedded-opentype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-900.woff2?34f502e543617117e6097de4fafb2ab0) format("woff2"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-900.woff?8912c3f2a86100405647d531c3e13d44) format("woff"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-900.ttf?31ed941ee894aebe8568ace2f2357ec7) format("truetype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-900.svg?71ce9a53ed0a2dde3b64d6de5b06f600#Nunito) format("svg")
+}
+
+@font-face {
+    font-family: Nunito;
+    font-style: italic;
+    font-weight: 300;
+    src: url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300italic.eot?82f0a5a697243926ce1d0b10c61a44bd);
+    src: local(""),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300italic.eot?82f0a5a697243926ce1d0b10c61a44bd?#iefix) format("embedded-opentype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300italic.woff2?00e71aaf95c06a0051583bb9a54632bc) format("woff2"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300italic.woff?746a52627afc580101904201f9ea5438) format("woff"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300italic.ttf?9b33e755b58965b584e69a3a5d4b6bc4) format("truetype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300italic.svg?f5ca3f6236984b92f06d43df50550c40#Nunito) format("svg")
+}
+
+@font-face {
+    font-family: Nunito;
+    font-style: italic;
+    font-weight: 400;
+    src: url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-italic.eot?da0cc72932c850d5422f3215e04019f5);
+    src: local(""),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-italic.eot?da0cc72932c850d5422f3215e04019f5?#iefix) format("embedded-opentype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-italic.woff2?4baa6227d29a9dcc629c16063f9f6e85) format("woff2"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-italic.woff?0afd69b551c1a681c21a10b95a8a450f) format("woff"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-italic.ttf?9e5fac6851a6ef5bb75f35b7fab8a3c2) format("truetype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-italic.svg?2fce76d12b49e5135d26d0c030538f7c#Nunito) format("svg")
+}
+
+@font-face {
+    font-family: Nunito;
+    font-style: italic;
+    font-weight: 600;
+    src: url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600italic.eot?45b31f7a8ca60416f22ffe9303cf931c);
+    src: local(""),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600italic.eot?45b31f7a8ca60416f22ffe9303cf931c?#iefix) format("embedded-opentype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600italic.woff2?f3168ca0e6e48974ebc48c81bc277944) format("woff2"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600italic.woff?d86fcb8d0a06dc1ae3bacce5413cdc7b) format("woff"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600italic.ttf?78b7d833d36349d24a2f85a8e19a63f7) format("truetype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600italic.svg?7e72ad97061e6c5ffb9ed37e4c795257#Nunito) format("svg")
+}
+
+@font-face {
+    font-family: Nunito;
+    font-style: italic;
+    font-weight: 700;
+    src: url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700italic.eot?748c40adc8d0a3a8d00117538c5c0cf7);
+    src: local(""),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700italic.eot?748c40adc8d0a3a8d00117538c5c0cf7?#iefix) format("embedded-opentype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700italic.woff2?aff64cfb585069b8ade15f4bfce8d2f9) format("woff2"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700italic.woff?f8d8794bceb68eb8b38c1dca2237fe86) format("woff"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700italic.ttf?459ea1b1e244e6d71f5e2601e895a05b) format("truetype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700italic.svg?16b646ce47300ed1eda2357c59b60c4b#Nunito) format("svg")
+}
+
+@font-face {
+    font-family: Nunito;
+    font-style: italic;
+    font-weight: 800;
+    src: url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800italic.eot?e93a3e763c30b1b908de22dfbb97919e);
+    src: local(""),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800italic.eot?e93a3e763c30b1b908de22dfbb97919e?#iefix) format("embedded-opentype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800italic.woff2?951f64580d004eaa0ba46a9b5fc7a88b) format("woff2"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800italic.woff?2e7d3d1f3b135cf039dd9b91e906c74e) format("woff"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800italic.ttf?f8c53a0156ca6a4e3a431b282d288547) format("truetype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800italic.svg?683b97853253df4164224a647b929ca9#Nunito) format("svg")
+}
+
+@font-face {
+    font-family: Nunito;
+    font-style: italic;
+    font-weight: 900;
+    src: url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-900italic.eot?cf5abf6a979fde3505517a3adf8d7c4e);
+    src: local(""),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-900italic.eot?cf5abf6a979fde3505517a3adf8d7c4e?#iefix) format("embedded-opentype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-900italic.woff2?8feaff6a6e615aaa0125fde2090bb541) format("woff2"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-900italic.woff?da011b4ef6fc81f71db8c456427fcfd4) format("woff"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-900italic.ttf?cbd36f051fb0a549e20d4a825d2142b9) format("truetype"),url(/fonts/nunito-v22-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-900italic.svg?2defb129fe3cb13f15e83f55c401e7ca#Nunito) format("svg")
+}
+
+@font-face {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 300;
+    src: url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300.eot?415f903c058414a12b1e4f1b33362741);
+    src: local(""),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300.eot?415f903c058414a12b1e4f1b33362741?#iefix) format("embedded-opentype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300.woff2?392ec1ef57678ec259b323b12ea989b3) format("woff2"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300.woff?063b2f60c12ee6124250bba9acad5af4) format("woff"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300.ttf?518879672be816421fa5be3348ce5c7e) format("truetype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300.svg?f1c8139c8e2b4ae02b013889b25c7ac9#Montserrat) format("svg")
+}
+
+@font-face {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-regular.eot?864bc688ce604e0c4f70e22de49e3074);
+    src: local(""),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-regular.eot?864bc688ce604e0c4f70e22de49e3074?#iefix) format("embedded-opentype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-regular.woff2?36deea7ccb21daa5013bbb50a8f33deb) format("woff2"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-regular.woff?aa917f2f47304e192c88bd6ce6170eb3) format("woff"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-regular.ttf?818b8ae981d585edf9c255c84d9cadb0) format("truetype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-regular.svg?2cf5889c83cbf31f007d4789392aa5e1#Montserrat) format("svg")
+}
+
+@font-face {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 600;
+    src: url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600.eot?93693f36abf53e2b55f809d61e2efbaf);
+    src: local(""),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600.eot?93693f36abf53e2b55f809d61e2efbaf?#iefix) format("embedded-opentype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600.woff2?408ae16e2a8097ff3687635e25a8a56d) format("woff2"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600.woff?b2ade74aea584fdcaa5612cb31ed3abd) format("woff"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600.ttf?334bf5414bd260d9f7ad53ff552bfea4) format("truetype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600.svg?8e67e3f4e58fb3238d8f67db47fb425f#Montserrat) format("svg")
+}
+
+@font-face {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 800;
+    src: url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800.eot?ef6878716008e19be8c0477a0911c328);
+    src: local(""),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800.eot?ef6878716008e19be8c0477a0911c328?#iefix) format("embedded-opentype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800.woff2?24bbffbfffcdd31d1aa7a9261a5e9ef6) format("woff2"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800.woff?b4002db58417b313808497ae722460c3) format("woff"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800.ttf?828aa995d5562583522467e23ed96282) format("truetype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800.svg?66b7b7fe39bbcae3299aac83497b2c11#Montserrat) format("svg")
+}
+
+@font-face {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 700;
+    src: url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700.eot?88ab8c742b44fde5c90cf2540f20fcf9);
+    src: local(""),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700.eot?88ab8c742b44fde5c90cf2540f20fcf9?#iefix) format("embedded-opentype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700.woff2?201282a5e3b4d6120293618d9b3fb45b) format("woff2"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700.woff?81b48f7ab9882a2f3ea9228869d776fb) format("woff"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700.ttf?71c21e04f8f8f83a71ef716e0ea59647) format("truetype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700.svg?86118d4c38d5c0c1bbffbd98ead57ba4#Montserrat) format("svg")
+}
+
+@font-face {
+    font-family: Montserrat;
+    font-style: italic;
+    font-weight: 300;
+    src: url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300italic.eot?5b1c54bf5c17040bb080b04884396a77);
+    src: local(""),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300italic.eot?5b1c54bf5c17040bb080b04884396a77?#iefix) format("embedded-opentype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300italic.woff2?66f62d2b28978389305f7bd162a74fa2) format("woff2"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300italic.woff?f9b7c12a718f84679cad00f7b9cb9daa) format("woff"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300italic.ttf?81c7550640b1d52bd8ccaeb4032d6e98) format("truetype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-300italic.svg?1ee0a7eeb2f47abbe2fbd18a230b75be#Montserrat) format("svg")
+}
+
+@font-face {
+    font-family: Montserrat;
+    font-style: italic;
+    font-weight: 400;
+    src: url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-italic.eot?439e203a556738f9128dfb79a8902b09);
+    src: local(""),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-italic.eot?439e203a556738f9128dfb79a8902b09?#iefix) format("embedded-opentype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-italic.woff2?dd82e0518ccfaef6dcd59b9354a7c654) format("woff2"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-italic.woff?ead19849f490b006826dcd3f5d8abbb5) format("woff"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-italic.ttf?b8e6f3ba6f848b93c329b0c0922f3d59) format("truetype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-italic.svg?b853b3e65d7ad525e86c7e8a7420381c#Montserrat) format("svg")
+}
+
+@font-face {
+    font-family: Montserrat;
+    font-style: italic;
+    font-weight: 700;
+    src: url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700italic.eot?2b095589ccd494fc9cba492934834b9a);
+    src: local(""),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700italic.eot?2b095589ccd494fc9cba492934834b9a?#iefix) format("embedded-opentype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700italic.woff2?d30121b7c353004ad4508f2baf6b1bc0) format("woff2"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700italic.woff?dc8b9ddc0fe71fbf3b823b0e01949a57) format("woff"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700italic.ttf?392b3664b81700eb2ee7f061cf0612db) format("truetype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-700italic.svg?7556c12553f39d27305e5d32ca773881#Montserrat) format("svg")
+}
+
+@font-face {
+    font-family: Montserrat;
+    font-style: italic;
+    font-weight: 800;
+    src: url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800italic.eot?d8e607988f2ed6cbf220301200401114);
+    src: local(""),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800italic.eot?d8e607988f2ed6cbf220301200401114?#iefix) format("embedded-opentype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800italic.woff2?75b9328b8b3779ebd786829598a71fc6) format("woff2"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800italic.woff?94dc14b113be7e23077170a8dc24ffc9) format("woff"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800italic.ttf?726eb6bac0750e733a5463d6175750b1) format("truetype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-800italic.svg?2ce3289d95f2387db35c3afd509ef399#Montserrat) format("svg")
+}
+
+@font-face {
+    font-family: Montserrat;
+    font-style: italic;
+    font-weight: 600;
+    src: url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600italic.eot?cf9212c50894351d32b00eabf8de5be0);
+    src: local(""),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600italic.eot?cf9212c50894351d32b00eabf8de5be0?#iefix) format("embedded-opentype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600italic.woff2?301513ca4990143e3e99ac74951eb8b2) format("woff2"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600italic.woff?ad26b3b8ebd94fc8e7946d23e403ffcc) format("woff"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600italic.ttf?7b798476c0feb8d0ff3d5599436dde41) format("truetype"),url(/fonts/montserrat-v23-vietnamese_latin-ext_latin_cyrillic-ext_cyrillic-600italic.svg?3bbfb9d1dbe9a5ef9fb88d1e5a9498f3#Montserrat) format("svg")
+}
+
+.multiplayer-preview-switcher {
+    align-items: center;
+    background: #000;
+    color: #fff;
+    display: flex;
+    font-family: Montserrat,sans-serif;
+    font-size: 1em;
+    font-weight: 400;
+    justify-content: space-between;
+    padding: .25em .5em
+}
+
+@media screen and (max-width: 400px) {
+    .multiplayer-preview-switcher {
+        font-size:.75em
+    }
+}
+
+.multiplayer-preview-switcher .preview-title-container {
+    align-items: center;
+    display: flex
+}
+
+.multiplayer-preview-switcher .preview-title-container .h5picon-presentation {
+    font-size: 1.5em;
+    margin: 0 .5em
+}
+
+.multiplayer-preview-switcher .preview-title-container .preview-title {
+    font-family: Nunito,sans-serif;
+    font-size: 1em;
+    font-style: italic;
+    font-weight: 700
+}
+
+@media screen and (max-width: 400px) {
+    .multiplayer-preview-switcher .preview-title-container .preview-title {
+        display:none
+    }
+}
+
+.multiplayer-preview-switcher .status,.multiplayer-preview-switcher .switcher {
+    display: inline-block;
+    padding: .5em 1em
+}
+
+.multiplayer-preview-switcher .right-side {
+    align-items: center;
+    display: flex
+}
+
+.multiplayer-preview-switcher .right-side .preview-link {
+    align-items: center;
+    background-color: #186df7;
+    border-radius: .1875em;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    padding: .5em 1em;
+    text-decoration: none
+}
+
+.multiplayer-preview-switcher .right-side .preview-link:focus,.multiplayer-preview-switcher .right-side .preview-link:hover {
+    background-color: #1662de
+}
+
+.multiplayer-preview-switcher .right-side .preview-link .h5picon-side-by-side {
+    font-size: 1.5em;
+    margin-right: .5em
+}
+
+@media screen and (max-width: 400px) {
+    .multiplayer-preview-switcher .right-side .preview-link .h5picon-side-by-side {
+        display:none
+    }
+}
+
+.multiplayer-preview-switcher .right-side .preview-link .preview-link-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    font-family: Nunito,sans-serif;
+    font-style: italic
+}
+
+.multiplayer-preview-switcher .right-side .preview-link .preview-link-text-wrapper .preview-link-label-primary {
+    font-size: 1em;
+    font-weight: 700;
+    line-height: 1
+}
+
+.multiplayer-preview-switcher .right-side .preview-link .preview-link-text-wrapper .preview-link-label-secondary {
+    color: hsla(0,0%,100%,.7);
+    font-size: .875em;
+    font-weight: 100;
+    line-height: 1
+}
+
+.multiplayer-preview-switcher .right-side .preview-link-divider {
+    align-self: stretch;
+    border-right: 1px solid hsla(0,0%,100%,.2);
+    margin: 0 .5em;
+    width: 0
+}
+
+.multiplayer-preview-switcher .right-side .dismiss {
+    background: transparent;
+    border: none;
+    border-radius: .1875em;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1em;
+    padding: .85em
+}
+
+.multiplayer-preview-switcher .right-side .dismiss:hover {
+    background-color: #292929
+}
+
+.multiplayer-preview-switcher .right-side .dismiss:before {
+    content: "\e908";
+    font-family: multiplayer-icons;
+    font-size: 1em
+}
+
+.multiplayer-preview-switcher[data-mode=instructor] {
+    text-align: center
+}
+
+.multiplayer-preview-switcher[data-mode=instructor] .status {
+    display: none
+}
+
+.multiplayer-preview-switcher[data-mode=instructor] .switcher .icon:before {
+    content: "\e91a"
+}
+
+.multiplayer-preview-switcher[data-mode=student] .switcher {
+    border-left: 1px solid hsla(0,0%,100%,.1);
+    position: absolute;
+    right: 0
+}
+
+.multiplayer-preview-switcher[data-mode=student] .switcher .icon:before {
+    content: "\e91b"
+}
+
+.h5p-fullscreen .multiplayer-preview-switcher,.h5p-semi-fullscreen .multiplayer-preview-switcher,.multiplayer-preview-switcher[data-mode=student] .dismiss {
+    display: none
+}
