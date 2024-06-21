@@ -408,13 +408,18 @@ module.exports = {
   },
   // endpoint that lists library data; used as ajax request by the content type editors;
   ajaxLibraries: async (request, response, next) => {
-    const output = await ajaxLibraries({
-      library: request.params.library,
-      libraries: request.body.libraries,
-      machineName: request.query.machineName
-    });
-    response.set('Content-Type', 'application/json');
-    response.end(JSON.stringify(output));
+    try {
+      const output = await ajaxLibraries({
+        library: request.params.library,
+        libraries: request.body.libraries,
+        machineName: request.query.machineName
+      });
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify(output));
+    }
+    catch (error) {
+      handleError(error, response);
+    }
   },
   // html page that initializes and renders h5p content type editors
   edit: async (request, response, next) => {
@@ -695,67 +700,62 @@ const computePreloaded = async (library, baseUrl) => {
   return { library, preloadedJs, preloadedCss, languages, translations, directories };
 }
 const ajaxLibraries = async (options) => {
-  try {
-    const baseUrl = config.api;
-    const registry = await logic.getRegistry();
-    let libraries = [options.library];
-    if (Array.isArray(options.libraries)) {
-      libraries = [];
-      for (let item of options.libraries) {
-        item = item.split(' ')[0];
-        libraries.push(registry.reversed[item].shortName);
-      }
+  const baseUrl = config.api;
+  const registry = await logic.getRegistry();
+  let libraries = [options.library];
+  if (Array.isArray(options.libraries)) {
+    libraries = [];
+    for (let item of options.libraries) {
+      item = item.split(' ')[0];
+      libraries.push(registry.reversed[item].shortName);
     }
-    if (options.machineName) {
-      libraries = [];
-      libraries.push(registry.reversed[options.machineName].shortName);
+  }
+  if (options.machineName) {
+    libraries = [];
+    libraries.push(registry.reversed[options.machineName].shortName);
+  }
+  const toDo = [];
+  for (let item of libraries) {
+    toDo.push(computePreloaded(item, baseUrl));
+  }
+  const preloaded = await Promise.all(toDo);
+  let output;
+  if (options.machineName) {
+    const library = libraries[0];
+    const version = cache.edit[library][library].version;
+    const label = `${cache.edit[library][library].id}-${version.major}.${version.minor}`;
+    output = {
+      name: cache.edit[library][library].id,
+      version,
+      title: cache.edit[library][library].title,
+      upgradesScript: `${baseUrl}/${config.folders.libraries}/${label}/upgrades.js`,
+      semantics: JSON.parse(fs.readFileSync(`${config.folders.libraries}/${label}/semantics.json`, 'utf-8')),
+      language: null,
+      defaultLanguage: null,
+      languages: preloaded[0].languages,
+      javascript: preloaded[0].preloadedJs,
+      css: preloaded[0].preloadedCss,
+      translations: preloaded[0].translations,
+      directories: preloaded[0].directories
     }
-    const toDo = [];
-    for (let item of libraries) {
-      toDo.push(computePreloaded(item, baseUrl));
-    }
-    const preloaded = await Promise.all(toDo);
-    let output;
-    if (options.machineName) {
-      const library = libraries[0];
-      const version = cache.edit[library][library].version;
-      const label = `${cache.edit[library][library].id}-${version.major}.${version.minor}`;
-      output = {
+  }
+  else {
+    output = [];
+    for (let item of preloaded) {
+      const library = item.library;
+      output.push({
+        uberName: `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
         name: cache.edit[library][library].id,
-        version,
+        majorVersion: cache.edit[library][library].version.major,
+        minorVersion: cache.edit[library][library].version.minor,
         title: cache.edit[library][library].title,
-        upgradesScript: `${baseUrl}/${config.folders.libraries}/${label}/upgrades.js`,
-        semantics: JSON.parse(fs.readFileSync(`${config.folders.libraries}/${label}/semantics.json`, 'utf-8')),
-        language: null,
-        defaultLanguage: null,
-        languages: preloaded[0].languages,
-        javascript: preloaded[0].preloadedJs,
-        css: preloaded[0].preloadedCss,
-        translations: preloaded[0].translations,
-        directories: preloaded[0].directories
-      }
+        runnable: cache.edit[library][library].runnable,
+        restricted: false,
+        metadataSettings: cache.edit[library][library].metadataSettings
+      });
     }
-    else {
-      output = [];
-      for (let item of preloaded) {
-        const library = item.library;
-        output.push({
-          uberName: `${cache.edit[library][library].id} ${cache.edit[library][library].version.major}.${cache.edit[library][library].version.minor}`,
-          name: cache.edit[library][library].id,
-          majorVersion: cache.edit[library][library].version.major,
-          minorVersion: cache.edit[library][library].version.minor,
-          title: cache.edit[library][library].title,
-          runnable: cache.edit[library][library].runnable,
-          restricted: false,
-          metadataSettings: cache.edit[library][library].metadataSettings
-        });
-      }
-    }
-    return output;
   }
-  catch (error) {
-    handleError(error, response);
-  }
+  return output;
 }
 const getLibraryDirectories = async (id) => {
   const output = (await ajaxLibraries({ machineName: id })).directories;
