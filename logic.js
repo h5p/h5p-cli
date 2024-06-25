@@ -106,7 +106,7 @@ const getFileList = (folder) => {
 }
 module.exports = {
   // imports content type from zip archive file in the .h5p format
-  import: (folder, archive) => {
+  import: function (folder, archive) {
     const target = `${config.folders.temp}/${folder}`;
     new admZip(archive).extractAllTo(target);
     fs.renameSync(`${target}/content`, `content/${folder}`);
@@ -115,7 +115,7 @@ module.exports = {
     return folder;
   },
   // creates zip archive export file in the .h5p format
-  export: (library, folder) => {
+  export: function (library, folder) {
     const libsFile = `${config.folders.cache}/${library}.json`;
     const editLibsFile = `${config.folders.cache}/${library}_edit.json`;
     const target = `${config.folders.temp}/${folder}`;
@@ -151,7 +151,7 @@ module.exports = {
   },
   /* retrieves list of h5p librarie
   ignoreCache - if true cache file is overwritten with online data */
-  getRegistry: async (ignoreCache) => {
+  getRegistry: async function (ignoreCache) {
     const registryFile = `${config.folders.cache}/${config.registry}`;
     let list;
     if (!ignoreCache && fs.existsSync(registryFile)) {
@@ -192,7 +192,7 @@ module.exports = {
   saveToCache - if true list is saved to cache folder
   version - optional version to compute; defaults to 'master'
   folder - optional local library folder to use instead of git repo; use "" to ignore */
-  computeDependencies: async (library, mode, saveToCache, version, folder) => {
+  computeDependencies: async function (library, mode, saveToCache, version, folder) {
     console.log(`> ${library} deps ${mode}`);
     version = version || 'master';
     let level = -1;
@@ -369,7 +369,7 @@ module.exports = {
     return output;
   },
   // list tags for library using git
-  tags: (org, repo, mainBranch = 'master') => {
+  tags: function (org, repo, mainBranch = 'master') {
     const library = getRepoFile(fromTemplate(config.urls.library.clone, { org, repo }), 'library.json', mainBranch, true);
     const label = `${repo}_${mainBranch}`;
     const folder = `${config.folders.temp}/${label}`;
@@ -394,7 +394,7 @@ module.exports = {
     return output;
   },
   // download & unzip repository
-  download: async (org, repo, version, target) => {
+  download: async function (org, repo, version, target) {
     const blob = (await superAgent.get(fromTemplate(config.urls.library.zip, { org, repo, version })))._body;
     const zipFile = `${config.folders.temp}/temp.zip`;
     fs.writeFileSync(zipFile, blob);
@@ -403,7 +403,7 @@ module.exports = {
     fs.renameSync(`${config.folders.libraries}/${repo}-master`, target);
   },
   // clone repository using git
-  clone: (org, repo, branch, target) => {
+  clone: function (org, repo, branch, target) {
     return execSync(`git clone ${fromTemplate(config.urls.library.clone, {org, repo})} ${target} --branch ${branch}`, { cwd: config.folders.libraries }).toString();
   },
   /* clones/downloads dependencies to libraries folder using git and runs relevant npm commands
@@ -411,7 +411,7 @@ module.exports = {
   useCache - if true cached dependency list is used
   latest - if true master branch libraries are used; otherwise the versions found in the cached deps list are used
   toSkip - optional array of libraries to skip; after a library is parsed by the function it's auto-added to the array so it's skipped for efficiency */
-  getWithDependencies: async (action, library, mode, useCache, latest, toSkip = []) => {
+  getWithDependencies: async function (action, library, mode, useCache, latest, toSkip = []) {
     let list;
     const doneFile = `${config.folders.cache}/${library}${mode == 'edit' ? '_edit' : ''}.json`;
     if (useCache && fs.existsSync(doneFile)) {
@@ -475,7 +475,7 @@ module.exports = {
   },
   /* checks if dependency lists are cached and dependencies are installed for a given library;
   returns a report with boolean statuses; the overall status is reflected under the "ok" attribute;*/
-  verifySetup: async (library) => {
+  verifySetup: async function (library) {
     const registry = await module.exports.getRegistry();
     const viewList = `${config.folders.cache}/${library}.json`;
     const editList = `${config.folders.cache}/${library}_edit.json`;
@@ -509,7 +509,7 @@ module.exports = {
     return output;
   },
   // generates h5p.json file with info describing the library in the specified folder
-  generateInfo: (folder, library) => {
+  generateInfo: function (folder, library) {
     const target = `content/${folder}`;
     const lib = JSON.parse(fs.readFileSync(`${config.folders.cache}/${library}.json`, 'utf-8'))[library];
     const viewDepsFile = `${config.folders.cache}/${library}.json`;
@@ -545,7 +545,7 @@ module.exports = {
     fs.writeFileSync(`${target}/h5p.json`, JSON.stringify(info));
   },
   // upgrades content via current main library upgrades.js scripts
-  upgrade: (folder, library) => {
+  upgrade: function (folder, library) {
     const lib = JSON.parse(fs.readFileSync(`${config.folders.cache}/${library}.json`, 'utf-8'))[library];
     const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
     const extraAttrs = [
@@ -606,11 +606,11 @@ module.exports = {
     fs.writeFileSync(contentFile, JSON.stringify(content));
     module.exports.generateInfo(folder, library);
   },
-  machineToShort: (machineName) => {
+  machineToShort: function (machineName) {
     machineName = machineName.replace('H5PEditor', 'H5P-Editor');
     return machineName.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase().replace('.', '-');
   },
-  registryEntryFromRepoUrl: function(gitUrl) {
+  registryEntryFromRepoUrl: function (gitUrl) {
     let { host, org, repoName } = parseGitUrl(gitUrl);
     const list = getRepoFile(gitUrl, 'library.json', 'master', true);
     const shortName = this.machineToShort(list.machineName);
@@ -700,4 +700,16 @@ const parseSemanticLibraries = (entries) => {
     parseList();
   }
   return output;
+}
+
+const { workerData, parentPort } = require('worker_threads');
+if (parentPort && workerData) {
+  console.log('<<< worker working...');
+  const run = async () => {
+    const result = await module.exports[workerData.function].apply(null, workerData.arguments);
+    console.log('ding');
+    parentPort.postMessage(result);
+    console.log('dong');
+  }
+  run();
 }
