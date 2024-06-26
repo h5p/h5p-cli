@@ -180,15 +180,11 @@ const cli = {
       const missingOptionals = {};
       const benchStart = new Date();
       let preparing = true;
-      let toSkip = [];
       const toDo = {
         pending: 0,
         done: 0
       }
-      const handleWorkerDone = (result) => {
-        if (result) {
-          toSkip = result;
-        }
+      const handleWorkerDone = () => {
         toDo.done++;
         console.log(`> ${toDo.done}/${toDo.pending} done`);
         if (!preparing && toDo.done === toDo.pending) {
@@ -201,11 +197,13 @@ const cli = {
         const worker = new Worker(`${require.main.path}/logic.js` , { workerData : data });
         worker.on('message', (result) => {
           console.log('<<< worker done');
-          handleWorkerDone();
         });
         worker.on('error', (error) => {
           console.log('<<< worker error');
           console.error(error);
+        });
+        worker.on('exit', () => {
+          console.log('<<< worker exit');
           handleWorkerDone();
         });
       }
@@ -225,10 +223,9 @@ const cli = {
           }
           else {
             toDo.pending++;
-            //logic.getWithDependencies(action, item, 'edit', 1, latest, toSkip).then(handleToDo);
             runWorker({
               function: 'getWithDependencies',
-              arguments: [action, item, 'edit', 1, latest, toSkip]
+              arguments: [action, item, 'edit', 1, latest]
             });
           }
         }
@@ -237,20 +234,17 @@ const cli = {
             handleMissingOptionals(missingOptionals, editDeps, item);
           }
         }
-        toSkip = [];
         console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
         toDo.pending++;
-        //logic.getWithDependencies(action, library, 'view', 1, latest, toSkip).then(handleToDo);
         runWorker({
           function: 'getWithDependencies',
-          arguments: [action, library, 'view', 1, latest, toSkip]
+          arguments: [action, library, 'view', 1, latest]
         });
         console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
         toDo.pending++;
-        //logic.getWithDependencies(action, library, 'edit', 1, latest, toSkip).then(handleToDo);
         runWorker({
           function: 'getWithDependencies',
-          arguments: [action, library, 'edit', 1, latest, toSkip]
+          arguments: [action, library, 'edit', 1, latest]
         });
         if (Object.keys(missingOptionals).length) {
           console.log('!!! missing optional libraries');

@@ -422,10 +422,10 @@ module.exports = {
       list = await module.exports.computeDependencies(library, mode, 1);
     }
     for (let item in list) {
-      if (toSkip.indexOf(item) != -1) {
+      if (toSkip?.indexOf(item) != -1) {
         continue;
       }
-      toSkip.push(item);
+      toSkip?.push(item);
       if (!list[item].id) {
         if (list[item].optional) {
           console.log(`> skipping optional unregistered ${item} library`);
