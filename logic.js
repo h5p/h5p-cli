@@ -707,9 +707,7 @@ if (parentPort && workerData) {
   console.log('<<< worker working...');
   const run = async () => {
     const result = await module.exports[workerData.function].apply(null, workerData.arguments);
-    console.log('ding');
     parentPort.postMessage(result);
-    console.log('dong');
   }
   run();
 }
