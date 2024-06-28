@@ -3,6 +3,7 @@ const fs = require('fs');
 const logic = require('./logic.js');
 const config = require('./config.js');
 const utils = require('./assets/utils/cli.js');
+const { Worker } = require('worker_threads');
 let marked = require('marked');
 const markedTerminal = require('marked-terminal');
 marked.setOptions({
@@ -172,51 +173,94 @@ const cli = {
     }
   },
   // computes & installs dependencies for h5p library
-  setup: async function(library, version, download) {
-    const isUrl = ['http', 'git@'].includes(library.slice(0, 4)) ? true : false;
-    const url = library;
-    const missingOptionals = {};
-    try {
-      if (isUrl) {
-        const entry = await this.register(url);
-        library = logic.machineToShort(Object.keys(entry)[0]);
+  setup: function(library, version, download) {
+    return new Promise(async (resolve, reject) => {
+      const isUrl = ['http', 'git@'].includes(library.slice(0, 4)) ? true : false;
+      const url = library;
+      const missingOptionals = {};
+      const benchStart = new Date();
+      let preparing = true;
+      const toDo = {
+        pending: 0,
+        done: 0
       }
-      let toSkip = [];
-      const action = parseInt(download) ? 'download' : 'clone';
-      const latest = version ? false : true;
-      let result = await logic.computeDependencies(library, 'view', 1, version);
-      for (let item in result) {
-        // setup editor dependencies for every view dependency
-        if (!result[item].id) {
-          handleMissingOptionals(missingOptionals, result, item);
-        }
-        else {
-          toSkip = await logic.getWithDependencies(action, item, 'edit', 1, latest, toSkip);
+      const handleWorkerDone = () => {
+        toDo.done++;
+        console.log(`> ${toDo.done}/${toDo.pending} done`);
+        if (!preparing && toDo.done === toDo.pending) {
+          console.log(`> done setting up ${library} (${new Date() - benchStart} ms)`);
+          resolve();
         }
       }
-      result = await logic.computeDependencies(library, 'edit', 1, version);
-      for (let item in result) {
-        if (!result[item].id) {
-          handleMissingOptionals(missingOptionals, result, item);
-        }
+      const runWorker = (data) => {
+        console.log('<<< worker started');
+        const worker = new Worker(`${require.main.path}/logic.js` , { workerData : data });
+        worker.on('message', (result) => {
+          console.log('<<< worker done');
+        });
+        worker.on('error', (error) => {
+          console.log('<<< worker error');
+          console.error(error);
+        });
+        worker.on('exit', () => {
+          console.log('<<< worker exit');
+          handleWorkerDone();
+        });
       }
-      toSkip = [];
-      console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
-      toSkip = await logic.getWithDependencies(action, library, 'view', 1, latest, toSkip);
-      console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
-      toSkip = await logic.getWithDependencies(action, library, 'edit', 1, latest, toSkip);
-      if (Object.keys(missingOptionals).length) {
-        console.log('!!! missing optional libraries');
-        for (let item in missingOptionals) {
-          console.log(`${item} (${missingOptionals[item].optional ? 'optional' : 'required'}) required by ${missingOptionals[item].parent}`);
+      try {
+        if (isUrl) {
+          const entry = await this.register(url);
+          library = logic.machineToShort(Object.keys(entry)[0]);
         }
+        const action = parseInt(download) ? 'download' : 'clone';
+        const latest = version ? false : true;
+        const viewDeps = await logic.computeDependencies(library, 'view', 1, version);
+        const editDeps = await logic.computeDependencies(library, 'edit', 1, version);
+        for (let item in viewDeps) {
+          // setup editor dependencies for every view dependency
+          if (!viewDeps[item].id) {
+            handleMissingOptionals(missingOptionals, viewDeps, item);
+          }
+          else {
+            toDo.pending++;
+            runWorker({
+              function: 'getWithDependencies',
+              arguments: [action, item, 'edit', 1, latest]
+            });
+          }
+        }
+        for (let item in editDeps) {
+          if (!editDeps[item].id) {
+            handleMissingOptionals(missingOptionals, editDeps, item);
+          }
+        }
+        console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
+        toDo.pending++;
+        runWorker({
+          function: 'getWithDependencies',
+          arguments: [action, library, 'view', 1, latest]
+        });
+        console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
+        toDo.pending++;
+        runWorker({
+          function: 'getWithDependencies',
+          arguments: [action, library, 'edit', 1, latest]
+        });
+        if (Object.keys(missingOptionals).length) {
+          console.log('!!! missing optional libraries');
+          for (let item in missingOptionals) {
+            console.log(`${item} (${missingOptionals[item].optional ? 'optional' : 'required'}) required by ${missingOptionals[item].parent}`);
+          }
+        }
+        console.log('<<< done preparing');
+        preparing = false;
       }
-      console.log(`> done setting up ${library}`);
-    }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
-    }
+      catch (error) {
+        console.log('> error');
+        console.log(error);
+        reject(error);
+      }
+    });
   },
   // updates local library registry entry
   register: async (input) => {
