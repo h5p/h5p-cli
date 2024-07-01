@@ -310,7 +310,7 @@ module.exports = {
       if (!fs.existsSync(targetFolder)) {
         fs.mkdirSync(targetFolder);
       }
-      const ext = request.file.originalname.split('.')?.[1] || '';
+      const ext = request.file.originalname.split('.')?.pop() || '';
       const path = `${form.type}s/${request.file.filename}.${ext}`;
       const targetFile = `${targetFolder}/${request.file.filename}.${ext}`;
       fs.renameSync(`${request.file.path}`, targetFile);
