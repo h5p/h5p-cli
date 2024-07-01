@@ -310,7 +310,17 @@ module.exports = {
       if (!fs.existsSync(targetFolder)) {
         fs.mkdirSync(targetFolder);
       }
-      const ext = request.file.originalname.split('.')?.pop() || '';
+
+      const ext =
+        (request.file.originalname.split('.')?.pop() || '').toLowerCase();
+
+      const valid =
+        validateFileForUpload(form.type, request.file.mimetype, ext);
+
+      if (valid !== 'OK') {
+        throw new Error(valid);
+      }
+
       const path = `${form.type}s/${request.file.filename}.${ext}`;
       const targetFile = `${targetFolder}/${request.file.filename}.${ext}`;
       fs.renameSync(`${request.file.path}`, targetFile);
@@ -613,6 +623,93 @@ module.exports = {
     }
   }
 }
+
+/**
+ * Validate file for upload by mime type and extension.
+ * @param {string} uploadFieldType Upload field type.
+ * @param {string} mimeType File's mime type.
+ * @param {string} extension File's extension.
+ * @returns {string} Error message or 'OK'.
+ */
+const validateFileForUpload = (uploadFieldType, mimeType, extension) => {
+  let allowed;
+
+  // Set allowed extensions per mime type depending on upload field type
+  switch (uploadFieldType) {
+    // Image upload field
+    case 'image':
+      allowed = {
+        'image/png': ['png'],
+        'image/jpeg': ['jpg', 'jpeg'],
+        'image/gif': ['gif'],
+      };
+      break;
+
+    // Audio upload field
+    case 'audio':
+      allowed = {
+        'audio/mpeg': ['mp3'],
+        'audio/mp3': ['mp3'],
+        'audio/mp4': ['m4a'],
+        'audio/x-wav': ['wav'],
+        'audio/wav': ['wav'],
+        'audio/ogg': ['ogg'],
+      };
+      break;
+
+    // Video upload field
+    case 'video':
+      allowed = {
+        'video/mp4': ['mp4'],
+        'video/webm': ['webm'],
+        'video/ogg': ['ogv'],
+      };
+      break;
+
+    // File upload field
+    case 'file':
+      const allowedExtensions = config.files.patterns.allowed.toString()
+        .replace(/[^a-zA-Z0-9|]/g, '')
+        .split('|');
+
+      mimeType = '*'; // Allow allowedExtensions for all mime types
+      allowed = { mimeType : allowedExtensions };
+      break;
+
+    default:
+      allowed = {};
+  }
+
+  const isExtensionAllowed = (allowed[mimeType] ?? []).includes(extension);
+
+  const message = isExtensionAllowed ?
+    'OK' :
+    `Invalid ${uploadFieldType} file format.`;
+
+  const extensionsToUse = isExtensionAllowed ?
+    '' :
+    listExtensions(Object.values(allowed).flat());
+
+  return [message, extensionsToUse].filter(Boolean).join(' ');
+}
+
+/**
+ * List extension options as human language string.
+ * @param {string[]} extensions List of extensions.
+ * @returns {string} Human language string.
+ */
+const listExtensions = (extensions = []) => {
+  if (!Array.isArray(extensions) || !extensions.length) {
+    return '';
+  }
+  else if (extensions.length === 1) {
+    return `Use ${extensions[0]}.`;
+  }
+  else {
+    return `Use ${extensions.slice(0, -1).join(', ')} or ${extensions.slice(-1)}.`;
+  }
+};
+
 // parses content.json objects for entries of file type
 const parseContentFiles = (entries) => {
   let toDo = [];
