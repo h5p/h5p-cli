@@ -11,15 +11,7 @@ Running commands listed in [commands.md](commands.md) results in the creation of
 
 # Setup a local library
 
-To use your own local library create a folder for it in the `libraries` directory. The library folder name format is `<h5pLibraryName>-<majorVersion>.<minorVersion>`.  
-Then run `h5p use <library> <folder>`.  
-`<library>` is something like `h5p-greeting-card`.  
-`<folder>` is something like `H5P.GreetingCard-1.0`.  
-An example for this is
-```
-h5p use h5p-greeting-card H5P.GreetingCard-1.0
-```
-It will setup the `h5p-greeting-card` library located in the `libraries/H5P.GreetingCard-1.0` directory.  
+To use your own local library create a folder for it in the `libraries` directory.  
 Its dependencies need to be present in the `libraries` folder. Otherwise they need to be set up separately.  
 Please [find a library development tutorial](https://h5p.org/library-development) for details on that topic.  
 

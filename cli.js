@@ -235,69 +235,6 @@ const cli = {
       console.log(error);
     }
   },
-  // generates cache entries for library based on local files; does not use git repos
-  use: async (library, folder) => {
-    try {
-      let registry = await logic.getRegistry();
-      let missingOptionals = {};
-      const target = `${config.folders.libraries}/${folder}`;
-      if (!registry.regular[library]) {
-        console.log(`registering ${library} library`);
-        const lib = JSON.parse(fs.readFileSync(`${target}/library.json`, 'utf-8'));
-        const repoName = logic.machineToShort(lib.machineName);
-        if (library != repoName) {
-          throw new Error(`provided "${library}" differs from computed "${repoName}"`);
-        }
-        const entry = {};
-        entry[lib.machineName] = {
-          id: lib.machineName,
-          title: lib.title,
-          author: lib.author,
-          runnable: lib.runnable,
-          repoName
-        }
-        registry.reversed = {...registry.reversed, ...entry};
-        fs.writeFileSync(config.registry, JSON.stringify(registry.reversed));
-      }
-      let result = await logic.computeDependencies(library, 'view', null, folder);
-      for (let item in result) {
-        if (!result[item].id) {
-          handleMissingOptionals(missingOptionals, result, item);
-        }
-        console.log(item);
-      }
-      result = await logic.computeDependencies(library, 'edit', null, folder);
-      for (let item in result) {
-        if (!result[item].id) {
-          handleMissingOptionals(missingOptionals, result, item);
-        }
-        console.log(item);
-      }
-      const packageFile = `${target}/package.json`;
-      if (!fs.existsSync(packageFile)) {
-        return;
-      }
-      const info = JSON.parse(fs.readFileSync(packageFile));
-      if (!info?.scripts?.build) {
-        return;
-      }
-      console.log('>>> npm install');
-      console.log(execSync('npm install', {cwd: target}).toString());
-      console.log('>>> npm run build');
-      console.log(execSync('npm run build', {cwd: target}).toString());
-      fs.rmSync(`${target}/node_modules`, { recursive: true, force: true });
-      if (Object.keys(missingOptionals).length) {
-        console.log('!!! missing optional libraries');
-        for (let item in missingOptionals) {
-          console.log(`${item} (${missingOptionals[item].optional ? 'optional' : 'required'}) required by ${missingOptionals[item].parent}`);
-        }
-      }
-    }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
-    }
-  },
   // generates report that verifies if an h5p library and its dependencies have been correctly computed & installed
   verify: async (library) => {
     try {
