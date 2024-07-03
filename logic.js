@@ -105,6 +105,20 @@ const getFileList = (folder) => {
   return output;
 }
 module.exports = {
+  // debug console log
+  log: function (message) {
+    if (process.argv[2] === 'server') {
+      return;
+    }
+    console.log(message);
+  },
+  // debug process.stdout.write
+  write: function (message) {
+    if (process.argv[2] === 'server') {
+      return;
+    }
+    process.stdout.write(message);
+  },
   // imports content type from zip archive file in the .h5p format
   import: (folder, archive) => {
     const target = `${config.folders.temp}/${folder}`;
@@ -190,7 +204,7 @@ module.exports = {
   version - optional version to compute; defaults to 'master'
   folder - optional local library folder to use instead of git repo; use "" to ignore */
   computeDependencies: async (library, mode, version, folder) => {
-    console.log(`> ${library} deps ${mode}`);
+    module.exports.log(`> ${library} deps ${mode}`);
     version = version || 'master';
     let level = -1;
     let registry = {};
@@ -270,13 +284,13 @@ module.exports = {
         delete toDo[dep];
         return;
       }
-      process.stdout.write(`>> ${dep} required by ${toDo[dep].parent} ... `);
+      module.exports.write(`>> ${dep} required by ${toDo[dep].parent} ... `);
       done[level][dep] = registry.regular[dep];
       let list;
       const { repoName } = registry.regular[dep]?.repo?.url ? parseGitUrl(registry.regular[dep].repo.url) : dep;
       if (cache[dep]) {
         list = cache[dep];
-        process.stdout.write(' (cached) ');
+        module.exports.write(' (cached) ');
       }
       else {
         list = toDo[dep].folder ? await getFile(`${config.folders.libraries}/${toDo[dep].folder}/library.json`, true)
@@ -325,7 +339,7 @@ module.exports = {
         }
       }
       delete toDo[dep];
-      console.log('done');
+      module.exports.log('done');
     }
     registry = await module.exports.getRegistry();
     if (!folder && !registry.regular[library]) {
@@ -333,7 +347,7 @@ module.exports = {
     }
     while (Object.keys(toDo).length) {
       level++;
-      console.log(`>> on level ${level}`);
+      module.exports.log(`>> on level ${level}`);
       done[level] = {};
       for (let item in toDo) {
         await compute(registry.regular[item].org, item, toDo[item].version);
@@ -354,7 +368,7 @@ module.exports = {
         }
       }
     }
-    process.stdout.write('\n');
+    module.exports.write('\n');
     return output;
   },
   // list tags for library using git
