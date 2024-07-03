@@ -116,16 +116,14 @@ module.exports = {
   },
   // creates zip archive export file in the .h5p format
   export: (library, folder) => {
-    const libsFile = `${config.folders.cache}/${library}.json`;
-    const editLibsFile = `${config.folders.cache}/${library}_edit.json`;
     const target = `${config.folders.temp}/${folder}`;
     fs.rmSync(target, { recursive: true, force: true });
     fs.mkdirSync(target);
     fs.cpSync(`content/${folder}`, `${target}/content`, { recursive: true });
     fs.renameSync(`${target}/content/h5p.json`, `${target}/h5p.json`);
     fs.rmSync(`${target}/content/sessions`, { recursive: true, force: true });
-    let libs = JSON.parse(fs.readFileSync(libsFile, 'utf-8'));
-    const editLibs = JSON.parse(fs.readFileSync(editLibsFile, 'utf-8'));
+    let libs = module.exports.computeDependencies(library, 'view');
+    const editLibs = module.exports.computeDependencies(library, 'edit');
     libs = {...libs, ...editLibs};
     for (let item in libs) {
       const label = `${libs[item].id}-${libs[item].version.major}.${libs[item].version.minor}`;
@@ -152,10 +150,9 @@ module.exports = {
   /* retrieves list of h5p librarie
   ignoreCache - if true cache file is overwritten with online data */
   getRegistry: async (ignoreCache) => {
-    const registryFile = `${config.folders.cache}/${config.registry}`;
     let list;
-    if (!ignoreCache && fs.existsSync(registryFile)) {
-      list = JSON.parse(fs.readFileSync(registryFile, 'utf-8'));
+    if (!ignoreCache && fs.existsSync(config.registry)) {
+      list = JSON.parse(fs.readFileSync(config.registry, 'utf-8'));
     }
     else {
       list = await getFile(config.urls.registry, true);
@@ -182,17 +179,16 @@ module.exports = {
       output.reversed[list[item].id] = list[item];
       output.regular[list[item].shortName] = list[item];
     }
-    if (ignoreCache || !fs.existsSync(registryFile)) {
-      fs.writeFileSync(registryFile, JSON.stringify(list));
+    if (ignoreCache || !fs.existsSync(config.registry)) {
+      fs.writeFileSync(config.registry, JSON.stringify(list));
     }
     return output;
   },
   /* computes list of library dependencies in their correct load order
   mode - 'view' or 'edit' to compute non-editor or editor dependencies
-  saveToCache - if true list is saved to cache folder
   version - optional version to compute; defaults to 'master'
   folder - optional local library folder to use instead of git repo; use "" to ignore */
-  computeDependencies: async (library, mode, saveToCache, version, folder) => {
+  computeDependencies: async (library, mode, version, folder) => {
     console.log(`> ${library} deps ${mode}`);
     version = version || 'master';
     let level = -1;
@@ -343,7 +339,6 @@ module.exports = {
       }
     }
     let output = {};
-    let toSave = {};
     for (let i = level; i >= 0; i--) {
       const keys = Object.keys(done[i]);
       keys.sort((a, b) => {
@@ -356,14 +351,7 @@ module.exports = {
         if (!done[i][key].id) {
           continue;
         }
-        toSave[key] = done[i][key];
       }
-    }
-    if (saveToCache) {
-      const doneFile = `${config.folders.cache}/${library}${mode == 'edit' ? '_edit' : ''}.json`;
-      if (!fs.existsSync(config.folders.cache)) fs.mkdirSync(config.folders.cache);
-      fs.writeFileSync(doneFile, JSON.stringify(toSave));
-      console.log(`deps saved to ${doneFile}`);
     }
     process.stdout.write('\n');
     return output;
@@ -408,19 +396,10 @@ module.exports = {
   },
   /* clones/downloads dependencies to libraries folder using git and runs relevant npm commands
   mode - 'view' or 'edit' to fetch non-editor or editor libraries
-  useCache - if true cached dependency list is used
   latest - if true master branch libraries are used; otherwise the versions found in the cached deps list are used
   toSkip - optional array of libraries to skip; after a library is parsed by the function it's auto-added to the array so it's skipped for efficiency */
-  getWithDependencies: async (action, library, mode, useCache, latest, toSkip = []) => {
-    let list;
-    const doneFile = `${config.folders.cache}/${library}${mode == 'edit' ? '_edit' : ''}.json`;
-    if (useCache && fs.existsSync(doneFile)) {
-      console.log(`>> using cache from ${doneFile}`);
-      list = JSON.parse(fs.readFileSync(doneFile, 'utf-8'));
-    }
-    else {
-      list = await module.exports.computeDependencies(library, mode, 1);
-    }
+  getWithDependencies: async (action, library, mode, latest, toSkip = []) => {
+    const list = await module.exports.computeDependencies(library, mode);
     for (let item in list) {
       if (toSkip.indexOf(item) != -1) {
         continue;
@@ -477,23 +456,16 @@ module.exports = {
   returns a report with boolean statuses; the overall status is reflected under the "ok" attribute;*/
   verifySetup: async (library) => {
     const registry = await module.exports.getRegistry();
-    const viewList = `${config.folders.cache}/${library}.json`;
-    const editList = `${config.folders.cache}/${library}_edit.json`;
     const output = {
       registry: registry.regular[library] ? true : false,
-      lists: {
-        view: fs.existsSync(viewList),
-        edit: fs.existsSync(editList)
-      },
       libraries: {},
       ok: true
     }
-    if (!output.registry || !output.lists.view || !output.lists.edit) {
+    if (!output.registry) {
       output.ok = false;
-      return output;
     }
-    let list = JSON.parse(fs.readFileSync(viewList, 'utf-8'));
-    list = {...list, ...JSON.parse(fs.readFileSync(editList, 'utf-8'))};
+    let list = await module.exports.computeDependencies(library, 'view');
+    list = {...list, ...await module.exports.computeDependencies(library, 'edit')};
     for (let item in list) {
       if (!list[item]) {
         output.libraries[item] = false;
@@ -509,13 +481,10 @@ module.exports = {
     return output;
   },
   // generates h5p.json file with info describing the library in the specified folder
-  generateInfo: (folder, library) => {
+  generateInfo: async (folder, library) => {
     const target = `content/${folder}`;
-    const lib = JSON.parse(fs.readFileSync(`${config.folders.cache}/${library}.json`, 'utf-8'))[library];
-    const viewDepsFile = `${config.folders.cache}/${library}.json`;
-    const editDepsFile = `${config.folders.cache}/${library}_edit.json`;
-    let libs = JSON.parse(fs.readFileSync(viewDepsFile, 'utf-8'));
-    const editLibs = JSON.parse(fs.readFileSync(editDepsFile, 'utf-8'));
+    let libs = await module.exports.computeDependencies(library, 'view');
+    const editLibs = await module.exports.computeDependencies(library, 'edit');
     libs = {...libs, ...editLibs};
     const map = {};
     const preloadedDependencies = [];
@@ -536,7 +505,7 @@ module.exports = {
     const info = {
       title: folder,
       language: 'en',
-      mainLibrary: lib.id,
+      mainLibrary: libs[library].id,
       license: 'U',
       defaultLanguage: 'en',
       embedTypes: ['div'],
@@ -545,8 +514,8 @@ module.exports = {
     fs.writeFileSync(`${target}/h5p.json`, JSON.stringify(info));
   },
   // upgrades content via current main library upgrades.js scripts
-  upgrade: (folder, library) => {
-    const lib = JSON.parse(fs.readFileSync(`${config.folders.cache}/${library}.json`, 'utf-8'))[library];
+  upgrade: async (folder, library) => {
+    const lib = (await module.exports.computeDependencies(library, 'view'))[library];
     const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
     const extraAttrs = [
       'authors', 'source', 'license', 'licenseVersion', 'licenseExtras', 'yearsFrom',

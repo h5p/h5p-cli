@@ -74,9 +74,9 @@ const cli = {
     }
   },
   // computes dependencies for h5p library
-  deps: async (library, mode, saveToCache, version, folder) => {
+  deps: async (library, mode, version, folder) => {
     try {
-      const result = await logic.computeDependencies(library, mode, parseInt(saveToCache), version, folder);
+      const result = await logic.computeDependencies(library, mode, version, folder);
       for (let item in result) {
         console.log(result[item].id ? item : `!!! unregistered ${result[item].optional ? 'optional' : 'required'} ${item} library`);
       }
@@ -129,7 +129,7 @@ const cli = {
   install: async (library, mode, useCache) => {
     try {
       console.log(`> downloading ${library} library and dependencies into "${config.folders.libraries}" folder`);
-      await logic.getWithDependencies('download', library, mode, parseInt(useCache));
+      await logic.getWithDependencies('download', library, mode);
       console.log(`> done installing ${library}`);
     }
     catch (error) {
@@ -141,7 +141,7 @@ const cli = {
   clone: async (library, mode, useCache) => {
     try {
       console.log(`> cloning ${library} library and dependencies into "${config.folders.libraries}" folder`);
-      await logic.getWithDependencies('clone', library, mode, parseInt(useCache));
+      await logic.getWithDependencies('clone', library, mode);
       console.log(`> done installing ${library}`);
     }
     catch (error) {
@@ -184,17 +184,17 @@ const cli = {
       let toSkip = [];
       const action = parseInt(download) ? 'download' : 'clone';
       const latest = version ? false : true;
-      let result = await logic.computeDependencies(library, 'view', 1, version);
+      let result = await logic.computeDependencies(library, 'view', version);
       for (let item in result) {
         // setup editor dependencies for every view dependency
         if (!result[item].id) {
           handleMissingOptionals(missingOptionals, result, item);
         }
         else {
-          toSkip = await logic.getWithDependencies(action, item, 'edit', 1, latest, toSkip);
+          toSkip = await logic.getWithDependencies(action, item, 'edit', latest, toSkip);
         }
       }
-      result = await logic.computeDependencies(library, 'edit', 1, version);
+      result = await logic.computeDependencies(library, 'edit', version);
       for (let item in result) {
         if (!result[item].id) {
           handleMissingOptionals(missingOptionals, result, item);
@@ -202,9 +202,9 @@ const cli = {
       }
       toSkip = [];
       console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
-      toSkip = await logic.getWithDependencies(action, library, 'view', 1, latest, toSkip);
+      toSkip = await logic.getWithDependencies(action, library, 'view', latest, toSkip);
       console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
-      toSkip = await logic.getWithDependencies(action, library, 'edit', 1, latest, toSkip);
+      toSkip = await logic.getWithDependencies(action, library, 'edit', latest, toSkip);
       if (Object.keys(missingOptionals).length) {
         console.log('!!! missing optional libraries');
         for (let item in missingOptionals) {
@@ -225,7 +225,7 @@ const cli = {
       let registry = await logic.getRegistry();
       const entry = isUrl ? await logic.registryEntryFromRepoUrl(input) : JSON.parse(fs.readFileSync(input, 'utf-8'));
       registry.reversed = {...registry.reversed, ...entry};
-      fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));
+      fs.writeFileSync(config.registry, JSON.stringify(registry.reversed));
       console.log('> updated registry entry');
       console.log(entry);
       return entry;
@@ -257,16 +257,16 @@ const cli = {
           repoName
         }
         registry.reversed = {...registry.reversed, ...entry};
-        fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));
+        fs.writeFileSync(config.registry, JSON.stringify(registry.reversed));
       }
-      let result = await logic.computeDependencies(library, 'view', 1, null, folder);
+      let result = await logic.computeDependencies(library, 'view', null, folder);
       for (let item in result) {
         if (!result[item].id) {
           handleMissingOptionals(missingOptionals, result, item);
         }
         console.log(item);
       }
-      result = await logic.computeDependencies(library, 'edit', 1, null, folder);
+      result = await logic.computeDependencies(library, 'edit', null, folder);
       for (let item in result) {
         if (!result[item].id) {
           handleMissingOptionals(missingOptionals, result, item);
