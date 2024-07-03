@@ -115,19 +115,20 @@ module.exports = {
     return folder;
   },
   // creates zip archive export file in the .h5p format
-  export: (library, folder) => {
+  export: async (library, folder) => {
     const target = `${config.folders.temp}/${folder}`;
     fs.rmSync(target, { recursive: true, force: true });
     fs.mkdirSync(target);
     fs.cpSync(`content/${folder}`, `${target}/content`, { recursive: true });
     fs.renameSync(`${target}/content/h5p.json`, `${target}/h5p.json`);
     fs.rmSync(`${target}/content/sessions`, { recursive: true, force: true });
-    let libs = module.exports.computeDependencies(library, 'view');
-    const editLibs = module.exports.computeDependencies(library, 'edit');
+    let libs = await module.exports.computeDependencies(library, 'view');
+    const editLibs = await module.exports.computeDependencies(library, 'edit');
     libs = {...libs, ...editLibs};
+    const libraryDirs = await module.exports.parseLibraryFolders();
     for (let item in libs) {
-      const label = `${libs[item].id}-${libs[item].version.major}.${libs[item].version.minor}`;
-      fs.cpSync(`${config.folders.libraries}/${label}`, `${target}/${label}`, { recursive: true });
+      const folder = libraryDirs[libs[item].id];
+      fs.cpSync(`${config.folders.libraries}/${folder}`, `${target}/${folder}`, { recursive: true });
     }
     const files = getFileList(target);
     const zip = new admZip();
@@ -456,6 +457,7 @@ module.exports = {
   returns a report with boolean statuses; the overall status is reflected under the "ok" attribute;*/
   verifySetup: async (library) => {
     const registry = await module.exports.getRegistry();
+    const libraryDirs = await module.exports.parseLibraryFolders();
     const output = {
       registry: registry.regular[library] ? true : false,
       libraries: {},
@@ -473,7 +475,7 @@ module.exports = {
         continue;
       }
       const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
-      output.libraries[label] = fs.existsSync(`${config.folders.libraries}/${label}`);
+      output.libraries[label] = fs.existsSync(`${config.folders.libraries}/${libraryDirs[list[item].id]}`);
       if (!output.libraries[label]) {
         output.ok = false;
       }
@@ -517,6 +519,7 @@ module.exports = {
   upgrade: async (folder, library) => {
     const lib = (await module.exports.computeDependencies(library, 'view'))[library];
     const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
+    const libraryDirs = await module.exports.parseLibraryFolders();
     const extraAttrs = [
       'authors', 'source', 'license', 'licenseVersion', 'licenseExtras', 'yearsFrom',
       'yearsTo', 'changes', 'authorComments', 'w', 'h', 'metaKeywords', 'metaDescription'
@@ -539,7 +542,7 @@ module.exports = {
     if (lib.version.major <= mainLib.majorVersion && lib.version.minor <= mainLib.minorVersion) {
       return;
     }
-    const upgradesFile = `${config.folders.libraries}/${lib.id}-${lib.version.major}.${lib.version.minor}/upgrades.js`;
+    const upgradesFile = `${config.folders.libraries}/${libraryDirs[lib.id]}/upgrades.js`;
     if (!fs.existsSync(upgradesFile)) {
       return;
     }
@@ -574,6 +577,19 @@ module.exports = {
     fs.writeFileSync(`content/${folder}/${label}_h5p.json`, JSON.stringify(info));
     fs.writeFileSync(contentFile, JSON.stringify(content));
     module.exports.generateInfo(folder, library);
+  },
+  parseLibraryFolders: async () => {
+    const output = {};
+    const dirs = fs.readdirSync(config.folders.libraries);
+    for (let folder of dirs) {
+      const libraryFile = `${config.folders.libraries}/${folder}/library.json`;
+      if (!fs.existsSync(libraryFile)) {
+        continue;
+      }
+      const info = await module.exports.getFile(libraryFile, true);
+      output[info.machineName] = folder;
+    }
+    return output;
   },
   machineToShort: (machineName) => {
     machineName = machineName.replace('H5PEditor', 'H5P-Editor');

@@ -141,9 +141,9 @@ module.exports = {
     }
   },
   // download zipped archive of content type
-  export: (request, response, next) => {
+  export: async (request, response, next) => {
     try {
-      const file = logic.export(request.params.library, request.params.folder);
+      const file = await logic.export(request.params.library, request.params.folder);
       response.download(file);
     }
     catch (error) {
@@ -194,6 +194,7 @@ module.exports = {
       const page = parseInt(request.query.page) || 0;
       const start = page * limit;
       const end = start + limit;
+      const libraryDirs = await logic.parseLibraryFolders();
       const output = {
         list: [],
         total: 0
@@ -232,7 +233,7 @@ module.exports = {
         entry = (await logic.computeDependencies(library, 'view'))[library];
         let icon = '/assets/icon.svg';
         if (entry.version) {
-          const libraryFolder = `${config.folders.libraries}/${list[i].id}-${entry.version.major}.${entry.version.minor}`;
+          const libraryFolder = `${config.folders.libraries}/${libraryDirs[list[i].id]}`;
           const iconFile = `${libraryFolder}/icon.svg`;
           if (fs.existsSync(libraryFolder)) {
             if (fs.existsSync(iconFile)) {
@@ -354,12 +355,13 @@ module.exports = {
       const library = request.params.library;
       const libs = await logic.computeDependencies(library, 'view');
       const registry = await logic.getRegistry();
+      const libraryDirs = await logic.parseLibraryFolders();
       const translations = {};
       for (let item of request.body.libraries) {
         const entry = libs[registry.reversed[item.split(' ')[0]].shortName];
-        const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
+        const folder = libraryDirs[entry.id];
         const idx = `${entry.id} ${entry.version.major}.${entry.version.minor}`;
-        const languageFolder = `${config.folders.libraries}/${label}/language`;
+        const languageFolder = `${config.folders.libraries}/${folder}/language`;
         const langFile = `${languageFolder}/${request.query.language}.json`;
         if (fs.existsSync(langFile)) {
           translations[idx] = fs.readFileSync(langFile, 'utf-8');
@@ -393,6 +395,7 @@ module.exports = {
       const baseUrl = config.api;
       const library = request.params.library;
       const folder = request.params.folder;
+      const libraryDirs = await logic.parseLibraryFolders();
       if (!await verifySetup(library, response)) {
         return;
       }
@@ -407,16 +410,16 @@ module.exports = {
           continue;
         }
         const entry = libs[item];
-        const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
+        const libFolder = libraryDirs[entry.id];
         for (let jsItem of entry.preloadedJs) {
-          preloadedJs.push(`"/${config.folders.libraries}/${label}/${jsItem.path}"`);
+          preloadedJs.push(`"/${config.folders.libraries}/${libFolder}/${jsItem.path}"`);
         }
         for (let cssItem of entry.preloadedCss) {
-          preloadedCss.push(`"/${config.folders.libraries}/${label}/${cssItem.path}"`);
+          preloadedCss.push(`"/${config.folders.libraries}/${libFolder}/${cssItem.path}"`);
         }
       }
       const mathDisplay = (await logic.computeDependencies('h5p-math-display', 'view'))['h5p-math-display'];
-      const mathDisplayLabel = `${mathDisplay.id}-${mathDisplay.version.major}.${mathDisplay.version.minor}`;
+      const mathDisplayLabel = libraryDirs[mathDisplay.id];
       preloadedJs.push(`"/${config.folders.libraries}/${mathDisplayLabel}/dist/h5p-math-display.js"`);
       const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${require.main.path}/${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
         baseUrl,
@@ -443,7 +446,7 @@ module.exports = {
       }
       const labels = await getLangLabels();
       const machineName = `${libs[library].id} ${libs[library].version.major}.${libs[library].version.minor}`;
-      const libraryDirectories = JSON.stringify(await getLibraryDirectories(id));
+      const libraryDirectories = JSON.stringify((await ajaxLibraries({ machineName: id })).directories);
       let input = {
         assets: config.folders.assets,
         libraries: config.folders.libraries,
@@ -482,6 +485,7 @@ module.exports = {
       const baseUrl = config.api;
       const library = request.params.library;
       const folder = request.params.folder;
+      const libraryDirs = await logic.parseLibraryFolders();
       if (!await verifySetup(library, response)) {
         return;
       }
@@ -500,16 +504,16 @@ module.exports = {
       let preloadedCss = [];
       for (let item in libs) {
         const entry = libs[item];
-        const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
+        const libFolder = libraryDirs[entry.id];
         for (let jsItem of entry.preloadedJs) {
-          preloadedJs.push(`/${config.folders.libraries}/${label}/${jsItem.path}`);
+          preloadedJs.push(`/${config.folders.libraries}/${libFolder}/${jsItem.path}`);
         }
         for (let cssItem of entry.preloadedCss) {
-          preloadedCss.push(`/${config.folders.libraries}/${label}/${cssItem.path}`);
+          preloadedCss.push(`/${config.folders.libraries}/${libFolder}/${cssItem.path}`);
         }
       }
       const mathDisplay = (await logic.computeDependencies('h5p-math-display', 'view'))['h5p-math-display'];
-      const mathDisplayLabel = `${mathDisplay.id}-${mathDisplay.version.major}.${mathDisplay.version.minor}`;
+      const mathDisplayLabel = libraryDirs[mathDisplay.id];
       preloadedJs.push(`/${config.folders.libraries}/${mathDisplayLabel}/dist/h5p-math-display.js`);
       const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${require.main.path}/${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
         baseUrl,
@@ -527,7 +531,7 @@ module.exports = {
       }
       const machineName = `${id} ${libs[library].version.major}.${libs[library].version.minor}`;
       const labels = await getLangLabels();
-      const libraryDirectories = JSON.stringify(await getLibraryDirectories(id));
+      const libraryDirectories = JSON.stringify((await ajaxLibraries({ machineName: id })).directories);
       let input = {
         assets: config.folders.assets,
         libraries: config.folders.libraries,
@@ -602,11 +606,12 @@ const computePreloaded = async (library, baseUrl) => {
   const languages = [];
   let preloadedJs = [];
   let preloadedCss = [];
+  const libraryDirs = await logic.parseLibraryFolders();
   for (let item in libs) {
     const entry = libs[item];
-    const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
-    const fullLabel = `${label}.${entry.version.patch}`;
-    const languageFolder = `${config.folders.libraries}/${label}/language`;
+    const folder = libraryDirs[entry.id];
+    const label = `${entry.id}-${entry.version.major}.${entry.version.minor}.${entry.version.patch}`;
+    const languageFolder = `${config.folders.libraries}/${folder}/language`;
     const langFile = `${languageFolder}/${session.language}.json`;
     if (fs.existsSync(langFile)) {
       translations[entry.id] = JSON.parse(fs.readFileSync(langFile, 'utf-8'));
@@ -630,18 +635,19 @@ const computePreloaded = async (library, baseUrl) => {
       }
     }
     for (let jsItem of entry.preloadedJs) {
-      preloadedJs.push(`${baseUrl}/${config.folders.libraries}/${label}/${jsItem.path}`);
+      preloadedJs.push(`${baseUrl}/${config.folders.libraries}/${folder}/${jsItem.path}`);
     }
     for (let cssItem of entry.preloadedCss) {
-      preloadedCss.push(`${baseUrl}/${config.folders.libraries}/${label}/${cssItem.path}`);
+      preloadedCss.push(`${baseUrl}/${config.folders.libraries}/${folder}/${cssItem.path}`);
     }
-    directories[label] = fullLabel;
+    directories[folder] = label;
   }
   return { library, preloadedJs, preloadedCss, languages, translations, directories };
 }
 const ajaxLibraries = async (options) => {
   const baseUrl = config.api;
   const registry = await logic.getRegistry();
+  const libraryDirs = await logic.parseLibraryFolders();
   let libraries = [options.library];
   if (Array.isArray(options.libraries)) {
     libraries = [];
@@ -664,13 +670,13 @@ const ajaxLibraries = async (options) => {
     const library = libraries[0];
     const libs = await logic.computeDependencies(library, 'edit');
     const version = libs[library].version;
-    const label = `${libs[library].id}-${version.major}.${version.minor}`;
+    const folder = libraryDirs[libs[library].id];
     output = {
       name: libs[library].id,
       version,
       title: libs[library].title,
-      upgradesScript: `${baseUrl}/${config.folders.libraries}/${label}/upgrades.js`,
-      semantics: JSON.parse(fs.readFileSync(`${config.folders.libraries}/${label}/semantics.json`, 'utf-8')),
+      upgradesScript: `${baseUrl}/${config.folders.libraries}/${folder}/upgrades.js`,
+      semantics: JSON.parse(fs.readFileSync(`${config.folders.libraries}/${folder}/semantics.json`, 'utf-8')),
       language: null,
       defaultLanguage: null,
       languages: preloaded[0].languages,
@@ -696,13 +702,6 @@ const ajaxLibraries = async (options) => {
         metadataSettings: libs[library].metadataSettings
       });
     }
-  }
-  return output;
-}
-const getLibraryDirectories = async (id) => {
-  const output = (await ajaxLibraries({ machineName: id })).directories;
-  for (let item in output) {
-    output[item] = item;
   }
   return output;
 }

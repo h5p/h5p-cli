@@ -26,9 +26,9 @@ const handleMissingOptionals = (missingOptionals, result, item) => {
 }
 const cli = {
   // exports content type as .h5p zipped file
-  export: (library, folder) => {
+  export: async (library, folder) => {
     try {
-      const file = logic.export(library, folder);
+      const file = await logic.export(library, folder);
       console.log(file);
     }
     catch (error) {
