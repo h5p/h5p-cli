@@ -57,11 +57,12 @@ module.exports = {
   contentTypes: async (request, response, next) => {
     try {
       const registry = await logic.getRegistry();
+      const libraryDirs = await logic.parseLibraryFolders();
       if (!registry.runnable) {
         registry.runnable = {};
         const list = [];
         for (let item in registry.regular) {
-          if (registry.regular[item].runnable) {
+          if (registry.regular[item].runnable && libraryDirs[registry.regular[item].id]) {
             list.push(item);
           }
         }

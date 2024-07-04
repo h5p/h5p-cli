@@ -253,7 +253,7 @@ module.exports = {
         if (!done[level][machineName] || done[level][machineName].optional) {
           done[level][machineName] = { optional, parent };
         }
-        const parentVersion = `${done[level][parent].version.major}.${done[level][parent].version.minor}.${done[level][parent].version.patch}`
+        const parentVersion = `${done[level][parent].version.major}.${done[level][parent].version.minor}.${done[level][parent].version.patch}`;
         process.stdout.write(`\n!!! ${optional ? 'optional' : 'required'} library ${machineName} ${ver} not found in registry; required by ${parent} (${parentVersion}) `);
         return;
       }
