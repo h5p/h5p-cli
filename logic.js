@@ -165,10 +165,10 @@ module.exports = {
     return zipped;
   },
   /* retrieves list of h5p librarie
-  ignoreCache - if true cache file is overwritten with online data */
-  getRegistry: async (ignoreCache) => {
+  ignoreFile - if true file is overwritten with online data */
+  getRegistry: async (ignoreFile) => {
     let list;
-    if (!ignoreCache && fs.existsSync(config.registry)) {
+    if (!ignoreFile && fs.existsSync(config.registry)) {
       list = JSON.parse(fs.readFileSync(config.registry, 'utf-8'));
     }
     else {
@@ -196,7 +196,7 @@ module.exports = {
       output.reversed[list[item].id] = list[item];
       output.regular[list[item].shortName] = list[item];
     }
-    if (ignoreCache || !fs.existsSync(config.registry)) {
+    if (ignoreFile) {
       fs.writeFileSync(config.registry, JSON.stringify(list));
     }
     return output;
@@ -414,7 +414,7 @@ module.exports = {
   },
   /* clones/downloads dependencies to libraries folder using git and runs relevant npm commands
   mode - 'view' or 'edit' to fetch non-editor or editor libraries
-  latest - if true master branch libraries are used; otherwise the versions found in the cached deps list are used
+  latest - if true master branch versions of libraries are used
   toSkip - optional array of libraries to skip; after a library is parsed by the function it's auto-added to the array so it's skipped for efficiency */
   getWithDependencies: async (action, library, mode, latest, toSkip = []) => {
     const list = await module.exports.computeDependencies(library, mode);
@@ -470,7 +470,7 @@ module.exports = {
     }
     return toSkip;
   },
-  /* checks if dependency lists are cached and dependencies are installed for a given library;
+  /* checks if dependencies are installed for a given library;
   returns a report with boolean statuses; the overall status is reflected under the "ok" attribute;*/
   verifySetup: async (library) => {
     const registry = await module.exports.getRegistry();

@@ -48,10 +48,10 @@ const cli = {
     }
   },
   // lists h5p libraries
-  list: async (reversed, ignoreCache) => {
+  list: async (reversed, ignoreFile) => {
     try {
       console.log('> fetching h5p library registry');
-      const result = await logic.getRegistry(parseInt(ignoreCache));
+      const result = await logic.getRegistry(parseInt(ignoreFile));
       for (let item in result.regular) {
         console.log(`${parseInt(reversed) ? result.regular[item].id : item} (${result.regular[item].org})`);
       }
@@ -126,7 +126,7 @@ const cli = {
     }
   },
   // installs dependencies for h5p library
-  install: async (library, mode, useCache) => {
+  install: async (library, mode) => {
     try {
       console.log(`> downloading ${library} library and dependencies into "${config.folders.libraries}" folder`);
       await logic.getWithDependencies('download', library, mode);
@@ -137,8 +137,8 @@ const cli = {
       console.log(error);
     }
   },
-  // clones dependencies for h5p library based on cache entries
-  clone: async (library, mode, useCache) => {
+  // clones dependencies for h5p library
+  clone: async (library, mode) => {
     try {
       console.log(`> cloning ${library} library and dependencies into "${config.folders.libraries}" folder`);
       await logic.getWithDependencies('clone', library, mode);
