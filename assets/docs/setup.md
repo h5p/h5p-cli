@@ -14,6 +14,7 @@ Running commands listed in [commands.md](commands.md) results in the creation of
 To use your own local library create a folder for it in the `libraries` directory.  
 Its dependencies need to be present in the `libraries` folder. Otherwise they need to be set up separately.  
 Please [find a library development tutorial](https://h5p.org/library-development) for details on that topic.  
+An example library which corresponds to the "Hello World" tutorial can be found in `libraries/H5P.GreetingCard-1.0`.  
 
 # Setup a library from github
 
