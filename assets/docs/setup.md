@@ -1,7 +1,6 @@
 # Folder structure
 
-Running commands listed in [commands.md](commands.md) results in the creation of five folders. The folders are created in the current working directory (the folder where you ran the command).  
-- `cache` holds computed dependency lists for the libraries that have been set up.  
+Running commands listed in [commands.md](commands.md) results in the creation of 4 folders. The folders are created in the current working directory (the folder where you ran the command).  
 - `content` holds actual content types and their assets.  
 - `libraries` holds the libraries that have been set up.  
 - `temp` holds local copies of git repositories that are used when computing dependencies.  
@@ -12,22 +11,13 @@ Running commands listed in [commands.md](commands.md) results in the creation of
 
 # Setup a local library
 
-To use your own local library create a folder for it in the `libraries` directory. The library folder name format is `<h5pLibraryName>-<majorVersion>.<minorVersion>`.  
-Then run `h5p use <library> <folder>`.  
-`<library>` is something like `h5p-greeting-card`.  
-`<folder>` is something like `H5P.GreetingCard-1.0`.  
-An example for this is
-```
-h5p use h5p-greeting-card H5P.GreetingCard-1.0
-```
-It will setup the `h5p-greeting-card` library located in the `libraries/H5P.GreetingCard-1.0` directory.  
+To use your own local library create a folder for it in the `libraries` directory.  
 Its dependencies need to be present in the `libraries` folder. Otherwise they need to be set up separately.  
-Please note that, should the dependencies change (including the optional ones in semantics.json), you will have to run this command again in order to regenerate the cached dependency lists.  
 Please [find a library development tutorial](https://h5p.org/library-development) for details on that topic.  
 
 # Setup a library from github
 
-Libraries that can be automatically installed are stored in the local library registry. The registry is a json file located at `cache/libraryRegistry.json`.  
+Libraries that can be automatically installed are stored in the local library registry. The registry is a json file `libraryRegistry.json`.  
 Running `h5p setup <library>` may return the `unregistered library` error. This means that the local library registry is missing this library. We have to find its repository url and register it.  
 As an example, run `h5p register https://github.com/otacke/h5p-portfolio` to register the `h5p-portfolio` library in the local registry.  
 Run `h5p missing h5p-portfolio` to list the unregistered dependencies for `h5p-portfolio`. Then find their repository urls and register them.  

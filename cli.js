@@ -26,9 +26,9 @@ const handleMissingOptionals = (missingOptionals, result, item) => {
 }
 const cli = {
   // exports content type as .h5p zipped file
-  export: (library, folder) => {
+  export: async (library, folder) => {
     try {
-      const file = logic.export(library, folder);
+      const file = await logic.export(library, folder);
       console.log(file);
     }
     catch (error) {
@@ -48,10 +48,10 @@ const cli = {
     }
   },
   // lists h5p libraries
-  list: async (reversed, ignoreCache) => {
+  list: async (reversed, ignoreFile) => {
     try {
       console.log('> fetching h5p library registry');
-      const result = await logic.getRegistry(parseInt(ignoreCache));
+      const result = await logic.getRegistry(parseInt(ignoreFile));
       for (let item in result.regular) {
         console.log(`${parseInt(reversed) ? result.regular[item].id : item} (${result.regular[item].org})`);
       }
@@ -74,9 +74,9 @@ const cli = {
     }
   },
   // computes dependencies for h5p library
-  deps: async (library, mode, saveToCache, version, folder) => {
+  deps: async (library, mode, version, folder) => {
     try {
-      const result = await logic.computeDependencies(library, mode, parseInt(saveToCache), version, folder);
+      const result = await logic.computeDependencies(library, mode, version, folder);
       for (let item in result) {
         console.log(result[item].id ? item : `!!! unregistered ${result[item].optional ? 'optional' : 'required'} ${item} library`);
       }
@@ -126,10 +126,10 @@ const cli = {
     }
   },
   // installs dependencies for h5p library
-  install: async (library, mode, useCache) => {
+  install: async (library, mode) => {
     try {
       console.log(`> downloading ${library} library and dependencies into "${config.folders.libraries}" folder`);
-      await logic.getWithDependencies('download', library, mode, parseInt(useCache));
+      await logic.getWithDependencies('download', library, mode);
       console.log(`> done installing ${library}`);
     }
     catch (error) {
@@ -137,11 +137,11 @@ const cli = {
       console.log(error);
     }
   },
-  // clones dependencies for h5p library based on cache entries
-  clone: async (library, mode, useCache) => {
+  // clones dependencies for h5p library
+  clone: async (library, mode) => {
     try {
       console.log(`> cloning ${library} library and dependencies into "${config.folders.libraries}" folder`);
-      await logic.getWithDependencies('clone', library, mode, parseInt(useCache));
+      await logic.getWithDependencies('clone', library, mode);
       console.log(`> done installing ${library}`);
     }
     catch (error) {
@@ -184,17 +184,17 @@ const cli = {
       let toSkip = [];
       const action = parseInt(download) ? 'download' : 'clone';
       const latest = version ? false : true;
-      let result = await logic.computeDependencies(library, 'view', 1, version);
+      let result = await logic.computeDependencies(library, 'view', version);
       for (let item in result) {
         // setup editor dependencies for every view dependency
         if (!result[item].id) {
           handleMissingOptionals(missingOptionals, result, item);
         }
         else {
-          toSkip = await logic.getWithDependencies(action, item, 'edit', 1, latest, toSkip);
+          toSkip = await logic.getWithDependencies(action, item, 'edit', latest, toSkip);
         }
       }
-      result = await logic.computeDependencies(library, 'edit', 1, version);
+      result = await logic.computeDependencies(library, 'edit', version);
       for (let item in result) {
         if (!result[item].id) {
           handleMissingOptionals(missingOptionals, result, item);
@@ -202,9 +202,9 @@ const cli = {
       }
       toSkip = [];
       console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
-      toSkip = await logic.getWithDependencies(action, library, 'view', 1, latest, toSkip);
+      toSkip = await logic.getWithDependencies(action, library, 'view', latest, toSkip);
       console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
-      toSkip = await logic.getWithDependencies(action, library, 'edit', 1, latest, toSkip);
+      toSkip = await logic.getWithDependencies(action, library, 'edit', latest, toSkip);
       if (Object.keys(missingOptionals).length) {
         console.log('!!! missing optional libraries');
         for (let item in missingOptionals) {
@@ -225,73 +225,10 @@ const cli = {
       let registry = await logic.getRegistry();
       const entry = isUrl ? await logic.registryEntryFromRepoUrl(input) : JSON.parse(fs.readFileSync(input, 'utf-8'));
       registry.reversed = {...registry.reversed, ...entry};
-      fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));
+      fs.writeFileSync(config.registry, JSON.stringify(registry.reversed));
       console.log('> updated registry entry');
       console.log(entry);
       return entry;
-    }
-    catch (error) {
-      console.log('> error');
-      console.log(error);
-    }
-  },
-  // generates cache entries for library based on local files; does not use git repos
-  use: async (library, folder) => {
-    try {
-      let registry = await logic.getRegistry();
-      let missingOptionals = {};
-      const target = `${config.folders.libraries}/${folder}`;
-      if (!registry.regular[library]) {
-        console.log(`registering ${library} library`);
-        const lib = JSON.parse(fs.readFileSync(`${target}/library.json`, 'utf-8'));
-        const repoName = logic.machineToShort(lib.machineName);
-        if (library != repoName) {
-          throw new Error(`provided "${library}" differs from computed "${repoName}"`);
-        }
-        const entry = {};
-        entry[lib.machineName] = {
-          id: lib.machineName,
-          title: lib.title,
-          author: lib.author,
-          runnable: lib.runnable,
-          repoName
-        }
-        registry.reversed = {...registry.reversed, ...entry};
-        fs.writeFileSync(`${config.folders.cache}/${config.registry}`, JSON.stringify(registry.reversed));
-      }
-      let result = await logic.computeDependencies(library, 'view', 1, null, folder);
-      for (let item in result) {
-        if (!result[item].id) {
-          handleMissingOptionals(missingOptionals, result, item);
-        }
-        console.log(item);
-      }
-      result = await logic.computeDependencies(library, 'edit', 1, null, folder);
-      for (let item in result) {
-        if (!result[item].id) {
-          handleMissingOptionals(missingOptionals, result, item);
-        }
-        console.log(item);
-      }
-      const packageFile = `${target}/package.json`;
-      if (!fs.existsSync(packageFile)) {
-        return;
-      }
-      const info = JSON.parse(fs.readFileSync(packageFile));
-      if (!info?.scripts?.build) {
-        return;
-      }
-      console.log('>>> npm install');
-      console.log(execSync('npm install', {cwd: target}).toString());
-      console.log('>>> npm run build');
-      console.log(execSync('npm run build', {cwd: target}).toString());
-      fs.rmSync(`${target}/node_modules`, { recursive: true, force: true });
-      if (Object.keys(missingOptionals).length) {
-        console.log('!!! missing optional libraries');
-        for (let item in missingOptionals) {
-          console.log(`${item} (${missingOptionals[item].optional ? 'optional' : 'required'}) required by ${missingOptionals[item].parent}`);
-        }
-      }
     }
     catch (error) {
       console.log('> error');

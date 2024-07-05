@@ -8,23 +8,19 @@ Run `h5p utils help <cmd>` for a detailed help entry for each utility `<cmd>`.
 • `h5p core` installs the core H5P libraries.  
 These are required to view and edit H5P content types.  
 
-• `h5p list [machineName] [ignoreCache]` lists the current H5P libraries.  
+• `h5p list [machineName] [pullRegistry]` lists the current H5P libraries.  
 Use `1` for `[machineName]` to list the machine name instead of the default repo name.  
-Use `1` for `[ignoreCache]` to recreate the local registry.  
+Use `1` for `[pullRegistry]` to recreate the local registry.  
 The output format is `<library> (<org>)`.  
 
 • `h5p tags <org> <library> <mainBranch>` lists current library versions.  
 The `<org>` for a library is mentioned in the `list` command output.  
 `<mainBranch>` is the main branch of the repository. Default is `master`.  
 
-• `h5p deps <library> <mode> [saveToCache] [version] [folder]` computes dependencies for an H5P library.  
+• `h5p deps <library> <mode> [version] [folder]` computes dependencies for an H5P library.  
 Use `view` or `edit` for `<mode>` to generate dependencies for those cases.  
-Specify `1` for `[saveToCache]` to save the result in the cache folder. Default is `0`.  
 Specify a `[version]` to compute deps for that version. Default is `master`. Use the `tags` command to list versions for a library.  
 Specify a `[folder]` to compute deps based on the library from `libraries/[folder]` folder. Default is `""`.  
-
-• `h5p use <library> <folder>` computes view & edit dependencies for a `<library>` using the provided `libraries/<folder>` as the main library. A local library registry entry will also be created if the library is missing from the local registry.  
-Library dependencies need to be present in the `libraries` folder.
 
 • `h5p register <gitUrl>` or `h5p register <entry.json>` to add or update entries in the local registry.  
 `<gitUrl>` is something like `git@github.com:h5p/h5p-accordion.git` or `https://github.com/h5p/h5p-accordion`.  
@@ -48,13 +44,11 @@ You can use this command to update existing registry entries.
 }
 ```
 
-• `h5p clone <library> <mode> [useCache]` clones the library and its dependencies in the libraries folder.  
+• `h5p clone <library> <mode>` clones the library and its dependencies in the libraries folder.  
 Use `view` or `edit` for `<mode>`.  
-`[useCache]` can be `1` if you want it to use the cached deps.  
 
-• `h5p install <library> <mode> [useCache]` downloads the library and its dependencies in the libraries folder.  
+• `h5p install <library> <mode>` downloads the library and its dependencies in the libraries folder.  
 Use `view` or `edit` for `<mode>`.  
-`[useCache]` can be `1` if you want it to use the cached deps.  
 
 • `h5p setup <library|repoUrl> [version] [download]` sets up a library and its dependencies.  
 `<repoUrl>` is a github repository url. Running the command in this format will also update the library in the local registry. This is useful for unregistered libraries.  
@@ -74,7 +68,6 @@ Running `h5p verify h5p-accordion` should return something like below if the lib
 ```
 {
   registry: true, // library found in registry
-  lists: { view: true, edit: true }, // dependency lists are cached
   libraries: { // shows which dependencies are installed
     'FontAwesome-4.5': true,
     'H5P.AdvancedText-1.1': true,
@@ -90,7 +83,7 @@ Once the dev server is started you can use your browser to view, edit, delete, i
 
 • `h5p export <library> <folder>` will export the `<library>` content type from the `content/<folder>` folder.  
 An example here is `h5p export h5p-agamotto agamotto-test` which will export the `h5p-agamotto` content type located in the `content/agamotto-test` folder.  
-Make sure that the library's dependency lists are cached and that the dependencies are installed.  
+Make sure that the library's dependencies are installed.  
 Once finished, the export command outputs the location of the resulting file.  
 
 • `h5p import <folder> <h5p_archive_file_path>` will import the archived .h5p `<h5p_archive_file_path>` content type into the `content/<folder>` folder.  
