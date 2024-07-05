@@ -2,3 +2,6 @@ node_modules
 package-lock.json
 /libraries/*
 !/libraries/H5P.GreetingCard-1.0
+/temp/*
+/uploads/*
+/content/*
