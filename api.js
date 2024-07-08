@@ -548,6 +548,7 @@ module.exports = {
       const machineName = `${id} ${libs[library].version.major}.${libs[library].version.minor}`;
       const labels = await getLangLabels();
       const libraryDirectories = JSON.stringify((await ajaxLibraries({ machineName: id })).directories);
+      const userConfig = await getUserConfig();
       let input = {
         assets: config.folders.assets,
         libraries: config.folders.libraries,
@@ -572,7 +573,8 @@ module.exports = {
         metadata,
         contentUserData: JSON.stringify(userData.resume),
         watcher: config.files.watch,
-        simple: request.query.simple ? 'hidden' : ''
+        simple: request.query.simple ? 'hidden' : '',
+        saveFreq: userConfig.saveFreq || 30
       }
       input = {...input, ...labels};
       response.set('Content-Type', 'text/html');
@@ -784,4 +786,9 @@ const getLangLabels = async () => {
     langFile = `${config.folders.assets}/languages/en.json`;
   }
   return await logic.getFile(langFile, true);
+}
+
+/** Try to get user configuration */
+const getUserConfig = async () => {
+  return await logic.getFile('config.json', true) || {};
 }
