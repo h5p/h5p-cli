@@ -13,9 +13,7 @@ Running commands listed in [commands.md](commands.md) results in the creation of
 
 1 - Create a folder for it in the `libraries` directory.  
 1.1 - Remember to run `npm install` and `npm run build` from within that library folder if your library has a build flow.  
-2 - If this is a new library then register it.  
-Run `h5p help register` for info on how to register a library.  
-3 - Library dependencies need to be present in the `libraries` folder. Otherwise they need to be set up separately.  
+2 - Library dependencies need to be present in the `libraries` folder. Otherwise they need to be set up separately.  
 Please [find a library development tutorial](https://h5p.org/library-development) for details on that topic.  
 An example library which corresponds to the "Hello World" tutorial can be found in [libraries/H5P.GreetingCard-1.0](../../libraries/H5P.GreetingCard-1.0).  
 
