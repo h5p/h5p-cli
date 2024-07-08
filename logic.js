@@ -269,6 +269,9 @@ module.exports = {
     }
     // determine if a library is a soft dependency of its parent
     const isOptional = (parent, machineName) => {
+      if (!parent) {
+        return false;
+      }
       if (parent && parent.optional) {
         return true;
       }
@@ -314,7 +317,7 @@ module.exports = {
         patch: list.patchVersion
       }
       done[level][dep].runnable = list.runnable;
-      done[level][dep].optional = list.optional;
+      done[level][dep].optional = registry.regular[dep].optional === false ? false : isOptional(cache[toDo[dep].parent], list.machineName);
       done[level][dep].preloadedJs = list.preloadedJs || [];
       done[level][dep].preloadedCss = list.preloadedCss || [];
       done[level][dep].preloadedDependencies = list.preloadedDependencies || [];
