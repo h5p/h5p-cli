@@ -68,10 +68,10 @@ Running `h5p verify h5p-accordion` should return something like below if the lib
 ```
 {
   registry: true, // library found in registry
-  libraries: { // shows which dependencies are installed
-    'FontAwesome-4.5': true,
-    'H5P.AdvancedText-1.1': true,
-    'H5P.Accordion-1.0': true
+  libraries: { // shows which dependencies are installed; optional dependencies are ignored but should be present for the library to be fully featured
+    'FontAwesome-4.5': { optional: undefined, present: true },
+    'H5P.AdvancedText-1.1': { optional: undefined, present: true },
+    'H5P.Accordion-1.0': { optional: undefined, present: true }
   },
   ok: true // overall setup status
 }
