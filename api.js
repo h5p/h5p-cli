@@ -417,6 +417,9 @@ module.exports = {
           continue;
         }
         const libFolder = libraryDirs[entry.id];
+        if (!libFolder) {
+          continue;
+        }
         for (let jsItem of entry.preloadedJs) {
           preloadedJs.push(`"/${config.folders.libraries}/${libFolder}/${jsItem.path}"`);
         }
@@ -515,6 +518,9 @@ module.exports = {
           continue;
         }
         const libFolder = libraryDirs[entry.id];
+        if (!libFolder) {
+          continue;
+        }
         for (let jsItem of entry.preloadedJs) {
           preloadedJs.push(`/${config.folders.libraries}/${libFolder}/${jsItem.path}`);
         }
@@ -624,6 +630,9 @@ const computePreloaded = async (library, baseUrl) => {
       continue;
     }
     const folder = libraryDirs[entry.id];
+    if (!folder) {
+      continue;
+    }
     const label = `${entry.id}-${entry.version.major}.${entry.version.minor}.${entry.version.patch}`;
     const languageFolder = `${config.folders.libraries}/${folder}/language`;
     const langFile = `${languageFolder}/${session.language}.json`;
