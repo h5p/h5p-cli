@@ -487,14 +487,22 @@ module.exports = {
     let list = await module.exports.computeDependencies(library, 'view', null, libFolder);
     list = {...list, ...await module.exports.computeDependencies(library, 'edit', null, libFolder)};
     for (let item in list) {
-      if (!list[item]) {
-        output.libraries[item] = false;
-        output.ok = false;
+      if (!list[item]?.id) {
+        output.libraries[item] = {
+          optional: list[item].optional,
+          present: false
+        }
+        if (!list[item].optional) {
+          output.ok = false;
+        }
         continue;
       }
       const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
-      output.libraries[label] = fs.existsSync(`${config.folders.libraries}/${libraryDirs[list[item].id]}`);
-      if (!output.libraries[label]) {
+      output.libraries[label] = {
+        optional: list[item].optional,
+        present: fs.existsSync(`${config.folders.libraries}/${libraryDirs[list[item].id]}`)
+      }
+      if (!output.libraries[label].present) {
         output.ok = false;
       }
     }

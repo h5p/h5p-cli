@@ -413,6 +413,9 @@ module.exports = {
           continue;
         }
         const entry = libs[item];
+        if (!entry.id) {
+          continue;
+        }
         const libFolder = libraryDirs[entry.id];
         for (let jsItem of entry.preloadedJs) {
           preloadedJs.push(`"/${config.folders.libraries}/${libFolder}/${jsItem.path}"`);
@@ -508,6 +511,9 @@ module.exports = {
       let preloadedCss = [];
       for (let item in libs) {
         const entry = libs[item];
+        if (!entry.id) {
+          continue;
+        }
         const libFolder = libraryDirs[entry.id];
         for (let jsItem of entry.preloadedJs) {
           preloadedJs.push(`/${config.folders.libraries}/${libFolder}/${jsItem.path}`);
@@ -614,6 +620,9 @@ const computePreloaded = async (library, baseUrl) => {
   let preloadedCss = [];
   for (let item in libs) {
     const entry = libs[item];
+    if (!entry.id) {
+      continue;
+    }
     const folder = libraryDirs[entry.id];
     const label = `${entry.id}-${entry.version.major}.${entry.version.minor}.${entry.version.patch}`;
     const languageFolder = `${config.folders.libraries}/${folder}/language`;
@@ -658,6 +667,9 @@ const ajaxLibraries = async (options) => {
     libraries = [];
     for (let item of options.libraries) {
       item = item.split(' ')[0];
+      if (!registry.reversed[item]) {
+        continue;
+      }
       libraries.push(registry.reversed[item].shortName);
     }
   }
