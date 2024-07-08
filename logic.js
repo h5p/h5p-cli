@@ -304,6 +304,7 @@ module.exports = {
       else {
         list = toDo[dep].folder ? await getFile(`${config.folders.libraries}/${toDo[dep].folder}/library.json`, true)
           : getRepoFile(fromTemplate(config.urls.library.clone, { org, repo: repoName }), 'library.json', version, true);
+        list.optional = isOptional(list.parent, list.machineName);
         cache[dep] = list;
       }
       if (!list.title) {
