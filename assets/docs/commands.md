@@ -31,14 +31,14 @@ You can use this command to update existing registry entries.
   "H5P.Accordion": {
     "id": "H5P.Accordion", // library machine name
     "title": "Accordion",
-    "repo": {
+    "repo": { // optional
       "type": "github",
       "url": "https://github.com/h5p/h5p-accordion"
     },
     "author": "Batman",
     "runnable": true, // specify true if this is a main library from which you can create content types; false if it's a dependency for another
     "shortName": "h5p-accordion", // library name
-    "repoName": "h5p-accordion", // repository name
+    "repoName": "h5p-accordion", // optional repository name
     "org": "h5p" // github organization under which the library is published; optional; required for clone, install and deps commands
   }
 }
@@ -68,10 +68,10 @@ Running `h5p verify h5p-accordion` should return something like below if the lib
 ```
 {
   registry: true, // library found in registry
-  libraries: { // shows which dependencies are installed
-    'FontAwesome-4.5': true,
-    'H5P.AdvancedText-1.1': true,
-    'H5P.Accordion-1.0': true
+  libraries: { // shows which dependencies are installed; optional dependencies are ignored but should be present for the library to be fully featured
+    'FontAwesome-4.5': { optional: undefined, present: true },
+    'H5P.AdvancedText-1.1': { optional: undefined, present: true },
+    'H5P.Accordion-1.0': { optional: undefined, present: true }
   },
   ok: true // overall setup status
 }

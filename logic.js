@@ -269,8 +269,11 @@ module.exports = {
     }
     // determine if a library is a soft dependency of its parent
     const isOptional = (parent, machineName) => {
+      if (parent && parent.optional) {
+        return true;
+      }
       const finder = (element) => element.machineName === machineName;
-      if (parent.preloadedDependencies?.find(finder) !== undefined || parent.editorDependencies?.find(finder) !== undefined) {
+      if (parent?.preloadedDependencies?.find(finder) !== undefined || parent?.editorDependencies?.find(finder) !== undefined) {
         return false;
       }
       return true;
@@ -298,6 +301,7 @@ module.exports = {
       else {
         list = toDo[dep].folder ? await getFile(`${config.folders.libraries}/${toDo[dep].folder}/library.json`, true)
           : getRepoFile(fromTemplate(config.urls.library.clone, { org, repo: repoName }), 'library.json', version, true);
+        list.optional = isOptional(list.parent, list.machineName);
         cache[dep] = list;
       }
       if (!list.title) {
@@ -310,6 +314,7 @@ module.exports = {
         patch: list.patchVersion
       }
       done[level][dep].runnable = list.runnable;
+      done[level][dep].optional = list.optional;
       done[level][dep].preloadedJs = list.preloadedJs || [];
       done[level][dep].preloadedCss = list.preloadedCss || [];
       done[level][dep].preloadedDependencies = list.preloadedDependencies || [];
@@ -487,14 +492,22 @@ module.exports = {
     let list = await module.exports.computeDependencies(library, 'view', null, libFolder);
     list = {...list, ...await module.exports.computeDependencies(library, 'edit', null, libFolder)};
     for (let item in list) {
-      if (!list[item]) {
-        output.libraries[item] = false;
-        output.ok = false;
+      if (!list[item]?.id) {
+        output.libraries[item] = {
+          optional: list[item].optional,
+          present: false
+        }
+        if (!list[item].optional) {
+          output.ok = false;
+        }
         continue;
       }
       const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
-      output.libraries[label] = fs.existsSync(`${config.folders.libraries}/${libraryDirs[list[item].id]}`);
-      if (!output.libraries[label]) {
+      output.libraries[label] = {
+        optional: list[item].optional,
+        present: fs.existsSync(`${config.folders.libraries}/${libraryDirs[list[item].id]}`)
+      }
+      if (!list[item].optional && !output.libraries[label].present) {
         output.ok = false;
       }
     }
@@ -602,6 +615,7 @@ module.exports = {
     module.exports.generateInfo(folder, library);
   },
   parseLibraryFolders: async () => {
+    const registry = await module.exports.getRegistry();
     const output = {};
     const dirs = fs.readdirSync(config.folders.libraries);
     for (let folder of dirs) {
@@ -610,7 +624,20 @@ module.exports = {
         continue;
       }
       const info = await module.exports.getFile(libraryFile, true);
-      output[info.machineName] = folder;
+      const id = info.machineName;
+      output[id] = folder;
+      if (!registry.reversed[id]) {
+        registry.reversed[id] = 
+        {
+          "id": id,
+          "title": info.title,
+          "author": info.author,
+          "runnable": info.runnable,
+          "shortName": module.exports.machineToShort(id)
+        }
+        fs.writeFileSync(config.registry, JSON.stringify(registry.reversed));
+        console.log(`> registered local library ${id}`);
+      }
     }
     return output;
   },
@@ -621,7 +648,7 @@ module.exports = {
   registryEntryFromRepoUrl: function(gitUrl) {
     let { host, org, repoName } = parseGitUrl(gitUrl);
     const list = getRepoFile(gitUrl, 'library.json', 'master', true);
-    const shortName = this.machineToShort(list.machineName);
+    const shortName = module.exports.machineToShort(list.machineName);
     const type = host.split('.')[0];
     const output = {};
     output[list.machineName] = {

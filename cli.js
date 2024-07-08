@@ -220,8 +220,8 @@ const cli = {
   },
   // updates local library registry entry
   register: async (input) => {
-    const isUrl = ['http', 'git@'].includes(input.slice(0, 4)) ? true : false;
     try {
+      const isUrl = ['http', 'git@'].includes(input.slice(0, 4)) ? true : false;
       let registry = await logic.getRegistry();
       const entry = isUrl ? await logic.registryEntryFromRepoUrl(input) : JSON.parse(fs.readFileSync(input, 'utf-8'));
       registry.reversed = {...registry.reversed, ...entry};
