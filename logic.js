@@ -269,6 +269,9 @@ module.exports = {
     }
     // determine if a library is a soft dependency of its parent
     const isOptional = (parent, machineName) => {
+      if (!parent) {
+        return false;
+      }
       if (parent && parent.optional) {
         return true;
       }
@@ -301,7 +304,6 @@ module.exports = {
       else {
         list = toDo[dep].folder ? await getFile(`${config.folders.libraries}/${toDo[dep].folder}/library.json`, true)
           : getRepoFile(fromTemplate(config.urls.library.clone, { org, repo: repoName }), 'library.json', version, true);
-        list.optional = isOptional(list.parent, list.machineName);
         cache[dep] = list;
       }
       if (!list.title) {
@@ -314,7 +316,7 @@ module.exports = {
         patch: list.patchVersion
       }
       done[level][dep].runnable = list.runnable;
-      done[level][dep].optional = list.optional;
+      done[level][dep].optional = registry.regular[dep].optional === false ? false : isOptional(cache[toDo[dep].parent], list.machineName);
       done[level][dep].preloadedJs = list.preloadedJs || [];
       done[level][dep].preloadedCss = list.preloadedCss || [];
       done[level][dep].preloadedDependencies = list.preloadedDependencies || [];
