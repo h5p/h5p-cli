@@ -293,18 +293,15 @@ module.exports = {
         delete toDo[dep];
         return;
       }
-      module.exports.write(`>> ${dep} required by ${toDo[dep].parent} ... `);
       done[level][dep] = registry.regular[dep];
       let list;
       const { repoName } = registry.regular[dep]?.repo?.url ? parseGitUrl(registry.regular[dep].repo.url) : dep;
       if (cache[dep]) {
         list = cache[dep];
-        module.exports.write(' (cached) ');
       }
       else {
         list = toDo[dep].folder ? await getFile(`${config.folders.libraries}/${toDo[dep].folder}/library.json`, true)
           : getRepoFile(fromTemplate(config.urls.library.clone, { org, repo: repoName }), 'library.json', version, true);
-        list.optional = isOptional(list.parent, list.machineName);
         cache[dep] = list;
       }
       if (!list.title) {
@@ -318,6 +315,8 @@ module.exports = {
       }
       done[level][dep].runnable = list.runnable;
       done[level][dep].optional = registry.regular[dep].optional === false ? false : isOptional(cache[toDo[dep].parent], list.machineName);
+      cache[dep].optional = done[level][dep].optional;
+      module.exports.write(`>> ${dep} required by ${toDo[dep].parent} (${done[level][dep].optional ? 'optional' : 'required'}) ... `);
       done[level][dep].preloadedJs = list.preloadedJs || [];
       done[level][dep].preloadedCss = list.preloadedCss || [];
       done[level][dep].preloadedDependencies = list.preloadedDependencies || [];

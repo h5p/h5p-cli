@@ -676,7 +676,7 @@ const ajaxLibraries = async (options) => {
     libraries = [];
     for (let item of options.libraries) {
       item = item.split(' ')[0];
-      if (!registry.reversed[item]) {
+      if (!registry.reversed[item] || !libraryDirs[item]) {
         continue;
       }
       libraries.push(registry.reversed[item].shortName);
