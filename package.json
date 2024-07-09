@@ -4,6 +4,10 @@
   "description": "a tool for developing & testing H5P content types",
   "author": "andrei.busuioc@h5p.group",
   "license": "MIT",
+  "repository": {
+    "url": "https://github.com/h5p/h5p-cli",
+    "type": "git"
+  },
   "bin": {
     "h5p": "./h5p.js"
   },
