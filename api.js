@@ -788,7 +788,10 @@ const getLangLabels = async () => {
   return await logic.getFile(langFile, true);
 }
 
-/** Try to get user configuration */
+/**
+ * Try to get user configuration if available.
+ * @returns {Promise<Object>} User configuration.
+ */
 const getUserConfig = async () => {
   return await logic.getFile('config.json', true) || {};
 }
