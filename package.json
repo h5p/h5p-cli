@@ -1,6 +1,6 @@
 {
   "name": "h5p-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "a tool for developing & testing H5P content types",
   "author": "andrei.busuioc@h5p.group",
   "license": "MIT",
@@ -20,9 +20,7 @@
     "marked": "^5.1.0",
     "marked-terminal": "^5.2.0",
     "multer": "^1.4.5-lts.1",
-    "superagent": "^8.0.4"
-  },
-  "devDependencies": {
+    "superagent": "^8.0.4",
     "archiver": "^5.3.1",
     "gitignore-parser": "^0.0.2",
     "sanitize-html": "^2.12.1"
