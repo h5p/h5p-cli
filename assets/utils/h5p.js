@@ -8,6 +8,7 @@ var archiver = require('archiver');
 var outputWriter = require('./utility/output');
 const h5pIgnoreParser = require('./utility/h5p-ignore-parser');
 const repository = require('./utility/repository');
+const languageCodes = require('./utility/language-codes');
 
 /**
  * No options specified.
@@ -989,11 +990,18 @@ function itemUntranslatable(property, value, parent) {
       return false;
       break;
     case 'default':
-
+      if (typeof value !== 'string') {
+        return true;
+      }
       if (parent.type === 'select' || parent.widget === 'colorSelector') {
         return true;
       }
-
+      if (new RegExp(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).test(value) === true) { // color codes
+        return true;
+      }
+      if (languageCodes.indexOf(value.toLowerCase()) !== -1) { // language codes
+        return true;
+      }
       switch (typeof(value)) {
         case 'number':
           return true;
