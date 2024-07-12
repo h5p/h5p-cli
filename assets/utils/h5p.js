@@ -999,6 +999,9 @@ function itemUntranslatable(property, value, parent) {
       if (new RegExp(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).test(value) === true) { // color codes
         return true;
       }
+      if (new RegExp(/<\/?[a-z][^>]*>/ig).test(value) === true) { // html tags
+        return true;
+      }
       if (languageCodes.indexOf(value.toLowerCase()) !== -1) { // language codes
         return true;
       }
