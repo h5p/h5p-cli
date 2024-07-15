@@ -63,9 +63,9 @@ function languageComparison(language, assertLanguage, errors) {
 function validateLanguage(library, language) {
   // Get language data for comparison
   var testLang = getLanguageData(library, language);
-  h5p.createLanguageFile(library, 'en', () => {});
-  var nbLang = getLanguageData(library, 'en');
-  fs.unlinkSync(library + '/language/en.json');
+  h5p.createLanguageFile(library, 'default', () => {});
+  var nbLang = getLanguageData(library, 'default');
+  fs.unlinkSync(library + '/language/default.json');
 
   // Make sure language exists and has semantics
   if (typeof testLang === 'object' && testLang.semantics) {
