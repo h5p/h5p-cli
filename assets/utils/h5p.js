@@ -1005,17 +1005,6 @@ function itemUntranslatable(property, value, parent) {
       if (languageCodes.indexOf(value.toLowerCase()) !== -1) { // language codes
         return true;
       }
-      switch (typeof(value)) {
-        case 'number':
-          return true;
-          break;
-        case 'boolean':
-          return true;
-          break;
-        default:
-          return false;
-          break;
-      }
       break
     default:
       return true;
