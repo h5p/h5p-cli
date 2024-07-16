@@ -996,7 +996,7 @@ function itemUntranslatable(property, value, parent) {
       if (parent.type === 'select' || parent.widget === 'colorSelector') {
         return true;
       }
-      if (value.replaceAll(new RegExp(/<\/?[a-z][^>]*>/ig), '')) {
+      if (!value.replaceAll(new RegExp(/<\/?[a-z][^>]*>/ig), '')) {
         return true;
       }
       if (new RegExp(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).test(value) === true || ['rgb(', 'hsv '].indexOf(value.substr(0, 4)) !== -1) { // color codes
