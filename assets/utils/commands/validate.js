@@ -204,12 +204,6 @@ const validateLanguageFiles = (libraryDir, libraryJson, done) => {
   }
 };
 
-
-
-const validateLanguageFile = (file) => {
-
-};
-
 /**
  * Output result of comparison
  *

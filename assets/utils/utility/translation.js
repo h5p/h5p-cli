@@ -161,10 +161,11 @@ function isSafeTranslation(translation) {
   return translation === sanitized;
 }
 
-
-
 function getEditorLanguageDefaults(libraryDir) {
-  return JSON.parse(fs.readFileSync(`${libraryDir}/language/en.json`));
+  h5p.createLanguageFile(libraryDir, 'default', () => {});
+  const output = JSON.parse(fs.readFileSync(`${libraryDir}/language/default.json`));
+  fs.unlinkSync(libraryDir + '/language/default.json');
+  return output;
 }
 
 module.exports = {
