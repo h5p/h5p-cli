@@ -734,7 +734,15 @@ var commands = [
     shortDescription: 'Check that translations matches nb language',
     description: 'Checks that all languages and libraries provided have been correctly' +
     ' translated. When diff flag is supplied shows the differences between the translations',
-    handler: checkTranslations
+    handler: async (...inputList) => {
+      try {
+        await checkTranslations.apply(null, inputList);
+        process.exit(0);
+      }
+      catch (error) {
+        process.exit(1);
+      }
+    }
   },
   {
     name: 'build',
@@ -764,7 +772,14 @@ var commands = [
     syntax: '<library> [<library>]',
     shortDescription: 'Validate H5P libraries',
     description: 'Validate H5P is according to the specification',
-    handler: validate
+    handler: async (...inputList) => {
+      const result = await validate.apply(null, inputList);
+      const notValid = result.some((item) => item.status !== 'ok');
+      if (notValid) {
+        process.exit(1);
+      }
+      process.exit(0);
+    }
   }
 ];
 
