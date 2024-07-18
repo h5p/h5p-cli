@@ -17,7 +17,6 @@ module.exports = function (...inputList) {
         let ok = true;
         const libraries = input.getLibraries();
         const languages = input.getLanguages();
-        //return validateTranslations(libraries, languages, diff);
         translation.validateTranslation(libraries, languages)
           .then((result) => {
             for (let lib of result) {
