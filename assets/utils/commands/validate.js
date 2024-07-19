@@ -197,11 +197,11 @@ const validateLanguageFiles = (libraryDir, libraryJson, done) => {
         }
 
       });
-      fs.unlinkSync(libraryDir + '/language/default.json');
 
       done(results);
     });
   }
+  fs.unlinkSync(libraryDir + '/language/default.json');
 };
 
 /**
