@@ -955,9 +955,9 @@ function removeUntranslatables(field, name, parent) {
       }
     }
 
-    if (field !== null && (typeof parent === 'object') && Object.keys(field).length === 0) {
+    /* if (field !== null && (typeof parent === 'object') && Object.keys(field).length === 0) {
       field = undefined;
-    }
+    } */ // JI-6520
   }
   else if (name === undefined || itemUntranslatable(name, field, parent)) {
     field = undefined;
@@ -1704,7 +1704,6 @@ h5p.createLanguageFile = function (repo, languageCode, next) {
     fs.writeFileSync(languageFile, JSON.stringify({
       semantics: removeUntranslatables(semantics)
     }, null, 2));
-
     next(languageFile + ' created');
   });
 };
