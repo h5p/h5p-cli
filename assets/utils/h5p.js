@@ -954,10 +954,6 @@ function removeUntranslatables(field, name, parent) {
         delete field[property];
       }
     }
-
-    if (field !== null && (typeof parent === 'object') && Object.keys(field).length === 0) {
-      field = undefined;
-    }
   }
   else if (name === undefined || itemUntranslatable(name, field, parent)) {
     field = undefined;
@@ -1704,7 +1700,6 @@ h5p.createLanguageFile = function (repo, languageCode, next) {
     fs.writeFileSync(languageFile, JSON.stringify({
       semantics: removeUntranslatables(semantics)
     }, null, 2));
-
     next(languageFile + ' created');
   });
 };
