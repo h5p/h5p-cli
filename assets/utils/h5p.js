@@ -954,10 +954,6 @@ function removeUntranslatables(field, name, parent) {
         delete field[property];
       }
     }
-
-    /* if (field !== null && (typeof parent === 'object') && Object.keys(field).length === 0) {
-      field = undefined;
-    } */ // JI-6520
   }
   else if (name === undefined || itemUntranslatable(name, field, parent)) {
     field = undefined;
