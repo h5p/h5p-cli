@@ -12,7 +12,6 @@
     "h5p": "./h5p.js"
   },
   "dependencies": {
-    "@actions/core": "^1.10.1",
     "adm-zip": "^0.5.9",
     "archiver": "^5.3.1",
     "express": "^4.19.2",
