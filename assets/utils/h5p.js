@@ -928,19 +928,15 @@ function archiveDir(archive, path, alias) {
  * @param {String} field A field
  * @param {String} name Name of field
  */
-function removeUntranslatables(field, name, parent) {
-
-
+function removeUntranslatables(field, name, parent, parentName) {
   if(field instanceof Array) {
     const fieldParent = JSON.parse(JSON.stringify(field));
     for (var i = field.length; i >= 0; i--) {
-      field[i] = removeUntranslatables(field[i], undefined, fieldParent);
-
+      field[i] = removeUntranslatables(field[i], undefined, fieldParent, name);
       if (field[i] === undefined) {
         field.splice(i, 1);
       }
     }
-
     if (field.length === 0) {
       field = undefined;
     }
@@ -948,17 +944,21 @@ function removeUntranslatables(field, name, parent) {
   else if (typeof field === 'object') {
     const fieldParent = JSON.parse(JSON.stringify(field));
     for(var property in field) {
-      field[property] = removeUntranslatables(field[property], property, fieldParent);
-
+      field[property] = removeUntranslatables(field[property], property, fieldParent, name);
       if(field[property] === undefined) {
         delete field[property];
       }
+    }
+    if (field !== null && parentName !== 'fields' && Object.keys(field).length === 0) {
+      field = undefined;
     }
   }
   else if (name === undefined || itemUntranslatable(name, field, parent)) {
     field = undefined;
   }
-
+  if (field === null) {
+    field = undefined;
+  }
   return field;
 }
 
@@ -987,9 +987,6 @@ function itemUntranslatable(property, value, parent) {
       break;
     case 'default':
       if (typeof value !== 'string') {
-        return true;
-      }
-      if (parent.type === 'select' || parent.widget === 'colorSelector') {
         return true;
       }
       if (!value.replaceAll(new RegExp(/<\/?[a-z][^>]*>/ig), '')) {
