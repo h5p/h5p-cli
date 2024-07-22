@@ -7,6 +7,7 @@ const checkTranslations = require ('./commands/check-translations');
 const buildLibraries = require('./commands/build-libraries');
 const validate = require('./commands/validate');
 const Input = require('./utility/input');
+const core = require('@actions/core');
 
 var lf = '\u000A';
 var cr = '\u000D';
@@ -737,10 +738,9 @@ var commands = [
     handler: async (...inputList) => {
       try {
         await checkTranslations.apply(null, inputList);
-        process.exit(0);
       }
       catch (error) {
-        process.exit(1);
+        core.setFailed();
       }
     }
   },
@@ -776,9 +776,8 @@ var commands = [
       const result = await validate.apply(null, inputList);
       const notValid = result.some((item) => item.status !== 'ok');
       if (notValid) {
-        process.exit(1);
+        core.setFailed();
       }
-      process.exit(0);
     }
   }
 ];
