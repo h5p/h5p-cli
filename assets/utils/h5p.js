@@ -951,6 +951,8 @@ function removeUntranslatables(field, name, parent, parentName) {
         delete field[property];
       }
     }
+    
+    // remove empty objects if not under 'fields' parentName
     if (field !== null && parentName !== 'fields' && Object.keys(field).length === 0) {
       field = undefined;
     }
@@ -1009,7 +1011,7 @@ function itemUntranslatable(property, value, parent) {
       if (typeof value !== 'string') {
         return true;
       }
-      if (!value.replaceAll(new RegExp(/<\/?[a-z][^>]*>/ig), '')) {
+      if (!value.replaceAll(new RegExp(/<\/?[a-z][^>]*>/ig), '')) { // empty html tags
         return true;
       }
       if (new RegExp(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).test(value) === true || ['rgb(', 'hsv '].indexOf(value.substr(0, 4)) !== -1) { // color codes
