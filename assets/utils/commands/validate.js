@@ -101,6 +101,8 @@ const validateLanguageFiles = (libraryDir, libraryJson, done) => {
   if (!fs.existsSync(languageDir)) {
     return done(results);
   }
+  
+  h5p.createLanguageFile(libraryDir, 'default', () => {});
 
   const isEditorLib = isEditorLibrary(libraryJson);
 
@@ -169,53 +171,37 @@ const validateLanguageFiles = (libraryDir, libraryJson, done) => {
     // Add Semantics.json
     //fileNames['semantics.json'] = libraryDir + '/semantics.json';
     //
-    //
-
     h5p.readJSONFiles(fileNames, function (files) {
       // Need semantics.json
       //if(files['semantics.json']);
 
-      if (files['.en.json'] !== undefined) {
+      var defaultLang = files['default.json'].content;
 
-        var defaultLang = files['.en.json'].content;
+      Object.keys(files).forEach(filename => {
+        testLang = files[filename].content;
+        // Make sure language exists and has semantics
+        if (typeof testLang === 'object' && testLang.semantics) {
+          // Perform the language comparison
+          var validation = languageComparison(testLang.semantics, defaultLang.semantics);
 
-        Object.keys(files).forEach(filename => {
-          testLang = files[filename].content;
-          // Make sure language exists and has semantics
-          if (typeof testLang === 'object' && testLang.semantics) {
-            // Perform the language comparison
-            var validation = languageComparison(testLang.semantics, defaultLang.semantics);
+          results[filename] = {
+            status: validation.hasValidJson ? OK : ERROR,
+            message: validation.hasValidJson ? undefined : validation.errors /*'Language file differs from default.json'*/
+          };
+        }
+        else {
+          results[filename] = {
+            status: ERROR,
+            message: 'Empty/invalid language file'
+          };
+        }
 
-            results[filename] = {
-              status: validation.hasValidJson ? OK : ERROR,
-              message: validation.hasValidJson ? undefined : validation.errors /*'Language file differs from .en.json'*/
-            };
-          }
-          else {
-            results[filename] = {
-              status: ERROR,
-              message: 'Empty/invalid language file'
-            };
-          }
-
-        });
-      }
-      else {
-        results['all.json'] = {
-          status: WARNING,
-          message: 'No .en.json to compare to'
-        };
-      }
+      });
 
       done(results);
     });
   }
-};
-
-
-
-const validateLanguageFile = (file) => {
-
+  fs.unlinkSync(libraryDir + '/language/default.json');
 };
 
 /**

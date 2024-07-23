@@ -13,16 +13,16 @@
   },
   "dependencies": {
     "adm-zip": "^0.5.9",
+    "archiver": "^5.3.1",
     "express": "^4.19.2",
+    "gitignore-parser": "^0.0.2",
     "he": "^1.2.0",
     "image-size": "^1.0.2",
     "livereload": "^0.9.3",
     "marked": "^5.1.0",
     "marked-terminal": "^5.2.0",
     "multer": "^1.4.5-lts.1",
-    "superagent": "^8.0.4",
-    "archiver": "^5.3.1",
-    "gitignore-parser": "^0.0.2",
-    "sanitize-html": "^2.12.1"
+    "sanitize-html": "^2.12.1",
+    "superagent": "^8.0.4"
   }
 }

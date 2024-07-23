@@ -63,7 +63,9 @@ function languageComparison(language, assertLanguage, errors) {
 function validateLanguage(library, language) {
   // Get language data for comparison
   var testLang = getLanguageData(library, language);
-  var nbLang = getLanguageData(library, '.en');
+  h5p.createLanguageFile(library, 'default', () => {});
+  var nbLang = getLanguageData(library, 'default');
+  fs.unlinkSync(library + '/language/default.json');
 
   // Make sure language exists and has semantics
   if (typeof testLang === 'object' && testLang.semantics) {
@@ -158,8 +160,6 @@ function isSafeTranslation(translation) {
 
   return translation === sanitized;
 }
-
-
 
 function getEditorLanguageDefaults(libraryDir) {
   return JSON.parse(fs.readFileSync(`${libraryDir}/language/en.json`));

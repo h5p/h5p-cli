@@ -9,14 +9,33 @@ const translation = require('../utility/translation');
  * @param {Array} inputList
  */
 module.exports = function (...inputList) {
-  const input = new Input(inputList);
-  const diff = input.hasFlag('-diff');
-  input.init()
-    .then(() => {
-      const libraries = input.getLibraries();
-      const languages = input.getLanguages();
-      validateTranslations(libraries, languages, diff);
-    });
+  return new Promise ((resolve, reject) => {
+    const input = new Input(inputList);
+    const diff = input.hasFlag('-diff');
+    input.init()
+      .then(() => {
+        let ok = true;
+        const libraries = input.getLibraries();
+        const languages = input.getLanguages();
+        translation.validateTranslation(libraries, languages)
+          .then((result) => {
+            for (let lib of result) {
+              for (let comp of lib) {
+                outputComparison(diff, comp);
+                if (comp.failed) {
+                  ok = false;
+                }
+              }
+            }
+            if (ok) {
+              resolve();
+            }
+            else {
+              reject();
+            }
+          });
+      });
+  });
 };
 
 /**
@@ -27,41 +46,9 @@ module.exports = function (...inputList) {
  */
 const outputComparison = (diff, comparison) => {
   output.printResults(comparison);
-  if (diff) {
+  if (diff && Array.isArray(comparison.errors)) {
     comparison.errors.forEach(err => {
       output.printError(err);
     })
   }
 };
-
-/**
- * Compare all languages
- *
- * @param {boolean} diff Outputs diff if true
- * @param {Object} languageComparison Output of language comparison
- */
-const getLanguageComparison = (diff, languageComparison) => {
-  languageComparison.forEach(outputComparison.bind(this, diff));
-};
-
-/**
- * Get all language comparisons from libraries
- *
- * @param diff
- * @param {Array} libraries
- */
-function getLanguages(diff, libraries) {
-  libraries.forEach(getLanguageComparison.bind(this, diff));
-}
-
-/**
- *
- *
- * @param libraries
- * @param languages
- * @param diff
- */
-function validateTranslations(libraries, languages, diff) {
-  translation.validateTranslation(libraries, languages)
-    .then(getLanguages.bind(this, diff));
-}
