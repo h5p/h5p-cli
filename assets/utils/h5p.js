@@ -927,6 +927,8 @@ function archiveDir(archive, path, alias) {
  *
  * @param {String} field A field
  * @param {String} name Name of field
+ * @param {String} parent Parent object
+ * @param {String} parentName Property name of parent object
  */
 function removeUntranslatables(field, name, parent, parentName) {
   if(field instanceof Array) {
@@ -949,8 +951,28 @@ function removeUntranslatables(field, name, parent, parentName) {
         delete field[property];
       }
     }
+    
+    // remove empty objects if not under 'fields' parentName
     if (field !== null && parentName !== 'fields' && Object.keys(field).length === 0) {
       field = undefined;
+    }
+    
+    // Remove unnecessary nested 'field' structures with only empty objects
+    const hasOnlyFields = field?.fields && Array.isArray(field.fields);
+    if (hasOnlyFields && field.fields.every(subField => {
+      return typeof subField === 'object' && Object.keys(subField).length === 0;
+    })) {
+      // Remove just the empty 'fields', let the rest be
+      if(Object.keys(field).length !== 1) {
+        delete field.fields;
+      } else {
+        field = undefined;
+      }
+    }
+
+    // Remove 'default' attribute if 'options' is present and there are no other deeper structures
+    if(field?.options && field.default) {
+      delete field.default;
     }
   }
   else if (name === undefined || itemUntranslatable(name, field, parent)) {
@@ -989,7 +1011,7 @@ function itemUntranslatable(property, value, parent) {
       if (typeof value !== 'string') {
         return true;
       }
-      if (!value.replaceAll(new RegExp(/<\/?[a-z][^>]*>/ig), '')) {
+      if (!value.replaceAll(new RegExp(/<\/?[a-z][^>]*>/ig), '')) { // empty html tags
         return true;
       }
       if (new RegExp(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).test(value) === true || ['rgb(', 'hsv '].indexOf(value.substr(0, 4)) !== -1) { // color codes
