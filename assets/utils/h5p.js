@@ -1731,7 +1731,8 @@ h5p.createLanguageFile = function (repo, languageCode, next) {
  * @namespace h5p
  */
 h5p.createDefaultLanguage = function (libraryDir) {
-  return removeUntranslatables(JSON.parse(fs.readFileSync(`${libraryDir}/semantics.json`)))
+  const file = `${libraryDir}/semantics.json`;
+  return fs.existsSync(file) ? removeUntranslatables(JSON.parse(fs.readFileSync(file))) : {};
 };
 
 /**
