@@ -1725,6 +1725,16 @@ h5p.createLanguageFile = function (repo, languageCode, next) {
 };
 
 /**
+ * Create default language object for a given repo
+ *
+ * @public
+ * @namespace h5p
+ */
+h5p.createDefaultLanguage = function (libraryDir) {
+  return removeUntranslatables(JSON.parse(fs.readFileSync(`${libraryDir}/semantics.json`)))
+};
+
+/**
  * Pack repos
  *
  * @param {string[]} repos Repos that will be packed

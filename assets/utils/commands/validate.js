@@ -172,7 +172,7 @@ const validateLanguageFiles = (libraryDir, libraryJson, done) => {
       // Need semantics.json
       //if(files['semantics.json']);
 
-      var defaultLangSemantics = JSON.parse(fs.readFileSync(`${libraryDir}/semantics.json`));
+      var defaultLangSemantics = h5p.createDefaultLanguage(libraryDir);
 
       Object.keys(files).forEach(filename => {
         testLang = files[filename].content;
