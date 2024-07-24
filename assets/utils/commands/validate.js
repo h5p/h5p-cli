@@ -195,7 +195,6 @@ const validateLanguageFiles = (libraryDir, libraryJson, done) => {
             message: 'Empty/invalid language file'
           };
         }
-
       });
       fs.unlinkSync(libraryDir + '/language/default.json');
       done(results);

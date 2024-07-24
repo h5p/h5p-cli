@@ -963,15 +963,16 @@ function removeUntranslatables(field, name, parent, parentName) {
       return typeof subField === 'object' && Object.keys(subField).length === 0;
     })) {
       // Remove just the empty 'fields', let the rest be
-      if(Object.keys(field).length !== 1) {
+      if (Object.keys(field).length !== 1) {
         delete field.fields;
-      } else {
+      }
+      else {
         field = undefined;
       }
     }
 
-    // Remove 'default' attribute if 'options' is present and there are no other deeper structures
-    if(field?.options && field.default) {
+    // Remove 'default' attribute if 'options' is present
+    if (field?.options && field.default) {
       delete field.default;
     }
   }
