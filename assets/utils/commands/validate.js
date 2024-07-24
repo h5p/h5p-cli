@@ -102,8 +102,6 @@ const validateLanguageFiles = (libraryDir, libraryJson, done) => {
     return done(results);
   }
   
-  h5p.createLanguageFile(libraryDir, 'default', () => {});
-
   const isEditorLib = isEditorLibrary(libraryJson);
 
   var languageFiles = fs.readdirSync(languageDir);
@@ -163,7 +161,6 @@ const validateLanguageFiles = (libraryDir, libraryJson, done) => {
           };
         }
       });
-
       done(results);
     });
   }
@@ -175,14 +172,14 @@ const validateLanguageFiles = (libraryDir, libraryJson, done) => {
       // Need semantics.json
       //if(files['semantics.json']);
 
-      var defaultLang = files['default.json'].content;
+      var defaultLangSemantics = JSON.parse(fs.readFileSync(`${libraryDir}/semantics.json`));
 
       Object.keys(files).forEach(filename => {
         testLang = files[filename].content;
         // Make sure language exists and has semantics
         if (typeof testLang === 'object' && testLang.semantics) {
           // Perform the language comparison
-          var validation = languageComparison(testLang.semantics, defaultLang.semantics);
+          var validation = languageComparison(testLang.semantics, defaultLangSemantics);
 
           results[filename] = {
             status: validation.hasValidJson ? OK : ERROR,
@@ -195,13 +192,10 @@ const validateLanguageFiles = (libraryDir, libraryJson, done) => {
             message: 'Empty/invalid language file'
           };
         }
-
       });
-
       done(results);
     });
   }
-  fs.unlinkSync(libraryDir + '/language/default.json');
 };
 
 /**
