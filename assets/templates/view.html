@@ -71,6 +71,7 @@
     const sessionName = document.getElementById('sessionName');
     const sessionSelect = document.getElementById('sessions');
     const newSessionButton = document.getElementById('newSessionButton');
+    const resetSessionButton = document.getElementById('resetSessionButton');
     const saveSessionButton = document.getElementById('saveSessionButton');
     const session = '{session}';
     const sessions = {sessions};
@@ -82,6 +83,29 @@
     const newSessionEvent = () => {
       newSession.classList.toggle('hidden');
     }
+
+    /*
+     * Reset session/task
+     */
+    const resetSessionEvent = () => {
+      try {
+        const iframeH5PObject =
+          document.querySelector('iframe.h5p-iframe').contentWindow.H5P;
+
+        const instance = iframeH5PObject.instances[0];
+
+        if (typeof instance?.resetTask !== 'function') {
+          return; // Library does not implement resetTask()
+        }
+
+        instance.resetTask();
+        iframeH5PObject.deleteUserData(instance.contentId, 'state', 0);
+      }
+      catch(error) {
+        // Intentionally left blank
+      }
+    }
+
     const saveSessionEvent = () => {
       params.set('session', sessionName.value);
       window.location.href = `/view/{library}/{folder}?${params.toString()}`;
@@ -94,6 +118,7 @@
     sessionSelect.innerHTML = options;
     sessionSelect.addEventListener('change', sessionChanged);
     newSessionButton.addEventListener('click', newSessionEvent);
+    resetSessionButton.addEventListener('click', resetSessionEvent);
     saveSessionButton.addEventListener('click', saveSessionEvent);
   });
 </script>
@@ -142,6 +167,7 @@
         <input type="text" class="input" id="sessionName" placeholder="{lang_sessionName}">
         <div class="button" id="saveSessionButton">{lang_createSession}</div>
       </div>
+      <button class="button" id="resetSessionButton">{lang_resetSession}</div>
     </div>
   </div>
 </div>

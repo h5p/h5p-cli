@@ -16,6 +16,7 @@
   "lang_userStateSession": "användartillståndssession",
   "lang_newSession": "ny session",
   "lang_sessionName": "sessionens namn",
+  "lang_resetSession": "reset session",
   "lang_createSession": "skapa session",
   "lang_saveAllChanges": "spara alla ändringar"
 }
