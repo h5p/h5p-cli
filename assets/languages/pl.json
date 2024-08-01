@@ -16,6 +16,7 @@
   "lang_userStateSession": "sesja stanu użytkownika",
   "lang_newSession": "nowa sesja",
   "lang_sessionName": "nazwa sesji",
+  "lang_resetSession": "reset session",
   "lang_createSession": "utwórz sesję",
   "lang_saveAllChanges": "zapisz wszystkie zmiany"
 }
