@@ -112,6 +112,23 @@ module.exports = {
       handleError(error, response);
     }
   },
+  // deletes the session file used for resume functionality
+  resetUserData: (request, response, next) => {
+    try {
+      const dataFile = `content/${request.params.folder}/sessions/${session.name}.json`;
+      response.set('Content-Type', 'application/json');
+      if (fs.existsSync(dataFile)) {
+        fs.unlinkSync(dataFile);
+        response.end(JSON.stringify({success: true}));
+      }
+      else {
+        response.end(JSON.stringify({success: true, message: 'no_file'}));
+      }
+    }
+    catch (error) {
+      handleError(error, response);
+    }
+  },
   // retrieves session data for resume functionality
   getUserData: (request, response, next) => {
     try {

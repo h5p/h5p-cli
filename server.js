@@ -26,6 +26,7 @@ app.post('/edit/:library/:folder/files', multer.single('file'), api.uploadFile);
 app.post('/edit/:library/:folder', multer.none(), api.saveContent);
 app.get('/content-user-data/:folder/:type/:id', api.getUserData);
 app.post('/content-user-data/:folder/:type/:id', api.setUserData);
+app.delete('/content-user-data/:folder', api.resetUserData);
 app.use(`/${config.folders.assets}`, express.static(`${require.main.path}/${config.folders.assets}`))
 app.use(express.static('./'));
 

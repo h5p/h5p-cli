@@ -83,29 +83,22 @@
     const newSessionEvent = () => {
       newSession.classList.toggle('hidden');
     }
-
-    /*
-     * Reset session/task
-     */
-    const resetSessionEvent = () => {
+    const resetSessionEvent = async () => {
       try {
-        const iframeH5PObject =
-          document.querySelector('iframe.h5p-iframe').contentWindow.H5P;
-
-        const instance = iframeH5PObject.instances[0];
-
-        if (typeof instance?.resetTask !== 'function') {
-          return; // Library does not implement resetTask()
+        const instance = document.querySelector('iframe.h5p-iframe').contentWindow.H5P.instances[0];
+        if (typeof instance?.resetTask !== 'function') { // no resetTask present so we delete the session file instead :)
+          await fetch('{baseUrl}/content-user-data/{folder}', { method: 'DELETE' });
+          window.location.href = `/view/{library}/{folder}?${params.toString()}`;
         }
-
-        instance.resetTask();
-        iframeH5PObject.deleteUserData(instance.contentId, 'state', 0);
+        else {
+          instance.resetTask();
+          iframeH5PObject.deleteUserData(instance.contentId, 'state', 0);
+        }
       }
-      catch(error) {
-        // Intentionally left blank
+      catch (error) {
+        console.log(error);
       }
     }
-
     const saveSessionEvent = () => {
       params.set('session', sessionName.value);
       window.location.href = `/view/{library}/{folder}?${params.toString()}`;
