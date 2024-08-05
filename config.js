@@ -29,7 +29,8 @@ module.exports = {
     clone: ['h5p-editor-php-library', 'h5p-php-library'],
     setup: ['h5p-math-display']
   },
-  registry: 'libraryRegistry.json'
+  registry: 'libraryRegistry.json',
+  saveFreq: 30
 }
 if (process.argv[3] && process.argv[2] === 'server') {
   module.exports.port = +process.argv[3];

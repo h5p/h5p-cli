@@ -3,7 +3,7 @@ const path = require('path');
 const he = require('he');
 const imageSize = require('image-size');
 const logic = require('./logic.js');
-const config = require('./config.js');
+const config = require('./configLoader.js');
 const l10n = require('./assets/l10n.json');
 const supportedLanguages = require(`${require.main.path}/${config.folders.assets}/languageCatcher.js`);
 let session = {
@@ -342,10 +342,8 @@ module.exports = {
   saveContent: (request, response, next) => {
     try {
       const input = JSON.parse(request.body.parameters);
-
       const currentParams = fs.readFileSync(`content/${request.params.folder}/content.json`, 'utf-8');
       const newParams = JSON.stringify(input.params);
-
       fs.writeFileSync(`content/${request.params.folder}/content.json`, newParams);
       const infoFile = `content/${request.params.folder}/h5p.json`;
       let info = JSON.parse(fs.readFileSync(infoFile, 'utf-8'));
@@ -376,12 +374,9 @@ module.exports = {
         }
       }
       const simple = request.query.simple;
-
       if (currentParams !== '{}' && currentParams !== newParams) {
-        // Content has been changed, resetting user data to prevent invalid state
-        resetContentUserData(request.params.folder);
+        resetContentUserData(request.params.folder); // content changed; reset user data
       }
-
       response.redirect(`/${simple ? 'edit' : 'view'}/${request.params.library}/${request.params.folder}${simple ? '?simple=1' : ''}`);
     }
     catch (error) {
@@ -610,7 +605,8 @@ module.exports = {
         metadata,
         contentUserData: JSON.stringify(userData.resume),
         watcher: config.files.watch,
-        simple: request.query.simple ? 'hidden' : ''
+        simple: request.query.simple ? 'hidden' : '',
+        saveFreq: config.saveFreq
       }
       input = {...input, ...labels};
       response.set('Content-Type', 'text/html');
@@ -911,25 +907,20 @@ const getLangLabels = async () => {
   return await logic.getFile(langFile, true);
 }
 
-/**
- * Reset content user data.
+ /* Reset content user data.
  * @param {string} folder Folder name (contentId) if content to reset user data for.
  */
 const resetContentUserData = (folder) => {
   const sessionsDir = `content/${folder}/sessions`;
-
   fs.readdirSync(sessionsDir).forEach((file) => {
     if (path.extname(file) !== '.json') {
       return;
     }
-
     const dataFile = path.join(sessionsDir, file);
-
     const data = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
     data.resume.forEach(entry => {
       entry.state = null; // Means to reset state for H5P core
     });
-
     fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
   });
 };

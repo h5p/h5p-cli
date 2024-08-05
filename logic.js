@@ -2,7 +2,7 @@ const { execSync } = require("child_process");
 const fs = require('fs');
 const superAgent = require('superagent');
 const admZip = require("adm-zip");
-const config = require('./config.js');
+const config = require('./configLoader.js');
 // builds content from template and input
 const fromTemplate = (template, input) => {
   for (let item in input) {

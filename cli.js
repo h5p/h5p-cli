@@ -1,7 +1,7 @@
 const { execSync } = require("child_process");
 const fs = require('fs');
 const logic = require('./logic.js');
-const config = require('./config.js');
+const config = require('./configLoader.js');
 const utils = require('./assets/utils/cli.js');
 let marked = require('marked');
 const markedTerminal = require('marked-terminal');
