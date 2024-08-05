@@ -1,14 +1,13 @@
 # Configuration
-You can optionally add a file in JSON format named `config.json` to your
-development environment directory in order to adjust certain settings.
-
-The supported properties currently are:
-- _saveFreq : number_: Interval in seconds at which the server tries to save
-the current user state. Defaults to 30.
-
+You can optionally update the default [config.js](../../config.js) variables by creating a JS file named `config.js` in your development environment directory.
 ## Example
 ```
-{
-  "saveFreq": 15
-}
+const config = require(`${require.main.path}/config.js`);
+
+// user config
+config.saveFreq = 15;
+// end of user config
+
+module.exports = config;
 ```
+This will update the `saveFreq` variable to `15`.
