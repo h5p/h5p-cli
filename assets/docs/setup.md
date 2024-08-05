@@ -22,19 +22,19 @@ An example library which corresponds to the "Hello World" tutorial can be found 
 Libraries that can be automatically installed are stored in the local library registry. The registry is a json file `libraryRegistry.json`.  
 Running `h5p setup <library>` may return the `unregistered library` error. This means that the local library registry is missing this library. We have to find its repository url and register it.  
 As an example, run `h5p register https://github.com/otacke/h5p-portfolio` to register the `h5p-portfolio` library in the local registry.  
-Run `h5p verify h5p-portfolio` to check that all of the required dependecies are registered for `h5p-portfolio`. Then find their repository urls and register them (if missing).
+Run `h5p missing h5p-portfolio` to list the unregistered dependencies for `h5p-portfolio`. Then find their repository urls and register them.  
 ```
 h5p register https://github.com/otacke/h5p-portfolio-placeholder
 h5p register https://github.com/otacke/h5p-portfolio-chapter
 h5p register https://github.com/otacke/h5p-editor-portfolio
 ```
-Run `h5p verify h5p-portfolio` again to check for any unregistered dependencies for the newly registered ones. And register them.  
+Run `h5p missing h5p-portfolio` again to list any unregistered dependencies for the newly registered ones. And register them.  
 ```
 h5p register https://github.com/otacke/h5p-file-for-download
 h5p register https://github.com/otacke/h5p-editor-portfolio-placeholder
 h5p register https://github.com/otacke/h5p-editor-portfolio-chapter
 ```
-Run `h5p verify h5p-portfolio` again to make sure there are no other unregistered dependencies.  
+Run `h5p missing h5p-portfolio` again to make sure there are no other unregistered dependencies.  
 Finally, run `h5p setup h5p-portfolio` to install the library and its dependencies.  
 You can use the `git@github.com:otacke/h5p-portfolio.git` url format when dealing with private repositories.  
 

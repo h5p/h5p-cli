@@ -89,25 +89,27 @@ const cli = {
   // computes missing dependencies for h5p library
   missing: async (library) => {
     try {
-      const missing = {};
+      const libraryDirs = await logic.parseLibraryFolders();
+      const registry = await logic.getRegistry();
+      const missing = {}; // list of missing dependencies (key) with true for optional & false for required (value)
       const parseMissing = (result, item) => {
-        if (typeof result[item].optional !== 'undefined' && (typeof missing[item] === 'undefined' || missing[item])) {
+        if (!registry.regular[item] && (typeof missing[item] === 'undefined' || missing[item])) {
           missing[item] = result[item].optional;
         }
       }
-      let result = await logic.computeDependencies(library, 'view');
+      let result = await logic.computeDependencies(library, 'view', null, libraryDirs[registry.regular[library].id]);
       for (let item in result) {
-        if (typeof result[item].optional !== 'undefined') {
+        if (result[item].optional) {
           parseMissing(result, item);
         }
         else {
-          const list = await logic.computeDependencies(item, 'edit');
+          const list = await logic.computeDependencies(item, 'edit', null, libraryDirs[registry.regular[item].id]);
           for (let elem in list) {
             parseMissing(list, elem);
           }
         }
       }
-      result = await logic.computeDependencies(library, 'edit');
+      result = await logic.computeDependencies(library, 'edit', null, libraryDirs[registry.regular[library].id]);
       for (let item in result) {
         parseMissing(result, item);
       }

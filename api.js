@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const he = require('he');
 const imageSize = require('image-size');
 const logic = require('./logic.js');
@@ -107,6 +108,23 @@ module.exports = {
       fs.writeFileSync(dataFile, JSON.stringify(data));
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify({success: true}));
+    }
+    catch (error) {
+      handleError(error, response);
+    }
+  },
+  // deletes the session file used for resume functionality
+  resetUserData: (request, response, next) => {
+    try {
+      const dataFile = `content/${request.params.folder}/sessions/${session.name}.json`;
+      response.set('Content-Type', 'application/json');
+      if (fs.existsSync(dataFile)) {
+        fs.unlinkSync(dataFile);
+        response.end(JSON.stringify({success: true}));
+      }
+      else {
+        response.end(JSON.stringify({success: true, message: 'no_file'}));
+      }
     }
     catch (error) {
       handleError(error, response);
@@ -288,7 +306,17 @@ module.exports = {
       if (!fs.existsSync(targetFolder)) {
         fs.mkdirSync(targetFolder);
       }
-      const ext = request.file.originalname.split('.')?.pop() || '';
+
+      const ext =
+        (request.file.originalname.split('.')?.pop() || '').toLowerCase();
+
+      const valid =
+        validateFileForUpload(form.type, request.file.mimetype, ext);
+
+      if (valid !== 'OK') {
+        throw new Error(valid);
+      }
+
       const path = `${form.type}s/${request.file.filename}.${ext}`;
       const targetFile = `${targetFolder}/${request.file.filename}.${ext}`;
       fs.renameSync(`${request.file.path}`, targetFile);
@@ -314,7 +342,9 @@ module.exports = {
   saveContent: (request, response, next) => {
     try {
       const input = JSON.parse(request.body.parameters);
-      fs.writeFileSync(`content/${request.params.folder}/content.json`, JSON.stringify(input.params));
+      const currentParams = fs.readFileSync(`content/${request.params.folder}/content.json`, 'utf-8');
+      const newParams = JSON.stringify(input.params);
+      fs.writeFileSync(`content/${request.params.folder}/content.json`, newParams);
       const infoFile = `content/${request.params.folder}/h5p.json`;
       let info = JSON.parse(fs.readFileSync(infoFile, 'utf-8'));
       info = {...info, ...input.metadata};
@@ -344,6 +374,9 @@ module.exports = {
         }
       }
       const simple = request.query.simple;
+      if (currentParams !== '{}' && currentParams !== newParams) {
+        resetContentUserData(request.params.folder); // content changed; reset user data
+      }
       response.redirect(`/${simple ? 'edit' : 'view'}/${request.params.library}/${request.params.folder}${simple ? '?simple=1' : ''}`);
     }
     catch (error) {
@@ -585,6 +618,93 @@ module.exports = {
     }
   }
 }
+
+/**
+ * Validate file for upload by mime type and extension.
+ * @param {string} uploadFieldType Upload field type.
+ * @param {string} mimeType File's mime type.
+ * @param {string} extension File's extension.
+ * @returns {string} Error message or 'OK'.
+ */
+const validateFileForUpload = (uploadFieldType, mimeType, extension) => {
+  let allowed;
+
+  // Set allowed extensions per mime type depending on upload field type
+  switch (uploadFieldType) {
+    // Image upload field
+    case 'image':
+      allowed = {
+        'image/png': ['png'],
+        'image/jpeg': ['jpg', 'jpeg'],
+        'image/gif': ['gif'],
+      };
+      break;
+
+    // Audio upload field
+    case 'audio':
+      allowed = {
+        'audio/mpeg': ['mp3'],
+        'audio/mp3': ['mp3'],
+        'audio/mp4': ['m4a'],
+        'audio/x-wav': ['wav'],
+        'audio/wav': ['wav'],
+        'audio/ogg': ['ogg'],
+      };
+      break;
+
+    // Video upload field
+    case 'video':
+      allowed = {
+        'video/mp4': ['mp4'],
+        'video/webm': ['webm'],
+        'video/ogg': ['ogv'],
+      };
+      break;
+
+    // File upload field
+    case 'file':
+      const allowedExtensions = config.files.patterns.allowed.toString()
+        .replace(/[^a-zA-Z0-9|]/g, '')
+        .split('|');
+
+      mimeType = '*'; // Allow allowedExtensions for all mime types
+      allowed = { mimeType : allowedExtensions };
+      break;
+
+    default:
+      allowed = {};
+  }
+
+  const isExtensionAllowed = (allowed[mimeType] ?? []).includes(extension);
+
+  const message = isExtensionAllowed ?
+    'OK' :
+    `Invalid ${uploadFieldType} file format.`;
+
+  const extensionsToUse = isExtensionAllowed ?
+    '' :
+    listExtensions(Object.values(allowed).flat());
+
+  return [message, extensionsToUse].filter(Boolean).join(' ');
+}
+
+/**
+ * List extension options as human language string.
+ * @param {string[]} extensions List of extensions.
+ * @returns {string} Human language string.
+ */
+const listExtensions = (extensions = []) => {
+  if (!Array.isArray(extensions) || !extensions.length) {
+    return '';
+  }
+  else if (extensions.length === 1) {
+    return `Use ${extensions[0]}.`;
+  }
+  else {
+    return `Use ${extensions.slice(0, -1).join(', ')} or ${extensions.slice(-1)}.`;
+  }
+};
+
 // parses content.json objects for entries of file type
 const parseContentFiles = (entries) => {
   let toDo = [];
@@ -678,7 +798,7 @@ const ajaxLibraries = async (options) => {
     libraries = [];
     for (let item of options.libraries) {
       item = item.split(' ')[0];
-      if (!registry.reversed[item]) {
+      if (!registry.reversed[item] || !libraryDirs[item]) {
         continue;
       }
       libraries.push(registry.reversed[item].shortName);
@@ -788,10 +908,27 @@ const getLangLabels = async () => {
   return await logic.getFile(langFile, true);
 }
 
-/**
- * Try to get user configuration if available.
+ /* Try to get user configuration if available.
  * @returns {Promise<Object>} User configuration.
  */
 const getUserConfig = async () => {
   return await logic.getFile('config.json', true) || {};
 }
+
+ /* Reset content user data.
+ * @param {string} folder Folder name (contentId) if content to reset user data for.
+ */
+const resetContentUserData = (folder) => {
+  const sessionsDir = `content/${folder}/sessions`;
+  fs.readdirSync(sessionsDir).forEach((file) => {
+    if (path.extname(file) !== '.json') {
+      return;
+    }
+    const dataFile = path.join(sessionsDir, file);
+    const data = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
+    data.resume.forEach(entry => {
+      entry.state = null; // Means to reset state for H5P core
+    });
+    fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
+  });
+};
