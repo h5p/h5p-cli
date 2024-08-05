@@ -85,7 +85,8 @@
     }
     const resetSessionEvent = async () => {
       try {
-        const instance = document.querySelector('iframe.h5p-iframe').contentWindow.H5P.instances[0];
+        const iframeH5PObject = document.querySelector('iframe.h5p-iframe').contentWindow.H5P;
+        const instance = iframeH5PObject.instances[0];
         if (typeof instance?.resetTask !== 'function') { // no resetTask present so we delete the session file instead :)
           await fetch('{baseUrl}/content-user-data/{folder}', { method: 'DELETE' });
           window.location.href = `/view/{library}/{folder}?${params.toString()}`;
