@@ -3,7 +3,7 @@ const path = require('path');
 const he = require('he');
 const imageSize = require('image-size');
 const logic = require('./logic.js');
-const config = require('./config.js');
+const config = require('./configLoader.js');
 const l10n = require('./assets/l10n.json');
 const supportedLanguages = require(`${require.main.path}/${config.folders.assets}/languageCatcher.js`);
 let session = {
@@ -581,7 +581,6 @@ module.exports = {
       const machineName = `${id} ${libs[library].version.major}.${libs[library].version.minor}`;
       const labels = await getLangLabels();
       const libraryDirectories = JSON.stringify((await ajaxLibraries({ machineName: id })).directories);
-      const userConfig = await getUserConfig();
       let input = {
         assets: config.folders.assets,
         libraries: config.folders.libraries,
@@ -607,7 +606,7 @@ module.exports = {
         contentUserData: JSON.stringify(userData.resume),
         watcher: config.files.watch,
         simple: request.query.simple ? 'hidden' : '',
-        saveFreq: userConfig.saveFreq || 30
+        saveFreq: config.saveFreq
       }
       input = {...input, ...labels};
       response.set('Content-Type', 'text/html');
@@ -906,13 +905,6 @@ const getLangLabels = async () => {
     langFile = `${config.folders.assets}/languages/en.json`;
   }
   return await logic.getFile(langFile, true);
-}
-
- /* Try to get user configuration if available.
- * @returns {Promise<Object>} User configuration.
- */
-const getUserConfig = async () => {
-  return await logic.getFile('config.json', true) || {};
 }
 
  /* Reset content user data.
