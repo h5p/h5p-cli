@@ -1021,9 +1021,11 @@ function itemUntranslatable(property, value, parent) {
         // 4 digit hex color codes incl. alpha channel
         new RegExp(/^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{4})$/).test(value) === true ||
         // rgb(a) color codes, sloppy check
-        new RegExp(/^rgb(a)?\([\d\s,\.\/%]+\)$/).test(value) === true ||
+        new RegExp(/^rgb(a)?(\()?[\d\s,\.\/%]+(\))?$/).test(value) === true ||
         // hsl(a) color codes, sloppy check
-        new RegExp(/^hsl(a)?\([\d\s,\.\/%]+\)$/).test(value) === true ||
+        new RegExp(/^hsl(a)?(\()?[\d\s,\.\/%]+(\))?$/).test(value) === true ||
+        // hwb color codes, sloppy check
+        new RegExp(/^hsv?(\()?[\d\s,\.\/%]+(\))?$/).test(value) === true ||
         // hwb color codes, sloppy check
         new RegExp(/^hwb\([\w\d\s,\.\/%]+\)$/).test(value) === true
         // Ignoring lab, oklab, lch, oklch, color() and other color spaces
