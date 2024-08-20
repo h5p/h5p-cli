@@ -1,6 +1,6 @@
 {
   "name": "h5p-cli",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "a tool for developing & testing H5P content types",
   "author": "andrei.busuioc@h5p.group",
   "license": "MIT",
@@ -12,7 +12,7 @@
     "h5p": "./h5p.js"
   },
   "dependencies": {
-    "adm-zip": "^0.5.9",
+    "adm-zip": "0.5.14",
     "archiver": "^5.3.1",
     "express": "^4.19.2",
     "gitignore-parser": "^0.0.2",
