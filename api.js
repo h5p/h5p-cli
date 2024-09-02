@@ -667,7 +667,7 @@ const validateFileForUpload = (uploadFieldType, mimeType, extension) => {
         .split('|');
 
       mimeType = '*'; // Allow allowedExtensions for all mime types
-      allowed = { mimeType : allowedExtensions };
+      allowed = { [mimeType]: allowedExtensions };
       break;
 
     default:
