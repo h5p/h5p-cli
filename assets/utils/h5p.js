@@ -1020,10 +1020,10 @@ function itemUntranslatable(property, value, parent) {
       if (!value.replaceAll(new RegExp(/<\/?[a-z][^>]*>/ig), '')) { // empty html tags
         return true;
       }
-      if (new RegExp(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).test(value) === true || ['rgb(', 'hsv '].indexOf(value.substr(0, 4)) !== -1) { // color codes
+      if (new RegExp(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).test(value) === true || ['rgb(', 'rgba', 'hsl(', 'hsla', 'hsv '].indexOf(value.substr(0, 4)) !== -1) { // color codes
         return true;
       }
-      if (languageCodes.indexOf(value.toLowerCase()) !== -1) { // language codes
+      if (languageCodes.indexOf(value) !== -1) { // language codes
         return true;
       }
       break
