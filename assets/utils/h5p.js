@@ -1012,9 +1012,15 @@ function itemUntranslatable(property, value, parent) {
       if (typeof value !== 'string') {
         return true;
       }
+      // Remove empty strings. One example is Dictation, which has a space for 
+      // a word separator setting.
+      if (value.trim().length === 0) {
+        return true;
+      }
       if (!value.replaceAll(new RegExp(/<\/?[a-z][^>]*>/ig), '')) { // empty html tags
         return true;
       }
+      
       if (
         // 3 digit hex color codes
         new RegExp(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).test(value) === true ||
@@ -1032,7 +1038,7 @@ function itemUntranslatable(property, value, parent) {
       ) { // color codes
         return true;
       }
-      if (languageCodes.indexOf(value.toLowerCase()) !== -1) { // language codes
+      if (languageCodes.indexOf(value) !== -1) { // language codes
         return true;
       }
       break

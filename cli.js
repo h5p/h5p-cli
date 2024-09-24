@@ -99,10 +99,8 @@ const cli = {
       }
       let result = await logic.computeDependencies(library, 'view', null, libraryDirs[registry.regular[library].id]);
       for (let item in result) {
-        if (result[item].optional) {
-          parseMissing(result, item);
-        }
-        else {
+        parseMissing(result, item);
+        if (registry.regular[item]) {
           const list = await logic.computeDependencies(item, 'edit', null, libraryDirs[registry.regular[item].id]);
           for (let elem in list) {
             parseMissing(list, elem);
