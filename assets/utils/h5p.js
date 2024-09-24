@@ -994,15 +994,14 @@ function removeUntranslatables(field, name, parent, parentName) {
 function itemUntranslatable(property, value, parent) {
   switch (property) {
     case 'label':
-      return false;
-    case 'description':
-      return value.trim().length === 0;
     case 'entity':
-      return false;
     case 'explanation':
       return false;
+    
+    case 'description':
     case 'placeholder':
       return value.trim().length === 0;
+    
     case 'default':
       if (typeof value !== 'string') {
         return true;
