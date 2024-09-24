@@ -995,19 +995,14 @@ function itemUntranslatable(property, value, parent) {
   switch (property) {
     case 'label':
       return false;
-      break
     case 'description':
-      return false;
-      break;
+      return value.trim().length === 0;
     case 'entity':
       return false;
-      break;
     case 'explanation':
       return false;
-      break;
     case 'placeholder':
-      return false;
-      break;
+      return value.trim().length === 0;
     case 'default':
       if (typeof value !== 'string') {
         return true;
@@ -1029,7 +1024,6 @@ function itemUntranslatable(property, value, parent) {
       break
     default:
       return true;
-      break;
   }
 }
 
