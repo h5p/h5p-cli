@@ -1012,6 +1012,11 @@ function itemUntranslatable(property, value, parent) {
       if (typeof value !== 'string') {
         return true;
       }
+      // Remove empty strings. One example is Dictation, which has a space for 
+      // a word separator setting.
+      if (value.trim().length === 0) {
+        return true;
+      }
       if (!value.replaceAll(new RegExp(/<\/?[a-z][^>]*>/ig), '')) { // empty html tags
         return true;
       }
