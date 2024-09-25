@@ -996,6 +996,7 @@ function itemUntranslatable(property, value, parent) {
     case 'label':
     case 'entity':
     case 'explanation':
+    case 'example':
       return false;
     
     case 'description':
