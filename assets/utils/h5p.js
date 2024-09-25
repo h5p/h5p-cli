@@ -1012,6 +1012,10 @@ function itemUntranslatable(property, value, parent) {
       if (value.trim().length === 0) {
         return true;
       }
+      // If this is a number, don't include it
+      if (!isNaN(value)) {
+        return true;
+      }
       if (!value.replaceAll(new RegExp(/<\/?[a-z][^>]*>/ig), '')) { // empty html tags
         return true;
       }
