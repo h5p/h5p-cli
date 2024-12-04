@@ -665,24 +665,16 @@ const validateFileForUpload = (uploadFieldType, mimeType, extension) => {
       const allowedExtensions = config.files.patterns.allowed.toString()
         .replace(/[^a-zA-Z0-9|]/g, '')
         .split('|');
-
-      mimeType = '*'; // Allow allowedExtensions for all mime types
-      allowed = { mimeType : allowedExtensions };
+      allowed = { '*': allowedExtensions }; // Allow allowedExtensions for all mime types
       break;
 
     default:
       allowed = {};
   }
 
-  const isExtensionAllowed = (allowed[mimeType] ?? []).includes(extension);
-
-  const message = isExtensionAllowed ?
-    'OK' :
-    `Invalid ${uploadFieldType} file format.`;
-
-  const extensionsToUse = isExtensionAllowed ?
-    '' :
-    listExtensions(Object.values(allowed).flat());
+  const isExtensionAllowed = (allowed[mimeType] ?? allowed['*'] ?? []).includes(extension);
+  const message = isExtensionAllowed ? 'OK' : `Invalid ${uploadFieldType} file format.`;
+  const extensionsToUse = isExtensionAllowed ? '' : listExtensions(Object.values(allowed).flat());
 
   return [message, extensionsToUse].filter(Boolean).join(' ');
 }
