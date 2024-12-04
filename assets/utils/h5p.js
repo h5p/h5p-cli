@@ -994,37 +994,55 @@ function removeUntranslatables(field, name, parent, parentName) {
 function itemUntranslatable(property, value, parent) {
   switch (property) {
     case 'label':
-      return false;
-      break
-    case 'description':
-      return false;
-      break;
     case 'entity':
-      return false;
-      break;
     case 'explanation':
+    case 'example':
       return false;
-      break;
+    
+    case 'description':
     case 'placeholder':
-      return false;
-      break;
+      return value.trim().length === 0;
+    
     case 'default':
       if (typeof value !== 'string') {
+        return true;
+      }
+      // Remove empty strings. One example is Dictation, which has a space for 
+      // a word separator setting.
+      if (value.trim().length === 0) {
+        return true;
+      }
+      // If this is a number, don't include it
+      if (!isNaN(value)) {
         return true;
       }
       if (!value.replaceAll(new RegExp(/<\/?[a-z][^>]*>/ig), '')) { // empty html tags
         return true;
       }
-      if (new RegExp(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).test(value) === true || ['rgb(', 'hsv '].indexOf(value.substr(0, 4)) !== -1) { // color codes
+      
+      if (
+        // 3 digit hex color codes
+        new RegExp(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).test(value) === true ||
+        // 4 digit hex color codes incl. alpha channel
+        new RegExp(/^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{4})$/).test(value) === true ||
+        // rgb(a) color codes, sloppy check
+        new RegExp(/^rgb(a)?(\()?[\d\s,\.\/%]+(\))?$/).test(value) === true ||
+        // hsl(a) color codes, sloppy check
+        new RegExp(/^hsl(a)?(\()?[\d\s,\.\/%]+(\))?$/).test(value) === true ||
+        // hwb color codes, sloppy check
+        new RegExp(/^hsv?(\()?[\d\s,\.\/%]+(\))?$/).test(value) === true ||
+        // hwb color codes, sloppy check
+        new RegExp(/^hwb\([\w\d\s,\.\/%]+\)$/).test(value) === true
+        // Ignoring lab, oklab, lch, oklch, color() and other color spaces
+      ) { // color codes
         return true;
       }
-      if (languageCodes.indexOf(value.toLowerCase()) !== -1) { // language codes
+      if (languageCodes.indexOf(value) !== -1) { // language codes
         return true;
       }
       break
     default:
       return true;
-      break;
   }
 }
 
