@@ -35,6 +35,9 @@ module.exports = function (...inputList) {
         outputReport(results);
         resolve(results);
       });
+    })
+    .catch((error) => {
+      console.log(error.message);
     });
   });
 };
