@@ -27,7 +27,9 @@ module.exports = function (...inputList) {
     var results = [];
     input.init().then(() => {
       const libraries = input.getLibraries();
-
+      if (libraries.length === 0) {
+        reject(new Error('no valid libraries found; use \'-f\' to skip validation'));
+      }
       parallel(libraries, (index, library, done) => {
         validateLibrary(library, done);
       }, (error, results) => {

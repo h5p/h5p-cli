@@ -1442,7 +1442,7 @@ h5p.findDirectories = function (skipCheck, path) {
           processed++;
           if (processed === files.length) {
             if (repos.length === 0) {
-              reject(new Error('input dirs are not git repos (you can use the -f flag to skip this check)'));
+              reject(new Error('input dirs are not git repos (you can use the \'-f\' flag to skip this check)'));
               return;
             }
             resolve(repos);
