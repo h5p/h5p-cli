@@ -12,7 +12,7 @@
     "h5p": "./h5p.js"
   },
   "dependencies": {
-    "adm-zip": "0.5.14",
+    "adm-zip": "0.5.16",
     "archiver": "^5.3.1",
     "express": "^4.19.2",
     "gitignore-parser": "^0.0.2",
