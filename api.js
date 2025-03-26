@@ -746,7 +746,7 @@ const computePreloaded = async (library, baseUrl) => {
     if (!folder) {
       continue;
     }
-    const label = `${entry.id}-${entry.version.major}.${entry.version.minor}.${entry.version.patch}`;
+    const label = `${entry.id}-${entry.version.major}.${entry.version.minor}`;
     const languageFolder = `${config.folders.libraries}/${folder}/language`;
     const langFile = `${languageFolder}/${session.language}.json`;
     if (fs.existsSync(langFile)) {
