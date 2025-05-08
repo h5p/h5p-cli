@@ -239,6 +239,15 @@ const cli = {
         const tmpTarget = `/tmp/h5p-cli-${target}`;
         execSync(`cp -r ${tmpTarget} ${target}`);
         fs.rmSync(tmpTarget, { recursive: true, force: true });
+        const targetLibraryJson = JSON.parse(fs.readFileSync(`${target}/library.json`));
+        for (let item of targetLibraryJson.preloadedJs) {
+          item.path = `${target}/${item.path}`;
+          libraryJson.preloadedJs.push(item);
+        }
+        for (let item of targetLibraryJson.preloadedCss) {
+          item.path = `${target}/${item.path}`;
+          libraryJson.preloadedCss.push(item);
+        }
         const packageFile = `${target}/package.json`;
         if (!fs.existsSync(packageFile)) {
           continue;
@@ -251,15 +260,6 @@ const cli = {
         console.log(execSync('npm install', {cwd: target}).toString());
         console.log(`>>> npm run build ${target}`);
         console.log(execSync('npm run build', {cwd: target}).toString());
-        const targetLibraryJson = JSON.parse(fs.readFileSync(`${target}/library.json`));
-        for (let item of targetLibraryJson.preloadedJs) {
-          item.path = `${target}/${item.path}`;
-          libraryJson.preloadedJs.push(item);
-        }
-        for (let item of targetLibraryJson.preloadedCss) {
-          item.path = `${target}/${item.path}`;
-          libraryJson.preloadedCss.push(item);
-        }
       }
       fs.writeFileSync('library.json', JSON.stringify(libraryJson, null, 2));
     }
