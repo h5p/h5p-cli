@@ -221,6 +221,7 @@ const cli = {
   // clone library branches in corresponding @branch folders
   '@branches': (input) => {
     try {
+      console.log(execSync('git checkout .').toString());
       execSync('rm -rdf @*');
       const initialBranch = execSync('git rev-parse --abbrev-ref HEAD').toString();
       const branches = process.argv.slice(3);
@@ -232,11 +233,21 @@ const cli = {
         execSync(`cp -r . ${tmpTarget}`);
       }
       execSync(`git checkout ${initialBranch}`);
+      const libraryJson = JSON.parse(fs.readFileSync('library.json'));
       for (let branch of branches) {
         const target = `@${branch.replace('/', '_')}`;
         const tmpTarget = `/tmp/h5p-cli-${target}`;
         execSync(`cp -r ${tmpTarget} ${target}`);
         fs.rmSync(tmpTarget, { recursive: true, force: true });
+        const targetLibraryJson = JSON.parse(fs.readFileSync(`${target}/library.json`));
+        for (let item of targetLibraryJson.preloadedJs) {
+          item.path = `${target}/${item.path}`;
+          libraryJson.preloadedJs.push(item);
+        }
+        for (let item of targetLibraryJson.preloadedCss) {
+          item.path = `${target}/${item.path}`;
+          libraryJson.preloadedCss.push(item);
+        }
         const packageFile = `${target}/package.json`;
         if (!fs.existsSync(packageFile)) {
           continue;
@@ -250,6 +261,7 @@ const cli = {
         console.log(`>>> npm run build ${target}`);
         console.log(execSync('npm run build', {cwd: target}).toString());
       }
+      fs.writeFileSync('library.json', JSON.stringify(libraryJson, null, 2));
     }
     catch (error) {
       console.log('> error');
