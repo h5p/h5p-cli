@@ -1,0 +1,22 @@
+{
+  "lang_language": "Limbă",
+  "lang_new": "nou",
+  "lang_import": "importare",
+  "lang_create": "creează",
+  "lang_View": "Vezi",
+  "lang_Edit": "Modifică",
+  "lang_Delete": "Șterge",
+  "lang_TypeContentTitle": "Introdu titlul conținutului aici...",
+  "lang_SplitView": "split-view",
+  "lang_ViewMode": "Mod Vizualizare",
+  "lang_EditMode": "Mod Editare",
+  "lang_dashboard": "dashboard",
+  "lang_running": "rulează",
+  "lang_contentCreatedFor": "conținut creat pentru",
+  "lang_userStateSession": "sesiunea curentă a utilizatorului",
+  "lang_newSession": "sesiune nouă",
+  "lang_resetSession": "resetează sesiunea",
+  "lang_sessionName": "nume sesiune",
+  "lang_createSession": "creează sesiune",
+  "lang_saveAllChanges": "salvează toate modificările"
+}
