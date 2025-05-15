@@ -496,16 +496,21 @@ var commands = [
       lf +
       'Put these in your ~/.bashrc for permanent settings.',
     handler: async (...inputList) => {
-      const input = new Input(inputList);
-      if (!input.hasFlag('-f')) {
-        const result = await validate.apply(null, inputList);
-        const notValid = result.some((item) => item.status !== 'ok');
-        if (notValid) {
-          console.log('validation failed; use \'-f\' to skip validation');
-          return;
+      try {
+        const input = new Input(inputList);
+        if (!input.hasFlag('-f')) {
+          const result = await validate.apply(null, inputList);
+          const notValid = result.some((item) => item.status !== 'ok');
+          if (notValid) {
+            console.log('validation failed; use \'-f\' to skip validation');
+            return;
+          }
         }
+        pack.apply(null, inputList);
       }
-      pack.apply(null, inputList);
+      catch (error) {
+        console.log(error.message);
+      }
     }
   },
   {
