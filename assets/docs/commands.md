@@ -77,6 +77,10 @@ Running `h5p verify h5p-accordion` should return something like below if the lib
 }
 ```
 
+• `h5p @branches [<branch>...]` creates `@<branch>` folders when run within a git repository folder.  
+The command runs `npm install` and `npm run build` for each `@<branch>` folder if required.  
+The command also updates the preloaded `library.json` entries to include those from the `@<branch>` folders.  
+
 • `h5p server [port]` starts the dev server.  
 `[port]` is an optional port number. Default is 8080.  
 Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types.  

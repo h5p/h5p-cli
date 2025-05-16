@@ -314,6 +314,7 @@ module.exports = {
         patch: list.patchVersion
       }
       done[level][dep].runnable = list.runnable;
+      done[level][dep].fullscreen = list.fullscreen;
       done[level][dep].optional = registry.regular[dep].optional === false ? false : isOptional(cache[toDo[dep].parent], list.machineName);
       cache[dep].optional = done[level][dep].optional;
       module.exports.write(`>> ${dep} required by ${toDo[dep].parent} (${done[level][dep].optional ? 'optional' : 'required'}) ... `);
@@ -629,7 +630,7 @@ module.exports = {
       const id = info.machineName;
       output[id] = folder;
       if (!registry.reversed[id]) {
-        registry.reversed[id] = 
+        registry.reversed[id] =
         {
           "id": id,
           "title": info.title,
