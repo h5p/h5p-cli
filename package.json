@@ -24,7 +24,7 @@
     "livereload": "^0.9.3",
     "marked": "^5.1.0",
     "marked-terminal": "^5.2.0",
-    "multer": "^1.4.5-lts.1",
+    "multer": "^2.0.0",
     "patch-package": "^8.0.0",
     "sanitize-html": "^2.12.1",
     "superagent": "^8.0.4"
