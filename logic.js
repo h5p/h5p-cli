@@ -603,12 +603,18 @@ module.exports = {
         }
         upgraded = true;
         console.log(`>>> running content upgrade script for ${library} version ${major}.${minor}`);
-        H5PUpgrades[lib.id][major][minor](content, (error, result, upgradedExtras) => {
-          content = result;
-          if (upgradedExtras?.metadata) {
-            extra.metadata = upgradedExtras.metadata;
-          }
-        }, extra);
+        try {
+          H5PUpgrades[lib.id][major][minor](content, (error, result, upgradedExtras) => {
+            content = result;
+            if (upgradedExtras?.metadata) {
+              extra.metadata = upgradedExtras.metadata;
+            }
+          }, extra);
+        }
+        catch (error) {
+          console.error(`>>> Error during content upgrade: ${error.name} ${error.message}, ${error.stack}`);
+          upgraded = false;
+        }
       }
     }
     if (!upgraded) {
