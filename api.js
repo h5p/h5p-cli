@@ -584,7 +584,7 @@ module.exports = {
       let input = {
         assets: config.folders.assets,
         libraries: config.folders.libraries,
-        title: info.title,
+        title: JSON.stringify(info.title),
         baseUrl,
         library,
         folder,
