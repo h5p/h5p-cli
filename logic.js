@@ -3,6 +3,7 @@ const fs = require('fs');
 const superAgent = require('superagent');
 const admZip = require("adm-zip");
 const config = require('./configLoader.js');
+const { upgradeContent } = require('./logic-content-upgrade.js');
 // builds content from template and input
 const fromTemplate = (template, input) => {
   for (let item in input) {
@@ -559,13 +560,18 @@ module.exports = {
     const libFolder = libraryDirs[registry.regular[library].id];
     const lib = (await module.exports.computeDependencies(library, 'view', null, libFolder))[library];
     const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
-    const extraAttrs = [
-      'authors', 'source', 'license', 'licenseVersion', 'licenseExtras', 'yearsFrom',
-      'yearsTo', 'changes', 'authorComments', 'w', 'h', 'metaKeywords', 'metaDescription'
+    /*
+     * Content upgrade scripts are only supposed to be able to upgrade metadata attributed, @see https://github.com/h5p/h5p-php-library/blob/master/js/h5p-content-upgrade-process.js#L130-L132
+     * and does not store all of them in h5p.json @see https://github.com/h5p/h5p-php-library/blob/d496868189f6bdb37a54138754cc31ac9cffc0ba/h5p.classes.php#L681
+     * so we only need these.
+     */
+    const metadataAttributesInH5PJSON = [
+      'title', 'authors', 'changes', 'source', 'license', 'licenseVersion', 'licenseExtras', 'authorComments',
+      'yearsFrom', 'yearsTo'
     ];
-    const extra = {};
-    for (let item of extraAttrs) {
-      extra[item] = info[item];
+    const metadata = {};
+    for (let item of metadataAttributesInH5PJSON) {
+      metadata[item] = info[item];
     }
     let mainLib = {};
     for (let item of info.preloadedDependencies) {
@@ -581,49 +587,33 @@ module.exports = {
     if (lib.version.major <= mainLib.majorVersion && lib.version.minor <= mainLib.minorVersion) {
       return;
     }
-    const upgradesFile = `${config.folders.libraries}/${libraryDirs[lib.id]}/upgrades.js`;
-    if (!fs.existsSync(upgradesFile)) {
-      return;
-    }
+    const getUpgradesScript = (machineName) => {
+      const upgradesFile = `${config.folders.libraries}/${libraryDirs[machineName]}/upgrades.js`;
+      if (!fs.existsSync(upgradesFile)) {
+        return;
+      }
+      return eval(fs.readFileSync(upgradesFile, 'utf-8'));
+    };
     const contentFile = `content/${folder}/content.json`;
     let content = fs.readFileSync(contentFile, 'utf-8');
     const backupContent = content;
     content = JSON.parse(content);
-    eval(fs.readFileSync(upgradesFile, 'utf-8'));
-    let upgraded = false;
-    for (let major in H5PUpgrades[lib.id]) {
-      major = parseInt(major);
-      if (mainLib.majorVersion > major) {
-        continue;
+    // Incorporate H5P.json info into general params structure to avoid extra handling
+    const input = {
+      params: content,
+      metadata: metadata,
+      library: `${info.mainLibrary} ${mainLib.majorVersion}.${mainLib.minorVersion}`,
+    };
+    const { params: upgradedParams, metadata: upgradedMetadata } = upgradeContent(input, getUpgradesScript);
+    for (let attribute in metadata) {
+      if (upgradedMetadata[attribute] !== undefined && upgradedMetadata[attribute] !== null) {
+        info[attribute] = upgradedMetadata[attribute];
       }
-      for (let minor in H5PUpgrades[lib.id][major]) {
-        minor = parseInt(minor);
-        if (mainLib.majorVersion == major && mainLib.minorVersion >= minor) {
-          continue;
-        }
-        upgraded = true;
-        console.log(`>>> running content upgrade script for ${library} version ${major}.${minor}`);
-        try {
-          H5PUpgrades[lib.id][major][minor](content, (error, result, upgradedExtras) => {
-            content = result;
-            if (upgradedExtras?.metadata) {
-              extra.metadata = upgradedExtras.metadata;
-            }
-          }, extra);
-        }
-        catch (error) {
-          console.error(`>>> Error during content upgrade: ${error.name} ${error.message}, ${error.stack}`);
-          upgraded = false;
-        }
-      }
-    }
-    if (!upgraded) {
-      return;
     }
     const label = `${mainLib.majorVersion}.${mainLib.minorVersion}`;
     fs.writeFileSync(`content/${folder}/${label}_content.json`, backupContent);
     fs.writeFileSync(`content/${folder}/${label}_h5p.json`, JSON.stringify(info));
-    fs.writeFileSync(contentFile, JSON.stringify(content));
+    fs.writeFileSync(contentFile, JSON.stringify(upgradedParams));
     module.exports.generateInfo(folder, library);
   },
   parseLibraryFolders: async () => {
