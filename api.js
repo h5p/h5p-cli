@@ -532,7 +532,7 @@ module.exports = {
       if (!await verifySetup(library, response)) {
         return;
       }
-      logic.upgrade(folder, library);
+      await logic.upgrade(folder, library);
       const libs = await logic.computeDependencies(library, 'view', null, libraryDirs[registry.regular[library].id]);
       const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
       const sessions = manageSession(request.params.folder, {
