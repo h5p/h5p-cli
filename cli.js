@@ -1,5 +1,6 @@
 const { execSync } = require("child_process");
 const fs = require('fs');
+const path = require('path');
 const logic = require('./logic.js');
 const config = require('./configLoader.js');
 const utils = require('./assets/utils/cli.js');
@@ -255,6 +256,11 @@ const cli = {
         const info = JSON.parse(fs.readFileSync(packageFile));
         if (!info?.scripts?.build) {
           continue;
+        }
+        const pathToNodeModules = path.resolve(process.cwd(), target, 'node_modules');
+        // // Delete node_modules if it exists
+        if (fs.existsSync(pathToNodeModules)) {
+          fs.rmSync(pathToNodeModules, { recursive: true, force: true });
         }
         console.log(`>>> npm install ${target}`);
         console.log(execSync('npm install', {cwd: target}).toString());
