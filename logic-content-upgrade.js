@@ -3,27 +3,29 @@
  * Just a wrapper - to the caller, `upgradeContent` makes more sense, but here `processField` is more adequate.
  * @param {object} params The content parameters to upgrade.
  * @param {function} getUpgradesScript Function that returns the upgrade script for the content type.
- * @param {object} targetVersion Optional target version to upgrade to. If not provided, all upgrade functions for newer versions will be applied.
+ * @param {function} getLatestLibraryVersion Function that returns the latest library version.
+ * @param {object} [targetVersion] Optional target version to upgrade to. If not provided, all upgrade functions for newer versions will be applied.
  * @returns {object} Upgraded content parameters.
  */
-const upgradeContent = (params, getUpgradesScript = () => {}, targetVersion) => {
-  return processField(params, getUpgradesScript, targetVersion) || params;
+const upgradeContent = (params, getUpgradesScript = () => {}, getLatestLibraryVersion, targetVersion = {}) => {
+  return processField(params, getUpgradesScript, getLatestLibraryVersion, targetVersion) || params;
 };
 
 /**
  * Recursively process parameter fields and upgrade them if required
  * @param {object} params The content parameters to upgrade.
  * @param {function} getUpgradesScript Function that returns the upgrade script for the content type.
- * @param {object} targetVersion Optional target version to upgrade to. If not provided, all upgrade functions for newer versions will be applied.
+ * @param {function} getLatestLibraryVersion Function that returns the latest library version.
+ * @param {object} [targetVersion] Optional target version to upgrade to. If not provided, all upgrade functions for newer versions will be applied.
  * @returns {object} Upgraded content parameters.
  */
-const processField = (params, getUpgradesScript, targetVersion) => {
+const processField = (params, getUpgradesScript, getLatestLibraryVersion, targetVersion) => {
   const isGroup = typeof params === 'object' && params !== null;
   if (isGroup) {
     const isLibraryField = params.library && params.params;
     if (isLibraryField) {
       // Upgrade child parameters recursively first (depth-first)
-      params.params = processField(params.params, getUpgradesScript);
+      params.params = processField(params.params, getUpgradesScript, getLatestLibraryVersion, targetVersion);
 
       const { machineName, majorVersion, minorVersion } = buildLibraryInfo(params.library);
 
@@ -35,6 +37,11 @@ const processField = (params, getUpgradesScript, targetVersion) => {
         targetVersion
       );
 
+      const versionFunction = targetVersion ?
+        () => targetVersion :
+        getLatestLibraryVersion;
+
+      params.library = upgradeLibrary(params.library, versionFunction);
       params.params = processed.params;
       params.metadata = processed.metadata;
 
@@ -43,7 +50,7 @@ const processField = (params, getUpgradesScript, targetVersion) => {
     else {
       // Process all group fields recursively
       for (const key in params) {
-        params[key] = processField(params[key], getUpgradesScript);
+        params[key] = processField(params[key], getUpgradesScript, getLatestLibraryVersion, targetVersion);
       }
 
       return params;
@@ -51,7 +58,7 @@ const processField = (params, getUpgradesScript, targetVersion) => {
   }
   else if (Array.isArray(params)) {
     // Process list items fields recursively
-    return params.map(item => processField(item, getUpgradesScript));
+    return params.map(item => processField(item, getUpgradesScript, getLatestLibraryVersion, targetVersion));
   }
 
   return params;
@@ -81,10 +88,10 @@ const buildLibraryInfo = (versionedName) => {
  * @param {object} metadata Metadata associated with the content.
  * @param {object} upgradeFunctions The upgrade functions organized by major and minor versions.
  * @param {object} currentVersion The current version of the content parameters.
- * @param {object} targetVersion Optional target version to upgrade to. If not provided, all upgrade functions for newer versions will be applied.
+ * @param {object} [targetVersion] Optional target version to upgrade to. If not provided, all upgrade functions for newer versions will be applied.
  * @returns {object} Upgraded content parameters and metadata.
  */
-const processParams = (params, metadata, upgradeFunctions, currentVersion, targetVersion = {}) => {
+const processParams = (params, metadata, upgradeFunctions, currentVersion, targetVersion) => {
   for (let major in upgradeFunctions) {
     const majorInt = parseInt(major);
     if (currentVersion.major > majorInt) {
@@ -172,6 +179,20 @@ const upgradeParams = (params, upgradeFunction, extras = {}) => {
     params: result.params,
     extras: result.extras
   };
+};
+
+/**
+ * Upgrade library string to the new version.
+ * @param {string} versionedName The versioned name string in the format 'machineName version'.
+ * @param {function} getLatestLibraryVersion Function that returns the latest library version.
+ * @param {number} major The new major version number.
+ * @param {number} minor The new minor version number.
+ * @returns {string} Upgraded library name.
+ */
+upgradeLibrary = (versionedName, getLatestLibraryVersion) => {
+  const machineName = versionedName.split(' ')[0];
+  const latestVersion = getLatestLibraryVersion(machineName);
+  return `${machineName} ${latestVersion.major}.${latestVersion.minor}`;
 };
 
 module.exports = {
