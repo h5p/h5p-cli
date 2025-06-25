@@ -2,7 +2,7 @@
   "name": "h5p-cli",
   "version": "1.1.4",
   "description": "a tool for developing & testing H5P content types",
-  "author": "andrei.busuioc@h5p.group",
+  "author": "H5P Group",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/h5p/h5p-cli",
