@@ -3,7 +3,7 @@ index e7804b6..d080742 100644
 --- a/node_modules/adm-zip/zipEntry.js
 +++ b/node_modules/adm-zip/zipEntry.js
 @@ -59,7 +59,7 @@ module.exports = function (/** object */ options, /*Buffer*/ input) {
- 
+
              // check data integrity
              if (descriptor.compressedSize !== _centralHeader.compressedSize || descriptor.size !== _centralHeader.size || descriptor.crc !== _centralHeader.crc) {
 -                throw Utils.Errors.DESCRIPTOR_FAULTY();
