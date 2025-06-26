@@ -594,6 +594,17 @@ module.exports = {
       }
       return eval(fs.readFileSync(upgradesFile, 'utf-8'));
     };
+    const getLatestLibraryVersion = (machineName) => {
+      const libraryJson = `${config.folders.libraries}/${libraryDirs[machineName]}/library.json`;
+      if (!fs.existsSync(libraryJson)) {
+        return;
+      }
+      const version = JSON.parse(fs.readFileSync(libraryJson, 'utf-8'));
+      return {
+        major: parseInt(version.majorVersion),
+        minor: parseInt(version.minorVersion)
+      };
+    }
     const contentFile = `content/${folder}/content.json`;
     let content = fs.readFileSync(contentFile, 'utf-8');
     const backupContent = content;
@@ -604,7 +615,8 @@ module.exports = {
       metadata: metadata,
       library: `${info.mainLibrary} ${mainLib.majorVersion}.${mainLib.minorVersion}`,
     };
-    const { params: upgradedParams, metadata: upgradedMetadata } = upgradeContent(input, getUpgradesScript);
+    const { params: upgradedParams, metadata: upgradedMetadata } =
+      upgradeContent(input, getUpgradesScript, getLatestLibraryVersion);
     for (let attribute in metadata) {
       if (upgradedMetadata[attribute] !== undefined && upgradedMetadata[attribute] !== null) {
         info[attribute] = upgradedMetadata[attribute];
