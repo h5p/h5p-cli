@@ -37,7 +37,7 @@ const processField = (params, getUpgradesScript, getLatestLibraryVersion, target
         targetVersion
       );
 
-      const versionFunction = targetVersion ?
+      const versionFunction = (targetVersion?.major && targetVersion?.minor) ?
         () => targetVersion :
         getLatestLibraryVersion;
 
