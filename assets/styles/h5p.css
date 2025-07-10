@@ -1129,8 +1129,7 @@ div.h5p-fullscreen {
 }
 
 .h5p-big-button:disabled:before {
-    animation: h5pspin .25s linear infinite;
-    content: "\e90d";
+    animation: h5pspin 1s linear infinite;
     font-size: 2em;
     left: .4em;
     top: .4em
