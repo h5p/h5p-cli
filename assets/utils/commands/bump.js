@@ -36,8 +36,7 @@ async function bump(...inputList) {
   }
 }
 
-// 👇 Helpers 👇
-
+// Helpers
 function detectLibrary(input) {
   let libraries = input.getLibraries();
   if (!libraries.length) {
