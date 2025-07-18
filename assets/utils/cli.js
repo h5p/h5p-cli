@@ -6,6 +6,7 @@ const init = require('./commands/init');
 const checkTranslations = require ('./commands/check-translations');
 const buildLibraries = require('./commands/build-libraries');
 const validate = require('./commands/validate');
+const bump = require('./commands/bump');
 const Input = require('./utility/input');
 
 var lf = '\u000A';
@@ -787,6 +788,13 @@ var commands = [
         process.exit(0);
       }
     }
+  },
+  {
+    name: 'bump',
+    syntax: '[<library>]',
+    shortDescription: 'Bump version of specified library or current library',
+    description: 'Bumps the patch version of the specified or current library, create a tag, commit and push',
+    handler: bump
   }
 ];
 
