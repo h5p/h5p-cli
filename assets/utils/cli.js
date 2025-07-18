@@ -791,9 +791,9 @@ var commands = [
   },
   {
     name: 'bump',
-    syntax: '[<library>]',
+    syntax: '[<library>] [-y|--yes]',
     shortDescription: 'Bump version of specified library or current library',
-    description: 'Bumps the patch version of the specified or current library, create a tag, commit and push',
+    description: 'Bumps the patch version of the specified library (or current working directory if none specified). Stages and commits the updated version interactively by default. You can optionally create a tag and push the changes. Use the -y or --yes flag to skip all prompts and assume "yes" for tag and push automatically.',
     handler: bump
   }
 ];
