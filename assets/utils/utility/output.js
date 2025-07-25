@@ -5,7 +5,8 @@ const color = {
   emphasize: '\x1B[1m',
   green: '\x1B[32m',
   yellow: '\x1B[33m',
-  red: '\x1B[31m'
+  red: '\x1B[31m',
+  blue: '\x1B[34m'
 };
 
 var noCr = (process.platform === 'win32');
