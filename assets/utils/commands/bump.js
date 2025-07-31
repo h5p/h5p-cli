@@ -127,6 +127,8 @@ function commitChanges(version) {
 }
 
 function tagAndPush(version, doTag, doPush) {
+  let tagHandled = true;
+
   if (doTag) {
     try {
       execSync(`git tag -a ${version} -m "${version}"`, { stdio: 'inherit' });
@@ -134,13 +136,15 @@ function tagAndPush(version, doTag, doPush) {
     }
     catch {
       output.printLn(`${c.red}Git tag creation failed.${c.default}`);
+      tagHandled = false;
     }
   }
   else {
     output.printLn(`${c.yellow}Tag creation skipped.${c.default}`);
   }
 
-  if (doPush) {
+  // Only push if tag is handled correctly (or no tag was requested)
+  if (doPush && tagHandled) {
     try {
       output.printLn(`${c.blue}Pushing commits…${c.default}`);
       execSync(`git push`, { stdio: 'inherit' });
@@ -153,6 +157,9 @@ function tagAndPush(version, doTag, doPush) {
     catch {
       output.printLn(`${c.red}Git push failed.${c.default}`);
     }
+  }
+  else if (doPush) {
+    output.printLn(`${c.red}Skipping push due to tag failure.${c.default}`);
   }
   else {
     output.printLn(`${c.yellow}Push aborted.${c.default}`);
