@@ -66,10 +66,14 @@ function runH5pBump(lib) {
   return true;
 }
 
+function isValidSemver(...args) {
+  return args.every(n => typeof n === 'number');
+}
+
 function getVersion() {
   const libData = repository.getLibraryData('.');
   const { majorVersion, minorVersion, patchVersion } = libData;
-  if (!majorVersion || !minorVersion || !patchVersion) {
+  if (!isValidSemver(majorVersion, minorVersion, patchVersion)) {
     output.printLn(`${c.red}Failed to read version from library.json.${c.default}`);
     return null;
   }
