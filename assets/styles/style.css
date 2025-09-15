@@ -311,6 +311,161 @@ body {
 .hidden {
   display: none;
 }
+/******* THEME CONTROLS *************/
+.theme-controls {
+  --color-active: hsl(0, 0%, 30%);
+  background-color: hsl(0, 0%, 100%);
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr 1fr;
+  padding: 0.5rem 1rem;
+  text-align: center;
+
+  &.display-none {
+    display: none;
+  }
+
+  .theme-controls-color {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    .button-theme-color {
+      background: linear-gradient(to right, var(--primary) 0%, var(--primary) 50%, var(--secondary) 50%, var(--secondary) 100%);
+      background-color: hsl(0, 0%, 100%);
+      border: solid 5px hsl(0, 0%, 100%);
+      border-radius: 2.5rem;
+      box-shadow: 0px 0px 0px 1px hsl(234, 75%, 92%);
+      cursor: pointer;
+      height: 2.5rem;
+      padding: 0.5rem;
+      width: 2.5rem;
+
+      &.active {
+        box-shadow: 0 0 0.5em 0 var(--color-active);
+      }
+
+      &:hover {
+        &:hover {
+          background: linear-gradient(to right,
+            hsl(from var(--primary) h s calc(l * 0.90)) 0%,
+            hsl(from var(--primary) h s calc(l * 0.90)) 50%,
+            hsl(from var(--secondary) h s calc(l * 0.90)) 50%,
+            hsl(from var(--secondary) h s calc(l * 0.90)) 100%
+          );
+          border: solid 5px hsl(0, 0%, 95%);
+        }
+      }
+
+      &.core {
+        position: relative;
+
+        &::before {
+          content: 'CORE';
+          font-size: 0.75rem;
+          font-weight: 600;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
+
+      &.daylight {
+        --primary: #588ee1;
+        --secondary: #f0f0fc;
+      }
+
+      &.blue {
+        --primary: #505ddd;
+        --secondary: #f0f0fc;
+      }
+
+      &.purple {
+        --primary: #834dd5;
+        --secondary: #f0f0fc;
+      }
+
+      &.green {
+        --primary: #17948b;
+        --secondary: #f0f0fc;
+      }
+
+      &.orange {
+        --primary: #d63a0a;
+        --secondary: #f0f0fc;
+      }
+
+      &.dark {
+        --primary: #1c1c1c;
+        --secondary: #33313b;
+      }
+    }
+  }
+
+  .theme-controls-size {
+    container-type: inline-size;
+    container-name: button-theme-size-container;
+    justify-items: end;
+
+    .buttons-theme-size {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+
+      .button-theme-size {
+        --background-color: hsl(0, 0%, 100%);
+        background-color: var(--background-color);
+        border: 1px solid hsl(0, 0%, 60%);
+        border-radius: 3px;
+        cursor: pointer;
+        height: 2.5rem;
+        position: relative;
+        width: 2.5rem;
+
+        &.small {
+          font-size: 0.9rem;
+        }
+
+        &.medium {
+          font-size: 1.15rem;
+        }
+
+        &.large {
+          font-size: 1.4rem;
+        }
+
+        &::before {
+          content: "T";
+          font-family: "serif";
+          font-weight: 600;
+          left: 50%;
+          position: absolute;
+          transform: translate(-50%, -50%);
+          top: 50%;
+        }
+
+        &.active {
+          box-shadow: 0 0 0.5em 0 var(--color-active);
+        }
+
+        &:hover {
+          background-color: hsl(from var(--background-color) h s calc(l * 0.95));
+        }
+      }
+    }
+  }
+
+  @container button-theme-size-container (max-width: 8.5rem) {
+    .theme-controls-size {
+      .buttons-theme-size {
+        flex-direction: column;
+      }
+    }
+  }
+}
+
 /******* RESPONSIVE STYLE *************/
 @media (orientation: portrait) {
   .item {

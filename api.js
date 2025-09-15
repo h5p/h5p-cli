@@ -605,6 +605,7 @@ module.exports = {
         metadata,
         contentUserData: JSON.stringify(userData.resume),
         watcher: config.files.watch,
+        themeControls: config.themeControls ?? false,
         simple: request.query.simple ? 'hidden' : '',
         saveFreq: config.saveFreq
       }

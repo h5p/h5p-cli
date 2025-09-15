@@ -18,5 +18,15 @@
   "lang_resetSession": "Sitzung zurücksetzen",
   "lang_sessionName": "Sitzungsname",
   "lang_createSession": "Sitzung erstellen",
-  "lang_saveAllChanges": "Alle Änderungen speichern"
+  "lang_saveAllChanges": "Alle Änderungen speichern",
+  "lang_small": "Klein",
+  "lang_medium": "Mittel",
+  "lang_large": "Groß",
+  "lang_theme_core": "Kern-Theme",
+  "lang_theme_daylight": "Daylight-Theme",
+  "lang_theme_blue": "Blaues Theme",
+  "lang_theme_purple": "Lila Theme",
+  "lang_theme_green": "Grünes Theme",
+  "lang_theme_orange": "Orange Theme",
+  "lang_theme_dark": "Dunkles Theme"
 }

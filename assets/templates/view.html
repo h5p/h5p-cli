@@ -71,6 +71,249 @@
     user: { name: "developer", mail: "some.developer@some.company.com" }
   };
   window.addEventListener('load', () => {
+    const H5P_THEMES = {
+      core: {
+        '--h5p-theme-main-cta-base': '',
+        '--h5p-theme-secondary-cta-base': '',
+        '--h5p-theme-alternative-base': '',
+        '--h5p-theme-background': '',
+        '--h5p-theme-focus': '',
+        '--h5p-theme-main-cta-light': '',
+        '--h5p-theme-main-cta-dark': '',
+        '--h5p-theme-contrast-cta': '',
+        '--h5p-theme-contrast-cta-white': '',
+        '--h5p-theme-contrast-cta-light': '',
+        '--h5p-theme-secondary-cta-light': '',
+        '--h5p-theme-secondary-cta-dark': '',
+        '--h5p-theme-secondary-contrast-cta': '',
+        '--h5p-theme-alternative-light': '',
+        '--h5p-theme-alternative-dark': '',
+        '--h5p-theme-alternative-darker': '',
+        '--h5p-theme-text-primary': '',
+        '--h5p-theme-text-secondary': '',
+        '--h5p-theme-text-third': '',
+        '--h5p-theme-ui-base': '',
+        '--h5p-theme-stroke-1': '',
+        '--h5p-theme-stroke-2': '',
+        '--h5p-theme-stroke-3': '',
+        '--h5p-theme-feedback-correct-main': '',
+        '--h5p-theme-feedback-correct-secondary': '',
+        '--h5p-theme-feedback-correct-third': '',
+        '--h5p-theme-feedback-incorrect-main': '',
+        '--h5p-theme-feedback-incorrect-secondary': '',
+        '--h5p-theme-feedback-incorrect-third': '',
+        '--h5p-theme-feedback-neutral-main': '',
+        '--h5p-theme-feedback-neutral-secondary': '',
+        '--h5p-theme-feedback-neutral-third': ''
+      },
+      daylight: {
+        '--h5p-theme-main-cta-base': '#006FBF',
+        '--h5p-theme-secondary-cta-base': '#004489',
+        '--h5p-theme-alternative-base': '#F1F5FB',
+        '--h5p-theme-background': '#F9FBFF',
+        '--h5p-theme-focus': '#006FBF',
+        '--h5p-theme-main-cta-light': '#007CD6',
+        '--h5p-theme-main-cta-dark': '#005FA3',
+        '--h5p-theme-contrast-cta': '#EBF7FF',
+        '--h5p-theme-contrast-cta-white': '#006FBF',
+        '--h5p-theme-contrast-cta-light': 'color-mix(in srgb, var(--h5p-theme-main-cta-base), transparent 90%)',
+        '--h5p-theme-secondary-cta-light': '#0051A3',
+        '--h5p-theme-secondary-cta-dark': '#003870',
+        '--h5p-theme-secondary-contrast-cta': '#ffffff',
+        '--h5p-theme-alternative-light': '#F7F9FD',
+        '--h5p-theme-alternative-dark': '#DBE5F5',
+        '--h5p-theme-alternative-darker': '#C7D7EF',
+        '--h5p-theme-text-primary': '#101729',
+        '--h5p-theme-text-secondary': '#354054',
+        '--h5p-theme-text-third': '#737373',
+        '--h5p-theme-ui-base': '#FFFFFF',
+        '--h5p-theme-stroke-1': '#C7D7EF',
+        '--h5p-theme-stroke-2': '#E7EDF6',
+        '--h5p-theme-stroke-3': '#F6F7FA',
+        '--h5p-theme-feedback-correct-main': '#256D1D',
+        '--h5p-theme-feedback-correct-secondary': '#f3fcf0',
+        '--h5p-theme-feedback-correct-third': '#cff1c2',
+        '--h5p-theme-feedback-incorrect-main': '#a13236',
+        '--h5p-theme-feedback-incorrect-secondary': '#faf0f4',
+        '--h5p-theme-feedback-incorrect-third': '#f6dce7',
+        '--h5p-theme-feedback-neutral-main': '#E6C81D',
+        '--h5p-theme-feedback-neutral-secondary': '#5E4817',
+        '--h5p-theme-feedback-neutral-third': '#F0EBCB'
+      },
+      blue: {
+        '--h5p-theme-main-cta-base': '#505DDD',
+        '--h5p-theme-secondary-cta-base': '#0c1547',
+        '--h5p-theme-alternative-base': '#EEEFFA',
+        '--h5p-theme-background': '#F0F0FC',
+        '--h5p-theme-focus': '#3b54a5',
+        '--h5p-theme-main-cta-light': '#6571E1',
+        '--h5p-theme-main-cta-dark': '#2938D1',
+        '--h5p-theme-contrast-cta': '#E0F1FF',
+        '--h5p-theme-contrast-cta-white': '#505ddd',
+        '--h5p-theme-contrast-cta-light': 'color-mix(in srgb, var(--h5p-theme-main-cta-base), transparent 90%)',
+        '--h5p-theme-secondary-cta-light': '#101b59',
+        '--h5p-theme-secondary-cta-dark': '#090f34',
+        '--h5p-theme-secondary-contrast-cta': '#e7eafa',
+        '--h5p-theme-alternative-light': '#F8F9FE',
+        '--h5p-theme-alternative-dark': '#DCDFFA',
+        '--h5p-theme-alternative-darker': '#ced1ee',
+        '--h5p-theme-text-primary': '#101729',
+        '--h5p-theme-text-secondary': '#354054',
+        '--h5p-theme-text-third': '#737373',
+        '--h5p-theme-ui-base': '#FFFFFF',
+        '--h5p-theme-stroke-1': '#DCDFFA',
+        '--h5p-theme-stroke-2': '#EDEEFB',
+        '--h5p-theme-stroke-3': '#E5E5E5',
+        '--h5p-theme-feedback-correct-main': '#256D1D',
+        '--h5p-theme-feedback-correct-secondary': '#f3fcf0',
+        '--h5p-theme-feedback-correct-third': '#cff1c2',
+        '--h5p-theme-feedback-incorrect-main': '#a13236',
+        '--h5p-theme-feedback-incorrect-secondary': '#faf0f4',
+        '--h5p-theme-feedback-incorrect-third': '#f6dce7',
+        '--h5p-theme-feedback-neutral-main': '#E6C81D',
+        '--h5p-theme-feedback-neutral-secondary': '#5E4817',
+        '--h5p-theme-feedback-neutral-third': '#F0EBCB'
+      },
+      purple: {
+        '--h5p-theme-main-cta-base': '#834DD5',
+        '--h5p-theme-secondary-cta-base': '#000000',
+        '--h5p-theme-alternative-base': '#f3edff',
+        '--h5p-theme-background': '#F3EEFA',
+        '--h5p-theme-focus': '#F1EBFA',
+        '--h5p-theme-main-cta-light': '#8347DD',
+        '--h5p-theme-main-cta-dark': '#692EC2',
+        '--h5p-theme-contrast-cta': '#ffffff',
+        '--h5p-theme-contrast-cta-white': '#834DD5',
+        '--h5p-theme-contrast-cta-light': 'color-mix(in srgb, var(--h5p-theme-main-cta-base), transparent 90%)',
+        '--h5p-theme-secondary-cta-light': '#333333',
+        '--h5p-theme-secondary-cta-dark': '#311B50',
+        '--h5p-theme-secondary-contrast-cta': '#F3F1F5',
+        '--h5p-theme-alternative-light': '#f8f5ff',
+        '--h5p-theme-alternative-dark': '#e8d9ff',
+        '--h5p-theme-alternative-darker': '#ddc7ff',
+        '--h5p-theme-text-primary': '#101729',
+        '--h5p-theme-text-secondary': '#1b1346',
+        '--h5p-theme-text-third': '#737373',
+        '--h5p-theme-ui-base': '#FFFFFF',
+        '--h5p-theme-stroke-1': '#ead8f6',
+        '--h5p-theme-stroke-2': '#EDEEFB',
+        '--h5p-theme-stroke-3': '#E5E5E5',
+        '--h5p-theme-feedback-correct-main': '#256D1D',
+        '--h5p-theme-feedback-correct-secondary': '#f3fcf0',
+        '--h5p-theme-feedback-correct-third': '#cff1c2',
+        '--h5p-theme-feedback-incorrect-main': '#a13236',
+        '--h5p-theme-feedback-incorrect-secondary': '#faf0f4',
+        '--h5p-theme-feedback-incorrect-third': '#f6dce7',
+        '--h5p-theme-feedback-neutral-main': '#E6C81D',
+        '--h5p-theme-feedback-neutral-secondary': '#5E4817',
+        '--h5p-theme-feedback-neutral-third': '#F0EBCB'
+      },
+      green: {
+        '--h5p-theme-main-cta-base': '#17948b',
+        '--h5p-theme-secondary-cta-base': '#000000',
+        '--h5p-theme-alternative-base': '#FAF4E6',
+        '--h5p-theme-background': '#FCF9F2',
+        '--h5p-theme-focus': '#F1EBFA',
+        '--h5p-theme-main-cta-light': '#00B2A0',
+        '--h5p-theme-main-cta-dark': '#004D45',
+        '--h5p-theme-contrast-cta': '#ffffff',
+        '--h5p-theme-contrast-cta-white': '#17948b',
+        '--h5p-theme-contrast-cta-light': 'color-mix(in srgb, var(--h5p-theme-main-cta-base), transparent 90%)',
+        '--h5p-theme-secondary-cta-light': '#333333',
+        '--h5p-theme-secondary-cta-dark': '#311B50',
+        '--h5p-theme-secondary-contrast-cta': '#F3F1F5',
+        '--h5p-theme-alternative-light': '#FCF9F2',
+        '--h5p-theme-alternative-dark': '#F2E3BF',
+        '--h5p-theme-alternative-darker': '#EEDAAA',
+        '--h5p-theme-text-primary': '#101729',
+        '--h5p-theme-text-secondary': '#05252e',
+        '--h5p-theme-text-third': '#737373',
+        '--h5p-theme-ui-base': '#FFFFFF',
+        '--h5p-theme-stroke-1': '#cceae8',
+        '--h5p-theme-stroke-2': '#EDEEFB',
+        '--h5p-theme-stroke-3': '#E5E5E5',
+        '--h5p-theme-feedback-correct-main': '#256D1D',
+        '--h5p-theme-feedback-correct-secondary': '#f3fcf0',
+        '--h5p-theme-feedback-correct-third': '#cff1c2',
+        '--h5p-theme-feedback-incorrect-main': '#a13236',
+        '--h5p-theme-feedback-incorrect-secondary': '#faf0f4',
+        '--h5p-theme-feedback-incorrect-third': '#f6dce7',
+        '--h5p-theme-feedback-neutral-main': '#E6C81D',
+        '--h5p-theme-feedback-neutral-secondary': '#5E4817',
+        '--h5p-theme-feedback-neutral-third': '#F0EBCB'
+      },
+      orange: {
+        '--h5p-theme-main-cta-base': '#D63A0A',
+        '--h5p-theme-secondary-cta-base': '#172326',
+        '--h5p-theme-alternative-base': '#FFF2ED',
+        '--h5p-theme-background': '#FFF2ED',
+        '--h5p-theme-focus': '#F1EBFA',
+        '--h5p-theme-main-cta-light': '#F5511F',
+        '--h5p-theme-main-cta-dark': '#AF320B',
+        '--h5p-theme-contrast-cta': '#ffffff',
+        '--h5p-theme-contrast-cta-white': '#D63A0A',
+        '--h5p-theme-contrast-cta-light': 'color-mix(in srgb, var(--h5p-theme-main-cta-base), transparent 90%)',
+        '--h5p-theme-secondary-cta-light': '#263A3F',
+        '--h5p-theme-secondary-cta-dark': '#121A1D',
+        '--h5p-theme-secondary-contrast-cta': '#F3F1F5',
+        '--h5p-theme-alternative-light': '#FDF8F7',
+        '--h5p-theme-alternative-dark': '#F2DBD4',
+        '--h5p-theme-alternative-darker': '#FFCFBA',
+        '--h5p-theme-text-primary': '#101729',
+        '--h5p-theme-text-secondary': '#2c0f03',
+        '--h5p-theme-text-third': '#737373',
+        '--h5p-theme-ui-base': '#FFFFFF',
+        '--h5p-theme-stroke-1': '#f2dbd4',
+        '--h5p-theme-stroke-2': '#EDEEFB',
+        '--h5p-theme-stroke-3': '#E5E5E5',
+        '--h5p-theme-feedback-correct-main': '#256D1D',
+        '--h5p-theme-feedback-correct-secondary': '#f3fcf0',
+        '--h5p-theme-feedback-correct-third': '#cff1c2',
+        '--h5p-theme-feedback-incorrect-main': '#a13236',
+        '--h5p-theme-feedback-incorrect-secondary': '#faf0f4',
+        '--h5p-theme-feedback-incorrect-third': '#f6dce7',
+        '--h5p-theme-feedback-neutral-main': '#E6C81D',
+        '--h5p-theme-feedback-neutral-secondary': '#5E4817',
+        '--h5p-theme-feedback-neutral-third': '#F0EBCB'
+      },
+      dark: {
+        '--h5p-theme-main-cta-base': '#8db9ff',
+        '--h5p-theme-secondary-cta-base': '#f6bf1b',
+        '--h5p-theme-alternative-base': '#33313B',
+        '--h5p-theme-background': '#000000',
+        '--h5p-theme-focus': '#1765E3',
+        '--h5p-theme-main-cta-light': '#ADCDFF',
+        '--h5p-theme-main-cta-dark': '#75AAFF',
+        '--h5p-theme-contrast-cta': '#1C1C1C',
+        '--h5p-theme-contrast-cta-white': '#8db9ff',
+        '--h5p-theme-contrast-cta-light': 'color-mix(in srgb, var(--h5p-theme-main-cta-base), transparent 90%)',
+        '--h5p-theme-secondary-cta-light': '#ffc926',
+        '--h5p-theme-secondary-cta-dark': '#FFC107',
+        '--h5p-theme-secondary-contrast-cta': '#000000',
+        '--h5p-theme-alternative-light': '#1C1C1C',
+        '--h5p-theme-alternative-dark': '#2e2c36',
+        '--h5p-theme-alternative-darker': '#000000',
+        '--h5p-theme-text-primary': '#FFFFFF',
+        '--h5p-theme-text-secondary': '#BEC1C5',
+        '--h5p-theme-text-third': '#919191',
+        '--h5p-theme-ui-base': '#1C1C1C',
+        '--h5p-theme-stroke-1': '#33313B',
+        '--h5p-theme-stroke-2': '#3b3b3b',
+        '--h5p-theme-stroke-3': '#33313B',
+        '--h5p-theme-feedback-correct-main': '#dbf5d0',
+        '--h5p-theme-feedback-correct-secondary': '#293227',
+        '--h5p-theme-feedback-correct-third': '#53624d',
+        '--h5p-theme-feedback-incorrect-main': '#fbd7d8',
+        '--h5p-theme-feedback-incorrect-secondary': '#470a22',
+        '--h5p-theme-feedback-incorrect-third': '#80214b',
+        '--h5p-theme-feedback-neutral-main': '#fff3b2',
+        '--h5p-theme-feedback-neutral-secondary': '#5E4817',
+        '--h5p-theme-feedback-neutral-third': '#F0EBCB'
+      }
+    };
+
+    const H5P_SIZES_CLASSNAMES = ['small', 'medium', 'large'];
+
     const sessionName = document.getElementById('sessionName');
     const sessionSelect = document.getElementById('sessions');
     const newSessionButton = document.getElementById('newSessionButton');
@@ -117,7 +360,91 @@
     newSessionButton.addEventListener('click', newSessionEvent);
     resetSessionButton.addEventListener('click', resetSessionEvent);
     saveSessionButton.addEventListener('click', saveSessionEvent);
+
+    if ({themeControls}) {
+      const themeControls = document.querySelector('.theme-controls');
+      themeControls.classList.remove('display-none');
+
+      let innerWindow;
+      try {
+        innerWindow = document.querySelector('iframe.h5p-iframe').contentWindow;
+      }
+      catch (error) {
+        console.error('Could not access iframe contentWindow', error);
+        return;
+      }
+
+      const initializeThemeControls = () => {
+        const contentDOM = innerWindow.document.querySelector('.h5p-content');
+        const root = innerWindow.document.querySelector(':root');
+        if (!contentDOM || !root) {
+          console.error('Could not find .h5p-content and root in iframe');
+          return;
+        }
+
+        const changeTheme = (themeName) => {
+          const theme = H5P_THEMES[themeName];
+          if (!theme) {
+            console.warn(`Theme "${themeName}" not found`);
+            return;
+          }
+
+          Object.entries(theme).forEach(([property, value]) => {
+            root.style.setProperty(property, value);
+          });
+
+          Object.keys(H5P_THEMES).forEach(name => {
+            const button = document.querySelector(`.button-theme-color.${name}`);
+            button?.classList.toggle('active', name === themeName);
+          });
+        };
+
+        Object.keys(H5P_THEMES).forEach(themeName => {
+          const button = document.querySelector(`.button-theme-color.${themeName}`);
+          if (button) {
+            button.addEventListener('click', () => {
+              changeTheme(themeName);
+            });
+          }
+        });
+
+        changeTheme('core');
+
+        const changeSize = (targetSize) => {
+          const sizes = ['h5p-small', 'h5p-medium', 'h5p-large'];
+
+          sizes.forEach(size => {
+            const plainSize = size.replace('h5p-', '');
+            const button = document.querySelector(`.button-theme-size.${plainSize}`);
+            button?.classList.toggle('active', plainSize === targetSize);
+            contentDOM.classList.toggle(size, plainSize === targetSize);
+          });
+
+          innerWindow.H5P.instances[0].trigger('resize');
+        };
+
+        H5P_SIZES_CLASSNAMES.forEach(size => {
+          const button = document.querySelector(`.button-theme-size.${size}`);
+          button?.addEventListener('click', () => {
+            changeSize(size);
+          });
+        });
+
+        changeSize('large');
+      };
+
+      const wasInitialized = innerWindow.document.querySelector('.h5p-initialized');
+      if (wasInitialized) {
+        initializeThemeControls();
+      }
+      else {
+        innerWindow.H5P.externalDispatcher.on('initialized', () => {
+          initializeThemeControls();
+        });
+      }
+    }
   });
+</script>
 </script>
 <script type="text/javascript" src="/{libraries}/h5p-php-library/js/jquery.js"></script>
 <script type="text/javascript" src="/{libraries}/h5p-php-library/js/h5p.js"></script>
@@ -165,6 +492,24 @@
         <div class="button" id="saveSessionButton">{lang_createSession}</div>
       </div>
       <div class="button" id="resetSessionButton">{lang_resetSession}</div>
+    </div>
+  </div>
+</div>
+<div class="theme-controls display-none">
+  <div class="theme-controls-color">
+    <button class="button-theme-color core" aria-label="{lang_theme_core}"></button>
+    <button class="button-theme-color daylight" aria-label="{lang_theme_daylight}"></button>
+    <button class="button-theme-color blue" aria-label="{lang_theme_blue}"></button>
+    <button class="button-theme-color purple" aria-label="{lang_theme_purple}"></button>
+    <button class="button-theme-color green" aria-label="{lang_theme_green}"></button>
+    <button class="button-theme-color orange" aria-label="{lang_theme_orange}"></button>
+    <button class="button-theme-color dark" aria-label="{lang_theme_dark}"></button>
+  </div>
+  <div class="theme-controls-size">
+    <div class="buttons-theme-size">
+      <button class="button-theme-size small" aria-label="{lang_small}"></button>
+      <button class="button-theme-size medium" aria-label="{lang_medium}"></button>
+      <button class="button-theme-size large" aria-label="{lang_large}"></button>
     </div>
   </div>
 </div>
