@@ -18,5 +18,15 @@
   "lang_sessionName": "sessionens namn",
   "lang_resetSession": "reset session",
   "lang_createSession": "skapa session",
-  "lang_saveAllChanges": "spara alla ändringar"
+  "lang_saveAllChanges": "spara alla ändringar",
+  "lang_small": "Small",
+  "lang_medium": "Medium",
+  "lang_large": "Large",
+  "lang_theme_core": "Core theme",
+  "lang_theme_daylight": "Daylight theme",
+  "lang_theme_blue": "Blue theme",
+  "lang_theme_purple": "Purple theme",
+  "lang_theme_green": "Green theme",
+  "lang_theme_orange": "Orange theme",
+  "lang_theme_dark": "Dark theme"
 }
