@@ -406,6 +406,7 @@ body {
   .theme-controls-size {
     container-type: inline-size;
     container-name: button-theme-size-container;
+    display: inline-grid;
     justify-items: end;
 
     .buttons-theme-size {
