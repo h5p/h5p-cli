@@ -71,6 +71,9 @@
     user: { name: "developer", mail: "some.developer@some.company.com" }
   };
   window.addEventListener('load', () => {
+    /** @constant {number} H5P_THEME_CTA_TRANSITION_DURATION_MS Transition time for primary CTA elements. */
+    const H5P_THEME_CTA_TRANSITION_DURATION_MS = 100;
+
     const H5P_THEMES = {
       core: {
         '--h5p-theme-main-cta-base': '',
@@ -436,6 +439,11 @@
           });
 
           innerWindow.H5P.instances[0].trigger('resize');
+
+          // Some content types resize with a delay (e.g. due to primary-cta buttons)
+          window.setTimeout(() => {
+            innerWindow.H5P.instances[0].trigger('resize');
+          }, H5P_THEME_CTA_TRANSITION_DURATION_MS);
         };
 
         H5P_SIZES_CLASSNAMES.forEach(size => {
