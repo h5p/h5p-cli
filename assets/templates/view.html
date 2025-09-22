@@ -374,6 +374,21 @@
         return;
       }
 
+      const waitForH5P = (resolve, delay = 100, retries = 20) => {
+        if (typeof resolve !== 'function') {
+          return;
+        }
+
+        if (innerWindow.H5P) {
+          resolve();
+        }
+        else if (retries > 0) {
+          window.setTimeout(() => {
+            waitForH5P(resolve, delay, retries - 1);
+          }, delay);
+        }
+      };
+
       const initializeThemeControls = () => {
         const contentDOM = innerWindow.document.querySelector('.h5p-content');
         const root = innerWindow.document.querySelector(':root');
@@ -438,8 +453,10 @@
         initializeThemeControls();
       }
       else {
-        innerWindow.H5P.externalDispatcher.on('initialized', () => {
-          initializeThemeControls();
+        waitForH5P(() => {
+          innerWindow.H5P.externalDispatcher.on('initialized', () => {
+            initializeThemeControls();
+          });
         });
       }
     }
