@@ -71,6 +71,9 @@
     user: { name: "developer", mail: "some.developer@some.company.com" }
   };
   window.addEventListener('load', () => {
+    /** @constant {number} H5P_THEME_CTA_TRANSITION_DURATION_MS Transition time for primary CTA elements. */
+    const H5P_THEME_CTA_TRANSITION_DURATION_MS = 100;
+
     const H5P_THEMES = {
       core: {
         '--h5p-theme-main-cta-base': '',
@@ -374,6 +377,21 @@
         return;
       }
 
+      const waitForH5P = (resolve, delay = 100, retries = 20) => {
+        if (typeof resolve !== 'function') {
+          return;
+        }
+
+        if (innerWindow.H5P) {
+          resolve();
+        }
+        else if (retries > 0) {
+          window.setTimeout(() => {
+            waitForH5P(resolve, delay, retries - 1);
+          }, delay);
+        }
+      };
+
       const initializeThemeControls = () => {
         const contentDOM = innerWindow.document.querySelector('.h5p-content');
         const root = innerWindow.document.querySelector(':root');
@@ -421,6 +439,11 @@
           });
 
           innerWindow.H5P.instances[0].trigger('resize');
+
+          // Some content types resize with a delay (e.g. due to primary-cta buttons)
+          window.setTimeout(() => {
+            innerWindow.H5P.instances[0].trigger('resize');
+          }, H5P_THEME_CTA_TRANSITION_DURATION_MS);
         };
 
         H5P_SIZES_CLASSNAMES.forEach(size => {
@@ -438,8 +461,10 @@
         initializeThemeControls();
       }
       else {
-        innerWindow.H5P.externalDispatcher.on('initialized', () => {
-          initializeThemeControls();
+        waitForH5P(() => {
+          innerWindow.H5P.externalDispatcher.on('initialized', () => {
+            initializeThemeControls();
+          });
         });
       }
     }
