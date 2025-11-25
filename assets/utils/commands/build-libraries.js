@@ -157,7 +157,7 @@ function installDependencies({ options, library }) {
     return Promise.resolve({ options, library });
   }
 
-  const spawnProcess = child.spawn('npm', ['install'], {
+  const spawnProcess = child.spawn('npm', ['install', '--ignore-scripts'], {
     cwd: path.resolve(process.cwd(), library),
     shell: true
   });
