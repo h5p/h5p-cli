@@ -471,8 +471,8 @@ module.exports = {
       if (!info?.scripts?.build) {
         continue;
       }
-      console.log('>>> npm install --ignore-script');
-      console.log(execSync('npm install --ignore-script', {cwd: folder}).toString());
+      console.log('>>> npm install --ignore-scripts');
+      console.log(execSync('npm install --ignore-scripts', {cwd: folder}).toString());
       console.log('>>> npm run build');
       console.log(execSync('npm run build', {cwd: folder}).toString());
       fs.rmSync(`${folder}/node_modules`, { recursive: true, force: true });
