@@ -242,13 +242,22 @@ const cli = {
         execSync(`cp -r ${tmpTarget} ${target}`);
         fs.rmSync(tmpTarget, { recursive: true, force: true });
         const targetLibraryJson = JSON.parse(fs.readFileSync(`${target}/library.json`));
-        for (let item of targetLibraryJson.preloadedJs) {
-          item.path = `${target}/${item.path}`;
-          libraryJson.preloadedJs.push(item);
+
+        libraryJson.preloadedJs  = libraryJson.preloadedJs  || [];
+        libraryJson.preloadedCss = libraryJson.preloadedCss || [];
+
+        if (Array.isArray(targetLibraryJson.preloadedJs)) {
+          for (let item of targetLibraryJson.preloadedJs) {
+            item.path = `${target}/${item.path}`;
+            libraryJson.preloadedJs.push(item);
+          }
         }
-        for (let item of targetLibraryJson.preloadedCss) {
-          item.path = `${target}/${item.path}`;
-          libraryJson.preloadedCss.push(item);
+
+        if (Array.isArray(targetLibraryJson.preloadedCss)) {
+          for (let item of targetLibraryJson.preloadedCss) {
+            item.path = `${target}/${item.path}`;
+            libraryJson.preloadedCss.push(item);
+          }
         }
         const packageFile = `${target}/package.json`;
         if (!fs.existsSync(packageFile)) {
