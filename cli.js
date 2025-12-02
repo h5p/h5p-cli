@@ -243,20 +243,27 @@ const cli = {
         fs.rmSync(tmpTarget, { recursive: true, force: true });
         const targetLibraryJson = JSON.parse(fs.readFileSync(`${target}/library.json`));
 
-        libraryJson.preloadedJs  = libraryJson.preloadedJs  || [];
-        libraryJson.preloadedCss = libraryJson.preloadedCss || [];
+        if (Array.isArray(targetLibraryJson.preloadedJs) &&
+            Array.isArray(libraryJson.preloadedJs)) {
 
-        if (Array.isArray(targetLibraryJson.preloadedJs)) {
-          for (let item of targetLibraryJson.preloadedJs) {
-            item.path = `${target}/${item.path}`;
-            libraryJson.preloadedJs.push(item);
+          for (const item of targetLibraryJson.preloadedJs) {
+            if (!item?.path) continue;
+            libraryJson.preloadedJs.push({
+              ...item,
+              path: `${target}/${item.path}`
+            });
           }
         }
 
-        if (Array.isArray(targetLibraryJson.preloadedCss)) {
-          for (let item of targetLibraryJson.preloadedCss) {
-            item.path = `${target}/${item.path}`;
-            libraryJson.preloadedCss.push(item);
+        if (Array.isArray(targetLibraryJson.preloadedCss) &&
+            Array.isArray(libraryJson.preloadedCss)) {
+
+          for (const item of targetLibraryJson.preloadedCss) {
+            if (!item?.path) continue;
+            libraryJson.preloadedCss.push({
+              ...item,
+              path: `${target}/${item.path}`
+            });
           }
         }
         const packageFile = `${target}/package.json`;
