@@ -15,6 +15,19 @@ marked = marked.marked;
 if (process.env.H5P_SSH_CLONE) {
   config.urls.library.clone = config.urls.library.sshClone;
 }
+
+const gitRefExists = (ref) => {
+  try {
+    execSync(`git show-ref --verify --quiet refs/heads/${ref} || git show-ref --verify --quiet refs/remotes/${ref}`, {
+      stdio: 'ignore',
+    });
+    return true;
+  }
+  catch {
+    return false;
+  }
+};
+
 const handleMissingOptionals = (missingOptionals, result, item) => {
   if (result[item].optional) {
     if (!missingOptionals[item]) {
@@ -227,16 +240,31 @@ const cli = {
       execSync('rm -rdf @*');
       const initialBranch = execSync('git rev-parse --abbrev-ref HEAD').toString();
       const branches = process.argv.slice(3);
+      const validBranches = [];
       for (let branch of branches) {
         const target = `@${branch.replace('/', '_')}`;
         const tmpTarget = `/tmp/h5p-cli-${target}`;
-        execSync(`git checkout ${branch}`);
+
+        let checkoutRef = branch;
+
+        if (!gitRefExists(branch)) {
+          if (!branch.includes('/') && gitRefExists(`origin/${branch}`)) {
+            checkoutRef = `origin/${branch}`;
+          }
+          else {
+            console.log(`\x1b[33m > branch "${branch}" does not exist locally or remotely \x1b[0m`);
+            continue;
+          }
+        }
+
+        execSync(`git checkout ${checkoutRef}`);
         fs.rmSync(tmpTarget, { recursive: true, force: true });
         execSync(`cp -r . ${tmpTarget}`);
+        validBranches.push(branch);
       }
       execSync(`git checkout ${initialBranch}`);
       const libraryJson = JSON.parse(fs.readFileSync('library.json'));
-      for (let branch of branches) {
+      for (let branch of validBranches) {
         const target = `@${branch.replace('/', '_')}`;
         const tmpTarget = `/tmp/h5p-cli-${target}`;
         execSync(`cp -r ${tmpTarget} ${target}`);
