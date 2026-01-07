@@ -348,7 +348,7 @@
           return;
         }
 
-        if (innerWindow.H5P) {
+        if (innerWindow.H5P?.externalDispatcher) {
           resolve();
         }
         else if (retries > 0) {
