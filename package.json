@@ -28,5 +28,8 @@
     "patch-package": "^8.0.0",
     "sanitize-html": "^2.12.1",
     "superagent": "^8.0.4"
+  },
+  "overrides": {
+    "tmp": "0.2.4"
   }
 }
