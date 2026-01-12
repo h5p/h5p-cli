@@ -308,7 +308,7 @@ const cli = {
           fs.rmSync(pathToNodeModules, { recursive: true, force: true });
         }
         console.log(`>>> npm install --ignore-scripts ${target}`);
-        console.log(execSync('npm install --ignore-scripts', { cwd: target }).toString());
+        console.log(execSync('npm install --ignore-scripts', {cwd: target}).toString());
         console.log(`>>> npm run build ${target}`);
         console.log(execSync('npm run build', {cwd: target}).toString());
       }
