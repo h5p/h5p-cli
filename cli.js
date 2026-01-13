@@ -349,7 +349,7 @@ const cli = {
   },
   // run the dev server
   server: () => {
-    require('./server.js');
+    require('./src/server/server.js');
   },
   // help section
   help: (command) => {

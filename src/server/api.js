@@ -2,11 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const he = require('he');
 const imageSize = require('image-size');
-const logic = require('./logic.js');
-const config = require('./configLoader.js');
-const l10n = require('./assets/l10n.json');
+const logic = require('../../logic.js');
+const config = require('../../configLoader.js');
+const l10n = require('../../assets/l10n.json');
 const supportedLanguages = require(`${require.main.path}/${config.folders.assets}/languageCatcher.js`);
-const userSession = require('./src/server/user_session.js');
+const userSession = require('./user_session.js');
 let contentSession = {
   name: 'main-session',
   language: 'en',

@@ -1,5 +1,5 @@
 const express = require('express');
-const config = require('./configLoader.js');
+const config = require('../../configLoader.js');
 const multer = require('multer')({ dest: `./${config.folders.temp}` });
 const api = require('./api.js');
 let app = express();
