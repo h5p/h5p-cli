@@ -6,7 +6,8 @@ const logic = require('./logic.js');
 const config = require('./configLoader.js');
 const l10n = require('./assets/l10n.json');
 const supportedLanguages = require(`${require.main.path}/${config.folders.assets}/languageCatcher.js`);
-let session = {
+const userSession = require('./src/server/user_session.js');
+let contentSession = {
   name: 'main-session',
   language: 'en',
   status: ''
@@ -26,12 +27,12 @@ module.exports = {
   // renders dashboard
   dashboard: async (request, response, next) => {
     try {
-      manageSession(null, {
-        language: request.query?.language,
+      userSession.updateFromQuery(request);
+      manageContentSession(null, {
         name: request.query?.session
       });
       const html = fs.readFileSync(`${require.main.path}/${config.folders.assets}/templates/dashboard.html`, 'utf-8');
-      const labels = await getLangLabels();
+      const labels = await userSession.getLangLabels();
       const languageFiles = logic.getFileList(`${config.folders.libraries}/h5p-editor-php-library/language`);
       const languages = {};
       for (let item of languageFiles) {
@@ -41,14 +42,14 @@ module.exports = {
       let input = {
         assets: config.folders.assets,
         api: config.api,
-        status: session.status,
-        language: session.language,
+        status: contentSession.status,
+        language: userSession.session.language,
         languages: JSON.stringify(languages)
       }
       input = {...input, ...labels};
       response.set('Content-Type', 'text/html');
       response.end(logic.fromTemplate(html, input));
-      session.status = '';
+      contentSession.status = '';
     }
     catch (error) {
       handleError(error, response);
@@ -92,17 +93,16 @@ module.exports = {
   // updates session file used for resume functionality
   setUserData: (request, response, next) => {
     try {
-      manageSession(request.params.folder, {
-        language: request.query?.language,
+      manageContentSession(request.params.folder, {
         name: request.query?.session
       });
-      if (session.name == 'null') {
+      if (contentSession.name == 'null') {
         response.set('Content-Type', 'application/json');
         response.end(JSON.stringify({success: true}));
         return;
       }
-      const dataFile = `content/${request.params.folder}/sessions/${session.name}.json`;
-      const data = getSession(request.params.folder);
+      const dataFile = `content/${request.params.folder}/sessions/${contentSession.name}.json`;
+      const data = getContentSession(request.params.folder);
       data.resume[request.params.id] = data.resume[request.params.id] || {};
       data.resume[request.params.id][request.params.type] = request.body.data;
       fs.writeFileSync(dataFile, JSON.stringify(data));
@@ -116,7 +116,7 @@ module.exports = {
   // deletes the session file used for resume functionality
   resetUserData: (request, response, next) => {
     try {
-      const dataFile = `content/${request.params.folder}/sessions/${session.name}.json`;
+      const dataFile = `content/${request.params.folder}/sessions/${contentSession.name}.json`;
       response.set('Content-Type', 'application/json');
       if (fs.existsSync(dataFile)) {
         fs.unlinkSync(dataFile);
@@ -133,11 +133,10 @@ module.exports = {
   // retrieves session data for resume functionality
   getUserData: (request, response, next) => {
     try {
-      manageSession(request.params.folder, {
-        language: request.query?.language,
+      manageContentSession(request.params.folder, {
         name: request.query?.session
       });
-      const data = getSession(request.params.folder);
+      const data = getContentSession(request.params.folder);
       response.set('Content-Type', 'application/json');
       response.end(JSON.stringify(data?.[0] || {}));
     }
@@ -284,7 +283,7 @@ module.exports = {
   splitView: async (request, response, next) => {
     try {
       const splitView_html = fs.readFileSync(`${require.main.path}/${config.folders.assets}/templates/splitView.html`, 'utf-8');
-      const labels = await getLangLabels();
+      const labels = await userSession.getLangLabels();
       let input = {
         assets: config.folders.assets,
         viewFrameSRC: `/view/${request.params.library}/${request.params.folder}?simple=1`,
@@ -469,7 +468,7 @@ module.exports = {
       }));
       const html = fs.readFileSync(`${require.main.path}/${config.folders.assets}/templates/edit.html`, 'utf-8');
       const info = JSON.parse(fs.readFileSync(`content/${folder}/h5p.json`, 'utf-8'));
-      info.language = session.language;
+      info.language = userSession.session.language;
       const id = libs[library].id;
       let mainLibrary = {};
       for (let item of info.preloadedDependencies) {
@@ -478,15 +477,14 @@ module.exports = {
           break;
         }
       }
-      manageSession(request.params.folder, {
-        language: request.query?.language,
+      manageContentSession(request.params.folder, {
         name: request.query?.session
       }, true);
       const formParams = {
         params: JSON.parse(jsonContent),
         metadata: info
       }
-      const labels = await getLangLabels();
+      const labels = await userSession.getLangLabels();
       const machineName = `${libs[library].id} ${libs[library].version.major}.${libs[library].version.minor}`;
       const libraryDirectories = JSON.stringify((await ajaxLibraries({ machineName: id })).directories);
       let input = {
@@ -509,7 +507,7 @@ module.exports = {
         libraryDirectories,
         parameters: he.encode(JSON.stringify(formParams)),
         libraryConfig: JSON.stringify(libraryConfig),
-        language: session.language,
+        language: userSession.session.language,
         watcher: config.files.watch,
         simple: request.query.simple ? 'hidden' : ''
       }
@@ -535,13 +533,12 @@ module.exports = {
       await logic.upgrade(folder, library);
       const libs = await logic.computeDependencies(library, 'view', null, libraryDirs[registry.regular[library].id]);
       const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
-      const sessions = manageSession(request.params.folder, {
-        language: request.query?.language,
+      const sessions = manageContentSession(request.params.folder, {
         name: request.query?.session
       }, true);
-      const userData = getSession(request.params.folder);
+      const userData = getContentSession(request.params.folder);
       let metadata = await logic.getFile(`content/${folder}/h5p.json`, true);
-      metadata.language = session.language;
+      metadata.language = userSession.session.language;
       metadata = JSON.stringify(metadata);
       let preloadedJs = [];
       let preloadedCss = [];
@@ -579,7 +576,7 @@ module.exports = {
         }
       }
       const machineName = `${id} ${libs[library].version.major}.${libs[library].version.minor}`;
-      const labels = await getLangLabels();
+      const labels = await userSession.getLangLabels();
       const libraryDirectories = JSON.stringify((await ajaxLibraries({ machineName: id })).directories);
       let input = {
         assets: config.folders.assets,
@@ -588,7 +585,7 @@ module.exports = {
         baseUrl,
         library,
         folder,
-        session: session.name,
+        session: contentSession.name,
         sessions: JSON.stringify(sessions),
         machineName,
         version: `${libs[library].version.major}.${libs[library].version.minor}`,
@@ -601,7 +598,7 @@ module.exports = {
         preloadedJs: JSON.stringify(preloadedJs),
         l10n: JSON.stringify(l10n),
         libraryConfig: JSON.stringify(libraryConfig),
-        language: session.language,
+        language: userSession.session.language,
         metadata,
         contentUserData: JSON.stringify(userData.resume),
         watcher: config.files.watch,
@@ -748,7 +745,7 @@ const computePreloaded = async (library, baseUrl) => {
     }
     const label = `${entry.id}-${entry.version.major}.${entry.version.minor}.${entry.version.patch}`;
     const languageFolder = `${config.folders.libraries}/${folder}/language`;
-    const langFile = `${languageFolder}/${session.language}.json`;
+    const langFile = `${languageFolder}/${userSession.session.language}.json`;
     if (fs.existsSync(langFile)) {
       translations[entry.id] = JSON.parse(fs.readFileSync(langFile, 'utf-8'));
     }
@@ -852,7 +849,7 @@ const handleError = (error, response) => {
 const verifySetup = async (library, response) => {
   const setupStatus = await logic.verifySetup(library);
   if (!setupStatus.ok) {
-    session.status = `"${library}" is not properly set up. Please run "h5p setup ${library}" for setup.
+    contentSession.status = `"${library}" is not properly set up. Please run "h5p setup ${library}" for setup.
 For a setup status report run "h5p verify ${library}".`;
     response.redirect(`/dashboard`);
     return false;
@@ -861,18 +858,18 @@ For a setup status report run "h5p verify ${library}".`;
     return true;
   }
 }
-const manageSession = (folder, options, getSessions) => {
+const manageContentSession = (folder, options, getSessions) => {
   for (let key in options) {
     if (typeof options[key] !== 'undefined') {
-      session[key] = options[key];
+      contentSession[key] = options[key];
     }
   }
   const sessionFolder = `content/${folder}/sessions`;
-  const sessionFile = `${sessionFolder}/${session.name}.json`;
+  const sessionFile = `${sessionFolder}/${contentSession.name}.json`;
   if (folder && !fs.existsSync(sessionFolder)) {
     fs.mkdirSync(sessionFolder);
   }
-  if (folder && session.name != 'null' && !fs.existsSync(sessionFile)) {
+  if (folder && contentSession.name != 'null' && !fs.existsSync(sessionFile)) {
     fs.writeFileSync(sessionFile, JSON.stringify({
       resume: []
     }));
@@ -883,20 +880,13 @@ const manageSession = (folder, options, getSessions) => {
   }
   return [];
 }
-const getSession = (folder) => {
-  const dataFile = `content/${folder}/sessions/${session.name}.json`;
+const getContentSession = (folder) => {
+  const dataFile = `content/${folder}/sessions/${contentSession.name}.json`;
   let userData = {};
   if (fs.existsSync(dataFile)) {
     userData = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
   }
   return userData;
-}
-const getLangLabels = async () => {
-  let langFile = `${require.main.path}/${config.folders.assets}/languages/${session.language}.json`;
-  if (!fs.existsSync(langFile)) {
-    langFile = `${config.folders.assets}/languages/en.json`;
-  }
-  return await logic.getFile(langFile, true);
 }
 
  /* Reset content user data.
