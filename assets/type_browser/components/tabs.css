@@ -1,0 +1,35 @@
+h5pcli-content-type > details {
+    display: contents;
+}
+
+h5pcli-content-type > details > summary {
+    display: flex;
+    justify-content: center;
+    grid-row: 1;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    /*border-bottom: none;*/
+    padding: 4px;
+}
+
+h5pcli-content-type > details > div {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    grid-column: 1 / -1;
+    position: sticky;
+    left: 0;
+    border-radius: 0 0 4px 4px;
+}
+
+h5pcli-content-type > details[open]::details-content {
+    display: contents;
+}
+
+h5pcli-content-type > details[open] > summary {
+    font-weight: bold;
+}
+
+h5pcli-content-type[collapsed] > details > div {
+    /*max-height: 500px;*/
+    overflow: auto;
+}
