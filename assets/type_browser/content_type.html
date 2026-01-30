@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{lang_installed_libraries}</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/assets/styles/reset.css">
+    <link rel="stylesheet" type="text/css" href="/assets/styles/style.css">
+    <link rel="stylesheet" href="/type_browser/components/tabs.css">
+
+    <script type="module" src="/type_browser/components/index.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        .item{
+            display: unset;
+        }
+    </style>
+</head>
+<body>
+<div class="sticky">
+    <div class="menu-holder">
+        <div class="menu">
+            <div class="button dashboard" id="newContentButton">
+                <a href="/dashboard">{lang_dashboard}</a>
+            </div>
+            <a href="/type_browser/" class="button type-browser" id="typeBrowserButton">
+                <span class="button-label">{lang_installed_libraries}</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="holder content" id="content">
+    <h5pcli-content-type class="item" src="./library.json"></h5pcli-content-type>
+</div>
+</body>
+</html>

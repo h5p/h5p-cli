@@ -110,6 +110,9 @@ body {
 .dashboard:before {
   content: "\e903";
 }
+.type-browser:before {
+  content: "\1F3EA";
+}
 .save-button {
   background-color: #388E3C;
   border-color: #388E3C;

@@ -18,5 +18,6 @@
   "lang_resetSession": "Sitzung zurücksetzen",
   "lang_sessionName": "Sitzungsname",
   "lang_createSession": "Sitzung erstellen",
-  "lang_saveAllChanges": "Alle Änderungen speichern"
+  "lang_saveAllChanges": "Alle Änderungen speichern",
+  "lang_installed_libraries": "Inhaltstypen"
 }
