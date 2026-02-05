@@ -18,5 +18,6 @@
   "lang_resetSession": "restablecer sesión",
   "lang_sessionName": "nombre de la sesión",
   "lang_createSession": "crear sesión",
-  "lang_saveAllChanges": "guardar todos los cambios"
+  "lang_saveAllChanges": "guardar todos los cambios",
+  "lang_installed_libraries": "Tipo de contenido"
 }

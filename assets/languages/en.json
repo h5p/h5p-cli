@@ -18,5 +18,6 @@
   "lang_resetSession": "reset session",
   "lang_sessionName": "session name",
   "lang_createSession": "create session",
-  "lang_saveAllChanges": "save all changes"
+  "lang_saveAllChanges": "save all changes",
+  "lang_installed_libraries": "Content Types"
 }
