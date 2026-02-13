@@ -529,7 +529,7 @@ module.exports = {
     const map = {};
     const preloadedDependencies = [];
     for (let item in libs) {
-      for (let predep of libs[item].preloadedDependencies) {
+      for (let predep of (libs[item].preloadedDependencies || [])) {
         if (map[predep.machineName]) {
           continue;
         }
