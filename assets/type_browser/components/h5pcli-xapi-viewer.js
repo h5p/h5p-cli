@@ -58,14 +58,16 @@ export default class H5pcliXapiViewer extends HTMLElement {
                   border-radius: 3px;
                 }
                 .list .content{
-                    width: 100%;
+                    /*width: 100%;*/
                     padding: 1em;
                     max-height: 80vh;
                     overflow: auto;
                 }
                 .float{
                     position: absolute;
-                    background-color: black;
+                    background-color: lightgray;
+                    color: black;
+                    z-index: 10;
                 }
                 :host([open]) > .list[open] > summary{
                   list-style: none;
@@ -135,9 +137,9 @@ export default class H5pcliXapiViewer extends HTMLElement {
     createSummaryAndAdd(statement) {
         let summary = "Example Event";
         try {
-            let user = statement.actor.name;
-            let verb = statement.verb.id.split('/').pop();
-            let object = statement.object.id.split('/').pop();
+            let user = statement.actor?.name;
+            let verb = statement.verb?.id.split('/').pop();
+            let object = statement.object.id?.split('/').pop();
             let result = '';
 
             if (statement.object.definition?.name?.['en-US']) {
