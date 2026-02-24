@@ -541,6 +541,7 @@ module.exports = {
       metadata.language = userSession.session.language;
       metadata = JSON.stringify(metadata);
       let preloadedJs = [];
+      let preloadedJsModules = [];
       let preloadedCss = [];
       for (let item in libs) {
         const entry = libs[item];
@@ -552,7 +553,11 @@ module.exports = {
           continue;
         }
         for (let jsItem of entry.preloadedJs) {
-          preloadedJs.push(`/${config.folders.libraries}/${libFolder}/${jsItem.path}`);
+          if(jsItem.module){
+            preloadedJsModules.push(`/${config.folders.libraries}/${libFolder}/${jsItem.path}`);
+          } else {
+            preloadedJs.push(`/${config.folders.libraries}/${libFolder}/${jsItem.path}`);
+          }
         }
         for (let cssItem of entry.preloadedCss) {
           preloadedCss.push(`/${config.folders.libraries}/${libFolder}/${cssItem.path}`);
@@ -560,7 +565,8 @@ module.exports = {
       }
       const mathDisplay = (await logic.computeDependencies('h5p-math-display', 'view', null, libraryDirs[registry.regular['h5p-math-display'].id]))['h5p-math-display'];
       const mathDisplayLabel = libraryDirs[mathDisplay.id];
-      preloadedJs.push(`/${config.folders.libraries}/${mathDisplayLabel}/dist/h5p-math-display.js`);
+      preloadedJs.push(`/${config.folders.libraries}/${mathDisplayLabel}/h5p-math-display.js`);
+      preloadedJs.push(`/${config.folders.libraries}/${mathDisplayLabel}/h5p-math-display-mathjax-config.js`);
       const libraryConfig = JSON.parse(logic.fromTemplate(fs.readFileSync(`${require.main.path}/${config.folders.assets}/libraryConfig.json`, 'utf-8'), {
         baseUrl,
         mathDisplayLabel
@@ -596,6 +602,7 @@ module.exports = {
         jsonContent: JSON.stringify(jsonContent),
         preloadedCss: JSON.stringify(preloadedCss),
         preloadedJs: JSON.stringify(preloadedJs),
+        preloadedJsModules: JSON.stringify(preloadedJsModules),
         l10n: JSON.stringify(l10n),
         libraryConfig: JSON.stringify(libraryConfig),
         language: userSession.session.language,

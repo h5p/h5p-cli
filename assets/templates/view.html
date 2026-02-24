@@ -7,6 +7,7 @@
 <link rel="stylesheet" type="text/css" href="/{assets}/styles/reset.css">
 <link rel="stylesheet" type="text/css" href="/{assets}/styles/style.css">
 <script type="text/javascript" src="/{assets}/scripts/delete.js"></script>
+<script type="module" src="/type_browser/components/h5pcli-xapi-viewer.js"></script>
 <script type="text/javascript">
   H5PIntegration = {
     ajax: {
@@ -34,7 +35,8 @@
         resizeCode: "",
         title: "{title}",
         styles: {preloadedCss},
-        scripts: {preloadedJs}
+        scripts: {preloadedJs},
+        scriptsModules: {preloadedJsModules},
       }
     },
     l10n: {l10n},
@@ -65,7 +67,7 @@
     url: "{baseUrl}",
     urlLibraries: "{baseUrl}/{libraries}",
     libraryDirectories: {libraryDirectories},
-    user: { name: "developer", mail: "some.developer@some.company.com" }
+    user: { name: "H5PCli User", mail: "some.developer@some.company.com" }
   };
   window.addEventListener('load', () => {
     const sessionName = document.getElementById('sessionName');
@@ -127,13 +129,13 @@
 <script type="text/javascript" src="/{libraries}/h5p-php-library/js/h5p-display-options.js"></script>
 <script type="text/javascript" src="/{libraries}/h5p-php-library/js/h5p-tooltip.js"></script>
 <script type="text/javascript" src="/{libraries}/h5p-php-library/js/request-queue.js"></script>
-<script type="text/javascript">
-  if ({watcher}) {
-    var watcher = document.createElement('script');
-    watcher.setAttribute('src', `http://${location.host.split(':')[0]}:35729/livereload.js?snipver=1`);
-    document.head.appendChild(watcher);
-  }
-</script>
+<!--<script type="text/javascript">-->
+<!--  if ({watcher}) {-->
+<!--    var watcher = document.createElement('script');-->
+<!--    watcher.setAttribute('src', `http://${location.host.split(':')[0]}:35729/livereload.js?snipver=1`);-->
+<!--    document.head.appendChild(watcher);-->
+<!--  }-->
+<!--</script>-->
 </head>
 <body>
 <div id="status">{lang_running} {id} {version}; {lang_contentCreatedFor} {id} {contentVersion}</div>
@@ -162,6 +164,9 @@
         <div class="button" id="saveSessionButton">{lang_createSession}</div>
       </div>
       <div class="button" id="resetSessionButton">{lang_resetSession}</div>
+    </div>
+    <div>
+      <h5pcli-xapi-viewer float></h5pcli-xapi-viewer>
     </div>
   </div>
 </div>
