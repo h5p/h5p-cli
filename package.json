@@ -15,6 +15,7 @@
     "h5p": "./h5p.js"
   },
   "dependencies": {
+    "@d2l/universal_questions": "github:Brightspace/universal_questions#insp_2026",
     "adm-zip": "0.5.16",
     "archiver": "^5.3.1",
     "express": "^4.19.2",

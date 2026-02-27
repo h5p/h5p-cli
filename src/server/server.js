@@ -37,6 +37,9 @@ app.get('/content-user-data/:folder/:type/:id', api.getUserData);
 app.post('/content-user-data/:folder/:type/:id', api.setUserData);
 app.delete('/content-user-data/:folder', api.resetUserData);
 
+// Scoring
+app.post('/score/:library/:folder', api.score);
+
 // Serve assets dir
 app.use(`/${config.folders.assets}`, express.static(`${require.main.path}/${config.folders.assets}`))
 

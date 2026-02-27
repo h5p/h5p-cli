@@ -324,6 +324,7 @@ module.exports = {
       done[level][dep].preloadedDependencies = list.preloadedDependencies || [];
       done[level][dep].editorDependencies = list.editorDependencies || [];
       done[level][dep].metadataSettings = list.metadataSettings;
+      done[level][dep].serverScorable = list.serverScorable ?? false;
       if (!done[level][dep].requiredBy) {
         done[level][dep].requiredBy = [];
       }
@@ -549,7 +550,8 @@ module.exports = {
       license: 'U',
       defaultLanguage: 'en',
       embedTypes: ['div'],
-      preloadedDependencies
+      preloadedDependencies,
+      serverScorable: libs[library].serverScorable
     };
     fs.writeFileSync(`${target}/h5p.json`, JSON.stringify(info));
   },

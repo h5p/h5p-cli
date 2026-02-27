@@ -12,6 +12,8 @@ let contentSession = {
   language: 'en',
   status: ''
 }
+const { convertH5P: convertH5PCheckbox } = require('@d2l/universal_questions/src/multiple-select/lib/h5p-converter');
+const { scoreMultipleSelect, stripScoringInfo: stripScoringInfoMultipleSelect } = require('@d2l/universal_questions/src/multiple-select/lib/scoring.js');
 module.exports = {
   // load favicon.ico file
   favicon: (request, response, next) => {
@@ -532,7 +534,7 @@ module.exports = {
       }
       await logic.upgrade(folder, library);
       const libs = await logic.computeDependencies(library, 'view', null, libraryDirs[registry.regular[library].id]);
-      const jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
+      let jsonContent = fs.readFileSync(`./content/${folder}/content.json`, 'utf8');
       const sessions = manageContentSession(request.params.folder, {
         name: request.query?.session
       }, true);
@@ -584,6 +586,16 @@ module.exports = {
       const machineName = `${id} ${libs[library].version.major}.${libs[library].version.minor}`;
       const labels = await userSession.getLangLabels();
       const libraryDirectories = JSON.stringify((await ajaxLibraries({ machineName: id })).directories);
+
+      if (libs[library].serverScorable) {
+        const semantics = JSON.parse(fs.readFileSync(`${config.folders.libraries}/${libraryDirs[libs[library].id]}/semantics.json`, 'utf-8'));
+        const strippedData = stripScoreInfo(JSON.parse(jsonContent), semantics);
+
+        // @todo: For now just set it to true, but need to determine when we want to server score.
+        strippedData.shouldServerScore = true;
+        jsonContent = JSON.stringify(strippedData);
+      }
+
       let input = {
         assets: config.folders.assets,
         libraries: config.folders.libraries,
@@ -619,6 +631,49 @@ module.exports = {
     catch (error) {
       handleError(error, response);
     }
+  },
+
+  score: async (request, response, next) => {
+    try {
+      const jsonContent = JSON.parse(fs.readFileSync(`./content/${request.params.folder}/content.json`, 'utf8'));
+      const h5pJson = JSON.parse(fs.readFileSync(`./content/${request.params.folder}/h5p.json`, 'utf8'));
+      const type = h5pJson.mainLibrary;
+      const typeEntry = getTypeEntry(type);
+
+      const convertedData = typeEntry.converter({mainLibrary: typeEntry.type}, jsonContent, {contentId: request.body.contentId});
+      const returnValue = typeEntry.score(convertedData.contentData, request.body.userState);
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify(returnValue));
+    } catch (error) {
+      handleError(error, response);
+    }
+  }
+}
+
+const TYPE_REGISTRY = {
+	// 'true-false': {
+	// 	fixturesDir: path.join(__dirname, '..', 'src', 'true-false', 'test', 'fixtures'),
+	// 	score: scoreTrueFalse,
+	// 	strip: stripTrueFalse,
+	// },
+	// 'multiple-choice': {
+	// 	fixturesDir: path.join(__dirname, '..', 'src', 'multiple-choice', 'test', 'fixtures'),
+	// 	score: scoreMultipleChoice,
+	// 	strip: stripMultipleChoice,
+	// },
+	'H5P.MultiChoiceUniversal': {
+		score: scoreMultipleSelect,
+    converter: convertH5PCheckbox,
+    strip: stripScoringInfoMultipleSelect,
+    // Tmp just fixing name 
+    type: 'H5P.MultiChoice',
+		
+	},
+};
+
+function getTypeEntry (type) {
+  if (type === 'H5P.MultiChoiceUniversal') {
+    return TYPE_REGISTRY[type];
   }
 }
 
@@ -913,3 +968,47 @@ const resetContentUserData = (folder) => {
     fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
   });
 };
+
+/**
+ * Strip scoreInfo data that we do not want to show the user.
+ * @param {Object} data data from content.json
+ * @param {Object} semantics the data from semantics.json
+ * @returns {Object} stripped content.json
+ */
+function stripScoreInfo(data, semantics) {
+  if (!data || !semantics) return data;
+
+  // Clone to avoid mutation
+  const result = Array.isArray(data) ? [...data] : { ...data };
+
+  for (const field of semantics) {
+    const key = field.name;
+
+    if (!(key in result)) continue;
+
+    // Remove if scoreInfo is true
+    if (field.scoreInfo === true) {
+      delete result[key];
+      continue;
+    }
+
+    // Handle group
+    if (field.type === "group" && field.fields && result[key]) {
+      result[key] = stripScoreInfo(result[key], field.fields);
+    }
+
+    // Handle list
+    if (field.type === "list" && Array.isArray(result[key])) {
+      const itemSemantics =
+        field.field.type === "group"
+          ? field.field.fields
+          : [field.field];
+
+      result[key] = result[key].map(item =>
+        stripScoreInfo(item, itemSemantics)
+      );
+    }
+  }
+
+  return result;
+}
