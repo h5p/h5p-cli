@@ -1,5 +1,6 @@
 const { execSync } = require("child_process");
 const fs = require('fs');
+const path = require('path');
 const logic = require('./logic.js');
 const config = require('./configLoader.js');
 const utils = require('./assets/utils/cli.js');
@@ -14,16 +15,30 @@ marked = marked.marked;
 if (process.env.H5P_SSH_CLONE) {
   config.urls.library.clone = config.urls.library.sshClone;
 }
+
+const gitRefExists = (ref) => {
+  try {
+    execSync(`git show-ref --verify --quiet refs/heads/${ref} || git show-ref --verify --quiet refs/remotes/${ref}`, {
+      stdio: 'ignore',
+    });
+    return true;
+  }
+  catch {
+    return false;
+  }
+};
+
 const handleMissingOptionals = (missingOptionals, result, item) => {
   if (result[item].optional) {
     if (!missingOptionals[item]) {
       missingOptionals[item] = result[item];
     }
+  } else {
+    throw new Error(
+      `unregistered ${item} library required by ${result[item].parent}`
+    );
   }
-  else {
-    throw new Error(`unregistered ${item} library required by ${result[item].parent}`);
-  }
-}
+};
 const cli = {
   // exports content type as .h5p zipped file
   export: async (library, folder) => {
@@ -225,28 +240,59 @@ const cli = {
       execSync('rm -rdf @*');
       const initialBranch = execSync('git rev-parse --abbrev-ref HEAD').toString();
       const branches = process.argv.slice(3);
+      const validBranches = [];
       for (let branch of branches) {
         const target = `@${branch.replace('/', '_')}`;
         const tmpTarget = `/tmp/h5p-cli-${target}`;
-        execSync(`git checkout ${branch}`);
+
+        let checkoutRef = branch;
+
+        if (!gitRefExists(branch)) {
+          if (!branch.includes('/') && gitRefExists(`origin/${branch}`)) {
+            checkoutRef = `origin/${branch}`;
+          }
+          else {
+            console.log(`\x1b[33m > branch "${branch}" does not exist locally or remotely \x1b[0m`);
+            continue;
+          }
+        }
+
+        execSync(`git checkout ${checkoutRef}`);
         fs.rmSync(tmpTarget, { recursive: true, force: true });
         execSync(`cp -r . ${tmpTarget}`);
+        validBranches.push(branch);
       }
       execSync(`git checkout ${initialBranch}`);
       const libraryJson = JSON.parse(fs.readFileSync('library.json'));
-      for (let branch of branches) {
+      for (let branch of validBranches) {
         const target = `@${branch.replace('/', '_')}`;
         const tmpTarget = `/tmp/h5p-cli-${target}`;
         execSync(`cp -r ${tmpTarget} ${target}`);
         fs.rmSync(tmpTarget, { recursive: true, force: true });
         const targetLibraryJson = JSON.parse(fs.readFileSync(`${target}/library.json`));
-        for (let item of targetLibraryJson.preloadedJs) {
-          item.path = `${target}/${item.path}`;
-          libraryJson.preloadedJs.push(item);
+
+        if (Array.isArray(targetLibraryJson.preloadedJs) &&
+            Array.isArray(libraryJson.preloadedJs)) {
+
+          for (const item of targetLibraryJson.preloadedJs) {
+            if (!item?.path) continue;
+            libraryJson.preloadedJs.push({
+              ...item,
+              path: `${target}/${item.path}`
+            });
+          }
         }
-        for (let item of targetLibraryJson.preloadedCss) {
-          item.path = `${target}/${item.path}`;
-          libraryJson.preloadedCss.push(item);
+
+        if (Array.isArray(targetLibraryJson.preloadedCss) &&
+            Array.isArray(libraryJson.preloadedCss)) {
+
+          for (const item of targetLibraryJson.preloadedCss) {
+            if (!item?.path) continue;
+            libraryJson.preloadedCss.push({
+              ...item,
+              path: `${target}/${item.path}`
+            });
+          }
         }
         const packageFile = `${target}/package.json`;
         if (!fs.existsSync(packageFile)) {
@@ -255,6 +301,11 @@ const cli = {
         const info = JSON.parse(fs.readFileSync(packageFile));
         if (!info?.scripts?.build) {
           continue;
+        }
+        const pathToNodeModules = path.resolve(process.cwd(), target, 'node_modules');
+        // // Delete node_modules if it exists
+        if (fs.existsSync(pathToNodeModules)) {
+          fs.rmSync(pathToNodeModules, { recursive: true, force: true });
         }
         console.log(`>>> npm install --ignore-scripts ${target}`);
         console.log(execSync('npm install --ignore-scripts', {cwd: target}).toString());
