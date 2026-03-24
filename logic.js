@@ -144,6 +144,7 @@ module.exports = {
     const editLibs = await module.exports.computeDependencies(library, 'edit', null, libFolder);
     libs = {...libs, ...editLibs};
     for (let item in libs) {
+      if (libs[item].optional) { continue; }
       const folder = libraryDirs[libs[item].id];
       fs.cpSync(`${config.folders.libraries}/${folder}`, `${target}/${folder}`, { recursive: true });
     }
@@ -529,6 +530,7 @@ module.exports = {
     const map = {};
     const preloadedDependencies = [];
     for (let item in libs) {
+      if (libs[item].optional) { continue; }
       for (let predep of (libs[item].preloadedDependencies || [])) {
         if (map[predep.machineName]) {
           continue;
