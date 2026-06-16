@@ -424,8 +424,9 @@ module.exports = {
   /* clones/downloads dependencies to libraries folder using git and runs relevant npm commands
   mode - 'view' or 'edit' to fetch non-editor or editor libraries
   latest - if true master branch versions of libraries are used
-  toSkip - optional array of libraries to skip; after a library is parsed by the function it's auto-added to the array so it's skipped for efficiency */
-  getWithDependencies: async (action, library, mode, latest, toSkip = []) => {
+  toSkip - optional array of libraries to skip; after a library is parsed by the function it's auto-added to the array so it's skipped for efficiency
+  branch - optional git branch/ref to clone for the target library only; its dependencies still use master/tag */
+  getWithDependencies: async (action, library, mode, latest, toSkip = [], branch = null) => {
     const list = await module.exports.computeDependencies(library, mode);
     for (let item in list) {
       if (toSkip.indexOf(item) != -1) {
@@ -443,21 +444,24 @@ module.exports = {
       }
       const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
       const listVersion = `${list[item].version.major}.${list[item].version.minor}.${list[item].version.patch}`;
-      const version = latest ? 'master' : listVersion;
+      // only the library under test follows the PR branch; its deps stay on master/tag
+      const useBranch = branch && item === library;
+      const version = useBranch ? branch : (latest ? 'master' : listVersion);
       const folder = `${config.folders.libraries}/${label}`;
       if (fs.existsSync(folder)) {
-        if (latest && !process.env.H5P_NO_UPDATES) {
+        if (latest && !useBranch && !process.env.H5P_NO_UPDATES) {
           console.log(`>> ~ updating to ${list[item].repoName} ${listVersion}`);
           execSync(`git checkout master`, { cwd: folder, stdio : 'pipe' });
           console.log(execSync('git pull origin', { cwd: folder }).toString());
         }
         else {
-          console.log(`>> ~ skipping updates for ${list[item].repoName} ${listVersion}`);
+          // branch libs are intentionally left as-is on re-runs (fresh CI runners never hit this)
+          console.log(`>> ~ skipping updates for ${list[item].repoName} ${useBranch ? branch : listVersion}`);
         }
         continue;
       }
-      console.log(`>> + installing ${list[item].repoName} ${listVersion}`);
-      if (action == 'download') {
+      console.log(`>> + installing ${list[item].repoName} ${useBranch ? branch : listVersion}`);
+      if (action == 'download' && !useBranch) {
         await module.exports.download(list[item].org, list[item].repoName, version, folder);
       }
       else {
