@@ -429,9 +429,14 @@
       }
       else {
         waitForH5P(() => {
-          innerWindow.H5P.externalDispatcher.on('initialized', () => {
+          if (innerWindow.H5P.instances?.length) {
             initializeThemeControls();
-          });
+          }
+          else {
+            innerWindow.H5P.externalDispatcher.on('initialized', () => {
+              initializeThemeControls();
+            });
+          }
         });
       }
     }
