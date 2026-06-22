@@ -187,7 +187,7 @@ const cli = {
     }
   },
   // computes & installs dependencies for h5p library
-  setup: async function(library, version, download) {
+  setup: async function(library, version, download, branch) {
     const isUrl = ['http', 'git@'].includes(library.slice(0, 4)) ? true : false;
     const url = library;
     const missingOptionals = {};
@@ -195,6 +195,11 @@ const cli = {
       if (isUrl) {
         const entry = await this.register(url);
         library = logic.machineToShort(Object.keys(entry)[0]);
+      }
+      // branch is interpolated into a git clone shell command, so reject unsafe refs
+      if (branch && !/^[\w./-]+$/.test(branch)) {
+        console.log(`> error: invalid branch name "${branch}"`);
+        return;
       }
       let toSkip = [];
       const action = parseInt(download) ? 'download' : 'clone';
@@ -217,9 +222,9 @@ const cli = {
       }
       toSkip = [];
       console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
-      toSkip = await logic.getWithDependencies(action, library, 'view', latest, toSkip);
+      toSkip = await logic.getWithDependencies(action, library, 'view', latest, toSkip, branch);
       console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
-      toSkip = await logic.getWithDependencies(action, library, 'edit', latest, toSkip);
+      toSkip = await logic.getWithDependencies(action, library, 'edit', latest, toSkip, branch);
       if (Object.keys(missingOptionals).length) {
         console.log('!!! missing optional libraries');
         for (let item in missingOptionals) {
