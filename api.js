@@ -797,8 +797,11 @@ const ajaxLibraries = async (options) => {
     }
   }
   if (options.machineName) {
-    libraries = [];
-    libraries.push(registry.reversed[options.machineName].shortName);
+    const entry = registry.reversed[options.machineName];
+    if (entry && libraryDirs[options.machineName]) {
+      libraries = [];
+      libraries.push(entry.shortName);
+    }
   }
   const toDo = [];
   for (let item of libraries) {
