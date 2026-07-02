@@ -105,6 +105,57 @@ const getFileList = (folder) => {
   }
   return output;
 }
+
+/**
+ * Order nodes, so dependencies precede dependents.
+ * @param {string[]} nodeKeys Keys of nodes to sort.
+ * @param {function} getDependencyKeys Function returning dependency keys of given node key.
+ * @param {string[]} fallbackOrder Keys in the order to prefer when multiple nodes are ready at once or a circular dependency needs to be broken.
+ * @returns {string[]} Node keys ordered so dependencies precede dependents.
+ */
+const topologicalSort = (nodeKeys, getDependencyKeys, fallbackOrder) => {
+  const priority = {};
+  fallbackOrder.forEach((key, index) => {
+    if (!(key in priority)) {
+      priority[key] = index;
+    }
+  });
+
+  const nodes = new Set(nodeKeys);
+  const dependents = {}; // dependency key -> Set of keys that require it
+  const inDegree = {};
+
+  nodes.forEach((node) => {
+    inDegree[node] = 0;
+  });
+
+  nodes.forEach((node) => {
+    for (let dep of getDependencyKeys(node)) {
+      if (dep === node || !nodes.has(dep) || dependents[dep]?.has(node)) {
+        continue;
+      }
+      dependents[dep] = dependents[dep] || new Set();
+      dependents[dep].add(node);
+      inDegree[node]++;
+    }
+  });
+
+  const remaining = new Set(nodes);
+  const sorted = [];
+  while (remaining.size) {
+    const ready = [...remaining].filter((node) => inDegree[node] === 0);
+    if (!ready.length) {
+      module.exports.write('\n!!! circular library dependency detected while ordering scripts; falling back to heuristic order for the remainder ');
+    }
+    const next = (ready.length ? ready : [...remaining]).sort((a, b) => priority[a] - priority[b])[0];
+    sorted.push(next);
+    remaining.delete(next);
+    (dependents[next] || []).forEach((dependent) => inDegree[dependent]--);
+  }
+
+  return sorted;
+}
+
 module.exports = {
   // debug console log
   log: function (message) {
@@ -366,6 +417,7 @@ module.exports = {
       }
     }
     let output = {};
+    const heuristicOrder = [];
     for (let i = level; i >= 0; i--) {
       const keys = Object.keys(done[i]);
       keys.sort((a, b) => {
@@ -375,13 +427,26 @@ module.exports = {
         if (!output[key] || output[key]?.optional) {
           output[key] = done[i][key];
         }
-        if (!done[i][key].id) {
-          continue;
-        }
+        heuristicOrder.push(key);
       }
     }
+
+    const dependencyKeysOf = (key) => {
+      const dependencyEntries = [...(output[key].preloadedDependencies || [])];
+      if (mode === 'edit') {
+        dependencyEntries.push(...(output[key].editorDependencies || []));
+      }
+      return dependencyEntries.map((entry) => registry.reversed[entry.machineName]?.shortName).filter(Boolean);
+    };
+
+    const sortedOutput = {};
+    for (let key of topologicalSort(Object.keys(output), dependencyKeysOf, heuristicOrder)) {
+      sortedOutput[key] = output[key];
+    }
+
     module.exports.write('\n');
-    return output;
+
+    return sortedOutput;
   },
   // list tags for library using git
   tags: (org, repo, mainBranch = 'master') => {
