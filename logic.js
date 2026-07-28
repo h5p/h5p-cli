@@ -444,7 +444,7 @@ module.exports = {
       }
       const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
       const listVersion = `${list[item].version.major}.${list[item].version.minor}.${list[item].version.patch}`;
-      // only the library under test follows the PR branch; its deps stay on master/tag
+
       const useBranch = branch && item === library;
       const version = useBranch ? branch : (latest ? 'master' : listVersion);
       const folder = `${config.folders.libraries}/${label}`;
@@ -455,7 +455,6 @@ module.exports = {
           console.log(execSync('git pull origin', { cwd: folder }).toString());
         }
         else {
-          // branch libs are intentionally left as-is on re-runs (fresh CI runners never hit this)
           console.log(`>> ~ skipping updates for ${list[item].repoName} ${useBranch ? branch : listVersion}`);
         }
         continue;

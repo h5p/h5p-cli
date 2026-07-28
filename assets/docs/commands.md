@@ -50,7 +50,9 @@ Use `view` or `edit` for `<mode>`.
 • `h5p install <library> <mode>` downloads the library and its dependencies in the libraries folder.  
 Use `view` or `edit` for `<mode>`.  
 
-• `h5p setup <library|repoUrl> [version] [download]` sets up a library and its dependencies.  
+• `h5p setup <library|repoUrl> [version] [download] [branch]` sets up a library and its dependencies.  
+Use `[branch]` to set up the library from a specific git branch. Only the library itself follows the branch; its dependencies are resolved as usual and the library is cloned even if `[download]` is set.  
+For example, `h5p setup h5p-accordion '' '' fix/example` installs "h5p-accordion" from its "fix/example" branch.  
 `<repoUrl>` is a github repository url. Running the command in this format will also update the library in the local registry. This is useful for unregistered libraries.  
 For example, `h5p setup git@github.com:h5p/h5p-accordion.git` installs the "h5p-accordion" library and its dependencies. It also updates its entry in the local library registry.  
 You can optionally specify a library `[version]`. To view current versions for a library use the `tags` command.

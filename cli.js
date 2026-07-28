@@ -211,7 +211,7 @@ const cli = {
           handleMissingOptionals(missingOptionals, result, item);
         }
         else {
-          toSkip = await logic.getWithDependencies(action, item, 'edit', latest, toSkip);
+          toSkip = await logic.getWithDependencies(action, item, 'edit', latest, toSkip, item === library ? branch : null);
         }
       }
       result = await logic.computeDependencies(library, 'edit', version);
