@@ -65,7 +65,8 @@ const getFile = async (source, parseJson) => {
 // clone repo and retrieve file
 const getRepoFile = (gitUrl, path, branch = 'master', parseJson, cleanStart) => {
   const { repoName } = parseGitUrl(gitUrl);
-  const target = `${config.folders.temp}/${repoName}_${branch}`;
+  // Sanitize ref for the temp folder name so branches with "/" (feat/foo) don't create nested paths.
+  const target = `${config.folders.temp}/${repoName}_${String(branch).replace(/[^\w.-]/g, '_')}`;
   const filePath = `${target}/${path}`;
   if (cleanStart) {
     fs.rmSync(target, { recursive: true, force: true });
@@ -425,9 +426,10 @@ module.exports = {
   mode - 'view' or 'edit' to fetch non-editor or editor libraries
   latest - if true master branch versions of libraries are used
   toSkip - optional array of libraries to skip; after a library is parsed by the function it's auto-added to the array so it's skipped for efficiency
-  branch - optional git branch/ref to clone for the target library only; its dependencies still use master/tag */
-  getWithDependencies: async (action, library, mode, latest, toSkip = [], branch = null) => {
-    const list = await module.exports.computeDependencies(library, mode);
+  ref - optional git tag/branch: dependency list is read from this ref's library.json;
+        only the target library is cloned at ref; dependencies install at the versions from that ref’s library.json (not at the same branch name) */
+  getWithDependencies: async (action, library, mode, latest, toSkip = [], ref = null) => {
+    const list = await module.exports.computeDependencies(library, mode, ref);
     for (let item in list) {
       if (toSkip.indexOf(item) != -1) {
         continue;
@@ -445,22 +447,31 @@ module.exports = {
       const label = `${list[item].id}-${list[item].version.major}.${list[item].version.minor}`;
       const listVersion = `${list[item].version.major}.${list[item].version.minor}.${list[item].version.patch}`;
 
-      const useBranch = branch && item === library;
-      const version = useBranch ? branch : (latest ? 'master' : listVersion);
+      const useRef = ref && item === library;
+      let version;
+      if (useRef) {
+        version = ref;
+      }
+      else if (latest) {
+        version = 'master';
+      }
+      else {
+        version = listVersion;
+      }
       const folder = `${config.folders.libraries}/${label}`;
       if (fs.existsSync(folder)) {
-        if (latest && !useBranch && !process.env.H5P_NO_UPDATES) {
+        if (latest && !useRef && !process.env.H5P_NO_UPDATES) {
           console.log(`>> ~ updating to ${list[item].repoName} ${listVersion}`);
           execSync(`git checkout master`, { cwd: folder, stdio : 'pipe' });
           console.log(execSync('git pull origin', { cwd: folder }).toString());
         }
         else {
-          console.log(`>> ~ skipping updates for ${list[item].repoName} ${useBranch ? branch : listVersion}`);
+          console.log(`>> ~ skipping updates for ${list[item].repoName} ${useRef ? ref : listVersion}`);
         }
         continue;
       }
-      console.log(`>> + installing ${list[item].repoName} ${useBranch ? branch : listVersion}`);
-      if (action == 'download' && !useBranch) {
+      console.log(`>> + installing ${list[item].repoName} ${useRef ? ref : listVersion}`);
+      if (action == 'download' && !useRef) {
         await module.exports.download(list[item].org, list[item].repoName, version, folder);
       }
       else {
