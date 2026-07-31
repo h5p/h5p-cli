@@ -204,7 +204,9 @@ const cli = {
       }
       let toSkip = [];
       const action = parseInt(download) ? 'download' : 'clone';
-      const latest = ref ? false : true;
+      // With a ref, pin deps to versions from that ref's library.json (clone falls back to
+      // master if the tag is missing). Without a ref, deps follow master as before.
+      const latest = !ref;
       let result = await logic.computeDependencies(library, 'view', ref);
       for (let item in result) {
         // setup editor dependencies for every view dependency
@@ -237,6 +239,7 @@ const cli = {
     catch (error) {
       console.log('> error');
       console.log(error);
+      process.exitCode = 1;
     }
   },
   // clone library branches in corresponding @branch folders

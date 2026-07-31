@@ -330,23 +330,24 @@ module.exports = {
       }
       done[level][dep].requiredBy.push(requiredByPath);
       done[level][dep].level = level;
-      let ver = version == 'master' ? version : `${done[level][dep].version.major}.${done[level][dep].version.minor}.${done[level][dep].version.patch}`;
-      const optionals = await getOptionals(dep, org, repoName, ver, toDo[dep].folder);
+      // Fetch semantics from the same ref we used for library.json. Rewriting a branch
+      // name to major.minor.patch breaks when that patch is unreleased (no such tag).
+      const optionals = await getOptionals(dep, org, repoName, version, toDo[dep].folder);
       if (list.preloadedDependencies) {
         for (let item of list.preloadedDependencies) {
-          ver = version == 'master' ? version : `${item.majorVersion}.${item.minorVersion}`;
+          let ver = version == 'master' ? version : `${item.majorVersion}.${item.minorVersion}`;
           const dir = folder ? libraryDirs[item.machineName] : null;
           handleDepListEntry(item.machineName, dep, ver, dir);
         }
       }
       for (let item in optionals) {
-        ver = version == 'master' ? version : optionals[item].version;
+        let ver = version == 'master' ? version : optionals[item].version;
         const dir = folder ? libraryDirs[item] : null;
         handleDepListEntry(item, dep, ver, dir);
       }
       if (mode == 'edit' && list.editorDependencies) {
         for (let item of list.editorDependencies) {
-          ver = version == 'master' ? version : `${item.majorVersion}.${item.minorVersion}`;
+          let ver = version == 'master' ? version : `${item.majorVersion}.${item.minorVersion}`;
           const dir = folder ? libraryDirs[item.machineName] : null;
           handleDepListEntry(item.machineName, dep, ver, dir);
         }
@@ -427,7 +428,7 @@ module.exports = {
   latest - if true master branch versions of libraries are used
   toSkip - optional array of libraries to skip; after a library is parsed by the function it's auto-added to the array so it's skipped for efficiency
   ref - optional git tag/branch: dependency list is read from this ref's library.json;
-        only the target library is cloned at ref; dependencies install at the versions from that ref’s library.json (not at the same branch name) */
+        only the target library is cloned at ref; deps try that tree's versions, then master */
   getWithDependencies: async (action, library, mode, latest, toSkip = [], ref = null) => {
     const list = await module.exports.computeDependencies(library, mode, ref);
     for (let item in list) {
@@ -470,12 +471,25 @@ module.exports = {
         }
         continue;
       }
-      console.log(`>> + installing ${list[item].repoName} ${useRef ? ref : listVersion}`);
+      console.log(`>> + installing ${list[item].repoName} ${useRef ? version : listVersion}`);
       if (action == 'download' && !useRef) {
         await module.exports.download(list[item].org, list[item].repoName, version, folder);
       }
       else {
-        console.log(module.exports.clone(list[item].org, list[item].repoName, version, label));
+        try {
+          console.log(module.exports.clone(list[item].org, list[item].repoName, version, label));
+        }
+        catch (error) {
+          // Target ref must exist; deps may reference untagged patches in library.json.
+          if (useRef || version === 'master') {
+            throw error;
+          }
+          console.log(`>> ! ${list[item].repoName} ${version} not found, falling back to master`);
+          if (fs.existsSync(folder)) {
+            fs.rmSync(folder, { recursive: true, force: true });
+          }
+          console.log(module.exports.clone(list[item].org, list[item].repoName, 'master', label));
+        }
       }
       const packageFile = `${folder}/package.json`;
       if (!fs.existsSync(packageFile)) {

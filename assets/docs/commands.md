@@ -51,7 +51,7 @@ Use `view` or `edit` for `<mode>`.
 Use `view` or `edit` for `<mode>`.  
 
 • `h5p setup <library|repoUrl> [ref] [download]` sets up a library and its dependencies.  
-`[ref]` is an optional git tag or branch for the library under test. Dependency versions are read from that ref's `library.json`; only the library itself is cloned at `[ref]` — its dependencies install at their normal versions from that tree.  
+`[ref]` is an optional git tag or branch for the library under test. Dependency versions are read from that ref's `library.json`; only the library itself is cloned at `[ref]`. Dependencies are cloned at those versions when the git tag exists, otherwise they fall back to master (with a warning).  
 For example, `h5p setup h5p-accordion 1.0.0` installs from tag "1.0.0", and `h5p setup h5p-accordion feat/example` installs from branch "feat/example".  
 `<repoUrl>` is a github repository url. Running the command in this format will also update the library in the local registry. This is useful for unregistered libraries.  
 For example, `h5p setup git@github.com:h5p/h5p-accordion.git` installs the "h5p-accordion" library and its dependencies. It also updates its entry in the local library registry.  
