@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "adm-zip": "0.6.0",
-    "archiver": "^5.3.1",
+    "archiver": "^8.0.0",
     "express": "^4.19.2",
     "gitignore-parser": "^0.0.2",
     "he": "^1.2.0",
