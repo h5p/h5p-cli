@@ -8,9 +8,6 @@
     "url": "https://github.com/h5p/h5p-cli",
     "type": "git"
   },
-  "scripts": {
-    "postinstall": "patch-package"
-  },
   "bin": {
     "h5p": "./h5p.js"
   },
@@ -25,7 +22,6 @@
     "marked": "^5.1.0",
     "marked-terminal": "^5.2.0",
     "multer": "^2.0.1",
-    "patch-package": "^8.0.0",
     "sanitize-html": "^2.12.1",
     "superagent": "^8.0.4"
   },
