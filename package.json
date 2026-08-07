@@ -8,14 +8,11 @@
     "url": "https://github.com/h5p/h5p-cli",
     "type": "git"
   },
-  "scripts": {
-    "postinstall": "patch-package"
-  },
   "bin": {
     "h5p": "./h5p.js"
   },
   "dependencies": {
-    "adm-zip": "0.5.16",
+    "adm-zip": "0.6.0",
     "archiver": "^5.3.1",
     "express": "^4.19.2",
     "gitignore-parser": "^0.0.2",
@@ -25,11 +22,10 @@
     "marked": "^5.1.0",
     "marked-terminal": "^5.2.0",
     "multer": "^2.0.1",
-    "patch-package": "^8.0.0",
     "sanitize-html": "^2.12.1",
     "superagent": "^8.0.4"
   },
   "overrides": {
-    "tmp": "0.2.4"
+    "tmp": "0.2.7"
   }
 }

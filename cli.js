@@ -187,7 +187,8 @@ const cli = {
     }
   },
   // computes & installs dependencies for h5p library
-  setup: async function(library, version, download) {
+  // ref = git tag or branch for the library under test (deps resolve from that ref's library.json)
+  setup: async function(library, ref, download) {
     const isUrl = ['http', 'git@'].includes(library.slice(0, 4)) ? true : false;
     const url = library;
     const missingOptionals = {};
@@ -196,20 +197,27 @@ const cli = {
         const entry = await this.register(url);
         library = logic.machineToShort(Object.keys(entry)[0]);
       }
+      // ref is interpolated into git clone shell commands, so reject unsafe characters
+      if (ref && !/^[\w./-]+$/.test(ref)) {
+        console.log(`> error: invalid ref "${ref}"`);
+        return;
+      }
       let toSkip = [];
       const action = parseInt(download) ? 'download' : 'clone';
-      const latest = version ? false : true;
-      let result = await logic.computeDependencies(library, 'view', version);
+      // With a ref, pin deps to versions from that ref's library.json (clone falls back to
+      // master if the tag is missing). Without a ref, deps follow master as before.
+      const latest = !ref;
+      let result = await logic.computeDependencies(library, 'view', ref);
       for (let item in result) {
         // setup editor dependencies for every view dependency
         if (!result[item].id) {
           handleMissingOptionals(missingOptionals, result, item);
         }
         else {
-          toSkip = await logic.getWithDependencies(action, item, 'edit', latest, toSkip);
+          toSkip = await logic.getWithDependencies(action, item, 'edit', latest, toSkip, item === library ? ref : null);
         }
       }
-      result = await logic.computeDependencies(library, 'edit', version);
+      result = await logic.computeDependencies(library, 'edit', ref);
       for (let item in result) {
         if (!result[item].id) {
           handleMissingOptionals(missingOptionals, result, item);
@@ -217,9 +225,9 @@ const cli = {
       }
       toSkip = [];
       console.log(`> ${action} ${library} library "view" dependencies into "${config.folders.libraries}" folder`);
-      toSkip = await logic.getWithDependencies(action, library, 'view', latest, toSkip);
+      toSkip = await logic.getWithDependencies(action, library, 'view', latest, toSkip, ref);
       console.log(`> ${action} ${library} library "edit" dependencies into "${config.folders.libraries}" folder`);
-      toSkip = await logic.getWithDependencies(action, library, 'edit', latest, toSkip);
+      toSkip = await logic.getWithDependencies(action, library, 'edit', latest, toSkip, ref);
       if (Object.keys(missingOptionals).length) {
         console.log('!!! missing optional libraries');
         for (let item in missingOptionals) {
@@ -231,6 +239,7 @@ const cli = {
     catch (error) {
       console.log('> error');
       console.log(error);
+      process.exitCode = 1;
     }
   },
   // clone library branches in corresponding @branch folders
