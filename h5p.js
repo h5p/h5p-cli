@@ -8,7 +8,7 @@ const setupFolders = () => {
     }
   }
 }
-if (![undefined, 'utils', 'help'].includes(process.argv[2])) {
+if (['core', 'setup', 'clone', 'install'].includes(process.argv[2])) {
   setupFolders();
 }
 require('./cli.js');
