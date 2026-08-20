@@ -250,8 +250,17 @@ const cli = {
       const initialBranch = execSync('git rev-parse --abbrev-ref HEAD').toString();
       const branches = process.argv.slice(3);
       const validBranches = [];
+      const remotes = execSync('git remote', { encoding: 'utf8' })
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+      const hasOrigin = remotes.includes('origin');
+      const hasAnyRemote = remotes.length > 0;
+
       // Ensure origin is up to date
-      execSync('git fetch origin');
+      if (hasOrigin) {
+        execSync('git fetch origin');
+      }
 
       for (let branch of branches) {
         const target = `@${branch.replace('/', '_')}`;
@@ -272,8 +281,8 @@ const cli = {
         }
 
         execSync(`git checkout ${checkoutRef}`);
-        if (hasLocal) {
-          execSync('git pull');
+        if (hasLocal && hasAnyRemote) {
+          execSync('git pull --ff-only');
         }
         fs.rmSync(tmpTarget, { recursive: true, force: true });
         execSync(`cp -r . ${tmpTarget}`);
