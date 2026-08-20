@@ -250,6 +250,9 @@ const cli = {
       const initialBranch = execSync('git rev-parse --abbrev-ref HEAD').toString();
       const branches = process.argv.slice(3);
       const validBranches = [];
+      // Ensure origin is up to date
+      execSync('git fetch origin');
+
       for (let branch of branches) {
         const target = `@${branch.replace('/', '_')}`;
         const tmpTarget = `/tmp/h5p-cli-${target}`;
