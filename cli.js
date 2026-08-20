@@ -255,9 +255,11 @@ const cli = {
         const tmpTarget = `/tmp/h5p-cli-${target}`;
 
         let checkoutRef = branch;
+        let hasLocal = true;
 
         if (!gitRefExists(branch)) {
           if (!branch.includes('/') && gitRefExists(`origin/${branch}`)) {
+            hasLocal = false;
             checkoutRef = `origin/${branch}`;
           }
           else {
@@ -267,6 +269,9 @@ const cli = {
         }
 
         execSync(`git checkout ${checkoutRef}`);
+        if (hasLocal) {
+          execSync('git pull');
+        }
         fs.rmSync(tmpTarget, { recursive: true, force: true });
         execSync(`cp -r . ${tmpTarget}`);
         validBranches.push(branch);
