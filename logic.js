@@ -105,6 +105,86 @@ const getFileList = (folder) => {
   }
   return output;
 }
+
+/**
+ * Find library references in content that are defined in libraries
+ * @param {Object} content data from parsing content.json
+ * @param {Set} libraries set of libraries to see if are defined in content
+ * @returns {Set} returns a set of libraries found in content
+ */
+const findLibrariesInContent = (content, libraries) => {
+  const used = new Set();
+
+  const visit = (value) => {
+    if (typeof value === 'string') {
+      const match = value.match(/^(.+) \d+\.\d+$/);
+      if (match && libraries.has(match[1])) {
+        used.add(match[1]);
+      }
+      return;
+    }
+    if (Array.isArray(value)) {
+      value.forEach(visit);
+      return;
+    }
+    if (value && typeof value === 'object') {
+      Object.values(value).forEach(visit);
+    }
+  };
+
+  visit(content);
+  return used;
+};
+
+/**
+ * Select optional libraries used by this content (including their preloaded dependencies)
+ * @param {Object} content data from parsing content.json
+ * @param {Object} allLibraries all dependencies of the library specified in content
+ * @param {Object} libraryDirs all installed libraries
+ * @returns {Object} ibraries to include in the export and libraries referenced directly in content.json
+ */
+const selectExportLibraries = (content, allLibraries, libraryDirs) => {
+  const byMachineName = new Map();
+
+  for (const [name, entry] of Object.entries(allLibraries)) {
+    if (entry.id || entry.optional) byMachineName.set(entry.id || name, { name, entry });
+  }
+
+  const knownOptional = new Set(Object.entries(allLibraries)
+    .filter(([, entry]) => entry.optional)
+    .map(([name, entry]) => entry.id || name));
+
+  const selected = new Set(Object.entries(allLibraries)
+    .filter(([, entry]) => entry.id && !entry.optional)
+    .map(([name]) => name));
+
+  const contentLibraries = findLibrariesInContent(content, knownOptional);
+  const pending = [...contentLibraries];
+
+  while (pending.length) {
+    const machineName = pending.pop();
+    const library = byMachineName.get(machineName);
+    if (!library) continue;
+    if (!library.entry.id) {
+      throw new Error(`library ${machineName} used by content is not installed`);
+    }
+    if (selected.has(library.name)) continue;
+    selected.add(library.name);
+    for (const dependency of library.entry.preloadedDependencies || []) {
+      if (!selected.has(dependency.machineName)) pending.push(dependency.machineName);
+    }
+  }
+
+  for (const name of selected) {
+    const entry = allLibraries[name];
+    if (!entry?.id || !libraryDirs[entry.id]) {
+      throw new Error(`library ${entry?.id || name} used by content is not installed`);
+    }
+  }
+
+  return { selected, contentLibraries };
+};
+
 module.exports = {
   // debug console log
   log: function (message) {
@@ -140,14 +220,30 @@ module.exports = {
     fs.cpSync(`content/${folder}`, `${target}/content`, { recursive: true });
     fs.renameSync(`${target}/content/h5p.json`, `${target}/h5p.json`);
     fs.rmSync(`${target}/content/sessions`, { recursive: true, force: true });
-    let libs = await module.exports.computeDependencies(library, 'view', null, libFolder);
+    const content = JSON.parse(fs.readFileSync(`${target}/content/content.json`, 'utf-8'));
+    const viewLibs = await module.exports.computeDependencies(library, 'view', null, libFolder);
     const editLibs = await module.exports.computeDependencies(library, 'edit', null, libFolder);
-    libs = {...libs, ...editLibs};
-    for (let item in libs) {
-      if (libs[item].optional) { continue; }
+    const libs = {...viewLibs, ...editLibs};
+    const { selected, contentLibraries } = selectExportLibraries(content, libs, libraryDirs);
+    for (let item of selected) {
       const folder = libraryDirs[libs[item].id];
       fs.cpSync(`${config.folders.libraries}/${folder}`, `${target}/${folder}`, { recursive: true });
     }
+    const info = JSON.parse(fs.readFileSync(`${target}/h5p.json`, 'utf-8'));
+    const dependencies = new Map((info.preloadedDependencies || [])
+      .map(dependency => [dependency.machineName, dependency]));
+    for (const machineName of contentLibraries) {
+      const entry = Object.values(viewLibs).find(item => item.id === machineName);
+      if (entry) {
+        dependencies.set(machineName, {
+          machineName,
+          majorVersion: entry.version.major,
+          minorVersion: entry.version.minor
+        });
+      }
+    }
+    info.preloadedDependencies = [...dependencies.values()];
+    fs.writeFileSync(`${target}/h5p.json`, JSON.stringify(info));
     const files = getFileList(target);
     const zip = new admZip();
     for (let item of files) {
