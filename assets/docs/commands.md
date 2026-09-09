@@ -87,17 +87,17 @@ The command also updates the preloaded `library.json` entries to include those f
 `[port]` is an optional port number. Default is 8080.  
 Once the dev server is started you can use your browser to view, edit, delete, import, export and create new content types.  
 
-• `h5p export <library> <folder> [--mini] [--output <directory>]` will export the `<library>` content type from the `content/<folder>` folder.
+• `h5p export <library> <folder> [--content-only] [--output <directory>]` will export the `<library>` content type from the `content/<folder>` folder.
 An example is `h5p export h5p-agamotto agamotto-test`, which will export the `h5p-agamotto` content type located in the `content/agamotto-test` folder.
 Make sure that the library's dependencies are installed.
 
-Use `--mini` to export the content without bundling any H5P libraries. This is useful when the required libraries are already installed in the target H5P environment.
-Example: `h5p export h5p-agamotto agamotto-test --mini`
+Use `--content-only` to export the content without bundling any H5P libraries. This is useful when the required libraries are already installed in the target H5P environment.
+Example: `h5p export h5p-agamotto agamotto-test --content-only`
 
 Use `--output <directory>` to save the resulting `.h5p` file in a specific directory instead of the default temporary directory.
-Example: `h5p export h5p-agamotto agamotto-test --mini --output C:\Users\josep\Downloads`
+Example: `h5p export h5p-agamotto agamotto-test --content-only --output ~/Downloads`
 
-The `--mini` and `--output` options may be used independently or together, in either order.
+The `--content-only` and `--output` options may be used independently or together, in either order.
 Once finished, the export command outputs the location of the resulting file.
 
 • `h5p import <folder> <h5p_archive_file_path>` will import the archived .h5p `<h5p_archive_file_path>` content type into the `content/<folder>` folder.  
