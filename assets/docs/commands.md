@@ -90,13 +90,10 @@ Once the dev server is started you can use your browser to view, edit, delete, i
 • `h5p export <library> <folder> [--content-only] [--output <directory>]` will export the `<library>` content type from the `content/<folder>` folder.
 An example is `h5p export h5p-agamotto agamotto-test`, which will export the `h5p-agamotto` content type located in the `content/agamotto-test` folder.
 Make sure that the library's dependencies are installed.
-
 Use `--content-only` to export the content without bundling any H5P libraries. This is useful when the required libraries are already installed in the target H5P environment.
 Example: `h5p export h5p-agamotto agamotto-test --content-only`
-
 Use `--output <directory>` to save the resulting `.h5p` file in a specific directory instead of the default temporary directory.
 Example: `h5p export h5p-agamotto agamotto-test --content-only --output ~/Downloads`
-
 The `--content-only` and `--output` options may be used independently or together, in either order.
 Once finished, the export command outputs the location of the resulting file.
 

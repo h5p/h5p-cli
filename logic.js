@@ -1,4 +1,4 @@
-const path = require('path');
+const nodePath = require('path');
 const { execSync } = require("child_process");
 const fs = require('fs');
 const superAgent = require('superagent');
@@ -133,90 +133,43 @@ module.exports = {
   },
   // creates zip archive export file in the .h5p format
   export: async (library, folder, contentOnly = false, output = null) => {
-    const target = path.join(config.folders.temp, folder);
-
+    const target = `${config.folders.temp}/${folder}`;
     fs.rmSync(target, { recursive: true, force: true });
     fs.mkdirSync(target);
-
-    fs.cpSync(
-      path.join('content', folder),
-      path.join(target, 'content'),
-      { recursive: true }
-    );
-
-    fs.renameSync(
-      path.join(target, 'content', 'h5p.json'),
-      path.join(target, 'h5p.json')
-    );
-
-    fs.rmSync(
-      path.join(target, 'content', 'sessions'),
-      { recursive: true, force: true }
-    );
-
+    fs.cpSync(`content/${folder}`, `${target}/content`, { recursive: true });
+    fs.renameSync(`${target}/content/h5p.json`, `${target}/h5p.json`);
+    fs.rmSync(`${target}/content/sessions`, { recursive: true, force: true });
     if (!contentOnly) {
       const registry = await module.exports.getRegistry();
       const libraryDirs = await module.exports.parseLibraryFolders();
       const libFolder = libraryDirs[registry.regular[library].id];
-
-      let libs = await module.exports.computeDependencies(
-        library,
-        'view',
-        null,
-        libFolder
-      );
-      const editLibs = await module.exports.computeDependencies(
-        library,
-        'edit',
-        null,
-        libFolder
-      );
-
+      let libs = await module.exports.computeDependencies(library, 'view', null, libFolder);
+      const editLibs = await module.exports.computeDependencies(library, 'edit', null, libFolder);
       libs = {...libs, ...editLibs};
-
       for (let item in libs) {
-        const libraryFolder = libraryDirs[libs[item].id];
-
-        fs.cpSync(
-          path.join(config.folders.libraries, libraryFolder),
-          path.join(target, libraryFolder),
-          { recursive: true }
-        );
+        const folder = libraryDirs[libs[item].id];
+        fs.cpSync(`${config.folders.libraries}/${folder}`, `${target}/${folder}`, { recursive: true });
       }
     }
-
     const files = getFileList(target);
     const zip = new admZip();
-
     for (let item of files) {
       const file = item;
       item = item.replace(target, '');
-
-      let archivePath = item.split('/');
-      const name = archivePath.pop();
-
-      if (
-        config.files.patterns.ignored.test(name) ||
-        !config.files.patterns.allowed.test(name)
-      ) {
+      let path = item.split('/');
+      const name = path.pop();
+      if (config.files.patterns.ignored.test(name) || !config.files.patterns.allowed.test(name)) {
         continue;
       }
-
-      archivePath = archivePath.join('/');
-      zip.addLocalFile(file, archivePath);
+      path = path.join('/');
+      zip.addLocalFile(file, path);
     }
-
-    const zipped = output
-      ? path.join(output, `${folder}.h5p`)
-      : `${target}.h5p`;
-
+    const zipped = output ? nodePath.join(output, `${folder}.h5p`) : `${target}.h5p`;
     if (output) {
       fs.mkdirSync(output, { recursive: true });
     }
-
     zip.writeZip(zipped);
     fs.rmSync(target, { recursive: true, force: true });
-
     return zipped;
   },
   /* retrieves list of h5p librarie
