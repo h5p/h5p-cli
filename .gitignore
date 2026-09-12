@@ -5,3 +5,4 @@ package-lock.json
 /temp/*
 /uploads/*
 /content/*
+/.h5p-editor-user-data.json

@@ -24,6 +24,14 @@ app.get('/edit/:library/:folder', api.edit);
 app.post('/edit/:library/:folder/libraries', api.ajaxLibraries);
 app.post('/edit/:library/:folder/files', multer.single('file'), api.uploadFile);
 app.post('/edit/:library/:folder', multer.none(), api.saveContent);
+app.get(
+  '/h5p-ajax/content-user-data/:contentId/:type/:subContentId',
+  api.getEditorUserData
+);
+app.post(
+  '/h5p-ajax/content-user-data/:contentId/:type/:subContentId',
+  api.setEditorUserData
+);
 app.get('/content-user-data/:folder/:type/:id', api.getUserData);
 app.post('/content-user-data/:folder/:type/:id', api.setUserData);
 app.delete('/content-user-data/:folder', api.resetUserData);
