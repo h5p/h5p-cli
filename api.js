@@ -89,6 +89,40 @@ module.exports = {
       handleError(error, response);
     }
   },
+  // stores editor UI preferences such as important-description state
+  setEditorUserData: (request, response, next) => {
+    try {
+      const userData = getEditorUserData();
+      const key = `${request.params.type}/${request.params.subContentId}`;
+
+      userData[key] = request.body.data;
+
+      fs.writeFileSync(editorUserDataFile, JSON.stringify(userData));
+
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify({ success: true }));
+    }
+    catch (error) {
+      handleError(error, response);
+    }
+  },
+
+  // retrieves editor UI preferences such as important-description state
+  getEditorUserData: (request, response, next) => {
+    try {
+      const userData = getEditorUserData();
+      const key = `${request.params.type}/${request.params.subContentId}`;
+
+      response.set('Content-Type', 'application/json');
+      response.end(JSON.stringify({
+        success: true,
+        data: userData[key] ?? false
+      }));
+    }
+    catch (error) {
+      handleError(error, response);
+    }
+  },
   // updates session file used for resume functionality
   setUserData: (request, response, next) => {
     try {
@@ -845,6 +879,16 @@ const ajaxLibraries = async (options) => {
   }
   return output;
 }
+const editorUserDataFile = '.h5p-editor-user-data.json';
+
+const getEditorUserData = () => {
+  if (!fs.existsSync(editorUserDataFile)) {
+    return {};
+  }
+
+  return JSON.parse(fs.readFileSync(editorUserDataFile, 'utf-8'));
+};
+
 const handleError = (error, response) => {
   console.log(error);
   response.set('Content-Type', 'application/json');
