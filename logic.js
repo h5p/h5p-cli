@@ -155,6 +155,7 @@ module.exports = {
         const accepts = h5pIgnoreParser(source);
         fs.cpSync(source, destination, {
           recursive: true,
+          dereference: true,
           filter: (path) => {
             const relativePath = path.slice(source.length + 1).replaceAll('\\', '/');
             return !relativePath || accepts(relativePath);
@@ -162,7 +163,7 @@ module.exports = {
         });
       }
       else {
-        fs.cpSync(source, destination, { recursive: true });
+        fs.cpSync(source, destination, { recursive: true, dereference: true });
       }
     }
     const files = getFileList(target);
