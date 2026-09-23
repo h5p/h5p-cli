@@ -5,6 +5,7 @@ const admZip = require("adm-zip");
 const config = require('./configLoader.js');
 const { upgradeContent } = require('./logic-content-upgrade.js');
 const h5pIgnoreParser = require('./assets/utils/utility/h5p-ignore-parser');
+const nodePath = require('path');
 // builds content from template and input
 const fromTemplate = (template, input) => {
   for (let item in input) {
@@ -151,20 +152,24 @@ module.exports = {
       const destination = `${target}/${folder}`;
       const ignoreFile = `${source}/.h5pignore`;
 
+      const copyOptions = {
+        recursive: true,
+        dereference: true
+      };
+
       if (fs.existsSync(ignoreFile)) {
         const accepts = h5pIgnoreParser(source);
-        fs.cpSync(source, destination, {
-          recursive: true,
-          dereference: true,
-          filter: (path) => {
-            const relativePath = path.slice(source.length + 1).replaceAll('\\', '/');
-            return !relativePath || accepts(relativePath);
-          }
-        });
+
+        copyOptions.filter = (filePath) => {
+          const relativePath = nodePath
+            .relative(source, filePath)
+            .replaceAll('\\', '/');
+
+          return !relativePath || accepts(relativePath);
+        };
       }
-      else {
-        fs.cpSync(source, destination, { recursive: true, dereference: true });
-      }
+
+      fs.cpSync(source, destination, copyOptions);
     }
     const files = getFileList(target);
     const zip = new admZip();
