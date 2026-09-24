@@ -17,7 +17,7 @@
     "express": "^4.19.2",
     "gitignore-parser": "^0.0.2",
     "he": "^1.2.0",
-    "image-size": "^1.0.2",
+    "image-size": "^2.0.3",
     "livereload": "^0.9.3",
     "marked": "^5.1.0",
     "marked-terminal": "^5.2.0",
