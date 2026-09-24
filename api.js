@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const he = require('he');
-const imageSize = require('image-size');
+const { imageSize } = require('image-size');
 const logic = require('./logic.js');
 const config = require('./configLoader.js');
 const l10n = require('./assets/l10n.json');
@@ -325,7 +325,7 @@ module.exports = {
         path
       }
       if (form.type == 'image') {
-        const info = imageSize(targetFile);
+        const info = imageSize(fs.readFileSync(targetFile));
         if (info.width && info.height) {
           output.width = info.width;
           output.height = info.height;
