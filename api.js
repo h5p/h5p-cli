@@ -817,7 +817,9 @@ const ajaxLibraries = async (options) => {
       title: libs[library].title,
       upgradesScript: `${baseUrl}/${config.folders.libraries}/${folder}/upgrades.js`,
       semantics: JSON.parse(fs.readFileSync(`${config.folders.libraries}/${folder}/semantics.json`, 'utf-8')),
-      language: null,
+      language: preloaded[0].translations[libs[library].id]
+        ? JSON.stringify(preloaded[0].translations[libs[library].id])
+        : null,
       defaultLanguage: null,
       languages: preloaded[0].languages,
       javascript: preloaded[0].preloadedJs,
