@@ -998,11 +998,10 @@ function itemUntranslatable(property, value, parent) {
     case 'explanation':
     case 'example':
       return false;
-    
+    case 'details':
     case 'description':
     case 'placeholder':
       return value.trim().length === 0;
-    
     case 'default':
       if (typeof value !== 'string') {
         return true;
