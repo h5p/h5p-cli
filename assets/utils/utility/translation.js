@@ -43,7 +43,7 @@ function languageComparison(language, assertLanguage, errors) {
           // Check group:
           if(Object.keys(language[translation]).length !== Object.keys(assertLanguage[translation]).length) {
             hasValidJson = false;
-            errors.push("Mismatch:", translation);
+            errors.push("Mismatch:", language[translation].label);
           }
           else {
             var validGroup = languageComparison(language[translation], assertLanguage[translation], errors);
