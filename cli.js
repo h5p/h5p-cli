@@ -41,9 +41,22 @@ const handleMissingOptionals = (missingOptionals, result, item) => {
 };
 const cli = {
   // exports content type as .h5p zipped file
-  export: async (library, folder) => {
+  export: async (library, folder, ...options) => {
     try {
-      const file = await logic.export(library, folder);
+      const contentOnly = options.includes('--content-only');
+      const outputIndex = options.indexOf('--output');
+
+      let output = null;
+
+      if (outputIndex !== -1) {
+        output = options[outputIndex + 1];
+
+        if (!output || output.startsWith('--')) {
+          throw new Error('The --output option requires a valid directory path.');
+        }
+      }
+
+      const file = await logic.export(library, folder, contentOnly, output);
       console.log(file);
     }
     catch (error) {
