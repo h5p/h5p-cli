@@ -11,7 +11,11 @@ function languageComparison(language, assertLanguage, errors) {
 
   if (Object.keys(language).length !== Object.keys(assertLanguage).length) {
     hasValidJson = false;
-    errors.push('Not same number of fields');
+    errors.push({
+      error: 'Not same number of fields',
+      Semantic: Object.keys(assertLanguage).length,
+      Translation: Object.keys(language).length,
+    });
   }
   else {
     for (var translation in assertLanguage) {
@@ -23,27 +27,51 @@ function languageComparison(language, assertLanguage, errors) {
           hasValidJson = hasValidJson && isString && isSafe && !isEmptyString;
 
           if (isString && language[translation].trim().length === 0) {
-            errors.push("Empty field", translation);
+            errors.push({
+              error: 'Empty translation',
+              Attribute: translation,
+              Semantic: assertLanguage[translation],
+              Translation: language[translation],
+            });
           }
 
           if (!isString) {
-            errors.push("Mismatch:", translation, JSON.stringify(assertLanguage, null, 2), JSON.stringify(language, null, 2));
+            errors.push({
+              error: 'Mismatched Attribute',
+              Attribute: translation,
+              Semantic: assertLanguage[translation],
+              Translation: language[translation],
+            });
           }
 
           if (!isSafe) {
-            errors.push("Unsafe translation", language[translation]);
+            errors.push({
+              error: 'Unsafe translation',
+              Attribute: translation,
+              Semantic: assertLanguage[translation],
+              Translation: language[translation],
+            });
           }
         }
       }
       else {
         if (!language[translation]) {
-          errors.push("Could not find field:", translation, JSON.stringify(language, null, 2), JSON.stringify(assertLanguage, null, 2));
+          errors.push({
+            error: 'Could not find Attribute',
+            Attribute: translation,
+            Semantic: assertLanguage[translation],
+            Translation: language[translation] ?? null,
+          });
         }
         else {
           // Check group:
           if(Object.keys(language[translation]).length !== Object.keys(assertLanguage[translation]).length) {
             hasValidJson = false;
-            errors.push("Mismatch:", language[translation].label);
+            errors.push({
+              error: 'Mismatch',
+              Semantic: assertLanguage[translation],
+              Translation: language[translation],
+            });
           }
           else {
             var validGroup = languageComparison(language[translation], assertLanguage[translation], errors);
