@@ -6,7 +6,7 @@ const fs = require('fs');
 const sanitizeHtml = require('sanitize-html');
 
 function languageComparison(language, assertLanguage, errors) {
-  var hasValidJson = true;
+  let hasValidJson = true;
   errors = errors || [];
 
   if (Object.keys(language).length !== Object.keys(assertLanguage).length) {
@@ -18,10 +18,10 @@ function languageComparison(language, assertLanguage, errors) {
     });
   }
   else {
-    for (var translation in assertLanguage) {
+    for (const translation in assertLanguage) {
       if (assertLanguage.hasOwnProperty(translation) && typeof assertLanguage[translation] === 'string') {
         if (translation.indexOf('english') !== 0) {
-          var isString = typeof language[translation] === 'string';
+          const isString = typeof language[translation] === 'string';
           const isSafe = isSafeTranslation(language[translation]);
           const isEmptyString = isString && language[translation].trim().length === 0;
           hasValidJson = hasValidJson && isString && isSafe && !isEmptyString;
@@ -31,7 +31,6 @@ function languageComparison(language, assertLanguage, errors) {
               error: 'Empty translation',
               Attribute: translation,
               Semantic: assertLanguage[translation],
-              Translation: language[translation],
             });
           }
 
@@ -54,64 +53,57 @@ function languageComparison(language, assertLanguage, errors) {
           }
         }
       }
+      else if (!language[translation]) {
+        errors.push({
+          error: 'Could not find Attribute',
+          Attribute: translation,
+          Semantic: assertLanguage[translation],
+          Translation: language[translation],
+        });
+      }
+      else if (Object.keys(language[translation]).length !== Object.keys(assertLanguage[translation]).length) {
+        hasValidJson = false;
+        errors.push({
+          error: 'Mismatch',
+          Semantic: assertLanguage[translation],
+          Translation: language[translation],
+        });
+      }
       else {
-        if (!language[translation]) {
-          errors.push({
-            error: 'Could not find Attribute',
-            Attribute: translation,
-            Semantic: assertLanguage[translation],
-            Translation: language[translation] ?? null,
-          });
-        }
-        else {
-          // Check group:
-          if(Object.keys(language[translation]).length !== Object.keys(assertLanguage[translation]).length) {
-            hasValidJson = false;
-            errors.push({
-              error: 'Mismatch',
-              Semantic: assertLanguage[translation],
-              Translation: language[translation],
-            });
-          }
-          else {
-            var validGroup = languageComparison(language[translation], assertLanguage[translation], errors);
-            hasValidJson = hasValidJson && validGroup.hasValidJson;
-          }
-        }
+        const validGroup = languageComparison(language[translation], assertLanguage[translation], errors);
+        hasValidJson = hasValidJson && validGroup.hasValidJson;
       }
     }
   }
 
   return {
     hasValidJson,
-    errors
+    errors,
   };
 }
 
 function validateLanguage(library, language) {
   // Get language data for comparison
-  var testLang = getLanguageData(library, language);
-  var defaultLangSemantics = h5p.createDefaultLanguage(library);
+  const testLang = getLanguageData(library, language);
+  const defaultLangSemantics = h5p.createDefaultLanguage(library);
 
   // Make sure language exists and has semantics
   if (typeof testLang === 'object' && testLang.semantics) {
-
     // Perform the language comparison
-    var validation = languageComparison(testLang.semantics, defaultLangSemantics);
+    const validation = languageComparison(testLang.semantics, defaultLangSemantics);
 
     return {
       name: `${library} language ${language}`,
       failed: !validation.hasValidJson,
-      errors: validation.errors
-    }
+      errors: validation.errors,
+    };
   }
-  else {
-    // Invalid language - skip
-    return {
-      name: `${library} language ${language}`,
-      skipped: true
-    }
-  }
+
+  // Invalid language - skip
+  return {
+    name: `${library} language ${language}`,
+    skipped: true,
+  };
 }
 
 function getLanguages(languages, lib) {
@@ -121,11 +113,8 @@ function getLanguages(languages, lib) {
       languages.map(validateLanguage.bind(this, lib))
     );
   }
-  else {
-    return getAllLanguagesOfLib(lib);
-  }
+  return getAllLanguagesOfLib(lib);
 }
-
 
 const getLanguageCode = (dir) => dir.split('.')[0];
 
@@ -135,18 +124,17 @@ function getAllLanguagesOfLib(lib) {
     .catch(() => {
       output.printResults({
         name: lib,
-        skipped: true
-      })
+        skipped: true,
+      });
     });
 }
 
 function validateTranslation(libraries, languages) {
-  var librariesMap = libraries.map(getLanguages.bind(this, languages));
+  const librariesMap = libraries.map(getLanguages.bind(this, languages));
   return Promise.all(librariesMap);
 }
 
 function compareEditorLanguageFile(defaults, translation) {
-
   if (defaults.libraryStrings === undefined || translation.libraryStrings === undefined) {
     return false;
   }
@@ -158,7 +146,7 @@ function compareEditorLanguageFile(defaults, translation) {
     return false;
   }
 
-  var valid = true;
+  let valid = true;
   Object.keys(defaults).forEach(key => {
     if (translation[key] === undefined) {
       valid = false;
@@ -180,8 +168,8 @@ function isSafeTranslation(translation) {
     },
     allowedAttributes: {
       th: ['scope'],
-      a: ['target', 'href']
-    }
+      a: ['target', 'href'],
+    },
   });
 
   return translation === sanitized;
@@ -197,5 +185,5 @@ module.exports = {
   compareEditorLanguageFile,
   getEditorLanguageDefaults,
   languageComparison,
-  isSafeTranslation
+  isSafeTranslation,
 };
