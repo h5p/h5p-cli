@@ -233,22 +233,23 @@ module.exports = {
     }
     const latestPatch = (org, repo, version) => {
       const tags = module.exports.tags(org, repo);
-      let patch = -1;
-      for (let item of tags) {
-        if (item.indexOf(version) != 0) {
+      const prefix = `${version}.`;
+      let best = -1;
+      for (const item of tags) {
+        if (!item.startsWith(prefix)) {
           continue;
         }
-        const numbers = item.split('.');
-        if (numbers.length < 3) {
-          continue;
-        }
-        if (numbers[2] > patch) {
-          patch = numbers[2];
-          break;
+        const patch = parseInt(item.slice(prefix.length), 10);
+        if (Number.isFinite(patch) && patch > best) {
+          best = patch;
         }
       }
-      return patch > -1 ? `${version}.${patch}` : version;
-    }
+      if (best > -1) {
+        return `${version}.${best}`;
+      }
+      module.exports.log(`>> ! ${repo} ${version} has no tag, using master`);
+      return 'master';
+    };
     // determine if dependency needs to be processed
     const handleDepListEntry = (machineName, parent, ver, dir) => {
       const lib = registry.reversed[machineName];
