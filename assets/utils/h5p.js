@@ -998,11 +998,10 @@ function itemUntranslatable(property, value, parent) {
     case 'explanation':
     case 'example':
       return false;
-    
+    case 'details':
     case 'description':
     case 'placeholder':
       return value.trim().length === 0;
-    
     case 'default':
       if (typeof value !== 'string') {
         return true;
@@ -2807,7 +2806,7 @@ h5p.updateTranslations = function (repos, next) {
         else {
           // Update translation
           var updatedTranslation = updateTranslationFields(files.semantics.content, languageFile.content.semantics, function (field, attr, source, target) {
-            if (attr === 'important' || attr === 'label' || attr === 'description' || attr === 'entity' || attr === 'placeholder' || (attr === 'default' && field.type === 'text')) {
+            if (attr === 'important' || attr === 'label' || attr === 'description'  || attr === 'details' || attr === 'entity' || attr === 'placeholder' || (attr === 'default' && field.type === 'text' && languageCodes.indexOf(field.default) === -1)) {
               target[attr] = (source !== undefined && source[attr] !== undefined ? source[attr] : field[attr]);
               return true;
             }

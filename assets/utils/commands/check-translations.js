@@ -48,7 +48,7 @@ const outputComparison = (diff, comparison) => {
   output.printResults(comparison);
   if (diff && Array.isArray(comparison.errors)) {
     comparison.errors.forEach(err => {
-      output.printError(err);
-    })
+      output.printError(JSON.stringify(err, null, 2));
+    });
   }
 };
