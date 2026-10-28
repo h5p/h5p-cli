@@ -2,7 +2,9 @@ const express = require('express');
 const config = require('./configLoader.js');
 const multer = require('multer')({ dest: `./${config.folders.temp}` });
 const api = require('./api.js');
+const validateContentFolder = require('./content-folder.js');
 let app = express();
+app.param('folder', validateContentFolder);
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
